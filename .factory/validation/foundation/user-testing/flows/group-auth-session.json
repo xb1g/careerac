@@ -1,0 +1,116 @@
+{
+  "groupId": "group-auth-session",
+  "testedAt": "2026-04-10T00:00:00Z",
+  "isolation": {
+    "testEmail": "test+71679b8b-fcfc-485d-ba85-ce876f513d9b@example.com",
+    "appUrl": "http://localhost:3000",
+    "browserSession": "careerac"
+  },
+  "toolsUsed": ["agent-browser"],
+  "assertions": [
+    {
+      "id": "VAL-AUTH-003",
+      "title": "Sign in with email and password",
+      "status": "pass",
+      "steps": [
+        {
+          "action": "Navigate to /auth/signup to create test account",
+          "expected": "Signup form displayed",
+          "observed": "Signup form with Email, Password fields and Sign Up button displayed"
+        },
+        {
+          "action": "Fill signup form with unique email (test+71679b8b-fcfc-485d-ba85-ce876f513d9b@example.com) and password (TestPassword123!)",
+          "expected": "Fields populated correctly",
+          "observed": "Email and password fields filled"
+        },
+        {
+          "action": "Click Sign Up button",
+          "expected": "Account created and redirected to /dashboard",
+          "observed": "Successfully redirected to /dashboard"
+        },
+        {
+          "action": "Click Sign Out button",
+          "expected": "Signed out and redirected to landing page",
+          "observed": "Redirected to / (landing page)"
+        },
+        {
+          "action": "Navigate to /auth/signin",
+          "expected": "Signin form displayed",
+          "observed": "Signin form with Email, Password fields and Sign In button displayed"
+        },
+        {
+          "action": "Fill signin form with same credentials",
+          "expected": "Fields populated correctly",
+          "observed": "Email and password fields filled with test credentials"
+        },
+        {
+          "action": "Click Sign In button",
+          "expected": "Authenticated and redirected to /dashboard",
+          "observed": "Successfully redirected to /dashboard, Sign Out button visible in header"
+        }
+      ],
+      "evidence": {
+        "screenshots": [
+          "foundation/group-retry/signup-page.png",
+          "foundation/group-retry/signup-form-filled.png",
+          "foundation/group-retry/dashboard-after-signup.png",
+          "foundation/group-retry/VAL-AUTH-003-signin-form.png",
+          "foundation/group-retry/VAL-AUTH-003-signin-form-filled.png",
+          "foundation/group-retry/VAL-AUTH-003-dashboard-after-signin.png"
+        ],
+        "consoleErrors": "none",
+        "network": "POST /auth/signup -> success, POST /auth/signin -> success"
+      },
+      "issues": null
+    },
+    {
+      "id": "VAL-AUTH-005",
+      "title": "Session persists across page refreshes",
+      "status": "pass",
+      "steps": [
+        {
+          "action": "Sign in to create authenticated session (already signed in from VAL-AUTH-003)",
+          "expected": "User is authenticated on /dashboard",
+          "observed": "On /dashboard with authenticated session (Sign Out button visible)"
+        },
+        {
+          "action": "Take screenshot showing authenticated state before refresh",
+          "expected": "Screenshot shows dashboard with Sign Out button in header",
+          "observed": "Pre-refresh screenshot captured showing authenticated state"
+        },
+        {
+          "action": "Hard reload the page",
+          "expected": "Page reloads",
+          "observed": "Page reloaded successfully"
+        },
+        {
+          "action": "Verify still on /dashboard",
+          "expected": "URL remains /dashboard",
+          "observed": "URL is http://localhost:3000/dashboard"
+        },
+        {
+          "action": "Verify still authenticated",
+          "expected": "Sign Out button still visible, no redirect to signin",
+          "observed": "Sign Out button present in header, dashboard content visible"
+        },
+        {
+          "action": "Take screenshot showing authenticated state after refresh",
+          "expected": "Screenshot shows same authenticated state as before",
+          "observed": "Post-refresh screenshot captured showing authenticated state preserved"
+        }
+      ],
+      "evidence": {
+        "screenshots": [
+          "foundation/group-retry/VAL-AUTH-005-dashboard-pre-refresh.png",
+          "foundation/group-retry/VAL-AUTH-005-dashboard-post-refresh.png"
+        ],
+        "consoleErrors": "none",
+        "network": "N/A - page reload"
+      },
+      "issues": null
+    }
+  ],
+  "frictions": [],
+  "blockers": [],
+  "summary": "Tested 2 assertions: 2 passed, 0 failed, 0 blocked. VAL-AUTH-003: Sign in with email and password works correctly - user is redirected to dashboard after signin with authenticated state visible. VAL-AUTH-005: Session persists across page refreshes - user remains authenticated and on dashboard after hard reload."
+}

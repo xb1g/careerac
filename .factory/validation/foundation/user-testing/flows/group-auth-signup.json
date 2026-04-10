@@ -1,0 +1,99 @@
+{
+  "groupId": "group-auth-signup",
+  "testedAt": "2026-04-10T00:00:00.000Z",
+  "isolation": {
+    "testEmail": "test+07b7682b-337c-46ac-9a86-9cb0b644eb8c@example.com",
+    "appUrl": "http://localhost:3000",
+    "sessionName": "auth-signup-test"
+  },
+  "toolsUsed": ["agent-browser"],
+  "assertions": [
+    {
+      "id": "VAL-AUTH-002",
+      "title": "Sign up with email and password",
+      "status": "pass",
+      "steps": [
+        {
+          "action": "Navigate to /auth/signup",
+          "expected": "Signup form with email, password fields and submit button displayed",
+          "observed": "Signup form displayed with email textbox, password textbox, and Sign Up button"
+        },
+        {
+          "action": "Fill unique test email (test+{uuid}@example.com)",
+          "expected": "Email field populated",
+          "observed": "Email field filled with test+07b7682b-337c-46ac-9a86-9cb0b644eb8c@example.com"
+        },
+        {
+          "action": "Fill password (REDACTED)",
+          "expected": "Password field populated",
+          "observed": "Password field filled"
+        },
+        {
+          "action": "Click Sign Up button",
+          "expected": "Account created and redirected to /dashboard or confirmation prompt",
+          "observed": "Successfully redirected to /dashboard with authenticated session"
+        },
+        {
+          "action": "Verify authenticated state on dashboard",
+          "expected": "Dashboard loads with Sign Out button visible, indicating authenticated session",
+          "observed": "Dashboard displayed with navigation links (Dashboard, New Plan, Playbooks) and Sign Out button"
+        }
+      ],
+      "evidence": {
+        "screenshots": [
+          "foundation/group-retry/VAL-AUTH-002-signup-form-empty.png",
+          "foundation/group-retry/VAL-AUTH-002-signup-form-filled.png",
+          "foundation/group-retry/VAL-AUTH-002-dashboard-after-signup.png"
+        ],
+        "consoleErrors": "none",
+        "network": "POST /auth/signup via Supabase auth -> success, redirected to /dashboard"
+      },
+      "issues": null
+    },
+    {
+      "id": "VAL-AUTH-008",
+      "title": "Duplicate email sign-up shows error",
+      "status": "pass",
+      "steps": [
+        {
+          "action": "Sign out from current session",
+          "expected": "User signed out and redirected to landing page",
+          "observed": "Successfully signed out, redirected to http://localhost:3000/"
+        },
+        {
+          "action": "Navigate to /auth/signup",
+          "expected": "Signup form displayed",
+          "observed": "Signup form displayed with email, password fields and Sign Up button"
+        },
+        {
+          "action": "Fill same email used in VAL-AUTH-002",
+          "expected": "Email field populated with existing email",
+          "observed": "Email field filled with test+07b7682b-337c-46ac-9a86-9cb0b644eb8c@example.com"
+        },
+        {
+          "action": "Fill password and submit form",
+          "expected": "Form submission attempted",
+          "observed": "Sign Up button clicked, form submitted"
+        },
+        {
+          "action": "Verify error message displayed for duplicate email",
+          "expected": "User-friendly error message shown, no duplicate account created, user remains on signup page",
+          "observed": "Error message displayed: 'A user with this email already exists. Please sign in instead.' User remained on /auth/signup page"
+        }
+      ],
+      "evidence": {
+        "screenshots": [
+          "foundation/group-retry/VAL-AUTH-008-signup-form-empty.png",
+          "foundation/group-retry/VAL-AUTH-008-signup-form-duplicate-filled.png",
+          "foundation/group-retry/VAL-AUTH-008-after-duplicate-attempt.png"
+        ],
+        "consoleErrors": "none",
+        "network": "POST /auth/signup via Supabase auth -> returned error for duplicate email"
+      },
+      "issues": null
+    }
+  ],
+  "frictions": [],
+  "blockers": [],
+  "summary": "Tested 2 assertions: 2 passed, 0 failed. VAL-AUTH-002: Successful signup with unique email redirected to dashboard. VAL-AUTH-008: Duplicate email signup correctly displayed error message 'A user with this email already exists. Please sign in instead.' and prevented account creation."
+}
