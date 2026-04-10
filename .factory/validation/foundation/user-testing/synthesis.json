@@ -1,0 +1,81 @@
+{
+  "milestone": "foundation",
+  "round": 1,
+  "status": "fail",
+  "assertionsSummary": {
+    "total": 13,
+    "passed": 6,
+    "failed": 7,
+    "blocked": 0
+  },
+  "passedAssertions": [
+    "VAL-AUTH-001",
+    "VAL-AUTH-006",
+    "VAL-AUTH-007",
+    "VAL-AUTH-009",
+    "VAL-LAYOUT-002",
+    "VAL-LAYOUT-003"
+  ],
+  "failedAssertions": [
+    {
+      "id": "VAL-AUTH-002",
+      "reason": "Supabase email rate limit exceeded - cannot create test account to verify signup flow"
+    },
+    {
+      "id": "VAL-AUTH-003",
+      "reason": "Database error querying schema - Supabase auth returned database error on signin attempts"
+    },
+    {
+      "id": "VAL-AUTH-004",
+      "reason": "Supabase email rate limit exceeded - cannot create authenticated session to test sign-out"
+    },
+    {
+      "id": "VAL-AUTH-005",
+      "reason": "Supabase email rate limit exceeded - cannot create authenticated session to test session persistence"
+    },
+    {
+      "id": "VAL-AUTH-008",
+      "reason": "Supabase email rate limit exceeded - cannot create initial account to test duplicate email error"
+    },
+    {
+      "id": "VAL-LAYOUT-001",
+      "reason": "Supabase email rate limit exceeded - cannot create authenticated session to test header navigation"
+    },
+    {
+      "id": "VAL-PLAN-006",
+      "reason": "Supabase email rate limit exceeded - cannot create authenticated session to test dashboard empty state"
+    }
+  ],
+  "blockedAssertions": [],
+  "appliedUpdates": [
+    {
+      "target": "user-testing.md",
+      "description": "Added Flow Validator Guidance section for agent-browser with isolation rules, test account patterns, and evidence collection guidelines",
+      "source": "setup"
+    }
+  ],
+  "previousRound": null,
+  "systemicIssues": [
+    {
+      "description": "Supabase Auth rate limiting is aggressively blocking test user creation. All signup attempts return 'email rate limit exceeded' even with unique emails and 60+ second delays between attempts.",
+      "affectedAssertions": ["VAL-AUTH-002", "VAL-AUTH-004", "VAL-AUTH-005", "VAL-AUTH-008", "VAL-LAYOUT-001", "VAL-PLAN-006"],
+      "severity": "blocking"
+    },
+    {
+      "description": "Supabase Auth returning 'Database error querying schema' on signin attempts, suggesting backend connectivity or schema issues.",
+      "affectedAssertions": ["VAL-AUTH-003"],
+      "severity": "blocking"
+    }
+  ],
+  "flowReports": [
+    ".factory/validation/foundation/user-testing/flows/group1-public-pages.json",
+    ".factory/validation/foundation/user-testing/flows/group2-signup-flow.json",
+    ".factory/validation/foundation/user-testing/flows/group3-post-login.json"
+  ],
+  "notes": [
+    "6 out of 13 assertions passed. All passing assertions were for public pages or unauthenticated flows that don't require a working Supabase Auth signup.",
+    "The client-side validation (VAL-AUTH-009) works correctly, preventing empty form submissions with inline error messages.",
+    "The landing page (VAL-AUTH-001), protected route redirect (VAL-AUTH-006), mobile responsive layout (VAL-LAYOUT-002), invalid signin error (VAL-AUTH-007), and auth callback (VAL-LAYOUT-003) all function correctly.",
+    "7 assertions failed due to external dependencies (Supabase Auth rate limiting and database errors) rather than application bugs."
+  ]
+}
