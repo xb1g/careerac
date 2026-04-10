@@ -1,18 +1,23 @@
 "use client";
 
 import { useChat, UIMessage } from "@ai-sdk/react";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import { ParsedPlan } from "@/types/plan";
+import { parsePlanFromAIResponse } from "@/utils/plan-parser";
 
 interface ChatProps {
   welcomeMessage?: string;
   className?: string;
+  onPlanGenerated?: (plan: ParsedPlan) => void;
 }
 
 export default function Chat({
   welcomeMessage = "Hi! I'm CareerAC, your transfer planning assistant. Tell me about your community college, where you want to transfer, and what you'd like to study. I'll help you build a personalized semester-by-semester plan.",
   className = "",
+  onPlanGenerated,
 }: ChatProps) {
   const [input, setInput] = useState("");
+  const lastProcessedMessageId = useRef<string | null>(null);
 
   const { messages, sendMessage, status, error, clearError } = useChat({
     messages: [
@@ -29,6 +34,26 @@ export default function Chat({
   const isLoading = status === "submitted" || isStreaming;
 
   const isInputEmpty = input.trim().length === 0;
+
+  // Check the latest assistant message for a plan
+  const lastAssistantMessage = messages.filter((m) => m.role === "assistant").pop();
+
+  useEffect(() => {
+    if (!lastAssistantMessage || lastAssistantMessage.id === lastProcessedMessageId.current) return;
+
+    const textParts = lastAssistantMessage.parts
+      .filter((p) => p.type === "text")
+      .map((p) => (p as { text: string }).text)
+      .join("\n");
+
+    if (!textParts) return;
+
+    const parsed = parsePlanFromAIResponse(textParts);
+    if (parsed) {
+      lastProcessedMessageId.current = lastAssistantMessage.id;
+      onPlanGenerated?.(parsed);
+    }
+  }, [lastAssistantMessage, onPlanGenerated]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -60,7 +85,7 @@ export default function Chat({
                 if (part.type === "text") {
                   return (
                     <div key={`${message.id}-${i}`} className="whitespace-pre-wrap text-sm">
-                      {part.text}
+                      {(part as { text: string }).text}
                     </div>
                   );
                 }
