@@ -1,0 +1,94 @@
+{
+  "groupId": "group1-public-pages",
+  "testedAt": "2025-04-10T10:30:00Z",
+  "isolation": {
+    "appUrl": "http://localhost:3000",
+    "testEmailPattern": "test+group1-{uuid}@example.com",
+    "password": "TestPassword123!"
+  },
+  "toolsUsed": ["agent-browser"],
+  "assertions": [
+    {
+      "id": "VAL-AUTH-001",
+      "title": "Landing page loads with hero content and CTA",
+      "status": "pass",
+      "steps": [
+        { "action": "Navigate to /", "expected": "Landing page loads with hero section", "observed": "Landing page loaded with CareerAC title and hero content" },
+        { "action": "Take snapshot to identify interactive elements", "expected": "CTA button visible in snapshot", "observed": "CTA 'Get Started' link found at ref=e1" },
+        { "action": "Get CTA href attribute", "expected": "CTA links to /auth/signup or /auth/signin", "observed": "CTA links to /auth/signup" }
+      ],
+      "evidence": {
+        "screenshots": ["foundation/group1/VAL-AUTH-001-landing-page.png"],
+        "consoleErrors": "none",
+        "network": "N/A"
+      },
+      "issues": null
+    },
+    {
+      "id": "VAL-AUTH-006",
+      "title": "Protected route redirects unauthenticated users",
+      "status": "pass",
+      "steps": [
+        { "action": "Navigate to /dashboard without active session", "expected": "Redirect to /auth/signin", "observed": "Redirected to /auth/signin?redirectTo=%2Fdashboard" },
+        { "action": "Take snapshot of current page", "expected": "Sign-in form displayed", "observed": "Sign-in page with Email/Password fields and 'Sign In' button visible" },
+        { "action": "Get current URL", "expected": "URL is /auth/signin", "observed": "URL is http://localhost:3000/auth/signin?redirectTo=%2Fdashboard" }
+      ],
+      "evidence": {
+        "screenshots": ["foundation/group1/VAL-AUTH-006-redirect-to-signin.png"],
+        "consoleErrors": "none",
+        "network": "N/A"
+      },
+      "issues": null
+    },
+    {
+      "id": "VAL-LAYOUT-002",
+      "title": "Responsive layout on mobile viewport",
+      "status": "pass",
+      "steps": [
+        { "action": "Set viewport to 375x812 (mobile)", "expected": "Viewport resized", "observed": "Viewport set to 375x812" },
+        { "action": "Navigate to landing page at /", "expected": "Page loads without horizontal overflow", "observed": "Landing page loaded correctly" },
+        { "action": "Take screenshot", "expected": "Mobile layout visible", "observed": "Mobile layout captured with readable text" }
+      ],
+      "evidence": {
+        "screenshots": ["foundation/group1/VAL-LAYOUT-002-landing-mobile.png"],
+        "consoleErrors": "none",
+        "network": "N/A"
+      },
+      "issues": null
+    },
+    {
+      "id": "VAL-PLAN-006",
+      "title": "Dashboard empty state",
+      "status": "blocked",
+      "steps": [
+        { "action": "Navigate to /auth/signup to create test user", "expected": "Signup form displays", "observed": "Signup form displayed" },
+        { "action": "Fill signup form with unique email", "expected": "Form fields populated", "observed": "Email and password fields filled" },
+        { "action": "Click Sign Up button", "expected": "Account created and redirected to dashboard", "observed": "Error: 'email rate limit exceeded'" },
+        { "action": "Wait 60 seconds and retry", "expected": "Rate limit clears", "observed": "Rate limit still active" },
+        { "action": "Try signin with test user", "expected": "Login succeeds", "observed": "'Invalid login credentials' - user not created" }
+      ],
+      "evidence": {
+        "screenshots": ["foundation/group1/VAL-PLAN-006-dashboard-redirect.png"],
+        "consoleErrors": "none",
+        "network": "N/A"
+      },
+      "issues": "Signup rate limit prevents creating test user needed for VAL-PLAN-006. Attempted signups with multiple unique emails (test+group1-abc123@example.com, test+group1-fresh1@example.com, test+group1-fresh2@example.com) all returned 'email rate limit exceeded'. Waited 60+ seconds between attempts but rate limit persisted. Cannot test dashboard empty state without authenticated session."
+    }
+  ],
+  "frictions": [
+    {
+      "description": "Supabase auth rate limiting is aggressive - multiple signup attempts from same IP trigger rate limit that persists for extended period",
+      "resolved": false,
+      "resolution": "Waited 60+ seconds between attempts, but rate limit still active. No workaround available.",
+      "affectedAssertions": ["VAL-PLAN-006"]
+    }
+  ],
+  "blockers": [
+    {
+      "description": "Supabase email signup rate limit exceeded - cannot create test user to access dashboard. Error message: 'email rate limit exceeded'. Rate limit appears to be IP-based and lasts longer than 60 seconds.",
+      "affectedAssertions": ["VAL-PLAN-006"],
+      "quickFixAttempted": "Waited 60+ seconds between signup attempts, tried multiple unique email addresses, all attempts failed with same rate limit error"
+    }
+  ],
+  "summary": "Tested 4 assertions: 3 passed (VAL-AUTH-001, VAL-AUTH-006, VAL-LAYOUT-002), 1 blocked (VAL-PLAN-006). Blocker is Supabase auth rate limiting preventing test user creation. All public page assertions passed successfully."
+}

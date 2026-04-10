@@ -48,3 +48,37 @@ Testing surface, required testing skills/tools, and resource cost classification
 - OpenRouter free tier: 20 req/min, 50 req/day — AI-dependent tests must be rationed
 - AI responses are non-deterministic — assertions about AI content should check for presence of key information, not exact text
 - Streaming tests need timing-aware assertions (screenshots at specific intervals)
+
+---
+
+## Flow Validator Guidance: agent-browser
+
+### Isolation Rules
+
+**Test User Accounts:**
+- Use unique email pattern: `test+{uuid}@example.com` for each test run
+- Password: `TestPassword123!`
+- No email confirmation required (disabled in Supabase dev config)
+
+**Shared State to Avoid:**
+- Do NOT use the same email for multiple concurrent validators
+- Do NOT modify global settings (e.g., app config) during tests
+- Each validator should clean up after itself (delete created accounts if needed)
+
+**Resource Boundaries:**
+- App URL: `http://localhost:3000` only
+- Database: Supabase Cloud (shared, but data is user-isolated via RLS)
+- Do NOT attempt to access external services beyond the app
+
+**Constraints:**
+- Max 3 concurrent agent-browser validators (resource limit)
+- Each validator should be self-contained and not depend on another validator's state
+- Screenshots should be saved to the assigned evidence directory
+- Test assertions should be independent - failures in one should not cascade to others
+
+### Evidence Collection
+
+- Save screenshots with descriptive names: `{assertion-id}-{description}.png`
+- Capture before/after states for state-changing actions
+- Network response logs should be captured for auth/API assertions
+- Store evidence in the assigned evidence directory

@@ -1,0 +1,111 @@
+{
+  "groupId": "group2-signup-flow",
+  "testedAt": "2026-04-10T07:30:00.000Z",
+  "isolation": {
+    "appUrl": "http://localhost:3000",
+    "testEmailPattern": "test+group2-{uuid}@example.com",
+    "password": "TestPassword123!",
+    "sessionName": "group2-session"
+  },
+  "toolsUsed": ["agent-browser"],
+  "assertions": [
+    {
+      "id": "VAL-AUTH-002",
+      "title": "Sign up with email and password",
+      "status": "blocked",
+      "steps": [
+        { "action": "Navigate to /auth/signup", "expected": "Signup form displayed", "observed": "Signup form displayed correctly" },
+        { "action": "Fill email and password fields", "expected": "Fields populated", "observed": "Fields populated with test data" },
+        { "action": "Click Sign Up button", "expected": "Account created and redirected to dashboard", "observed": "Error: 'email rate limit exceeded'" }
+      ],
+      "evidence": {
+        "screenshots": ["foundation/group2/signup-page.png", "foundation/group2/signup-final-attempt.png"],
+        "consoleErrors": "none",
+        "network": "N/A - request blocked by rate limit"
+      },
+      "issues": "Supabase email rate limit exceeded - cannot create new accounts for testing. The error appears immediately after form submission."
+    },
+    {
+      "id": "VAL-AUTH-003",
+      "title": "Sign in with email and password",
+      "status": "blocked",
+      "steps": [
+        { "action": "Navigate to /auth/signin", "expected": "Signin form displayed", "observed": "Signin form displayed correctly" },
+        { "action": "Fill email and password fields", "expected": "Fields populated", "observed": "Fields populated with test credentials" },
+        { "action": "Click Sign In button", "expected": "Authenticated and redirected to /dashboard", "observed": "Error: 'Database error querying schema'" }
+      ],
+      "evidence": {
+        "screenshots": ["foundation/group2/VAL-AUTH-003-signin-form.png", "foundation/group2/VAL-AUTH-003-after-signin.png"],
+        "consoleErrors": "none",
+        "network": "N/A - database query failed"
+      },
+      "issues": "Database error querying schema - Supabase connection or schema issue prevents authentication. Cannot test signin flow without working database connection."
+    },
+    {
+      "id": "VAL-AUTH-008",
+      "title": "Duplicate email sign-up shows error",
+      "status": "blocked",
+      "steps": [
+        { "action": "Navigate to /auth/signup", "expected": "Signup form displayed", "observed": "Signup form displayed" },
+        { "action": "Attempt to create pre-existing account", "expected": "Account created for duplicate test", "observed": "Rate limit error prevents account creation" },
+        { "action": "Attempt duplicate signup", "expected": "Duplicate email error displayed", "observed": "Could not reach this step due to rate limit" }
+      ],
+      "evidence": {
+        "screenshots": ["foundation/group2/VAL-AUTH-008-preexisting-form.png"],
+        "consoleErrors": "none",
+        "network": "N/A - blocked by rate limit"
+      },
+      "issues": "Cannot test duplicate email error because rate limit prevents creating the initial account needed for the test. Requires an existing account to test against."
+    },
+    {
+      "id": "VAL-AUTH-009",
+      "title": "Empty form submission shows validation errors",
+      "status": "pass",
+      "steps": [
+        { "action": "Navigate to /auth/signup", "expected": "Signup form displayed", "observed": "Signup form displayed correctly" },
+        { "action": "Click Sign Up button with empty fields", "expected": "Client-side validation errors displayed", "observed": "Email is required and Password is required errors shown inline" },
+        { "action": "Navigate to /auth/signin", "expected": "Signin form displayed", "observed": "Signin form displayed correctly" },
+        { "action": "Click Sign In button with empty fields", "expected": "Client-side validation errors displayed", "observed": "Email is required and Password is required errors shown inline" }
+      ],
+      "evidence": {
+        "screenshots": ["foundation/group2/VAL-AUTH-009-empty-signup.png", "foundation/group2/VAL-AUTH-009-empty-signin.png"],
+        "consoleErrors": "none",
+        "network": "No network request fired (client-side validation prevented submission)"
+      },
+      "issues": null
+    }
+  ],
+  "frictions": [
+    {
+      "description": "Supabase email rate limit is very restrictive - blocks all signup attempts after just a few tries, making it difficult to test signup flows",
+      "resolved": false,
+      "resolution": null,
+      "affectedAssertions": ["VAL-AUTH-002", "VAL-AUTH-008"]
+    },
+    {
+      "description": "Database error 'querying schema' on signin attempts suggests either Supabase connection issues or schema problems",
+      "resolved": false,
+      "resolution": null,
+      "affectedAssertions": ["VAL-AUTH-003"]
+    },
+    {
+      "description": "Email validation on signup form rejected emails with '+' subaddressing (e.g., test+uuid@example.com), which is commonly used for test isolation",
+      "resolved": true,
+      "resolution": "Used simple email format without '+' character",
+      "affectedAssertions": ["VAL-AUTH-002", "VAL-AUTH-008"]
+    }
+  ],
+  "blockers": [
+    {
+      "description": "Supabase email rate limit exceeded - backend returns 'email rate limit exceeded' error on all signup attempts. Rate limit appears to require significant cooldown time (30+ seconds was insufficient).",
+      "affectedAssertions": ["VAL-AUTH-002", "VAL-AUTH-008"],
+      "quickFixAttempted": "Waited 30+ seconds between attempts, used unique emails with timestamps, tried multiple email formats. Rate limit persisted."
+    },
+    {
+      "description": "Database error querying schema on signin attempts - Supabase auth returned 'Database error querying schema' when attempting to authenticate. This suggests a backend/database connectivity issue.",
+      "affectedAssertions": ["VAL-AUTH-003"],
+      "quickFixAttempted": "Waited 10+ seconds and retried, used different test credentials. Error persisted."
+    }
+  ],
+  "summary": "Tested 4 assertions: 1 passed (VAL-AUTH-009), 3 blocked (VAL-AUTH-002, VAL-AUTH-003, VAL-AUTH-008). The empty form validation works correctly on both signup and signin pages with inline error messages. However, Supabase rate limiting and database errors prevented testing the actual signup and signin flows. The validation for empty fields is client-side and prevents network requests as expected."
+}

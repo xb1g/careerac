@@ -1,0 +1,117 @@
+{
+  "groupId": "group3-post-login",
+  "testedAt": "2025-04-10T10:30:00Z",
+  "isolation": {
+    "appUrl": "http://localhost:3000",
+    "testEmailPattern": "test+group3-{uuid}@example.com",
+    "password": "TestPassword123!",
+    "browserSession": "group3"
+  },
+  "toolsUsed": ["agent-browser"],
+  "assertions": [
+    {
+      "id": "VAL-AUTH-004",
+      "title": "Sign out ends session",
+      "status": "blocked",
+      "steps": [
+        { "action": "Attempt to create authenticated session", "expected": "User signed up and logged in", "observed": "Supabase email rate limit exceeded - cannot create new user" },
+        { "action": "Navigate to dashboard as authenticated user", "expected": "Dashboard loads with authenticated state", "observed": "N/A - blocked by prerequisite" },
+        { "action": "Click sign-out button", "expected": "Session terminated and redirected", "observed": "N/A - blocked by prerequisite" }
+      ],
+      "evidence": {
+        "screenshots": [],
+        "consoleErrors": "N/A",
+        "network": "N/A"
+      },
+      "issues": "BLOCKED: Cannot test sign-out without authenticated session. Supabase auth API returned 'email rate limit exceeded' on all signup attempts."
+    },
+    {
+      "id": "VAL-AUTH-005",
+      "title": "Session persists across page refreshes",
+      "status": "blocked",
+      "steps": [
+        { "action": "Create authenticated session", "expected": "User logged in", "observed": "Supabase email rate limit exceeded - cannot create new user" },
+        { "action": "Navigate to /dashboard", "expected": "Dashboard loads", "observed": "N/A - blocked by prerequisite" },
+        { "action": "Refresh page", "expected": "Session persists after refresh", "observed": "N/A - blocked by prerequisite" }
+      ],
+      "evidence": {
+        "screenshots": [],
+        "consoleErrors": "N/A",
+        "network": "N/A"
+      },
+      "issues": "BLOCKED: Cannot test session persistence without authenticated session. Supabase auth API returned 'email rate limit exceeded' on all signup attempts."
+    },
+    {
+      "id": "VAL-AUTH-007",
+      "title": "Invalid sign-in shows error message",
+      "status": "pass",
+      "steps": [
+        { "action": "Navigate to /auth/signin", "expected": "Login form displayed", "observed": "Signin form rendered with email and password fields" },
+        { "action": "Fill email with nonexistent@example.com", "expected": "Email field populated", "observed": "Email field populated" },
+        { "action": "Fill password with WrongPassword123!", "expected": "Password field populated", "observed": "Password field populated" },
+        { "action": "Click Sign In button", "expected": "Error message displayed, form remains usable", "observed": "'Invalid login credentials' error displayed, form fields remain populated and usable" },
+        { "action": "Verify no redirect occurred", "expected": "URL remains /auth/signin", "observed": "URL unchanged at /auth/signin" }
+      ],
+      "evidence": {
+        "screenshots": [
+          "foundation/group3/VAL-AUTH-007-before.png",
+          "foundation/group3/VAL-AUTH-007-after.png"
+        ],
+        "consoleErrors": "none",
+        "network": "POST to auth API returned error, no redirect"
+      },
+      "issues": null
+    },
+    {
+      "id": "VAL-LAYOUT-001",
+      "title": "Header navigation present and functional",
+      "status": "blocked",
+      "steps": [
+        { "action": "Create authenticated session", "expected": "User logged in", "observed": "Supabase email rate limit exceeded - cannot create new user" },
+        { "action": "Navigate to authenticated page", "expected": "Header with navigation visible", "observed": "N/A - blocked by prerequisite" },
+        { "action": "Click each nav link", "expected": "Navigation to correct route", "observed": "N/A - blocked by prerequisite" }
+      ],
+      "evidence": {
+        "screenshots": [],
+        "consoleErrors": "N/A",
+        "network": "N/A"
+      },
+      "issues": "BLOCKED: Cannot test authenticated layout without authenticated session. Supabase auth API returned 'email rate limit exceeded' on all signup attempts."
+    },
+    {
+      "id": "VAL-LAYOUT-003",
+      "title": "Auth callback route processes redirect",
+      "status": "pass",
+      "steps": [
+        { "action": "Navigate to /auth/callback without auth code", "expected": "Callback processes and redirects", "observed": "Callback route processed request" },
+        { "action": "Observe redirect behavior", "expected": "Redirect to /auth/signin with error parameter", "observed": "Redirected to /auth/signin?error=auth_callback_failed" },
+        { "action": "Check for console errors", "expected": "No unhandled exceptions", "observed": "No console errors, only React DevTools info messages" }
+      ],
+      "evidence": {
+        "screenshots": [
+          "foundation/group3/VAL-LAYOUT-003-callback.png"
+        ],
+        "consoleErrors": "none (only React DevTools info messages)",
+        "network": "N/A - callback processed client-side",
+        "redirectChain": "/auth/callback -> /auth/signin?error=auth_callback_failed"
+      },
+      "issues": null
+    }
+  ],
+  "frictions": [
+    {
+      "description": "Supabase email rate limit exceeded prevented creating test accounts. All signup attempts (5+ different emails) returned 'email rate limit exceeded' error.",
+      "resolved": false,
+      "resolution": "Unable to resolve - rate limit is server-side. Attempted: unique UUID-based emails, timestamp-based emails, different email domains.",
+      "affectedAssertions": ["VAL-AUTH-004", "VAL-AUTH-005", "VAL-LAYOUT-001"]
+    }
+  ],
+  "blockers": [
+    {
+      "description": "Supabase Auth API rate limit exceeded - cannot create new test users via signup endpoint. Rate limit appears to be IP-based or project-wide.",
+      "affectedAssertions": ["VAL-AUTH-004", "VAL-AUTH-005", "VAL-LAYOUT-001"],
+      "quickFixAttempted": "Attempted 5+ different email patterns with unique UUIDs and timestamps, all returned 'email rate limit exceeded'. Direct API calls also rate limited."
+    }
+  ],
+  "summary": "Tested 5 assertions: 2 passed (VAL-AUTH-007, VAL-LAYOUT-003), 3 blocked (VAL-AUTH-004, VAL-AUTH-005, VAL-LAYOUT-001). Blocked assertions require authenticated user session which could not be established due to Supabase email rate limiting. The sign-in error display (VAL-AUTH-007) and auth callback routing (VAL-LAYOUT-003) both function correctly."
+}
