@@ -1,0 +1,61 @@
+{
+  "featureId": "dashboard-plan-listing",
+  "reviewedAt": "2026-04-11T12:00:00.000Z",
+  "commitId": "329e01b",
+  "transcriptSkeletonReviewed": true,
+  "diffReviewed": true,
+  "status": "pass",
+  "codeReview": {
+    "summary": "The dashboard plan listing feature is fully implemented according to requirements. The implementation includes: (1) Server-side plan fetching with proper Supabase auth integration using getUser() for security, (2) PlanCard component displaying title, target_major, status badge, and formatted creation date, (3) EmptyState handling when no plans exist, (4) Navigation to /plan/[id] when clicking a plan card, (5) Support for multiple plans coexisting independently via unique row inserts. The first-visit journey was verified via agent-browser from landing → signup → dashboard → create plan. All 108 tests pass, TypeScript is clean, and ESLint reports no issues.",
+    "issues": [
+      {
+        "file": "src/app/(protected)/dashboard/page.tsx",
+        "line": 18,
+        "severity": "suggestion",
+        "description": "The getUserPlans function returns empty array on both auth failure AND database errors. This could mask database connectivity issues from the user who would just see an empty state rather than an error. Consider distinguishing between these cases."
+      },
+      {
+        "file": "src/app/(protected)/plan/new/page.tsx",
+        "line": 48,
+        "severity": "suggestion",
+        "description": "The institution lookup uses case-insensitive pattern matching with .ilike which could match multiple institutions. The code only takes the first result (.limit(1)), which could lead to incorrect institution assignments if there are naming collisions. Consider adding more specific matching or validation."
+      },
+      {
+        "file": "src/app/(protected)/plan/new/page.tsx",
+        "line": 75,
+        "severity": "non_blocking",
+        "description": "Empty string fallback (?? '') for institution IDs could create referential integrity issues if the database expects foreign key relationships. The insert allows empty strings for cc_institution_id and target_institution_id when lookup fails."
+      },
+      {
+        "file": "src/hooks/use-plan-persistence.ts",
+        "line": 95,
+        "severity": "suggestion",
+        "description": "The debounce timeout (500ms) differs from the new-plan page debounce (800ms). Consider using a shared constant to ensure consistency across the codebase."
+      }
+    ]
+  },
+  "sharedStateObservations": [
+    {
+      "area": "knowledge",
+      "observation": "The worker discovered that the OpenRouter API key was set to a placeholder value in .env.local, which prevented full end-to-end testing of the plan creation flow. This was correctly flagged as a pre-existing infrastructure issue, not related to the dashboard feature. However, this suggests the environment setup documentation or .env.local template may need to be clearer about obtaining and configuring the OpenRouter API key.",
+      "evidence": "Handoff file shows discoveredIssues entry: 'Pre-existing: OpenRouter API key is set to placeholder... preventing AI plan generation'. This is a recurring issue that could be documented better."
+    },
+    {
+      "area": "services",
+      "observation": "The agent-browser skill was used for manual verification of the first-visit journey (landing → signup → dashboard → create plan). While this is correct per the skill procedure, there's no mention in services.yaml about the browser automation service or any required setup (e.g., Chrome/Playwright dependencies).",
+      "evidence": "Handoff verification.interactiveChecks shows 7 agent-browser actions taken for manual verification."
+    },
+    {
+      "area": "conventions",
+      "observation": "The worker used proper Supabase SSR patterns throughout: server.ts client for server components/routes, client.ts for client components, and correctly used await createClient() with getUser() for auth. This aligns with AGENTS.md conventions which specifically warns against using getSession() on server.",
+      "evidence": "Code review confirms all Supabase calls use: const supabase = await createClient(); const { data: { user } } = await supabase.auth.getUser(); pattern consistently across dashboard/page.tsx, api/plans routes, and plan/new/page.tsx"
+    },
+    {
+      "area": "knowledge",
+      "observation": "The feature commit message includes comprehensive documentation of what was implemented (auto-save, loading, persistence, /plan/[id], Plan not found page, auth gate). This level of detail in commit messages is excellent for code archaeology and should be encouraged.",
+      "evidence": "Commit 329e01b has detailed multi-line message covering: debounced auto-save, /plan/[id] loading, invalid plan ID handling, dashboard listing, auth redirects, and co-author attribution."
+    }
+  ],
+  "addressesFailureFrom": null,
+  "summary": "Feature dashboard-plan-listing is fully implemented and verified. The dashboard correctly lists all user plans with target school, major, creation date, and status. Multiple plans coexist independently via unique database rows. The first-visit journey (landing → signup → dashboard → create plan → see on dashboard) was manually verified via browser automation. All 108 tests pass, TypeScript compiles cleanly, and ESLint reports no issues. Minor suggestions include improving error handling distinction between auth vs DB failures, more robust institution matching, and consistent debounce timing."
+}

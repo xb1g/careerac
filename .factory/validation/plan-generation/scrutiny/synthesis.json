@@ -1,0 +1,157 @@
+{
+  "milestone": "plan-generation",
+  "round": 1,
+  "status": "pass",
+  "validatorsRun": {
+    "test": {
+      "passed": true,
+      "command": "pnpm vitest run",
+      "exitCode": 0,
+      "details": "108 tests passing, 16 test files"
+    },
+    "typecheck": {
+      "passed": true,
+      "command": "pnpm tsc --noEmit",
+      "exitCode": 0
+    },
+    "lint": {
+      "passed": true,
+      "command": "pnpm next lint",
+      "exitCode": 0,
+      "note": "No ESLint warnings or errors (deprecated next lint warning shown)"
+    }
+  },
+  "reviewsSummary": {
+    "total": 5,
+    "passed": 5,
+    "failed": 0,
+    "failedFeatures": []
+  },
+  "blockingIssues": [],
+  "appliedUpdates": [],
+  "suggestedGuidanceUpdates": [
+    {
+      "target": "AGENTS.md",
+      "suggestion": "Add documentation about the mocking pattern: use `vi.doMock()` for dynamic imports in integration tests and `vi.mock()` at the top level for component mocks. The project consistently applies this pattern but it's not documented.",
+      "evidence": "ai-chat-integration feature: src/components/chat-integration.test.tsx:21-28 uses vi.doMock with dynamic import, while src/app/(protected)/plan/new/new-plan.test.tsx:8-23 uses vi.mock at module level.",
+      "isSystemic": true
+    },
+    {
+      "target": ".factory/library/",
+      "suggestion": "Document AI SDK v6 API changes for future AI features: UIMessage type replaces old Message type, convertToModelMessages is required for route handlers, and result.toUIMessageStreamResponse() replaces old StreamingTextResponse.",
+      "evidence": "ai-chat-integration feature: worker discovered these API changes through extensive research into ai package v6.0.158 exports.",
+      "isSystemic": false
+    },
+    {
+      "target": ".factory/services.yaml",
+      "suggestion": "Add Supabase CLI commands for database migrations: 'supabase link --project-ref {ref}' followed by 'supabase db push --linked' as the pattern for applying migrations when MCP access is unavailable.",
+      "evidence": "fix-supabase-profile-trigger feature: worker discovered this pattern when Supabase MCP only gave access to a different project (passionseed), not the CareerAC project.",
+      "isSystemic": true
+    },
+    {
+      "target": "fullstack-worker skill",
+      "suggestion": "Update the skill documentation to note the CLI migration approach as an alternative when MCP access is unavailable. Currently mentions 'Database migrations via SQL (apply through Supabase dashboard or MCP)' but not the CLI approach.",
+      "evidence": "fix-supabase-profile-trigger feature: worker had to use Supabase CLI with `supabase link` and `supabase db push` when MCP access was unavailable.",
+      "isSystemic": false
+    },
+    {
+      "target": ".factory/library/",
+      "suggestion": "Document the topological sort algorithm for prerequisite ordering as a reusable pattern. This is a sophisticated algorithm that future features (like failure recovery) could reuse.",
+      "evidence": "plan-generation-display feature: src/utils/plan-parser.ts:138-198 implements Kahn's algorithm for topological sorting of courses based on prerequisites.",
+      "isSystemic": false
+    },
+    {
+      "target": ".factory/library/",
+      "suggestion": "Document the debounced auto-save pattern (500-800ms) as a best practice for persistence features to prevent excessive database writes during rapid modifications.",
+      "evidence": "plan-persistence feature: src/hooks/use-plan-persistence.ts implements setTimeout with 500ms debounce for save operations.",
+      "isSystemic": false
+    },
+    {
+      "target": ".factory/library/",
+      "suggestion": "Add a troubleshooting guide for the common Supabase pitfall: auth triggers failing silently due to null metadata or deprecated 'execute procedure' syntax. Pattern: use coalesce() for null handling and 'execute function' syntax.",
+      "evidence": "fix-supabase-profile-trigger feature: Migration 003 used deprecated 'execute procedure' while 006 uses modern 'execute function'. Original didn't have coalesce() handling for null metadata.",
+      "isSystemic": true
+    },
+    {
+      "target": "AGENTS.md",
+      "suggestion": "Add section about RLS-protected API route patterns: enforce user ownership via user_id filtering, return 404/401 as appropriate, and use getUser() for auth (not getSession()).",
+      "evidence": "plan-persistence feature: src/app/api/plans/route.ts and src/app/api/plans/[id]/route.ts both include strict user ownership verification with `.eq('user_id', user.id)`.",
+      "isSystemic": true
+    }
+  ],
+  "rejectedObservations": [
+    {
+      "observation": "Error handling relies on string matching for 429 detection rather than proper HTTP status inspection",
+      "reason": "already-documented",
+      "details": "This is a limitation of the OpenRouter SDK, not a project convention issue. Multiple reviewers noted this but it's a third-party SDK constraint."
+    },
+    {
+      "observation": "supabase/config.toml may cause confusion since it's for local Supabase development (Docker) while the app uses Supabase Cloud",
+      "reason": "already-documented",
+      "details": "The config.toml is auto-generated by supabase init and is standard practice. Workers should understand local vs cloud distinction from Supabase documentation."
+    },
+    {
+      "observation": "OpenRouter API key placeholder issue preventing full end-to-end testing",
+      "reason": "already-documented",
+      "details": "This is a pre-existing infrastructure issue, not related to any specific feature. Environment setup documentation is outside the scope of feature reviews."
+    },
+    {
+      "observation": "Inconsistent debounce timing between hooks (500ms vs 800ms)",
+      "reason": "ambiguous",
+      "details": "Different features have different UX requirements for debounce timing. This is an intentional design choice, not a bug."
+    }
+  ],
+  "reviewDetails": [
+    {
+      "featureId": "ai-chat-integration",
+      "status": "pass",
+      "commitId": "3681e1c",
+      "issues": {
+        "blocking": 0,
+        "non_blocking": 3,
+        "suggestion": 2
+      }
+    },
+    {
+      "featureId": "plan-generation-display",
+      "status": "pass",
+      "commitId": "a3f091c",
+      "issues": {
+        "blocking": 0,
+        "non_blocking": 4,
+        "suggestion": 2
+      }
+    },
+    {
+      "featureId": "fix-supabase-profile-trigger",
+      "status": "pass",
+      "commitId": "30828b3",
+      "issues": {
+        "blocking": 0,
+        "non_blocking": 1,
+        "suggestion": 1
+      }
+    },
+    {
+      "featureId": "plan-persistence",
+      "status": "pass",
+      "commitId": "329e01bc13ec8633acc642dae584cd7fad5187ea",
+      "issues": {
+        "blocking": 0,
+        "non_blocking": 0,
+        "suggestion": 0
+      }
+    },
+    {
+      "featureId": "dashboard-plan-listing",
+      "status": "pass",
+      "commitId": "329e01b",
+      "issues": {
+        "blocking": 0,
+        "non_blocking": 1,
+        "suggestion": 3
+      }
+    }
+  ],
+  "previousRound": null
+}
