@@ -245,38 +245,45 @@ function reorderSemestersForPrerequisites(semesters: PlanSemester[]): PlanSemest
     return null;
   }
 
-  // Reassign courses to semesters based on order
-  const newSemesters: PlanSemester[] = [];
-  let currentSemesterCourses: PlanCourse[] = [];
-  let currentUnits = 0;
-  const maxUnitsPerSemester = 18;
+  // Assign courses to semester levels based on longest prerequisite chain
+  // This ensures courses with prerequisites go in later semesters
+  const semesterLevel = new Map<string, number>();
 
   for (const code of ordered) {
-    const course = courseMap.get(code)!;
-
-    // Check if adding this course would exceed unit limit
-    if (currentUnits + course.units > maxUnitsPerSemester && currentSemesterCourses.length > 0) {
-      // Start new semester
-      newSemesters.push({
-        number: newSemesters.length + 1,
-        label: `Semester ${newSemesters.length + 1}`,
-        courses: [...currentSemesterCourses],
-        totalUnits: currentUnits,
-      });
-      currentSemesterCourses = [];
-      currentUnits = 0;
+    const prereqs = prerequisites.get(code) || [];
+    if (prereqs.length === 0) {
+      semesterLevel.set(code, 0);
+    } else {
+      const maxPrereqLevel = Math.max(
+        ...prereqs
+          .filter((p) => semesterLevel.has(p))
+          .map((p) => semesterLevel.get(p)!)
+      );
+      semesterLevel.set(code, maxPrereqLevel + 1);
     }
-
-    currentSemesterCourses.push(course);
-    currentUnits += course.units;
   }
 
-  if (currentSemesterCourses.length > 0) {
+  // Group courses by their assigned semester level
+  const levelCourses = new Map<number, PlanCourse[]>();
+  for (const [code, level] of semesterLevel) {
+    if (!levelCourses.has(level)) {
+      levelCourses.set(level, []);
+    }
+    levelCourses.get(level)!.push(courseMap.get(code)!);
+  }
+
+  // Create semesters from the levels
+  const newSemesters: PlanSemester[] = [];
+  const levels = [...levelCourses.keys()].sort((a, b) => a - b);
+
+  for (const level of levels) {
+    const courses = levelCourses.get(level)!;
+    const totalUnits = courses.reduce((sum, c) => sum + c.units, 0);
     newSemesters.push({
       number: newSemesters.length + 1,
       label: `Semester ${newSemesters.length + 1}`,
-      courses: currentSemesterCourses,
-      totalUnits: currentUnits,
+      courses,
+      totalUnits,
     });
   }
 

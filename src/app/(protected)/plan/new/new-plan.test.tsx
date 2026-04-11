@@ -2,6 +2,16 @@ import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import NewPlanPage from "./page";
 
+// Mock next/navigation for useRouter
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({
+    push: vi.fn(),
+    replace: vi.fn(),
+    back: vi.fn(),
+    forward: vi.fn(),
+  }),
+}));
+
 // Mock the Chat component
 vi.mock("@/components/chat", () => ({
   default: vi.fn(() => (

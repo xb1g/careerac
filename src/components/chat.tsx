@@ -9,25 +9,32 @@ interface ChatProps {
   welcomeMessage?: string;
   className?: string;
   onPlanGenerated?: (plan: ParsedPlan) => void;
+  /** Called with (plan, fullMessages) for auto-save */
+  onSavePlan?: (plan: ParsedPlan, messages: UIMessage[]) => void;
+  /** Initial chat messages to load (for existing plan editing) */
+  initialMessages?: UIMessage[];
 }
 
 export default function Chat({
   welcomeMessage = "Hi! I'm CareerAC, your transfer planning assistant. Tell me about your community college, where you want to transfer, and what you'd like to study. I'll help you build a personalized semester-by-semester plan.",
   className = "",
   onPlanGenerated,
+  onSavePlan,
+  initialMessages,
 }: ChatProps) {
   const [input, setInput] = useState("");
   const lastProcessedMessageId = useRef<string | null>(null);
 
+  const defaultMessages: UIMessage[] = [
+    {
+      id: "welcome",
+      role: "assistant",
+      parts: [{ type: "text", text: welcomeMessage }],
+    } as unknown as UIMessage,
+  ];
+
   const { messages, sendMessage, status, error, clearError } = useChat({
-    messages: [
-      {
-        id: "welcome",
-        role: "assistant",
-        content: "",
-        parts: [{ type: "text", text: welcomeMessage }],
-      } as UIMessage,
-    ],
+    messages: initialMessages && initialMessages.length > 0 ? initialMessages : defaultMessages,
   });
 
   const isStreaming = status === "streaming";
@@ -52,8 +59,29 @@ export default function Chat({
     if (parsed) {
       lastProcessedMessageId.current = lastAssistantMessage.id;
       onPlanGenerated?.(parsed);
+      // Auto-save the plan with full chat history
+      onSavePlan?.(parsed, messages);
+    } else if (messages.length > 2) {
+      // Even if no plan parsed, save chat updates for existing plans
+      const hasPlan = messages.some((m) => {
+        if (m.role !== "assistant") return false;
+        const parts = m.parts.filter((p) => p.type === "text").map((p) => (p as { text: string }).text).join("\n");
+        return parsePlanFromAIResponse(parts) !== null;
+      });
+      if (hasPlan) {
+        // There's a plan in history - save the updated messages
+        const existingPlan = messages
+          .filter((m) => m.role === "assistant")
+          .map((m) => m.parts.filter((p) => p.type === "text").map((p) => (p as { text: string }).text).join("\n"))
+          .map(parsePlanFromAIResponse)
+          .find((p): p is ParsedPlan => p !== null && !("isNoData" in p && p.isNoData));
+        
+        if (existingPlan) {
+          onSavePlan?.(existingPlan, messages);
+        }
+      }
     }
-  }, [lastAssistantMessage, onPlanGenerated]);
+  }, [lastAssistantMessage, onPlanGenerated, onSavePlan, messages]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
