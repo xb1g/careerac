@@ -111,8 +111,8 @@ export function usePlanPersistence({
               const insertData = {
                 user_id: user.id,
                 title: `${transferPlan.ccName} → ${transferPlan.targetUniversity}`,
-                cc_institution_id: ccId ?? "",
-                target_institution_id: targetId ?? "",
+                cc_institution_id: ccId ?? null,
+                target_institution_id: targetId ?? null,
                 target_major: transferPlan.targetMajor,
                 plan_data: JSON.parse(JSON.stringify(transferPlan)),
                 chat_history: JSON.parse(JSON.stringify(chatHistory)),

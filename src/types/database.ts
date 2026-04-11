@@ -150,8 +150,8 @@ export interface Database {
           id: string
           user_id: string
           title: string
-          cc_institution_id: string
-          target_institution_id: string
+          cc_institution_id: string | null
+          target_institution_id: string | null
           target_major: string
           status: "draft" | "active" | "completed"
           plan_data: Json | null
@@ -163,8 +163,8 @@ export interface Database {
           id?: string
           user_id: string
           title: string
-          cc_institution_id: string
-          target_institution_id: string
+          cc_institution_id?: string | null
+          target_institution_id?: string | null
           target_major: string
           status?: "draft" | "active" | "completed"
           plan_data?: Json | null
@@ -176,8 +176,8 @@ export interface Database {
           id?: string
           user_id?: string
           title?: string
-          cc_institution_id?: string
-          target_institution_id?: string
+          cc_institution_id?: string | null
+          target_institution_id?: string | null
           target_major?: string
           status?: "draft" | "active" | "completed"
           plan_data?: Json | null

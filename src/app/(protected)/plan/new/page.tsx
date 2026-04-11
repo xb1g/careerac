@@ -65,8 +65,8 @@ export default function NewPlanPage() {
       const insertData = {
         user_id: user.id,
         title: `${transferPlan.ccName} → ${transferPlan.targetUniversity}`,
-        cc_institution_id: (ccInstitution as { id?: string } | null)?.id ?? "",
-        target_institution_id: (targetInstitution as { id?: string } | null)?.id ?? "",
+        cc_institution_id: (ccInstitution as { id?: string } | null)?.id ?? null,
+        target_institution_id: (targetInstitution as { id?: string } | null)?.id ?? null,
         target_major: transferPlan.targetMajor,
         plan_data: JSON.parse(JSON.stringify(transferPlan)),
         chat_history: JSON.parse(JSON.stringify(messages)),

@@ -25,9 +25,9 @@ export async function POST(req: NextRequest) {
       chat_history,
     } = body;
 
-    if (!title || !cc_institution_id || !target_institution_id || !target_major) {
+    if (!title || !target_major) {
       return NextResponse.json(
-        { error: "Missing required fields: title, cc_institution_id, target_institution_id, target_major" },
+        { error: "Missing required fields: title, target_major" },
         { status: 400 }
       );
     }
@@ -35,8 +35,8 @@ export async function POST(req: NextRequest) {
     const insertData: TransferPlan = {
       user_id: user.id,
       title,
-      cc_institution_id,
-      target_institution_id,
+      cc_institution_id: cc_institution_id ?? null,
+      target_institution_id: target_institution_id ?? null,
       target_major,
       plan_data: plan_data ?? null,
       chat_history: chat_history ?? null,
