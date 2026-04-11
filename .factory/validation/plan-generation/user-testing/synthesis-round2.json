@@ -1,0 +1,127 @@
+{
+  "milestone": "plan-generation",
+  "round": 2,
+  "status": "fail",
+  "assertionsSummary": {
+    "total": 22,
+    "passed": 8,
+    "failed": 14,
+    "blocked": 0
+  },
+  "passedAssertions": [
+    "VAL-CHAT-001",
+    "VAL-CHAT-004",
+    "VAL-CHAT-005",
+    "VAL-CHAT-006",
+    "VAL-CHAT-007",
+    "VAL-PLAN-006",
+    "VAL-PLAN-009",
+    "VAL-PLAN-011",
+    "VAL-CROSS-002"
+  ],
+  "failedAssertions": [
+    {
+      "id": "VAL-CHAT-002",
+      "reason": "OpenRouter free tier rate limit (20 req/min) prevents AI streaming testing. API returns 'Rate limited, try again in a moment'."
+    },
+    {
+      "id": "VAL-CHAT-003",
+      "reason": "Blocked by VAL-CHAT-002 - requires successful plan generation to test plan modification via chat"
+    },
+    {
+      "id": "VAL-PLAN-001",
+      "reason": "OpenRouter free tier rate limit (20 req/min) prevents AI plan generation, blocking semester grid testing"
+    },
+    {
+      "id": "VAL-PLAN-002",
+      "reason": "Blocked by VAL-PLAN-001 - requires generated plan to test unit totals"
+    },
+    {
+      "id": "VAL-PLAN-003",
+      "reason": "Plans generated via AI chat do not persist to database. Dashboard shows 'No plans yet' even after AI generates plan. fix-plan-auto-save feature is pending."
+    },
+    {
+      "id": "VAL-PLAN-004",
+      "reason": "Blocked by VAL-PLAN-001/003 - requires saved plan to test loading by ID"
+    },
+    {
+      "id": "VAL-PLAN-005",
+      "reason": "Blocked by VAL-PLAN-003 - auto-save not working, dashboard shows empty state"
+    },
+    {
+      "id": "VAL-PLAN-007",
+      "reason": "Blocked by VAL-PLAN-003 - cannot create multiple plans when auto-save broken"
+    },
+    {
+      "id": "VAL-PLAN-008",
+      "reason": "Blocked by VAL-PLAN-001/003 - requires generated plan to verify prerequisites"
+    },
+    {
+      "id": "VAL-PLAN-010",
+      "reason": "Blocked by VAL-PLAN-001/003 - requires saved plan to test edit persistence"
+    },
+    {
+      "id": "VAL-PLAN-012",
+      "reason": "OpenRouter rate limit prevents testing unsupported school handling"
+    },
+    {
+      "id": "VAL-CROSS-001",
+      "reason": "Blocked by VAL-PLAN-003 - plan auto-save not working, dashboard shows empty state after AI generates plan"
+    },
+    {
+      "id": "VAL-CROSS-005",
+      "reason": "Blocked by VAL-PLAN-003 - cannot test persistence when plans don't save"
+    },
+    {
+      "id": "VAL-CROSS-007",
+      "reason": "Blocked by VAL-PLAN-003 - cannot manage plans when auto-save broken"
+    }
+  ],
+  "blockedAssertions": [],
+  "appliedUpdates": [],
+  "previousRound": ".factory/validation/plan-generation/user-testing/synthesis-round1.json",
+  "flowReports": [
+    ".factory/validation/plan-generation/user-testing/flows/group-chat.json",
+    ".factory/validation/plan-generation/user-testing/flows/group-plan.json",
+    ".factory/validation/plan-generation/user-testing/flows/group-cross.json"
+  ],
+  "frictions": [
+    {
+      "description": "OpenRouter free tier rate limit (20 req/min, 50 req/day) severely restricts testing of AI-dependent features. This affected 9 assertions directly and blocked 5 more indirectly.",
+      "resolved": false,
+      "affectedAssertions": [
+        "VAL-CHAT-002", "VAL-CHAT-003",
+        "VAL-PLAN-001", "VAL-PLAN-002", "VAL-PLAN-003", "VAL-PLAN-004", "VAL-PLAN-005", "VAL-PLAN-007", "VAL-PLAN-008", "VAL-PLAN-010", "VAL-PLAN-012",
+        "VAL-CROSS-001", "VAL-CROSS-005", "VAL-CROSS-007"
+      ]
+    },
+    {
+      "description": "Plan auto-save feature is NOT WORKING. Plans generated via AI chat do not persist to the transfer_plans table. Dashboard consistently shows 'No plans yet' even after AI generates a plan. The fix-plan-auto-save feature is pending.",
+      "resolved": false,
+      "affectedAssertions": [
+        "VAL-PLAN-003", "VAL-PLAN-004", "VAL-PLAN-005", "VAL-PLAN-007", "VAL-PLAN-010",
+        "VAL-CROSS-001", "VAL-CROSS-005", "VAL-CROSS-007"
+      ]
+    }
+  ],
+  "blockers": [
+    {
+      "description": "OpenRouter API rate limit exceeded. The free tier allows 20 requests per minute / 50 requests per day. Cannot generate plans to test display, persistence, or loading functionality.",
+      "affectedAssertions": [
+        "VAL-CHAT-002", "VAL-CHAT-003",
+        "VAL-PLAN-001", "VAL-PLAN-002", "VAL-PLAN-012",
+        "VAL-CROSS-001", "VAL-CROSS-005", "VAL-CROSS-007"
+      ],
+      "quickFixAttempted": "Waited for rate limit to reset between attempts, but limit persisted across test session. Free tier is insufficient for comprehensive testing."
+    },
+    {
+      "description": "Plan auto-save not functioning - plans generated via AI chat do not persist to the database. Dashboard consistently shows 'No plans yet' empty state even after successful AI plan generation.",
+      "affectedAssertions": [
+        "VAL-PLAN-003", "VAL-PLAN-004", "VAL-PLAN-005", "VAL-PLAN-007", "VAL-PLAN-008", "VAL-PLAN-010",
+        "VAL-CROSS-001", "VAL-CROSS-005", "VAL-CROSS-007"
+      ],
+      "quickFixAttempted": "Verified dashboard state multiple times, checked for console errors - issue persists. fix-plan-auto-save feature is pending implementation."
+    }
+  ],
+  "notes": "Round 2 validation completed. Same results as Round 1 - no progress on blocked assertions because the underlying issues (OpenRouter rate limit and plan auto-save bug) remain unresolved. The fix-plan-auto-save feature is still pending. Error handling assertions (VAL-CHAT-004, VAL-CHAT-005, VAL-CHAT-006, VAL-CHAT-007) continue to pass."
+}

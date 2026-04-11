@@ -1,0 +1,119 @@
+{
+  "milestone": "plan-generation",
+  "round": 3,
+  "status": "fail",
+  "assertionsSummary": {
+    "total": 22,
+    "passed": 12,
+    "failed": 10,
+    "blocked": 0
+  },
+  "passedAssertions": [
+    "VAL-CHAT-001",
+    "VAL-CHAT-002",
+    "VAL-CHAT-003",
+    "VAL-CHAT-004",
+    "VAL-CHAT-005",
+    "VAL-CHAT-006",
+    "VAL-CHAT-007",
+    "VAL-PLAN-006",
+    "VAL-PLAN-009",
+    "VAL-PLAN-011",
+    "VAL-PLAN-012",
+    "VAL-CROSS-002"
+  ],
+  "failedAssertions": [
+    {
+      "id": "VAL-PLAN-001",
+      "reason": "No articulation data exists in database for tested California CC-to-UC paths (SMC→UCLA, PCC→UCB, De Anza→UC Davis). All return no-data responses."
+    },
+    {
+      "id": "VAL-PLAN-002",
+      "reason": "Blocked by VAL-PLAN-001 - no plan with data could be generated to verify unit totals"
+    },
+    {
+      "id": "VAL-PLAN-003",
+      "reason": "Plan auto-save not working. Plans generated via AI chat do not persist to transfer_plans table. Dashboard shows 'No plans yet' after plan generation."
+    },
+    {
+      "id": "VAL-PLAN-004",
+      "reason": "Blocked by VAL-PLAN-003 - no persisted plans to test loading"
+    },
+    {
+      "id": "VAL-PLAN-005",
+      "reason": "Blocked by VAL-PLAN-003 - auto-save broken prevents plan listing"
+    },
+    {
+      "id": "VAL-PLAN-007",
+      "reason": "Blocked by VAL-PLAN-003 - cannot test multiple plans when persistence fails"
+    },
+    {
+      "id": "VAL-PLAN-008",
+      "reason": "Blocked by VAL-PLAN-001 - no plan with data to verify prerequisites"
+    },
+    {
+      "id": "VAL-PLAN-010",
+      "reason": "Blocked by VAL-PLAN-003 - no persisted plans to test edit persistence"
+    },
+    {
+      "id": "VAL-CROSS-001",
+      "reason": "Authentication and plan generation work, but plan persistence fails at final step. Dashboard shows 'No plans yet' after AI generates plan."
+    },
+    {
+      "id": "VAL-CROSS-005",
+      "reason": "Authentication persistence works, but plan data persistence fails. Dashboard empty after re-login because no plans were ever saved."
+    },
+    {
+      "id": "VAL-CROSS-006",
+      "reason": "Blocked by VAL-PLAN-003 - plan persistence required for cross-session recovery testing"
+    },
+    {
+      "id": "VAL-CROSS-007",
+      "reason": "Blocked by VAL-PLAN-003 - cannot manage plans when persistence fails"
+    }
+  ],
+  "blockedAssertions": [],
+  "appliedUpdates": [],
+  "previousRound": ".factory/validation/plan-generation/user-testing/synthesis-round2.json",
+  "flowReports": [
+    ".factory/validation/plan-generation/user-testing/flows/group-chat-r3.json",
+    ".factory/validation/plan-generation/user-testing/flows/group-plan-r3.json",
+    ".factory/validation/plan-generation/user-testing/flows/group-persist-r3.json"
+  ],
+  "frictions": [
+    {
+      "description": "OpenRouter free tier rate limit (20 req/min, 50 req/day) causes 30-60 second delays for AI responses, but does not prevent testing entirely if requests are paced.",
+      "resolved": false,
+      "affectedAssertions": ["VAL-PLAN-001", "VAL-PLAN-012"]
+    },
+    {
+      "description": "No articulation data exists in database for tested California CC-to-UC transfer paths. Seed data documentation claims 5-10 paths but tested paths (SMC→UCLA, PCC→UCB, De Anza→UC Davis) all return no-data.",
+      "resolved": false,
+      "affectedAssertions": ["VAL-PLAN-001", "VAL-PLAN-002", "VAL-PLAN-008"]
+    },
+    {
+      "description": "Plan auto-save to Supabase not working despite fix-plan-auto-save feature being marked complete. Plans generate successfully via AI but never persist to transfer_plans table.",
+      "resolved": false,
+      "affectedAssertions": ["VAL-PLAN-003", "VAL-PLAN-004", "VAL-PLAN-005", "VAL-PLAN-007", "VAL-PLAN-010", "VAL-CROSS-001", "VAL-CROSS-005", "VAL-CROSS-007"]
+    },
+    {
+      "description": "Toast notifications appear after plan generation requiring dismissal before continuing tests.",
+      "resolved": true,
+      "resolution": "Flow validators now dismiss toasts before navigating",
+      "affectedAssertions": ["VAL-CHAT-003", "VAL-PLAN-003", "VAL-CROSS-001"]
+    }
+  ],
+  "blockers": [
+    {
+      "description": "Plan auto-save to Supabase is not working. AI generates plans successfully but they never persist to the database. Dashboard consistently shows 'No plans yet' even after AI plan generation completes. The fix-plan-auto-save feature was completed but the issue persists.",
+      "affectedAssertions": ["VAL-PLAN-003", "VAL-PLAN-004", "VAL-PLAN-005", "VAL-PLAN-007", "VAL-PLAN-010", "VAL-CROSS-001", "VAL-CROSS-005", "VAL-CROSS-007"],
+      "quickFixAttempted": "Generated plans multiple times, waited 60+ seconds each, checked for console errors (none), navigated to dashboard - plans never appeared."
+    },
+    {
+      "description": "No articulation data exists in the database for tested California CC-to-UC transfer paths. The AI consistently returns isNoData: true for SMC→UCLA CS, PCC→UC Berkeley CS, and De Anza→UC Davis CS paths that should have data according to seed documentation.",
+      "affectedAssertions": ["VAL-PLAN-001", "VAL-PLAN-002", "VAL-PLAN-008"],
+      "quickFixAttempted": "Tested 3 different CC-to-UC paths that should have data per AGENTS.md documentation, all returned no-data responses."
+    }
+  ],
+  "notes": "Round 3 validation completed with improved results over Round 2. Chat interface assertions (VAL-CHAT-002, VAL-CHAT-003) now pass after fixes. However, critical blockers remain: (1) Plan auto-save is still not functioning despite fix-plan-auto-save being marked complete - this blocks 8 assertions, and (2) Missing articulation seed data blocks 3 assertions related to plan generation and display. 12 of 22 assertions now pass (up from 8 in Round 2)."
+}
