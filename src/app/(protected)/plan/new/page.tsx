@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import Chat from "@/components/chat";
 import SemesterPlan from "@/components/semester-plan";
 import { ParsedPlan, TransferPlan } from "@/types/plan";
-import { createClient } from "@/utils/supabase/client";
 
 export default function NewPlanPage() {
   const router = useRouter();
@@ -25,8 +24,9 @@ export default function NewPlanPage() {
   }, []);
 
   /**
-   * Save a plan to the database.
-   * If the plan doesn't have institution IDs resolved, it tries to look them up.
+   * Save a plan to the database via the server-side /api/plans endpoint.
+   * This is more reliable than client-side Supabase because it uses server-side auth.
+   * For existing plans, updates directly via the /api/plans/[id] endpoint.
    */
   const savePlan = useCallback(async (plan: ParsedPlan, messages: unknown[]): Promise<string | null> => {
     // Don't save no-data responses
@@ -37,62 +37,29 @@ export default function NewPlanPage() {
     const transferPlan = plan as TransferPlan;
 
     try {
-      const supabase = createClient();
+      const response = await fetch("/api/plans", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: `${transferPlan.ccName} → ${transferPlan.targetUniversity}`,
+          target_major: transferPlan.targetMajor,
+          plan_data: JSON.parse(JSON.stringify(transferPlan)),
+          chat_history: JSON.parse(JSON.stringify(messages)),
+        }),
+      });
 
-      // Get current user
-      const { data: { user }, error: authError } = await supabase.auth.getUser();
-      if (authError) {
-        console.error("Auth error during plan save:", authError);
-        return null;
-      }
-      if (!user) {
-        console.error("No authenticated user during plan save");
-        return null;
-      }
-
-      // First, try to resolve institution IDs
-      const { data: ccInstitution } = await supabase
-        .from("institutions")
-        .select("id")
-        .or(`name.ilike.%${transferPlan.ccName}%,abbreviation.ilike.%${transferPlan.ccName}%`)
-        .eq("type", "cc")
-        .limit(1)
-        .maybeSingle();
-
-      const { data: targetInstitution } = await supabase
-        .from("institutions")
-        .select("id")
-        .or(`name.ilike.%${transferPlan.targetUniversity}%,abbreviation.ilike.%${transferPlan.targetUniversity}%`)
-        .eq("type", "university")
-        .limit(1)
-        .maybeSingle();
-
-      // Create the plan in the database
-      const insertData = {
-        user_id: user.id,
-        title: `${transferPlan.ccName} → ${transferPlan.targetUniversity}`,
-        cc_institution_id: (ccInstitution as { id?: string } | null)?.id ?? null,
-        target_institution_id: (targetInstitution as { id?: string } | null)?.id ?? null,
-        target_major: transferPlan.targetMajor,
-        plan_data: JSON.parse(JSON.stringify(transferPlan)),
-        chat_history: JSON.parse(JSON.stringify(messages)),
-        status: "active",
-      };
-
-      const { data, error } = await supabase
-        .from("transfer_plans")
-        .insert(insertData as never)
-        .select()
-        .single();
-
-      if (error) {
-        console.error("Error creating plan:", error);
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        console.error("[savePlan] API error:", response.status, errorData);
         return null;
       }
 
-      return (data as { id: string }).id;
+      const data = await response.json();
+      const newPlanId = data.id;
+      console.log("[savePlan] Plan saved via API with ID:", newPlanId);
+      return newPlanId;
     } catch (err) {
-      console.error("Save error:", err);
+      console.error("[savePlan] Exception during save:", err);
       return null;
     }
   }, []);
@@ -120,7 +87,10 @@ export default function NewPlanPage() {
         // Update URL without navigation so user can share/copy
         router.replace(`/plan/${planId}`);
       } else {
-        setSaveError("Failed to save plan. Please try again.");
+        // Only show error if the plan is a real TransferPlan (not a no-data response)
+        if (!("isNoData" in plan)) {
+          setSaveError("Failed to save plan. Please try again.");
+        }
       }
     }, 800);
   }, [savePlan, router, savedPlanId]);

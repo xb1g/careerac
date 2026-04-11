@@ -48,12 +48,12 @@ export default function PlanDetailClient({ plan }: PlanDetailClientProps) {
   const isLoading = status === "submitted" || status === "streaming";
 
   // Save plan to database - called via Chat's onSavePlan callback
-  const handleSavePlan = useCallback(async (planData: ParsedPlan, chatMessages: UIMessage[]) => {
+  const handleSavePlan = useCallback(async (planData: ParsedPlan, chatMessages: unknown[]) => {
     try {
       const supabase = createClient();
       const transferPlan = planData as TransferPlan;
 
-      const serializableHistory = chatMessages.map((msg) => ({
+      const serializableHistory = (chatMessages as UIMessage[]).map((msg) => ({
         id: msg.id,
         role: msg.role,
         parts: msg.parts.map((part) => {

@@ -10,7 +10,7 @@ interface ChatProps {
   className?: string;
   onPlanGenerated?: (plan: ParsedPlan) => void;
   /** Called with (plan, fullMessages) for auto-save */
-  onSavePlan?: (plan: ParsedPlan, messages: UIMessage[]) => void;
+  onSavePlan?: (plan: ParsedPlan, messages: unknown[]) => void;
   /** Initial chat messages to load (for existing plan editing) */
   initialMessages?: UIMessage[];
 }

@@ -1,10 +1,16 @@
 import { streamText, UIMessage, convertToModelMessages } from "ai";
 import { createOpenRouter } from "@openrouter/ai-sdk-provider";
 import { createClient } from "@/utils/supabase/server";
+import type { Database } from "@/types/database";
 
 const openrouter = createOpenRouter({
   apiKey: process.env.OPENROUTER_API_KEY,
 });
+
+type ArticulationRow = Database["public"]["Tables"]["articulation_agreements"]["Row"];
+type CourseRow = Database["public"]["Tables"]["courses"]["Row"];
+type InstitutionRow = Database["public"]["Tables"]["institutions"]["Row"];
+type PrerequisiteRow = Database["public"]["Tables"]["prerequisites"]["Row"];
 
 /**
  * Fetches articulation data for the user's path (CC + target school + major).
@@ -14,41 +20,54 @@ async function getArticulationContext(): Promise<string> {
   try {
     const supabase = await createClient();
 
-    // Fetch all articulation agreements with course and institution details
-    // Using any type because Supabase generated types don't include relationship types
+    // Fetch all articulation agreements without nested joins to avoid FK hint issues
     const { data: agreements, error } = await supabase
       .from("articulation_agreements")
-      .select(`
-        id,
-        major,
-        cc_institution_id,
-        university_institution_id,
-        courses!articulation_agreements_cc_course_id_fkey(id, code, title, units, institution_id),
-        courses_1!articulation_agreements_university_course_id_fkey(id, code, title, units, institution_id),
-        institutions!articulation_agreements_cc_institution_id_fkey(id, name, abbreviation),
-        institutions_1!articulation_agreements_university_institution_id_fkey(id, name, abbreviation)
-      `)
-      .limit(200) as { data: unknown; error: unknown };
+      .select("id, cc_course_id, university_course_id, cc_institution_id, university_institution_id, major, notes")
+      .limit(200)
+      .returns<ArticulationRow[]>();
 
     if (error || !agreements) {
       console.error("Error fetching articulation data:", error);
       return "Articulation data is currently unavailable.";
     }
 
-    const typedAgreements = agreements as Array<{
-      major?: string;
-      courses?: { code: string; title: string; units: number } | { code: string; title: string; units: number }[];
-      courses_1?: { code: string; title: string; units: number } | { code: string; title: string; units: number }[];
-      institutions?: { name: string; abbreviation?: string } | { name: string; abbreviation?: string }[];
-      institutions_1?: { name: string; abbreviation?: string } | { name: string; abbreviation?: string }[];
-    }>;
+    // Collect unique IDs to fetch related data
+    const ccCourseIds = [...new Set(agreements.map(a => a.cc_course_id).filter(Boolean))];
+    const uniCourseIds = [...new Set(agreements.map(a => a.university_course_id).filter(Boolean))];
+    const ccInstIds = [...new Set(agreements.map(a => a.cc_institution_id).filter(Boolean))];
+    const uniInstIds = [...new Set(agreements.map(a => a.university_institution_id).filter(Boolean))];
+
+    // Fetch courses and institutions in parallel
+    const ccCoursesResult = ccCourseIds.length > 0
+      ? await supabase.from("courses").select("id, code, title, units").in("id", ccCourseIds).returns<CourseRow[]>()
+      : { data: [] as CourseRow[] };
+    const uniCoursesResult = uniCourseIds.length > 0
+      ? await supabase.from("courses").select("id, code, title, units").in("id", uniCourseIds).returns<CourseRow[]>()
+      : { data: [] as CourseRow[] };
+    const ccInstsResult = ccInstIds.length > 0
+      ? await supabase.from("institutions").select("id, name, abbreviation").in("id", ccInstIds).returns<InstitutionRow[]>()
+      : { data: [] as InstitutionRow[] };
+    const uniInstsResult = uniInstIds.length > 0
+      ? await supabase.from("institutions").select("id, name, abbreviation").in("id", uniInstIds).returns<InstitutionRow[]>()
+      : { data: [] as InstitutionRow[] };
+
+    // Build lookup maps
+    const courseMap = new Map<string, CourseRow>();
+    for (const c of [...(ccCoursesResult.data || []), ...(uniCoursesResult.data || [])]) {
+      courseMap.set(c.id, c);
+    }
+    const instMap = new Map<string, InstitutionRow>();
+    for (const i of [...(ccInstsResult.data || []), ...(uniInstsResult.data || [])]) {
+      instMap.set(i.id, i);
+    }
 
     // Format articulation data into a readable string
-    const formatted = typedAgreements.map((a) => {
-      const ccCourse = Array.isArray(a.courses) ? a.courses[0] : a.courses;
-      const uniCourse = Array.isArray(a.courses_1) ? a.courses_1[0] : a.courses_1;
-      const ccInst = Array.isArray(a.institutions) ? a.institutions[0] : a.institutions;
-      const uniInst = Array.isArray(a.institutions_1) ? a.institutions_1[0] : a.institutions_1;
+    const formatted = agreements.map((a) => {
+      const ccCourse = courseMap.get(a.cc_course_id);
+      const uniCourse = courseMap.get(a.university_course_id);
+      const ccInst = instMap.get(a.cc_institution_id);
+      const uniInst = instMap.get(a.university_institution_id);
 
       if (!ccCourse || !uniCourse || !ccInst || !uniInst) return null;
 
@@ -68,34 +87,43 @@ async function getPrerequisiteContext(): Promise<string> {
   try {
     const supabase = await createClient();
 
+    // Fetch prerequisites without nested joins to avoid FK hint issues
     const { data: prereqs, error } = await supabase
       .from("prerequisites")
-      .select(`
-        course_id,
-        prerequisite_course_id,
-        courses!prerequisites_course_id_fkey(id, code, title, institution_id),
-        courses_1!prerequisites_prerequisite_course_id_fkey(id, code, title, institution_id)
-      `)
-      .limit(100) as { data: unknown; error: unknown };
+      .select("course_id, prerequisite_course_id")
+      .limit(100)
+      .returns<PrerequisiteRow[]>();
 
     if (error || !prereqs) {
       console.error("Error fetching prerequisites:", error);
       return "";
     }
 
-    const typedPrereqs = prereqs as Array<{
-      courses?: { code: string } | { code: string }[];
-      courses_1?: { code: string } | { code: string }[];
-    }>;
+    // Collect unique course IDs
+    const courseIds = [...new Set([
+      ...prereqs.map(p => p.course_id).filter(Boolean),
+      ...prereqs.map(p => p.prerequisite_course_id).filter(Boolean),
+    ])];
 
-    const formatted = typedPrereqs
+    // Fetch course codes
+    const { data: courses } = courseIds.length > 0
+      ? await supabase.from("courses").select("id, code").in("id", courseIds).returns<{ id: string; code: string }[]>()
+      : { data: [] };
+
+    // Build lookup map
+    const courseCodeMap = new Map<string, string>();
+    for (const c of courses || []) {
+      courseCodeMap.set(c.id, c.code);
+    }
+
+    const formatted = prereqs
       .map((p) => {
-        const course = Array.isArray(p.courses) ? p.courses[0] : p.courses;
-        const prereq = Array.isArray(p.courses_1) ? p.courses_1[0] : p.courses_1;
+        const course = courseCodeMap.get(p.course_id);
+        const prereq = courseCodeMap.get(p.prerequisite_course_id);
 
         if (!course || !prereq) return null;
 
-        return `- ${course.code} requires ${prereq.code}`;
+        return `- ${course} requires ${prereq}`;
       })
       .filter(Boolean)
       .join("\n");
