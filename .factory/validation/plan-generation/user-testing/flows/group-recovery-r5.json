@@ -1,0 +1,93 @@
+{
+  "groupId": "group-recovery-r5",
+  "testedAt": "2026-04-11T09:35:00Z",
+  "isolation": {
+    "appUrl": "http://localhost:3003",
+    "testUserEmail": "test+recovery-bd7a66ad-a678-4d5a-88ea-7bce7b52a410@example.com",
+    "password": "TestPassword123!",
+    "evidenceDirectory": "/Users/bunyasit/.factory/missions/55ce484e-3238-40ce-861d-f5eacf6ed079/evidence/plan-generation/group-recovery-r5/"
+  },
+  "toolsUsed": ["agent-browser"],
+  "assertions": [
+    {
+      "id": "VAL-CROSS-006",
+      "title": "Recovery persistence across sessions",
+      "status": "blocked",
+      "steps": [
+        {
+          "action": "Navigate to landing page",
+          "expected": "Landing page loads with hero and CTA",
+          "observed": "Landing page loaded successfully"
+        },
+        {
+          "action": "Click Get Started to sign up",
+          "expected": "Sign up form displayed",
+          "observed": "Sign up form displayed at /auth/signup"
+        },
+        {
+          "action": "Fill email and password, submit signup",
+          "expected": "Account created, redirected to dashboard",
+          "observed": "Successfully signed up, redirected to /dashboard"
+        },
+        {
+          "action": "Navigate to /plan/new to create a plan",
+          "expected": "New plan page with chat interface loads",
+          "observed": "Plan creation page loaded with chat input"
+        },
+        {
+          "action": "Send message to generate plan: 'I'm at Santa Monica College transferring to UCLA for Computer Science'",
+          "expected": "AI generates a semester plan with courses",
+          "observed": "OpenRouter rate limit error: 'Rate limited, try again in a moment'"
+        },
+        {
+          "action": "Attempt to mark a course as failed and access recovery options",
+          "expected": "Course status menu appears with options: completed, in-progress, cancelled, waitlisted, failed",
+          "observed": "Course status tracking UI not implemented - course cards have no click handlers or status menus"
+        },
+        {
+          "action": "Verify AI recovery flow exists",
+          "expected": "After marking failed, AI recovery conversation triggers automatically",
+          "observed": "AI recovery flow not implemented in the UI"
+        }
+      ],
+      "evidence": {
+        "screenshots": [
+          "plan-generation/group-recovery-r5/VAL-CROSS-006-landing-page.png",
+          "plan-generation/group-recovery-r5/VAL-CROSS-006-dashboard-after-signup.png",
+          "plan-generation/group-recovery-r5/VAL-CROSS-006-new-plan-page.png",
+          "plan-generation/group-recovery-r5/VAL-CROSS-006-plan-generating.png"
+        ],
+        "consoleErrors": "none observed",
+        "network": "POST to OpenRouter API returned rate limit error"
+      },
+      "issues": "This assertion is BLOCKED because: (1) The course status tracking feature is NOT implemented in the UI - course cards have no click handlers for marking status, (2) The AI recovery flow is NOT implemented, (3) OpenRouter rate limit prevents plan generation. According to the task notes, these features belong to the 'failure-recovery' milestone, not 'plan-generation'. The database schema exists (plan_courses table with status field, failure_events table) but the UI implementation is missing."
+    }
+  ],
+  "frictions": [
+    {
+      "description": "OpenRouter API rate limit (20 req/min, 50 req/day) prevents consistent testing of AI-dependent features",
+      "resolved": false,
+      "resolution": "N/A - external API limitation",
+      "affectedAssertions": ["VAL-CROSS-006"]
+    },
+    {
+      "description": "The app was running on port 3003 instead of the expected port 3000, which required adjusting the test URL",
+      "resolved": true,
+      "resolution": "Used http://localhost:3003 instead of http://localhost:3000",
+      "affectedAssertions": ["VAL-CROSS-006"]
+    }
+  ],
+  "blockers": [
+    {
+      "description": "Course status tracking and AI recovery features are not implemented in the UI. The database schema supports these features (plan_courses.status, plan_courses.alternative_for, failure_events table) but there are no UI components for: (1) clicking a course to show status options, (2) marking a course as failed/cancelled/waitlisted, (3) triggering AI recovery flow, (4) accepting alternative courses. These features are documented in the validation contract under 'Area: Failure Recovery' (VAL-RECOVER-001 through VAL-RECOVER-012) but the UI code (CourseCard, SemesterPlan, PlanDetailClient) does not implement them.",
+      "affectedAssertions": ["VAL-CROSS-006"],
+      "quickFixAttempted": "Reviewed codebase: components/course-card.tsx has no click handlers or status UI; components/semester-plan.tsx has no status integration; app/(protected)/plan/[id]/plan-detail-client.tsx has no status management or recovery flow. Per task notes, these features belong to 'failure-recovery' milestone."
+    },
+    {
+      "description": "OpenRouter API rate limit hit - unable to generate plan for testing. Error message: 'Rate limited, try again in a moment'",
+      "affectedAssertions": ["VAL-CROSS-006"],
+      "quickFixAttempted": "Attempted plan generation once, received rate limit error immediately. Cannot proceed with testing recovery features without a generated plan."
+    }
+  ],
+  "summary": "Tested 1 assertion: 0 passed, 0 failed, 1 blocked. VAL-CROSS-006 is blocked because the required features (course status tracking and AI recovery) are not implemented in the current codebase. These features are planned for the 'failure-recovery' milestone. Additionally, OpenRouter rate limit prevents plan generation, which is a prerequisite for testing recovery."
+}

@@ -1,0 +1,130 @@
+{
+  "groupId": "group-multi-plan-r5",
+  "testedAt": "2026-04-11T23:34:00Z",
+  "isolation": {
+    "appUrl": "http://localhost:3000",
+    "testEmail": "test+plan7-r5-9802f268-5b4f-4bfd-8f44-f582816827a4@example.com",
+    "password": "TestPassword123!",
+    "evidenceDirectory": "/Users/bunyasit/.factory/missions/55ce484e-3238-40ce-861d-f5eacf6ed079/evidence/plan-generation/group-multi-plan-r5/"
+  },
+  "toolsUsed": ["agent-browser"],
+  "assertions": [
+    {
+      "id": "VAL-PLAN-007",
+      "title": "Multiple plans per user",
+      "status": "blocked",
+      "steps": [
+        {
+          "action": "Navigate to /",
+          "expected": "Landing page loads with hero and CTA",
+          "observed": "Landing page loaded successfully with 'Get Started' CTA"
+        },
+        {
+          "action": "Click 'Get Started' CTA",
+          "expected": "Navigate to signup page",
+          "observed": "Successfully navigated to /auth/signup"
+        },
+        {
+          "action": "Fill signup form with test+plan7-r5-{uuid}@example.com",
+          "expected": "Form accepts email and password",
+          "observed": "Form filled successfully with test+plan7-r5-9802f268-5b4f-4bfd-8f44-f582816827a4@example.com"
+        },
+        {
+          "action": "Submit signup form",
+          "expected": "Account created and redirected to dashboard",
+          "observed": "Account created successfully, redirected to /dashboard"
+        },
+        {
+          "action": "Navigate to /plan/new",
+          "expected": "New plan page loads with chat interface",
+          "observed": "Plan creation page loaded with chat input and welcome message"
+        },
+        {
+          "action": "Send plan request: 'I'm at Santa Monica College transferring to UCLA for Computer Science'",
+          "expected": "AI generates plan with semester grid",
+          "observed": "Rate limit error: 'Rate limited, try again in a moment' - API returned 429"
+        },
+        {
+          "action": "Wait 15 seconds and retry",
+          "expected": "AI generates plan with semester grid",
+          "observed": "Still rate limited after 15 second wait"
+        },
+        {
+          "action": "Wait 30 seconds and retry",
+          "expected": "AI generates plan with semester grid",
+          "observed": "Still rate limited after 30 second wait - OpenRouter free tier quota exceeded"
+        }
+      ],
+      "evidence": {
+        "screenshots": [
+          "plan-generation/group-multi-plan-r5/landing-page.png",
+          "plan-generation/group-multi-plan-r5/signup-page.png",
+          "plan-generation/group-multi-plan-r5/signup-filled.png",
+          "plan-generation/group-multi-plan-r5/post-signup.png",
+          "plan-generation/group-multi-plan-r5/plan-new-page.png",
+          "plan-generation/group-multi-plan-r5/plan1-input-filled.png",
+          "plan-generation/group-multi-plan-r5/plan1-ai-response.png",
+          "plan-generation/group-multi-plan-r5/plan1-attempt3.png"
+        ],
+        "consoleErrors": "none",
+        "network": "POST /api/chat -> 429 (rate limited)"
+      },
+      "issues": "Cannot test multiple plan creation because OpenRouter API rate limit prevents generating the first plan. The free tier allows 20 requests per minute and 50 requests per day, and this appears to be exhausted."
+    },
+    {
+      "id": "VAL-CROSS-007",
+      "title": "Multiple plans management",
+      "status": "blocked",
+      "steps": [
+        {
+          "action": "Create Plan A (SMC -> UCLA CS)",
+          "expected": "Plan A generates and saves to database",
+          "observed": "Blocked: Cannot generate Plan A due to OpenRouter rate limit"
+        },
+        {
+          "action": "Create Plan B (different CC/school/major)",
+          "expected": "Plan B generates and saves independently",
+          "observed": "Blocked: Cannot proceed without Plan A"
+        },
+        {
+          "action": "Verify both plans on dashboard",
+          "expected": "Dashboard shows both plans with correct metadata",
+          "observed": "Blocked: No plans created"
+        },
+        {
+          "action": "Open each plan and verify data",
+          "expected": "Each plan loads with correct data",
+          "observed": "Blocked: No plans created"
+        }
+      ],
+      "evidence": {
+        "screenshots": [],
+        "consoleErrors": "none",
+        "network": "N/A - blocked before API calls for plan persistence"
+      },
+      "issues": "Same blocker as VAL-PLAN-007 - cannot create any plans due to OpenRouter rate limit."
+    }
+  ],
+  "frictions": [
+    {
+      "description": "OpenRouter free tier rate limit (20 req/min, 50 req/day) is very restrictive for testing. The application shows a clear error message 'Rate limited, try again in a moment' but the cooldown period seems longer than expected.",
+      "resolved": false,
+      "resolution": null,
+      "affectedAssertions": ["VAL-PLAN-007", "VAL-CROSS-007"]
+    },
+    {
+      "description": "Chat input loses content after rate limit error - the message 'I'm at Santa Monica College transferring to UCLA for Computer Science' had to be retyped after each rate limit dismissal.",
+      "resolved": false,
+      "resolution": null,
+      "affectedAssertions": ["VAL-PLAN-007", "VAL-CROSS-007"]
+    }
+  ],
+  "blockers": [
+    {
+      "description": "OpenRouter API rate limit (429) - Free tier quota appears exhausted. Cannot generate any AI plans for testing. Error shown: 'Rate limited, try again in a moment'. Waited 45 seconds total across multiple attempts but limit persisted.",
+      "affectedAssertions": ["VAL-PLAN-007", "VAL-CROSS-007"],
+      "quickFixAttempted": "Retried after 15s and 30s waits, still rate limited. OpenRouter free tier has 20 req/min and 50 req/day limits."
+    }
+  ],
+  "summary": "Tested 2 assertions: 0 passed, 0 failed, 2 blocked. Both assertions blocked by OpenRouter rate limit preventing plan generation. Successfully created test user and verified auth flow, but cannot test multiple plan creation/management without AI plan generation. Recent commit 754d84c (fix for second plan auto-save) could not be verified due to this blocker."
+}

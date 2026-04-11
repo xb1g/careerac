@@ -1,0 +1,108 @@
+{
+  "groupId": "group-display-r5",
+  "testedAt": "2026-04-11T00:00:00Z",
+  "isolation": {
+    "appUrl": "http://localhost:3002",
+    "testUserEmail": "test+display-feb4b417-cc65-4aa6-aa1e-ef6551d20152@example.com",
+    "password": "TestPassword123!",
+    "evidenceDirectory": "/Users/bunyasit/.factory/missions/55ce484e-3238-40ce-861d-f5eacf6ed079/evidence/plan-generation/group-display-r5/"
+  },
+  "toolsUsed": ["agent-browser"],
+  "assertions": [
+    {
+      "id": "VAL-PLAN-001",
+      "title": "Semester grid renders after plan generation",
+      "status": "blocked",
+      "steps": [
+        {
+          "action": "Navigate to /auth/signup",
+          "expected": "Signup form displayed",
+          "observed": "Signup form displayed successfully"
+        },
+        {
+          "action": "Fill email and password fields",
+          "expected": "Fields populated",
+          "observed": "Fields populated with test+display-feb4b417-cc65-4aa6-aa1e-ef6551d20152@example.com"
+        },
+        {
+          "action": "Click Sign Up button",
+          "expected": "Account created and redirected to dashboard",
+          "observed": "Successfully redirected to /dashboard"
+        },
+        {
+          "action": "Click 'Create Your First Plan' CTA",
+          "expected": "Navigate to /plan/new with chat interface",
+          "observed": "Successfully navigated to /plan/new with chat input visible"
+        },
+        {
+          "action": "Submit plan request: 'I'm at Santa Monica College transferring to UCLA for Computer Science'",
+          "expected": "AI generates plan and semester grid appears",
+          "observed": "Rate limit error displayed: 'Rate limited, try again in a moment'"
+        }
+      ],
+      "evidence": {
+        "screenshots": [
+          "plan-generation/group-display-r5/VAL-PLAN-001-new-plan-page.png",
+          "plan-generation/group-display-r5/VAL-PLAN-001-chat-submitted.png",
+          "plan-generation/group-display-r5/VAL-PLAN-001-after-waiting.png",
+          "plan-generation/group-display-r5/rate-limit-error.png"
+        ],
+        "consoleErrors": "none",
+        "network": "OpenRouter API returned rate limit (429) - 50 req/day free tier limit reached"
+      },
+      "issues": "OpenRouter free tier rate limit (50 requests/day) has been reached. The chat interface shows 'Rate limited, try again in a moment' toast notification. Plan generation cannot proceed without AI response."
+    },
+    {
+      "id": "VAL-PLAN-002",
+      "title": "Semester and overall unit totals displayed",
+      "status": "blocked",
+      "steps": [
+        {
+          "action": "Prerequisite: Plan must be generated first",
+          "expected": "Semester grid with courses appears",
+          "observed": "Plan generation blocked by OpenRouter rate limit"
+        }
+      ],
+      "evidence": {
+        "screenshots": [],
+        "consoleErrors": "none",
+        "network": "N/A - blocked by rate limit"
+      },
+      "issues": "Cannot test unit totals display because plan generation is blocked by OpenRouter rate limit (50 req/day free tier exceeded)"
+    },
+    {
+      "id": "VAL-PLAN-008",
+      "title": "Plan shows prerequisite information",
+      "status": "blocked",
+      "steps": [
+        {
+          "action": "Prerequisite: Plan must be generated first",
+          "expected": "Semester grid with courses and prerequisites appears",
+          "observed": "Plan generation blocked by OpenRouter rate limit"
+        }
+      ],
+      "evidence": {
+        "screenshots": [],
+        "consoleErrors": "none",
+        "network": "N/A - blocked by rate limit"
+      },
+      "issues": "Cannot test prerequisite information display because plan generation is blocked by OpenRouter rate limit (50 req/day free tier exceeded)"
+    }
+  ],
+  "frictions": [
+    {
+      "description": "OpenRouter free tier rate limit (50 requests/day) has been reached, preventing plan generation. The app showed a user-friendly 'Rate limited, try again in a moment' toast notification.",
+      "resolved": false,
+      "resolution": "Cannot resolve - requires waiting for rate limit reset (daily) or upgrading OpenRouter plan",
+      "affectedAssertions": ["VAL-PLAN-001", "VAL-PLAN-002", "VAL-PLAN-008"]
+    }
+  ],
+  "blockers": [
+    {
+      "description": "OpenRouter API rate limit exceeded (50 requests/day free tier). The API returns 429 status causing the chat interface to display 'Rate limited, try again in a moment'.",
+      "affectedAssertions": ["VAL-PLAN-001", "VAL-PLAN-002", "VAL-PLAN-008"],
+      "quickFixAttempted": "Submitted plan generation request, received rate limit toast notification. Waited 18 seconds for any cached/stale response, still rate limited."
+    }
+  ],
+  "summary": "Tested 3 assertions: 0 passed, 0 failed, 3 blocked. All assertions were blocked by OpenRouter API rate limit (50 requests/day free tier exceeded). The app handled the rate limit gracefully with a user-friendly toast notification. Evidence collected: 4 screenshots showing signup flow, plan creation page, and rate limit error state."
+}
