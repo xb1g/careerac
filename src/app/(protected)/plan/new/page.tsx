@@ -11,6 +11,8 @@ export default function NewPlanPage() {
   const router = useRouter();
   const [currentPlan, setCurrentPlan] = useState<ParsedPlan | null>(null);
   const [isSaving, setIsSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
+  const [savedPlanId, setSavedPlanId] = useState<string | null>(null);
   const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Cleanup timeout on unmount
@@ -38,9 +40,13 @@ export default function NewPlanPage() {
       const supabase = createClient();
 
       // Get current user
-      const { data: { user } } = await supabase.auth.getUser();
+      const { data: { user }, error: authError } = await supabase.auth.getUser();
+      if (authError) {
+        console.error("Auth error during plan save:", authError);
+        return null;
+      }
       if (!user) {
-        console.error("No authenticated user");
+        console.error("No authenticated user during plan save");
         return null;
       }
 
@@ -93,23 +99,31 @@ export default function NewPlanPage() {
 
   /**
    * Debounced save of the current plan to the database.
+   * Only saves once per plan generation to prevent duplicates.
    */
   const debouncedSave = useCallback((plan: ParsedPlan, messages: unknown[]) => {
+    // Don't schedule duplicate saves for the same plan
+    if (savedPlanId) return;
+
     if (saveTimeoutRef.current) {
       clearTimeout(saveTimeoutRef.current);
     }
 
     setIsSaving(true);
+    setSaveError(null);
 
     saveTimeoutRef.current = setTimeout(async () => {
       const planId = await savePlan(plan, messages);
       setIsSaving(false);
       if (planId) {
+        setSavedPlanId(planId);
         // Update URL without navigation so user can share/copy
         router.replace(`/plan/${planId}`);
+      } else {
+        setSaveError("Failed to save plan. Please try again.");
       }
     }, 800);
-  }, [savePlan, router]);
+  }, [savePlan, router, savedPlanId]);
 
   const handlePlanGenerated = useCallback((plan: ParsedPlan) => {
     setCurrentPlan(plan);
@@ -133,6 +147,16 @@ export default function NewPlanPage() {
             <div className="flex items-center gap-2 text-sm text-zinc-500 dark:text-zinc-400">
               <div className="w-3 h-3 border-2 border-zinc-400 border-t-transparent rounded-full animate-spin" />
               Saving...
+            </div>
+          )}
+          {saveError && (
+            <div className="text-sm text-red-600 dark:text-red-400">
+              {saveError}
+            </div>
+          )}
+          {savedPlanId && !isSaving && (
+            <div className="text-sm text-green-600 dark:text-green-400">
+              Plan saved
             </div>
           )}
         </div>

@@ -48,6 +48,9 @@ export default function Chat({
   useEffect(() => {
     if (!lastAssistantMessage || lastAssistantMessage.id === lastProcessedMessageId.current) return;
 
+    // Only process plans when streaming is complete to avoid saving partial/incomplete data
+    if (isLoading) return;
+
     const textParts = lastAssistantMessage.parts
       .filter((p) => p.type === "text")
       .map((p) => (p as { text: string }).text)
@@ -75,13 +78,13 @@ export default function Chat({
           .map((m) => m.parts.filter((p) => p.type === "text").map((p) => (p as { text: string }).text).join("\n"))
           .map(parsePlanFromAIResponse)
           .find((p): p is ParsedPlan => p !== null && !("isNoData" in p && p.isNoData));
-        
+
         if (existingPlan) {
           onSavePlan?.(existingPlan, messages);
         }
       }
     }
-  }, [lastAssistantMessage, onPlanGenerated, onSavePlan, messages]);
+  }, [lastAssistantMessage, onPlanGenerated, onSavePlan, messages, isLoading]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
