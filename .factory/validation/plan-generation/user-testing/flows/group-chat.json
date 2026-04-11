@@ -1,0 +1,124 @@
+{
+  "groupId": "group-chat",
+  "testedAt": "2026-04-10T00:00:00.000Z",
+  "isolation": {
+    "appUrl": "http://localhost:3000",
+    "testUserEmail": "test+chat-c1e0881d@example.com",
+    "testUserPassword": "[REDACTED]",
+    "sessionName": "chat-test"
+  },
+  "toolsUsed": ["agent-browser"],
+  "assertions": [
+    {
+      "id": "VAL-CHAT-002",
+      "title": "AI streaming response on plan request",
+      "status": "blocked",
+      "steps": [
+        { "action": "Navigate to /plan/new", "expected": "Chat interface loads", "observed": "Chat interface loaded successfully" },
+        { "action": "Type message: 'I'm at Santa Monica College transferring to UCLA for Computer Science'", "expected": "Message entered in input", "observed": "Message entered successfully" },
+        { "action": "Click send button", "expected": "AI response streams in token-by-token", "observed": "Rate limit error returned before streaming could begin" }
+      ],
+      "evidence": {
+        "screenshots": ["plan-generation/group-chat/streaming-start.png"],
+        "consoleErrors": "Rate limit error from OpenRouter API",
+        "network": "POST /api/chat -> 429 Rate Limited"
+      },
+      "issues": "OpenRouter free tier rate limit exceeded. Cannot test streaming functionality. API returns 'Rate limited, try again in a moment' error."
+    },
+    {
+      "id": "VAL-CHAT-003",
+      "title": "Continued chat modifies existing plan",
+      "status": "blocked",
+      "steps": [
+        { "action": "Complete initial plan generation", "expected": "Plan appears in semester grid", "observed": "Could not generate initial plan due to rate limit" },
+        { "action": "Send follow-up: 'Move MATH 101 to semester 2'", "expected": "AI responds with updated plan", "observed": "Test blocked - no initial plan to modify" }
+      ],
+      "evidence": {
+        "screenshots": [],
+        "consoleErrors": "N/A - test not started",
+        "network": "N/A - test not started"
+      },
+      "issues": "Blocked by VAL-CHAT-002 - cannot test plan modification without first generating a plan."
+    },
+    {
+      "id": "VAL-CHAT-004",
+      "title": "Rate limit error handled gracefully",
+      "status": "pass",
+      "steps": [
+        { "action": "Navigate to /plan/new", "expected": "Chat interface loads", "observed": "Chat interface loaded" },
+        { "action": "Send message to trigger AI response", "expected": "Rate limit may occur", "observed": "Rate limit occurred as expected" },
+        { "action": "Observe error display", "expected": "User-friendly error message shown", "observed": "Red error toast displayed: 'Rate limited, try again in a moment' with Dismiss button" }
+      ],
+      "evidence": {
+        "screenshots": ["plan-generation/group-chat/streaming-start.png"],
+        "consoleErrors": "Handled gracefully - no unhandled exceptions",
+        "network": "POST /api/chat -> 429 with user-friendly error message"
+      },
+      "issues": null
+    },
+    {
+      "id": "VAL-CHAT-005",
+      "title": "Empty or whitespace-only message is prevented",
+      "status": "pass",
+      "steps": [
+        { "action": "Navigate to /plan/new", "expected": "Chat input visible", "observed": "Chat input visible" },
+        { "action": "Check send button with empty input", "expected": "Send button disabled", "observed": "Send button disabled" },
+        { "action": "Fill input with whitespace only", "expected": "Send button remains disabled", "observed": "Send button remains disabled" }
+      ],
+      "evidence": {
+        "screenshots": ["plan-generation/group-chat/plan-new-initial.png"],
+        "consoleErrors": "none",
+        "network": "No API request made with empty input"
+      },
+      "issues": null
+    },
+    {
+      "id": "VAL-CHAT-006",
+      "title": "API server error handled gracefully",
+      "status": "pass",
+      "steps": [
+        { "action": "Test API endpoint directly with curl", "expected": "API may return error", "observed": "API returns 500 with 'AI temporarily unavailable'" },
+        { "action": "Send message via UI", "expected": "Error handled gracefully", "observed": "Error displayed as dismissible toast" },
+        { "action": "Dismiss error", "expected": "UI remains functional", "observed": "UI remains functional, can retry" }
+      ],
+      "evidence": {
+        "screenshots": ["plan-generation/group-chat/api-error-test.png", "plan-generation/group-chat/error-dismissed.png"],
+        "consoleErrors": "none - errors handled by UI",
+        "network": "POST /api/chat -> 500 with graceful UI handling"
+      },
+      "issues": null
+    },
+    {
+      "id": "VAL-CHAT-007",
+      "title": "Loading indicator shown while waiting for AI response",
+      "status": "pass",
+      "steps": [
+        { "action": "Navigate to /plan/new", "expected": "Chat interface ready", "observed": "Chat interface ready" },
+        { "action": "Send message", "expected": "Loading indicator appears immediately", "observed": "'Thinking...' with animated dots appeared immediately" },
+        { "action": "Wait for response", "expected": "Loading indicator persists until response/error", "observed": "Loading indicator shown before error displayed" }
+      ],
+      "evidence": {
+        "screenshots": ["plan-generation/group-chat/loading-indicator.png", "plan-generation/group-chat/streaming-start.png"],
+        "consoleErrors": "none",
+        "network": "N/A"
+      },
+      "issues": null
+    }
+  ],
+  "frictions": [
+    {
+      "description": "OpenRouter rate limits (20 req/min, 50 req/day) block AI-dependent assertions. Error occurs before streaming can be verified.",
+      "resolved": false,
+      "resolution": null,
+      "affectedAssertions": ["VAL-CHAT-002", "VAL-CHAT-003"]
+    }
+  ],
+  "blockers": [
+    {
+      "description": "OpenRouter free tier rate limit exceeded. API returns 429 'Rate limited' on all AI chat requests.",
+      "affectedAssertions": ["VAL-CHAT-002", "VAL-CHAT-003"],
+      "quickFixAttempted": "Retried requests multiple times, still hitting rate limit. Rate limits are account-level and cannot be bypassed."
+    }
+  ],
+  "summary": "Tested 6 assertions: 4 passed, 2 blocked by OpenRouter rate limits. VAL-CHAT-005, VAL-CHAT-004, VAL-CHAT-006, and VAL-CHAT-007 all pass. Error handling works gracefully for both rate limit (429) and server errors (500). Loading indicator is visible. Empty message prevention works. Streaming and plan modification cannot be tested due to rate limits."
+}

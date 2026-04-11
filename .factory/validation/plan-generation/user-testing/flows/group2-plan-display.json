@@ -4,7 +4,7 @@
   "isolation": {
     "appUrl": "http://localhost:3000",
     "testAccount": "test+group2-c859af77-5985-4457-8d7e-573e593a6a86@example.com",
-    "password": "TestPassword123!",
+    "password": "[REDACTED]",
     "database": "Supabase Cloud (user-isolated via RLS)"
   },
   "toolsUsed": ["agent-browser"],

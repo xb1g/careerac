@@ -1,0 +1,121 @@
+{
+  "groupId": "group-plan-gen",
+  "testedAt": "2026-04-11T14:22:00Z",
+  "isolation": {
+    "appUrl": "http://localhost:3000",
+    "testCredentials": {
+      "emailPattern": "test+plan-gen-{uuid}@example.com",
+      "password": "TestPassword123!"
+    },
+    "database": "Supabase Cloud (shared, user-isolated via RLS)",
+    "evidenceDirectory": "/Users/bunyasit/.factory/missions/55ce484e-3238-40ce-861d-f5eacf6ed079/evidence/plan-generation/group-plan-gen/"
+  },
+  "toolsUsed": ["agent-browser"],
+  "assertions": [
+    {
+      "id": "VAL-PLAN-001",
+      "title": "Semester grid renders after plan generation",
+      "status": "blocked",
+      "steps": [
+        {
+          "action": "Navigate to landing page",
+          "expected": "Landing page loads with hero and CTA",
+          "observed": "Landing page loaded successfully with Get Started button"
+        },
+        {
+          "action": "Click Get Started to navigate to signup",
+          "expected": "Signup form displayed",
+          "observed": "Signup form with email and password fields displayed"
+        },
+        {
+          "action": "Fill signup form with unique test email",
+          "expected": "Form fields populated",
+          "observed": "Email and password fields filled successfully"
+        },
+        {
+          "action": "Submit signup form",
+          "expected": "Account created and redirected to dashboard",
+          "observed": "Redirected to dashboard showing authenticated state"
+        },
+        {
+          "action": "Click Create Your First Plan",
+          "expected": "Navigate to /plan/new with chat interface",
+          "observed": "Successfully navigated to /plan/new with chat interface and welcome message"
+        },
+        {
+          "action": "Send message requesting transfer plan for SMC → UCLA CS",
+          "expected": "AI responds with semester grid showing courses organized by semester",
+          "observed": "AI returned rate limit error: 'Rate limited, try again in a moment'"
+        }
+      ],
+      "evidence": {
+        "screenshots": [
+          "plan-generation/group-plan-gen/landing-page.png",
+          "plan-generation/group-plan-gen/signup-page.png",
+          "plan-generation/group-plan-gen/signup-filled.png",
+          "plan-generation/group-plan-gen/post-signup.png",
+          "plan-generation/group-plan-gen/dashboard.png",
+          "plan-generation/group-plan-gen/plan-new-page.png",
+          "plan-generation/group-plan-gen/plan-new-welcome.png",
+          "plan-generation/group-plan-gen/chat-input-filled.png",
+          "plan-generation/group-plan-gen/rate-limit-error.png"
+        ],
+        "consoleErrors": "none",
+        "network": "N/A - blocked by rate limit before API response"
+      },
+      "issues": "OpenRouter API rate limit exceeded (50 req/day on free tier). Unable to generate plan to test semester grid rendering."
+    },
+    {
+      "id": "VAL-PLAN-002",
+      "title": "Semester and overall unit totals displayed",
+      "status": "blocked",
+      "steps": [
+        {
+          "action": "Attempt to generate plan for SMC → UCLA CS",
+          "expected": "Plan generates with unit totals per semester and overall",
+          "observed": "Could not generate plan due to OpenRouter rate limit"
+        }
+      ],
+      "evidence": {
+        "screenshots": ["plan-generation/group-plan-gen/rate-limit-error.png"],
+        "consoleErrors": "none",
+        "network": "N/A"
+      },
+      "issues": "Blocked by VAL-PLAN-001 dependency. Cannot verify unit totals without successful plan generation."
+    },
+    {
+      "id": "VAL-PLAN-008",
+      "title": "Plan shows prerequisite information",
+      "status": "blocked",
+      "steps": [
+        {
+          "action": "Attempt to generate plan for SMC → UCLA CS",
+          "expected": "Plan generates with prerequisite information for courses",
+          "observed": "Could not generate plan due to OpenRouter rate limit"
+        }
+      ],
+      "evidence": {
+        "screenshots": ["plan-generation/group-plan-gen/rate-limit-error.png"],
+        "consoleErrors": "none",
+        "network": "N/A"
+      },
+      "issues": "Blocked by VAL-PLAN-001 dependency. Cannot verify prerequisite display without successful plan generation."
+    }
+  ],
+  "frictions": [
+    {
+      "description": "OpenRouter free tier rate limit (50 req/day) prevents testing plan generation assertions. Rate limit error appears immediately after sending message.",
+      "resolved": false,
+      "resolution": "N/A - external API limitation",
+      "affectedAssertions": ["VAL-PLAN-001", "VAL-PLAN-002", "VAL-PLAN-008"]
+    }
+  ],
+  "blockers": [
+    {
+      "description": "OpenRouter API rate limit exceeded. The free tier allows 50 requests per day and 20 requests per minute. All plan generation assertions require a successful AI response to generate the semester grid.",
+      "affectedAssertions": ["VAL-PLAN-001", "VAL-PLAN-002", "VAL-PLAN-008"],
+      "quickFixAttempted": "Waited 30 seconds between requests, still rate limited. The daily quota appears to be exhausted."
+    }
+  ],
+  "summary": "Tested 3 assertions: 0 passed, 0 failed, 3 blocked. All assertions blocked by OpenRouter API rate limit (50 req/day free tier exhausted). Auth flow works correctly (signup → dashboard → plan/new), chat interface loads with welcome message, but AI plan generation cannot complete due to external API constraints."
+}

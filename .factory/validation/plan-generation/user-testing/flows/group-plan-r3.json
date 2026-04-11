@@ -1,0 +1,185 @@
+{
+  "groupId": "plan-r3",
+  "testedAt": "2026-04-11T10:30:00Z",
+  "isolation": {
+    "appUrl": "http://localhost:3000",
+    "testUser": "test+plan-037c7037-7efe-4641-b665-2d120f782c49@example.com",
+    "evidenceDirectory": "/Users/bunyasit/.factory/missions/55ce484e-3238-40ce-861d-f5eacf6ed079/evidence/plan-generation/plan/"
+  },
+  "toolsUsed": ["agent-browser"],
+  "assertions": [
+    {
+      "id": "VAL-PLAN-009",
+      "title": "New plan route is accessible and functional",
+      "status": "pass",
+      "steps": [
+        {
+          "action": "Navigate to /plan/new",
+          "expected": "Page renders with chat input and plan display area",
+          "observed": "Page loaded successfully at /plan/new with chat input field and send button visible"
+        },
+        {
+          "action": "Verify chat input is interactive",
+          "expected": "Chat textbox is present and enabled",
+          "observed": "Textbox 'Chat message input' [ref=e6] is present; Send button disabled when empty (expected behavior)"
+        }
+      ],
+      "evidence": {
+        "screenshots": ["plan-generation/plan/VAL-PLAN-009-plan-new-page.png"],
+        "consoleErrors": "none",
+        "network": "GET /plan/new -> 200"
+      },
+      "issues": null
+    },
+    {
+      "id": "VAL-PLAN-011",
+      "title": "Invalid plan ID shows not-found state",
+      "status": "pass",
+      "steps": [
+        {
+          "action": "Navigate to /plan/invalid-uuid-1234",
+          "expected": "Application displays 'Plan not found' message with navigation back to dashboard",
+          "observed": "Page shows 'Plan not found' heading with message 'The plan you're looking for doesn't exist or you don't have access to it.' and 'Back to Dashboard' link"
+        }
+      ],
+      "evidence": {
+        "screenshots": ["plan-generation/plan/VAL-PLAN-011-plan-not-found.png"],
+        "consoleErrors": "none",
+        "network": "GET /plan/invalid-uuid-1234 -> 200"
+      },
+      "issues": null
+    },
+    {
+      "id": "VAL-PLAN-012",
+      "title": "Unsupported CC/school/major shows no-data message",
+      "status": "pass",
+      "steps": [
+        {
+          "action": "Request plan for Santa Monica College to UCLA CS",
+          "expected": "AI responds with no-data message for unsupported path",
+          "observed": "AI returned: 'No articulation data found for your specific path. We currently have data for select California community colleges transferring to UC and CSU schools...'"
+        },
+        {
+          "action": "Request plan for Pasadena City College to UC Berkeley CS",
+          "expected": "AI responds with no-data message",
+          "observed": "AI returned same no-data message"
+        },
+        {
+          "action": "Request plan for De Anza College to UC Davis CS",
+          "expected": "AI responds with no-data message",
+          "observed": "AI returned same no-data message with isNoData: true flag"
+        },
+        {
+          "action": "Verify no semester grid is generated",
+          "expected": "No fake semester grid appears when no data exists",
+          "observed": "No semester grid rendered; only 'No Data Found' message displayed"
+        }
+      ],
+      "evidence": {
+        "screenshots": [
+          "plan-generation/plan/VAL-PLAN-012-no-data-found.png",
+          "plan-generation/plan/VAL-PLAN-012-pcc-berkeley-no-data.png"
+        ],
+        "consoleErrors": "none",
+        "network": "Multiple POST /api/chat requests returning no-data responses"
+      },
+      "issues": null
+    },
+    {
+      "id": "VAL-PLAN-001",
+      "title": "Semester grid renders after plan generation",
+      "status": "blocked",
+      "steps": [
+        {
+          "action": "Attempt to generate plan for Santa Monica College to UCLA CS",
+          "expected": "Plan generates with semester grid showing courses",
+          "observed": "AI returned no-data message; no semester grid generated"
+        },
+        {
+          "action": "Attempt to generate plan for Pasadena City College to UC Berkeley CS",
+          "expected": "Plan generates with semester grid showing courses",
+          "observed": "AI returned no-data message; no semester grid generated"
+        },
+        {
+          "action": "Attempt to generate plan for De Anza College to UC Davis CS",
+          "expected": "Plan generates with semester grid showing courses",
+          "observed": "AI returned no-data message; no semester grid generated"
+        }
+      ],
+      "evidence": {
+        "screenshots": [
+          "plan-generation/plan/VAL-PLAN-001-mid-stream.png",
+          "plan-generation/plan/VAL-PLAN-001-after-40s-wait.png",
+          "plan-generation/plan/VAL-PLAN-001-deanza-davis-loading.png"
+        ],
+        "consoleErrors": "none",
+        "network": "POST /api/chat -> returns isNoData: true responses"
+      },
+      "issues": "No articulation data exists in the database for tested California CC-to-UC paths. All tested combinations (SMC→UCLA, PCC→UCB, De Anza→UC Davis) returned no-data responses. The seed data appears to be missing or the articulation matching logic is not finding valid paths."
+    },
+    {
+      "id": "VAL-PLAN-002",
+      "title": "Semester and overall unit totals displayed",
+      "status": "blocked",
+      "steps": [
+        {
+          "action": "Attempt to verify unit totals on generated plan",
+          "expected": "Semester unit totals and overall progress total are displayed and consistent with courses",
+          "observed": "Could not test - no plan with data was generated due to no-data responses"
+        }
+      ],
+      "evidence": {
+        "screenshots": [],
+        "consoleErrors": "n/a",
+        "network": "n/a"
+      },
+      "issues": "Blocked by VAL-PLAN-001 - no plan with data could be generated to verify unit totals."
+    },
+    {
+      "id": "VAL-PLAN-008",
+      "title": "Plan shows prerequisite information",
+      "status": "blocked",
+      "steps": [
+        {
+          "action": "Attempt to verify prerequisite information in semester grid",
+          "expected": "Courses show prerequisite info referencing prior semester courses",
+          "observed": "Could not test - no plan with data was generated"
+        }
+      ],
+      "evidence": {
+        "screenshots": [],
+        "consoleErrors": "n/a",
+        "network": "n/a"
+      },
+      "issues": "Blocked by VAL-PLAN-001 - no plan with data could be generated to verify prerequisite display."
+    }
+  ],
+  "frictions": [
+    {
+      "description": "The AI response takes 30+ seconds to return even for 'no data' responses due to OpenRouter free tier rate limits (20 req/min). This causes the UI to appear unresponsive with no loading indicator visible in some cases.",
+      "resolved": false,
+      "resolution": "N/A - rate limit is external dependency",
+      "affectedAssertions": ["VAL-PLAN-001", "VAL-PLAN-012"]
+    },
+    {
+      "description": "The 'Failed to save plan. Please try again.' error message appears when AI returns isNoData: true response, suggesting the save logic is attempting to persist a plan even when no valid plan data exists.",
+      "resolved": false,
+      "resolution": "N/A - application logic issue",
+      "affectedAssertions": ["VAL-PLAN-012"]
+    },
+    {
+      "description": "Multiple California CC-to-UC paths that should have articulation data (per AGENTS.md seed data documentation) are returning no-data responses: Santa Monica College→UCLA CS, Pasadena City College→UC Berkeley CS, De Anza College→UC Davis CS.",
+      "resolved": false,
+      "resolution": "N/A - seed data appears incomplete",
+      "affectedAssertions": ["VAL-PLAN-001", "VAL-PLAN-002", "VAL-PLAN-008"]
+    }
+  ],
+  "blockers": [
+    {
+      "description": "No articulation data exists in the database for tested California CC-to-UC transfer paths. The AI consistently returns isNoData: true for SMC→UCLA CS, PCC→UC Berkeley CS, and De Anza→UC Davis CS. The seed data mentioned in AGENTS.md ('Seed data covers 5-10 California CC-to-university paths') does not appear to be present or the matching logic is not finding valid paths.",
+      "affectedAssertions": ["VAL-PLAN-001", "VAL-PLAN-002", "VAL-PLAN-008"],
+      "quickFixAttempted": "Tested 3 different CC-to-UC paths that should have data per documentation, all returned no-data responses. Playbooks page also shows 'Coming Soon' with no data."
+    }
+  ],
+  "summary": "Tested 6 assertions: 3 passed (VAL-PLAN-009, VAL-PLAN-011, VAL-PLAN-012), 3 blocked (VAL-PLAN-001, VAL-PLAN-002, VAL-PLAN-008). The blocked assertions could not be tested because no articulation data exists in the database for any tested California CC-to-UC transfer paths. The new plan route works correctly, invalid plan IDs show appropriate not-found states, and unsupported paths show clear no-data messages as expected."
+}

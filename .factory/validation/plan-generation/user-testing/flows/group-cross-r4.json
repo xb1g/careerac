@@ -1,0 +1,123 @@
+{
+  "groupId": "group-cross",
+  "testedAt": "2026-04-11T21:25:20Z",
+  "isolation": {
+    "appUrl": "http://localhost:3000",
+    "testEmail": "cross-e3c08639-e382-4ee8-8685-2eb3c5b7bc23@example.com",
+    "password": "TestPassword123!",
+    "database": "Supabase Cloud (shared)"
+  },
+  "toolsUsed": ["agent-browser"],
+  "assertions": [
+    {
+      "id": "VAL-CROSS-001",
+      "title": "First-visit journey end-to-end",
+      "status": "fail",
+      "steps": [
+        {"action": "Navigate to /", "expected": "Landing page with hero and CTA", "observed": "Landing page loaded successfully"},
+        {"action": "Click Get Started CTA", "expected": "Navigate to /auth/signup", "observed": "Redirected to /auth/signup"},
+        {"action": "Fill signup form with email and password", "expected": "Form fields populated", "observed": "Email and password fields filled"},
+        {"action": "Submit signup form", "expected": "Account created, redirect to /dashboard", "observed": "Redirected to /dashboard, authenticated"},
+        {"action": "Click Create Your First Plan", "expected": "Navigate to /plan/new", "observed": "Navigated to /plan/new with chat interface"},
+        {"action": "Send plan request message", "expected": "AI generates semester-by-semester plan", "observed": "AI response generated"},
+        {"action": "Navigate to /dashboard", "expected": "Plan appears in dashboard list", "observed": "No plans shown - 'No plans yet' message displayed"}
+      ],
+      "evidence": {
+        "screenshots": [
+          "plan-generation/group-cross/VAL-CROSS-001-landing.png",
+          "plan-generation/group-cross/VAL-CROSS-001-signup.png",
+          "plan-generation/group-cross/VAL-CROSS-001-dashboard.png",
+          "plan-generation/group-cross/VAL-CROSS-001-new-plan.png",
+          "plan-generation/group-cross/VAL-CROSS-001-chat-streaming.png",
+          "plan-generation/group-cross/VAL-CROSS-001-plan-generated.png",
+          "plan-generation/group-cross/VAL-CROSS-001-dashboard-with-plan.png",
+          "plan-generation/group-cross/VAL-CROSS-001-dashboard-reload.png"
+        ],
+        "consoleErrors": "none",
+        "network": "POST /api/chat -> rate limited, AI response eventually streamed"
+      },
+      "issues": "Plan generation works but plans are not persisting to the dashboard. AI generates a response with semester grid, but the plan is not saved and does not appear on /dashboard."
+    },
+    {
+      "id": "VAL-CROSS-005",
+      "title": "Data persistence across sessions",
+      "status": "fail",
+      "steps": [
+        {"action": "Create plan as authenticated user", "expected": "Plan saved to database", "observed": "AI generated content but plan not saved"},
+        {"action": "Sign out", "expected": "Session terminated", "observed": "User signed out successfully"},
+        {"action": "Sign back in", "expected": "Previous plans appear on dashboard", "observed": "Dashboard shows 'No plans yet' - no persistence"}
+      ],
+      "evidence": {
+        "screenshots": [
+          "plan-generation/group-cross/VAL-CROSS-005-plan2-generated.png",
+          "plan-generation/group-cross/VAL-CROSS-005-dashboard-after-plan2.png",
+          "plan-generation/group-cross/VAL-CROSS-005-after-signout.png",
+          "plan-generation/group-cross/VAL-CROSS-005-signin.png",
+          "plan-generation/group-cross/VAL-CROSS-005-after-relogin.png"
+        ],
+        "consoleErrors": "none",
+        "network": "N/A - plan not saved"
+      },
+      "issues": "Plans are not being persisted to the database. AI generates content but the plan is not saved, so there is nothing to persist across sessions."
+    },
+    {
+      "id": "VAL-CROSS-006",
+      "title": "Recovery persistence across sessions",
+      "status": "blocked",
+      "steps": [
+        {"action": "Create plan and mark course as failed", "expected": "Plan created, course marked failed, AI recovery triggered", "observed": "Rate limit prevented plan generation"}
+      ],
+      "evidence": {
+        "screenshots": [
+          "plan-generation/group-cross/VAL-CROSS-006-plan-generated.png"
+        ],
+        "consoleErrors": "none",
+        "network": "Rate limit error: 'Rate limited, try again in a moment'"
+      },
+      "issues": "Cannot test due to OpenRouter rate limit (20 req/min, 50 req/day). Previous attempts exhausted the rate limit."
+    },
+    {
+      "id": "VAL-CROSS-007",
+      "title": "Multiple plans management",
+      "status": "blocked",
+      "steps": [
+        {"action": "Create Plan A", "expected": "Plan A saved and visible on dashboard", "observed": "Plan A not persisting"},
+        {"action": "Create Plan B", "expected": "Plan B saved, both visible on dashboard", "observed": "Plan B not persisting"},
+        {"action": "Verify plan data independence", "expected": "Each plan shows correct data when clicked", "observed": "Cannot verify - plans not saved"}
+      ],
+      "evidence": {
+        "screenshots": [],
+        "consoleErrors": "N/A",
+        "network": "N/A"
+      },
+      "issues": "Blocked by plan persistence issue (VAL-CROSS-005). Without plans being saved, cannot test multiple plan management."
+    }
+  ],
+  "frictions": [
+    {
+      "description": "OpenRouter free tier has very restrictive rate limits (20 req/min, 50 req/day). Testing multiple assertions that require AI generation quickly exhausts the quota.",
+      "resolved": false,
+      "resolution": "Had to wait between tests, still hit rate limit",
+      "affectedAssertions": ["VAL-CROSS-001", "VAL-CROSS-006"]
+    },
+    {
+      "description": "Plans are not persisting to the database after AI generation. The AI generates semester-by-semester plans but they don't appear on /dashboard.",
+      "resolved": false,
+      "resolution": "Core issue blocking VAL-CROSS-005, VAL-CROSS-006, VAL-CROSS-007",
+      "affectedAssertions": ["VAL-CROSS-001", "VAL-CROSS-005", "VAL-CROSS-006", "VAL-CROSS-007"]
+    }
+  ],
+  "blockers": [
+    {
+      "description": "Plan persistence not working - AI generates content but plans not saved to database",
+      "affectedAssertions": ["VAL-CROSS-005", "VAL-CROSS-006", "VAL-CROSS-007"],
+      "quickFixAttempted": "Multiple attempts to create plans with different paths (SMC→UCLA CS, De Anza→UC Davis CS). None persisted to dashboard."
+    },
+    {
+      "description": "OpenRouter API rate limit (20 req/min, 50 req/day) blocking further AI-dependent tests",
+      "affectedAssertions": ["VAL-CROSS-006"],
+      "quickFixAttempted": "Waited 25s between requests, still rate limited"
+    }
+  ],
+  "summary": "Tested 4 assertions: 0 passed, 2 failed, 2 blocked. VAL-CROSS-001 failed due to plan persistence issue. VAL-CROSS-005 failed as plans don't persist across sessions. VAL-CROSS-006 blocked by rate limit. VAL-CROSS-007 blocked by persistence issue. The core issue is that AI-generated plans are not being saved to the database, preventing all persistence-related assertions from passing."
+}

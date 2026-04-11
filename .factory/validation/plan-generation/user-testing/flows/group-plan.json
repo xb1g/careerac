@@ -1,0 +1,165 @@
+{
+  "groupId": "group-plan",
+  "testedAt": "2026-04-10T02:38:00.000Z",
+  "isolation": {
+    "appUrl": "http://localhost:3000",
+    "testUserEmail": "test+plan-1775881760@example.com",
+    "testUserPassword": "[REDACTED]"
+  },
+  "toolsUsed": ["agent-browser"],
+  "assertions": [
+    {
+      "id": "VAL-PLAN-001",
+      "title": "Semester grid renders after plan generation",
+      "status": "blocked",
+      "steps": [
+        { "action": "Navigate to /plan/new", "expected": "Plan creation page loads", "observed": "Page loaded with chat interface" },
+        { "action": "Submit plan request", "expected": "AI generates plan with semester grid", "observed": "OpenRouter rate limit error displayed" }
+      ],
+      "evidence": {
+        "screenshots": ["plan-generation/group-plan/plan-new-page.png", "plan-generation/group-plan/after-send-message.png"],
+        "consoleErrors": "none",
+        "network": "Rate limit error from OpenRouter API"
+      },
+      "issues": "OpenRouter rate limit (20 req/min, 50 req/day) prevents plan generation. Cannot test semester grid rendering without successful plan generation."
+    },
+    {
+      "id": "VAL-PLAN-002",
+      "title": "Semester and overall unit totals displayed",
+      "status": "blocked",
+      "steps": [
+        { "action": "Generate plan", "expected": "Plan generates with unit totals", "observed": "Plan generation blocked by rate limit" }
+      ],
+      "evidence": {
+        "screenshots": [],
+        "consoleErrors": "none",
+        "network": "N/A - blocked by rate limit"
+      },
+      "issues": "Blocked by VAL-PLAN-001 dependency - cannot generate plan to verify unit totals."
+    },
+    {
+      "id": "VAL-PLAN-003",
+      "title": "Plan auto-saves to Supabase",
+      "status": "blocked",
+      "steps": [
+        { "action": "Generate plan via chat", "expected": "Plan auto-saves to database", "observed": "Plan generation failed due to rate limit" },
+        { "action": "Navigate to /dashboard", "expected": "Saved plan appears in list", "observed": "Dashboard shows 'No plans yet'" }
+      ],
+      "evidence": {
+        "screenshots": ["plan-generation/group-plan/dashboard-empty.png"],
+        "consoleErrors": "none",
+        "network": "N/A - no plan generated"
+      },
+      "issues": "Cannot verify auto-save without successful plan generation. Rate limit blocks testing."
+    },
+    {
+      "id": "VAL-PLAN-004",
+      "title": "Load existing plan by ID",
+      "status": "blocked",
+      "steps": [
+        { "action": "Navigate to /plan/[id]", "expected": "Existing plan loads", "observed": "No existing plans available to test" }
+      ],
+      "evidence": {
+        "screenshots": [],
+        "consoleErrors": "none",
+        "network": "N/A - no plans exist"
+      },
+      "issues": "Cannot create a plan to test loading due to OpenRouter rate limit."
+    },
+    {
+      "id": "VAL-PLAN-005",
+      "title": "Dashboard lists all user plans",
+      "status": "blocked",
+      "steps": [
+        { "action": "Navigate to /dashboard", "expected": "List of user plans displayed", "observed": "Empty state shown: 'No plans yet'" }
+      ],
+      "evidence": {
+        "screenshots": ["plan-generation/group-plan/dashboard-empty.png"],
+        "consoleErrors": "none",
+        "network": "N/A"
+      },
+      "issues": "Cannot create test plans due to rate limit. Empty state is correct for new user, but cannot verify multiple plans listing."
+    },
+    {
+      "id": "VAL-PLAN-007",
+      "title": "Multiple plans per user",
+      "status": "blocked",
+      "steps": [
+        { "action": "Create first plan", "expected": "Plan saved", "observed": "Rate limit blocked generation" },
+        { "action": "Create second plan", "expected": "Both plans coexist", "observed": "N/A" }
+      ],
+      "evidence": {
+        "screenshots": [],
+        "consoleErrors": "none",
+        "network": "N/A"
+      },
+      "issues": "Cannot test multiple plans without ability to generate any plans."
+    },
+    {
+      "id": "VAL-PLAN-008",
+      "title": "Plan shows prerequisite information",
+      "status": "blocked",
+      "steps": [
+        { "action": "Generate plan", "expected": "Prerequisites shown in semester grid", "observed": "Rate limit blocked generation" }
+      ],
+      "evidence": {
+        "screenshots": [],
+        "consoleErrors": "none",
+        "network": "N/A"
+      },
+      "issues": "Cannot verify prerequisite display without successful plan generation."
+    },
+    {
+      "id": "VAL-PLAN-010",
+      "title": "Plan edit persists on reload",
+      "status": "blocked",
+      "steps": [
+        { "action": "Generate plan", "expected": "Plan created", "observed": "Rate limit blocked" },
+        { "action": "Edit plan via chat", "expected": "Edit saved", "observed": "N/A" },
+        { "action": "Reload page", "expected": "Edit persisted", "observed": "N/A" }
+      ],
+      "evidence": {
+        "screenshots": [],
+        "consoleErrors": "none",
+        "network": "N/A"
+      },
+      "issues": "Cannot test edit persistence without ability to create and edit plans."
+    },
+    {
+      "id": "VAL-PLAN-012",
+      "title": "Unsupported CC/school/major shows no-data message",
+      "status": "blocked",
+      "steps": [
+        { "action": "Request plan for Alaska CC to Harvard Rocket Science", "expected": "No-data message displayed", "observed": "Rate limit error displayed instead" }
+      ],
+      "evidence": {
+        "screenshots": ["plan-generation/group-plan/unsupported-path-attempt.png"],
+        "consoleErrors": "none",
+        "network": "Rate limit prevents testing no-data scenario"
+      },
+      "issues": "OpenRouter rate limit blocks testing of unsupported path handling. AI response cannot be verified."
+    }
+  ],
+  "frictions": [
+    {
+      "description": "OpenRouter free tier rate limit (20 req/min, 50 req/day) prevents testing plan generation and dependent assertions",
+      "resolved": false,
+      "resolution": "None available - requires paid OpenRouter tier or waiting for rate limit reset",
+      "affectedAssertions": ["VAL-PLAN-001", "VAL-PLAN-002", "VAL-PLAN-003", "VAL-PLAN-004", "VAL-PLAN-005", "VAL-PLAN-007", "VAL-PLAN-008", "VAL-PLAN-010", "VAL-PLAN-012"]
+    },
+    {
+      "description": "Browser session timeout issues occurred during testing - had to close and restart browser",
+      "resolved": true,
+      "resolution": "Closed and restarted browser session",
+      "affectedAssertions": []
+    }
+  ],
+  "blockers": [
+    {
+      "description": "OpenRouter API rate limit prevents plan generation - all plan-dependent assertions are blocked",
+      "affectedAssertions": ["VAL-PLAN-001", "VAL-PLAN-002", "VAL-PLAN-003", "VAL-PLAN-004", "VAL-PLAN-005", "VAL-PLAN-007", "VAL-PLAN-008", "VAL-PLAN-010", "VAL-PLAN-012"],
+      "quickFixAttempted": "Waited 30 seconds, 60 seconds between requests - rate limit persisted. Retry attempts: 4"
+    }
+  ],
+  "summary": "Tested 9 assertions: 0 passed, 0 failed, 9 blocked. All assertions blocked by OpenRouter rate limit (20 req/min, 50 req/day). The free tier prevents plan generation which is a prerequisite for testing all plan display and persistence features. Previous testing indicated plan auto-save was NOT WORKING - this validation confirms rate limits prevent verifying any fixes."
+}
