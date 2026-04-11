@@ -1,0 +1,133 @@
+{
+  "groupId": "group2-plan-display",
+  "testedAt": "2026-04-10T00:00:00Z",
+  "isolation": {
+    "appUrl": "http://localhost:3000",
+    "testAccount": "test+group2-c859af77-5985-4457-8d7e-573e593a6a86@example.com",
+    "password": "TestPassword123!",
+    "database": "Supabase Cloud (user-isolated via RLS)"
+  },
+  "toolsUsed": ["agent-browser"],
+  "assertions": [
+    {
+      "id": "VAL-PLAN-001",
+      "title": "Semester grid renders after plan generation",
+      "status": "blocked",
+      "steps": [
+        { "action": "Navigate to /plan/new", "expected": "Plan creation page loads with chat interface", "observed": "Page loaded successfully" },
+        { "action": "Enter plan request in chat", "expected": "User can type message and submit", "observed": "Message typed successfully" },
+        { "action": "Submit message to AI", "expected": "AI generates plan and semester grid appears", "observed": "OpenRouter API returned rate limit error (429)" }
+      ],
+      "evidence": {
+        "screenshots": [
+          "plan-generation/group2-plan-display/plan-new.png",
+          "plan-generation/group2-plan-display/chat-input-filled.png",
+          "plan-generation/group2-plan-display/chat-streaming.png",
+          "plan-generation/group2-plan-display/chat-complete-VAL-PLAN-001.png",
+          "plan-generation/group2-plan-display/full-page-VAL-PLAN-001.png",
+          "plan-generation/group2-plan-display/full-page-VAL-PLAN-001-2.png",
+          "plan-generation/group2-plan-display/full-page-VAL-PLAN-001-3.png"
+        ],
+        "consoleErrors": "No console errors observed",
+        "network": "POST to /api/chat returned 200, but OpenRouter API returned rate limit (429) error after streaming started"
+      },
+      "issues": "OpenRouter free tier rate limit exceeded. AI plan generation blocked, preventing semester grid from rendering. This is an external dependency issue, not a code bug."
+    },
+    {
+      "id": "VAL-PLAN-002",
+      "title": "Semester and overall unit totals displayed",
+      "status": "blocked",
+      "steps": [
+        { "action": "Generate plan via AI chat", "expected": "Plan generates with semester grid showing unit totals", "observed": "Could not generate plan due to OpenRouter rate limit" }
+      ],
+      "evidence": {
+        "screenshots": [],
+        "consoleErrors": "none",
+        "network": "N/A - prerequisite step blocked"
+      },
+      "issues": "Blocked by VAL-PLAN-001 - cannot test unit totals without a generated plan"
+    },
+    {
+      "id": "VAL-PLAN-003",
+      "title": "Plan auto-saves to Supabase",
+      "status": "blocked",
+      "steps": [
+        { "action": "Generate plan via AI chat", "expected": "Plan is generated and auto-saved", "observed": "Could not generate plan due to OpenRouter rate limit" },
+        { "action": "Navigate to dashboard", "expected": "Saved plan appears in user's plan list", "observed": "Dashboard shows 'No plans yet' - no plans were saved" }
+      ],
+      "evidence": {
+        "screenshots": [
+          "plan-generation/group2-plan-display/dashboard-check.png"
+        ],
+        "consoleErrors": "none",
+        "network": "N/A - prerequisite step blocked"
+      },
+      "issues": "Blocked by VAL-PLAN-001 - cannot test persistence without a generated plan. Dashboard correctly shows empty state."
+    },
+    {
+      "id": "VAL-PLAN-004",
+      "title": "Load existing plan by ID",
+      "status": "blocked",
+      "steps": [
+        { "action": "Generate and save a plan", "expected": "Plan is created with a valid ID", "observed": "Could not generate plan due to OpenRouter rate limit" },
+        { "action": "Navigate to /plan/[id] with valid plan ID", "expected": "Plan loads with semester grid and chat history", "observed": "N/A - no plan exists to load" }
+      ],
+      "evidence": {
+        "screenshots": [],
+        "consoleErrors": "none",
+        "network": "N/A - prerequisite step blocked"
+      },
+      "issues": "Blocked by VAL-PLAN-001 - cannot test plan loading without a saved plan"
+    },
+    {
+      "id": "VAL-PLAN-010",
+      "title": "Plan edit persists on reload",
+      "status": "blocked",
+      "steps": [
+        { "action": "Generate and save a plan", "expected": "Plan is created", "observed": "Could not generate plan due to OpenRouter rate limit" },
+        { "action": "Edit plan via chat", "expected": "Plan is modified", "observed": "N/A" },
+        { "action": "Reload page", "expected": "Modified plan is preserved", "observed": "N/A" }
+      ],
+      "evidence": {
+        "screenshots": [],
+        "consoleErrors": "none",
+        "network": "N/A - prerequisite step blocked"
+      },
+      "issues": "Blocked by VAL-PLAN-001 - cannot test edit persistence without a saved plan"
+    },
+    {
+      "id": "VAL-PLAN-011",
+      "title": "Invalid plan ID shows not-found state",
+      "status": "pass",
+      "steps": [
+        { "action": "Navigate to /plan/invalid-plan-id-123", "expected": "Not-found page with clear message and navigation back to dashboard", "observed": "Page displays 'Plan not found' message with 'Back to Dashboard' link" },
+        { "action": "Navigate to /plan/00000000-0000-0000-0000-000000000001 (valid UUID format but non-existent)", "expected": "Not-found page with clear message", "observed": "Page displays 'Plan not found' message with 'Back to Dashboard' link" }
+      ],
+      "evidence": {
+        "screenshots": [
+          "plan-generation/group2-plan-display/VAL-PLAN-011-invalid-id.png",
+          "plan-generation/group2-plan-display/VAL-PLAN-011-uuid.png"
+        ],
+        "consoleErrors": "none",
+        "network": "GET /plan/invalid-plan-id-123 -> 200 (client-side not-found page rendered)"
+      },
+      "issues": null
+    }
+  ],
+  "frictions": [
+    {
+      "description": "OpenRouter free tier rate limit (20 req/min, 50 req/day) significantly limits testing of AI-dependent features. Multiple attempts to generate plans failed with 'Rate limited, try again in a moment' error.",
+      "resolved": false,
+      "resolution": "No workaround available - external API limitation",
+      "affectedAssertions": ["VAL-PLAN-001", "VAL-PLAN-002", "VAL-PLAN-003", "VAL-PLAN-004", "VAL-PLAN-010"]
+    }
+  ],
+  "blockers": [
+    {
+      "description": "OpenRouter API rate limit exceeded. The free tier allows 20 requests per minute / 50 requests per day. Previous validation runs or other test groups may have consumed the daily quota. Cannot generate plans to test display, persistence, or loading functionality.",
+      "affectedAssertions": ["VAL-PLAN-001", "VAL-PLAN-002", "VAL-PLAN-003", "VAL-PLAN-004", "VAL-PLAN-010"],
+      "quickFixAttempted": "Retried plan generation multiple times with delays (5s, 15s, 25s), rate limit persisted"
+    }
+  ],
+  "summary": "Tested 6 assertions: 1 passed, 0 failed, 5 blocked. VAL-PLAN-011 (Invalid plan ID) passed successfully - the app correctly displays a user-friendly 'Plan not found' message with navigation back to dashboard for both invalid string IDs and valid-format UUIDs that don't exist. However, 5 assertions are blocked due to OpenRouter API rate limits preventing plan generation. These blocked assertions require a successfully generated plan to test: semester grid rendering, unit totals, auto-save, plan loading by ID, and edit persistence."
+}

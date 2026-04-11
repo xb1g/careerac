@@ -1,0 +1,199 @@
+{
+  "groupId": "group3-features",
+  "testedAt": "2026-04-10T20:00:00Z",
+  "isolation": {
+    "appUrl": "http://localhost:3000",
+    "testAccount": "test+group3-eb73e64b-9147-4712-99f3-4fe82bb465a9@example.com",
+    "database": "Supabase Cloud (user-isolated via RLS)",
+    "evidenceDirectory": "/Users/bunyasit/.factory/missions/55ce484e-3238-40ce-861d-f5eacf6ed079/evidence/plan-generation/group3-features/"
+  },
+  "toolsUsed": ["agent-browser"],
+  "assertions": [
+    {
+      "id": "VAL-CROSS-001",
+      "title": "First-visit journey end-to-end",
+      "status": "blocked",
+      "steps": [
+        { "action": "Navigate to /", "expected": "Landing page with hero and CTA", "observed": "Landing page loaded with Get Started CTA" },
+        { "action": "Click Get Started CTA", "expected": "Navigate to /auth/signup", "observed": "Navigated to /auth/signup" },
+        { "action": "Fill signup form and submit", "expected": "Account created and redirected to /dashboard", "observed": "Account created, redirected to /dashboard" },
+        { "action": "Navigate to /plan/new", "expected": "Plan creation page loads", "observed": "Plan creation page loaded with chat interface" },
+        { "action": "Request plan via chat", "expected": "AI generates plan with semester grid", "observed": "AI responded but plan not saved due to rate limit" },
+        { "action": "Navigate to /dashboard", "expected": "Plan appears in dashboard list", "observed": "Dashboard shows 'No plans yet' - plan auto-save issue" }
+      ],
+      "evidence": {
+        "screenshots": [
+          "plan-generation/group3-features/VAL-CROSS-001-landing-page.png",
+          "plan-generation/group3-features/VAL-CROSS-001-signup-form.png",
+          "plan-generation/group3-features/VAL-CROSS-001-post-signup.png",
+          "plan-generation/group3-features/VAL-CROSS-001-chat-input.png",
+          "plan-generation/group3-features/VAL-CROSS-001-ai-responding.png",
+          "plan-generation/group3-features/VAL-CROSS-001-plan-generated.png",
+          "plan-generation/group3-features/VAL-CROSS-001-dashboard-with-plan.png"
+        ],
+        "consoleErrors": "none",
+        "network": "No plan save API calls captured - auto-save may not be implemented or working"
+      },
+      "issues": "Plan auto-save not working - dashboard shows 'No plans yet' after plan generation. AI rate limiting also prevented full plan generation."
+    },
+    {
+      "id": "VAL-PLAN-005",
+      "title": "Dashboard lists all user plans",
+      "status": "blocked",
+      "steps": [
+        { "action": "Navigate to /dashboard as authenticated user", "expected": "Dashboard shows list of user's plans", "observed": "Dashboard shows 'No plans yet' empty state" }
+      ],
+      "evidence": {
+        "screenshots": [
+          "plan-generation/group3-features/VAL-CROSS-001-dashboard-with-plan.png",
+          "plan-generation/group3-features/dashboard-check-2.png",
+          "plan-generation/group3-features/VAL-CROSS-005-after-relogin.png"
+        ],
+        "consoleErrors": "none"
+      },
+      "issues": "Cannot verify plan listing because plan auto-save is not functioning. Dashboard consistently shows empty state."
+    },
+    {
+      "id": "VAL-PLAN-007",
+      "title": "Multiple plans per user",
+      "status": "blocked",
+      "steps": [
+        { "action": "Create first plan", "expected": "First plan saved and appears on dashboard", "observed": "Plan generation attempted but not saved" },
+        { "action": "Create second plan with different inputs", "expected": "Second plan saved alongside first", "observed": "Could not create first plan due to save issue" }
+      ],
+      "evidence": {
+        "screenshots": [],
+        "consoleErrors": "none"
+      },
+      "issues": "Blocked by plan auto-save issue - cannot create multiple plans to verify this assertion"
+    },
+    {
+      "id": "VAL-PLAN-008",
+      "title": "Plan shows prerequisite information",
+      "status": "blocked",
+      "steps": [
+        { "action": "Generate a plan", "expected": "Semester grid shows courses with prerequisites", "observed": "No plan was successfully saved/generated" }
+      ],
+      "evidence": {
+        "screenshots": [],
+        "consoleErrors": "none"
+      },
+      "issues": "Cannot verify prerequisite display because plan generation and persistence is not working"
+    },
+    {
+      "id": "VAL-PLAN-009",
+      "title": "New plan route is accessible and functional",
+      "status": "pass",
+      "steps": [
+        { "action": "Navigate to /plan/new", "expected": "Page renders with chat input and plan display area", "observed": "Page loaded successfully with chat interface" },
+        { "action": "Verify chat input is interactive", "expected": "Text input accepts user input", "observed": "Text input accepts input, send button enables when text entered" }
+      ],
+      "evidence": {
+        "screenshots": [
+          "plan-generation/group3-features/VAL-PLAN-009-new-plan-page.png"
+        ],
+        "consoleErrors": "none",
+        "network": "200 OK on /plan/new route"
+      },
+      "issues": null
+    },
+    {
+      "id": "VAL-PLAN-012",
+      "title": "Unsupported CC/school/major shows no-data message",
+      "status": "blocked",
+      "steps": [
+        { "action": "Request plan for unsupported school (Harvard to MIT)", "expected": "AI responds with no-data message and suggestions", "observed": "Rate limit error occurred before AI could respond" }
+      ],
+      "evidence": {
+        "screenshots": [
+          "plan-generation/group3-features/VAL-PLAN-012-unsupported-request.png",
+          "plan-generation/group3-features/VAL-PLAN-012-ai-response.png"
+        ],
+        "consoleErrors": "none",
+        "network": "Rate limited by OpenRouter API"
+      },
+      "issues": "OpenRouter rate limit (20 req/min) prevented testing this assertion. Previous requests exhausted the rate limit."
+    },
+    {
+      "id": "VAL-CROSS-002",
+      "title": "Auth gate redirect-back on plan creation",
+      "status": "pass",
+      "steps": [
+        { "action": "Sign out to become unauthenticated", "expected": "User is logged out", "observed": "User signed out and redirected to /" },
+        { "action": "Navigate directly to /plan/new", "expected": "Redirected to sign-in with redirectTo parameter", "observed": "Redirected to /auth/signin?redirectTo=%2Fplan%2Fnew" },
+        { "action": "Sign in with valid credentials", "expected": "User is redirected back to /plan/new", "observed": "Successfully redirected to /plan/new after sign-in" },
+        { "action": "Verify chat is functional", "expected": "Chat interface is interactive", "observed": "Chat input visible and functional" }
+      ],
+      "evidence": {
+        "screenshots": [
+          "plan-generation/group3-features/VAL-CROSS-002-signed-out.png",
+          "plan-generation/group3-features/VAL-CROSS-002-redirected-to-signin.png",
+          "plan-generation/group3-features/VAL-CROSS-002-after-signin.png"
+        ],
+        "consoleErrors": "none",
+        "network": "Redirect chain: /plan/new -> /auth/signin?redirectTo=%2Fplan%2Fnew -> /plan/new (after auth)"
+      },
+      "issues": null
+    },
+    {
+      "id": "VAL-CROSS-005",
+      "title": "Data persistence across sessions",
+      "status": "blocked",
+      "steps": [
+        { "action": "Create plan while logged in", "expected": "Plan saved to database", "observed": "Plan not saved due to auto-save issue" },
+        { "action": "Sign out", "expected": "Session ended", "observed": "Signed out successfully" },
+        { "action": "Sign back in", "expected": "Previously created plan still visible", "observed": "Dashboard shows 'No plans yet'" }
+      ],
+      "evidence": {
+        "screenshots": [
+          "plan-generation/group3-features/VAL-CROSS-005-signed-out.png",
+          "plan-generation/group3-features/VAL-CROSS-005-after-relogin.png"
+        ],
+        "consoleErrors": "none"
+      },
+      "issues": "Cannot verify data persistence because no plan was successfully saved. Auto-save functionality appears to be non-functional."
+    },
+    {
+      "id": "VAL-CROSS-007",
+      "title": "Multiple plans management",
+      "status": "blocked",
+      "steps": [
+        { "action": "Create Plan A", "expected": "Plan A saved and appears on dashboard", "observed": "Plan not saved" },
+        { "action": "Create Plan B", "expected": "Plan B saved alongside Plan A", "observed": "Could not create any plans" },
+        { "action": "Verify both plans accessible", "expected": "Both plans show correct data when clicked", "observed": "No plans available to verify" }
+      ],
+      "evidence": {
+        "screenshots": [],
+        "consoleErrors": "none"
+      },
+      "issues": "Blocked by plan auto-save issue - cannot create multiple plans to verify management functionality"
+    }
+  ],
+  "frictions": [
+    {
+      "description": "Plan auto-save feature (VAL-PLAN-003) does not appear to be working. After AI generates a plan, navigating to dashboard shows 'No plans yet' instead of listing the created plan.",
+      "resolved": false,
+      "resolution": "N/A - issue persists, needs investigation",
+      "affectedAssertions": ["VAL-PLAN-005", "VAL-PLAN-007", "VAL-PLAN-008", "VAL-CROSS-001", "VAL-CROSS-005", "VAL-CROSS-007"]
+    },
+    {
+      "description": "OpenRouter rate limiting (20 req/min, 50 req/day) prevents extensive AI testing. Multiple plan generation attempts quickly exhaust the rate limit.",
+      "resolved": false,
+      "resolution": "N/A - free tier limitation",
+      "affectedAssertions": ["VAL-PLAN-012", "VAL-CROSS-001"]
+    }
+  ],
+  "blockers": [
+    {
+      "description": "Plan auto-save not functioning - plans generated via AI chat do not persist to the database. Dashboard consistently shows 'No plans yet' empty state even after successful AI plan generation.",
+      "affectedAssertions": ["VAL-PLAN-005", "VAL-PLAN-007", "VAL-PLAN-008", "VAL-CROSS-001", "VAL-CROSS-005", "VAL-CROSS-007"],
+      "quickFixAttempted": "Verified no console errors, checked dashboard multiple times, signed out and back in - no plans persisted"
+    },
+    {
+      "description": "OpenRouter API rate limit reached (20 requests per minute). Cannot test AI-dependent assertions like unsupported school/major handling.",
+      "affectedAssertions": ["VAL-PLAN-012"],
+      "quickFixAttempted": "Waited for rate limit to reset, but limit persisted across test session"
+    }
+  ],
+  "summary": "Tested 9 assertions: 2 passed (VAL-PLAN-009, VAL-CROSS-002), 7 blocked by plan auto-save issue or rate limiting. Core plan persistence functionality appears to be non-functional, blocking most plan-related assertions. Auth flow redirect-back works correctly."
+}
