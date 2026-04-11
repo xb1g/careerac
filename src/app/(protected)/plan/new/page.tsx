@@ -13,6 +13,8 @@ export default function NewPlanPage() {
   const [saveError, setSaveError] = useState<string | null>(null);
   const [savedPlanId, setSavedPlanId] = useState<string | null>(null);
   const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // Ref to prevent concurrent save operations (not to block future saves)
+  const isSavingRef = useRef(false);
 
   // Cleanup timeout on unmount
   useEffect(() => {
@@ -20,6 +22,7 @@ export default function NewPlanPage() {
       if (saveTimeoutRef.current) {
         clearTimeout(saveTimeoutRef.current);
       }
+      isSavingRef.current = false;
     };
   }, []);
 
@@ -66,11 +69,12 @@ export default function NewPlanPage() {
 
   /**
    * Debounced save of the current plan to the database.
-   * Only saves once per plan generation to prevent duplicates.
+   * Only prevents concurrent saves (same plan being saved twice simultaneously).
+   * Does NOT block saving a new plan after the previous one completed.
    */
   const debouncedSave = useCallback((plan: ParsedPlan, messages: unknown[]) => {
-    // Don't schedule duplicate saves for the same plan
-    if (savedPlanId) return;
+    // Prevent concurrent save operations for the same plan
+    if (isSavingRef.current) return;
 
     if (saveTimeoutRef.current) {
       clearTimeout(saveTimeoutRef.current);
@@ -80,11 +84,13 @@ export default function NewPlanPage() {
     setSaveError(null);
 
     saveTimeoutRef.current = setTimeout(async () => {
+      isSavingRef.current = true;
       const planId = await savePlan(plan, messages);
+      isSavingRef.current = false;
       setIsSaving(false);
       if (planId) {
         setSavedPlanId(planId);
-        // Update URL without navigation so user can share/copy
+        // Navigate to the saved plan's detail page
         router.replace(`/plan/${planId}`);
       } else {
         // Only show error if the plan is a real TransferPlan (not a no-data response)
@@ -93,7 +99,7 @@ export default function NewPlanPage() {
         }
       }
     }, 800);
-  }, [savePlan, router, savedPlanId]);
+  }, [savePlan, router]);
 
   const handlePlanGenerated = useCallback((plan: ParsedPlan) => {
     setCurrentPlan(plan);
