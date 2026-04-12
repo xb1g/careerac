@@ -1,0 +1,117 @@
+{
+  "milestone": "failure-recovery",
+  "round": 1,
+  "status": "pass",
+  "validatorsRun": {
+    "test": {
+      "passed": true,
+      "command": "pnpm vitest run",
+      "exitCode": 0,
+      "details": "210 tests passed across 23 test files"
+    },
+    "typecheck": {
+      "passed": true,
+      "command": "pnpm tsc --noEmit",
+      "exitCode": 0
+    },
+    "lint": {
+      "passed": true,
+      "command": "pnpm next lint",
+      "exitCode": 0,
+      "details": "No ESLint warnings or errors"
+    }
+  },
+  "reviewsSummary": {
+    "total": 3,
+    "passed": 3,
+    "failed": 0,
+    "failedFeatures": []
+  },
+  "blockingIssues": [],
+  "nonBlockingIssues": [
+    {
+      "featureId": "course-status-tracking",
+      "severity": "non_blocking",
+      "description": "Position-based matching in merge function is fragile - if courses are reordered, statuses could be misapplied. This is a known limitation documented in the handoff.",
+      "file": "src/app/(protected)/plan/[id]/page.tsx",
+      "line": 38
+    },
+    {
+      "featureId": "course-status-tracking",
+      "severity": "suggestion",
+      "description": "Failure event creation error handling could lead to silent data inconsistency where status is updated but failure event isn't recorded. Consider atomic transactions.",
+      "file": "src/app/api/plan/[id]/course-status/route.ts",
+      "line": 90
+    },
+    {
+      "featureId": "failure-persistence-and-isolation",
+      "severity": "non_blocking",
+      "description": "Type assertion 'as never' on failure_events update could mask type mismatches.",
+      "file": "src/app/api/plan/[id]/accept-alternative/route.ts",
+      "line": 163
+    },
+    {
+      "featureId": "failure-persistence-and-isolation",
+      "severity": "suggestion",
+      "description": "Consider adding error handling for plan_courses query - currently fails silently and proceeds with unmerged plan_data.",
+      "file": "src/app/(protected)/plan/[id]/page.tsx",
+      "line": 82
+    }
+  ],
+  "appliedUpdates": [],
+  "suggestedGuidanceUpdates": [
+    {
+      "target": "AGENTS.md",
+      "suggestion": "Document the co-located test file pattern: test files should be placed alongside components in the same directory (e.g., course-card.tsx and course-card.test.tsx in src/components/)",
+      "evidence": "All three features reviewed use this pattern consistently (34 tests in course-card.test.tsx, recovery-message.test.tsx, plan-data-merge.test.ts)",
+      "isSystemic": true
+    },
+    {
+      "target": "AGENTS.md",
+      "suggestion": "Document the React stale closure fix pattern: when using useCallback with state-dependent functions, extract logic into a pure function that takes previous state as parameter, compute the new value first, then use it for both setState and persistence.",
+      "evidence": "Commit c82db7d fixed a stale closure issue in course-status-tracking by using computed variable approach instead of functional setState",
+      "isSystemic": false
+    },
+    {
+      "target": "AGENTS.md",
+      "suggestion": "Add accessibility convention: status indicators must include non-color cues (icons, labels, strikethrough) for accessibility compliance",
+      "evidence": "course-status-tracking and ai-recovery-flow both use icons (✓, ◐, ✕, ⏳, ✗) alongside color coding",
+      "isSystemic": true
+    },
+    {
+      "target": "library/",
+      "suggestion": "Document the 'as never' type assertion pattern for Supabase operations - used when TypeScript strictness conflicts with Supabase's dynamic typing",
+      "evidence": "Multiple API routes use 'as never' for Supabase insert/update calls (course-status, accept-alternative routes)",
+      "isSystemic": true
+    },
+    {
+      "target": "library/",
+      "suggestion": "Document the dual-storage pattern for plan data: plan_data JSONB for structure + plan_courses table for status tracking, with merge function to ensure consistency on load",
+      "evidence": "failure-persistence-and-isolation implements mergeCourseStatusIntoPlanData() to merge plan_courses into plan_data as a persistence safety net",
+      "isSystemic": false
+    }
+  ],
+  "rejectedObservations": [],
+  "featureReviews": {
+    "course-status-tracking": {
+      "status": "pass",
+      "commitId": "c82db7d",
+      "testCount": 34,
+      "summary": "Well-implemented with comprehensive test coverage. All 5 status options implemented with distinct visual indicators (color + icons). Stale closure fix in c82db7d correctly resolved persistence bug."
+    },
+    "ai-recovery-flow": {
+      "status": "pass",
+      "commitId": "0612499",
+      "testCount": 31,
+      "summary": "Comprehensive implementation with 31 tests. All requirements met: automatic triggers, dependent course analysis, alternative suggestions, waitlisted messaging, prerequisite validation. Clean separation of concerns."
+    },
+    "failure-persistence-and-isolation": {
+      "status": "pass",
+      "commitId": "a6f43d6",
+      "testCount": 29,
+      "summary": "Thorough implementation with user ownership checks, failure_events resolution tracking, plan data merge function, and 29 tests. Plan isolation verified, persistence across sessions confirmed."
+    }
+  },
+  "totalTests": 210,
+  "previousRound": null
+}
