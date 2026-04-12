@@ -1,0 +1,36 @@
+{
+  "featureId": "playbook-ai-integration",
+  "reviewedAt": "2026-04-12T10:50:00.000Z",
+  "commitId": "5c3f36f8da57b1e1607fbfefd8514a1feb526dad",
+  "transcriptSkeletonReviewed": true,
+  "diffReviewed": true,
+  "status": "pass",
+  "codeReview": {
+    "summary": "The playbook-ai-integration feature is well-implemented. The code correctly integrates verified playbooks into the AI system prompt by: (1) Creating a getVerifiedPlaybooksContext utility that strictly filters for verification_status='verified' AND outcome='transferred', (2) Fetching playbook context in parallel with articulation/prerequisite data, (3) Passing planContext from the chat component via DefaultChatTransport to enable filtering by CC/target/major, and (4) Including failure events in the context when present. The implementation ensures unverified playbooks are NEVER included in AI context through mandatory hardcoded filters.",
+    "issues": []
+  },
+  "sharedStateObservations": [
+    {
+      "area": "conventions",
+      "observation": "The DefaultChatTransport from 'ai' package is used to pass custom body data (planContext) to the API. This is a documented pattern from @ai-sdk/react but not explicitly mentioned in AGENTS.md. Workers building similar features with custom API context should follow this pattern.",
+      "evidence": "src/components/chat.tsx:63-69 - DefaultChatTransport configured with body containing planContext; src/app/api/chat/route.ts:298-308 - planContext destructured from request body"
+    },
+    {
+      "area": "conventions",
+      "observation": "Parallel data fetching with Promise.all is the established pattern for aggregating multiple context sources (articulation, prerequisites, playbooks) before building the AI system prompt.",
+      "evidence": "src/app/api/chat/route.ts:312-318 - Parallel fetch of articulationData, prerequisiteData, and verifiedPlaybooksContext"
+    },
+    {
+      "area": "knowledge",
+      "observation": "The playbook data is stored as JSONB with a nested structure: playbook_data.semesters[].courses[] and playbook_data.failure_events[]. The getVerifiedPlaybooksContext utility formats this into readable text for the AI prompt.",
+      "evidence": "src/utils/playbook-context.ts:87-108 - Course and failure event formatting logic"
+    },
+    {
+      "area": "knowledge",
+      "observation": "When playbook context is already added to the base system prompt, the recovery flow still attempts to add it again in a conditional block. The second addition is guarded by `if (!verifiedPlaybooksContext)` but this check is redundant since the first addition only happens if verifiedPlaybooksContext is truthy. This doesn't cause issues but is slightly redundant.",
+      "evidence": "src/app/api/chat/route.ts:381-384 (first addition) and lines 403-408 (second addition in recovery block)"
+    }
+  ],
+  "addressesFailureFrom": null,
+  "summary": "The playbook-ai-integration feature passes review. The implementation correctly queries only verified playbooks (verification_status='verified' AND outcome='transferred') and includes them in the AI system prompt. Unverified playbooks are properly excluded through mandatory filters. The planContext is passed from the Chat component via DefaultChatTransport to enable path-specific filtering. All 242 tests pass including 11 new tests covering edge cases like empty results, errors, mandatory filters, and formatting."
+}
