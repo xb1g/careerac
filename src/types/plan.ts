@@ -13,6 +13,8 @@ export interface PlanCourse {
   id?: string;
   /** Semester number this course belongs to */
   semesterNumber?: number;
+  /** Links to the course code this is an alternative for (recovery) */
+  alternative_for?: string;
 }
 
 export interface PlanSemester {

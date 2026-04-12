@@ -158,6 +158,24 @@ export async function POST(
       // Don't fail the request if this fails
     }
 
+    // Update the failure_events record with the resolution
+    if (planCourseId) {
+      const { error: failureUpdateError } = await supabase
+        .from("failure_events")
+        .update({
+          resolution: `Replaced with ${alternative.code} (${alternative.title})`,
+          resolved_at: new Date().toISOString(),
+        } as never)
+        .eq("plan_id", planId)
+        .eq("plan_course_id", planCourseId)
+        .is("resolved_at", null);
+
+      if (failureUpdateError) {
+        console.error("Error updating failure event resolution:", failureUpdateError);
+        // Don't fail the request if this fails
+      }
+    }
+
     return NextResponse.json({
       success: true,
       message: `Added ${alternative.code} as alternative for ${failedCourseCode}`,
