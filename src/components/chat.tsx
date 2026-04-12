@@ -1,7 +1,8 @@
 "use client";
 
 import { useChat, UIMessage } from "@ai-sdk/react";
-import { useState, useEffect, useRef, useCallback } from "react";
+import { DefaultChatTransport } from "ai";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { ParsedPlan } from "@/types/plan";
 import { parsePlanFromAIResponse } from "@/utils/plan-parser";
 import RecoveryMessage, { RecoveryAlternative } from "./recovery-message";
@@ -27,6 +28,12 @@ interface ChatProps {
   onAcceptAlternative?: (alternative: RecoveryAlternative, planId: string) => Promise<void>;
   /** The current plan ID for recovery acceptance */
   planId?: string | null;
+  /** Plan context for fetching verified playbooks */
+  planContext?: {
+    ccInstitutionId?: string;
+    targetInstitutionId?: string;
+    targetMajor?: string;
+  };
 }
 
 export default function Chat({
@@ -38,6 +45,7 @@ export default function Chat({
   recoveryContext,
   onAcceptAlternative,
   planId,
+  planContext,
 }: ChatProps) {
   const [input, setInput] = useState("");
   const lastProcessedMessageId = useRef<string | null>(null);
@@ -52,8 +60,18 @@ export default function Chat({
     } as unknown as UIMessage,
   ];
 
+  const transport = useMemo(
+    () =>
+      new DefaultChatTransport({
+        api: "/api/chat",
+        body: planContext ? { planContext } : undefined,
+      }),
+    [planContext],
+  );
+
   const { messages, sendMessage, status, error, clearError } = useChat({
     messages: initialMessages && initialMessages.length > 0 ? initialMessages : defaultMessages,
+    transport,
   });
 
   const isStreaming = status === "streaming";

@@ -1,6 +1,7 @@
 import { streamText, UIMessage, convertToModelMessages } from "ai";
 import { createOpenRouter } from "@openrouter/ai-sdk-provider";
 import { createClient } from "@/utils/supabase/server";
+import { getVerifiedPlaybooksContext } from "@/utils/playbook-context";
 import type { Database } from "@/types/database";
 
 const openrouter = createOpenRouter({
@@ -295,12 +296,29 @@ Format alternative suggestions as: **{code}** — {title} ({units} units) — {t
 
 export async function POST(req: Request) {
   try {
-    const { messages, recoveryContext }: { messages: UIMessage[]; recoveryContext?: RecoveryContext } = await req.json();
+    const {
+      messages,
+      recoveryContext,
+      planContext,
+    }: {
+      messages: UIMessage[];
+      recoveryContext?: RecoveryContext;
+      planContext?: {
+        ccInstitutionId?: string;
+        targetInstitutionId?: string;
+        targetMajor?: string;
+      };
+    } = await req.json();
 
-    // Fetch articulation data and prerequisites for context
-    const [articulationData, prerequisiteData] = await Promise.all([
+    // Fetch articulation data, prerequisites, and verified playbooks in parallel
+    const [articulationData, prerequisiteData, verifiedPlaybooksContext] = await Promise.all([
       getArticulationContext(),
       getPrerequisiteContext(),
+      getVerifiedPlaybooksContext(
+        planContext?.ccInstitutionId,
+        planContext?.targetInstitutionId,
+        planContext?.targetMajor,
+      ),
     ]);
 
     let baseSystemPrompt = `You are CareerAC, an AI transfer planning assistant for California community college students.
@@ -360,6 +378,11 @@ ${prerequisiteData || "No prerequisite data is currently available. Use your kno
 ## RESPONDING TO FOLLOW-UP MESSAGES
 If the user already has a plan and asks to modify it (e.g., "Move MATH 101 to semester 2"), regenerate the full plan JSON with the requested changes while maintaining prerequisite ordering.`;
 
+    // Add verified playbook context if available
+    if (verifiedPlaybooksContext) {
+      baseSystemPrompt += verifiedPlaybooksContext;
+    }
+
     // If this is a recovery request, fetch additional context and append recovery prompt
     if (recoveryContext) {
       const [availableCourses, dependents, completedCourses] = await Promise.all([
@@ -376,6 +399,14 @@ If the user already has a plan and asks to modify it (e.g., "Move MATH 101 to se
       );
 
       baseSystemPrompt += recoveryPrompt;
+
+      // Also add playbook context to recovery if not already added
+      if (!verifiedPlaybooksContext) {
+        const playbookContext = await getVerifiedPlaybooksContext();
+        if (playbookContext) {
+          baseSystemPrompt += playbookContext;
+        }
+      }
     }
 
     const result = streamText({
