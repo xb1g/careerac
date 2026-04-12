@@ -4,7 +4,8 @@ import { useState, useCallback } from "react";
 import { useChat, UIMessage } from "@ai-sdk/react";
 import Chat from "@/components/chat";
 import SemesterPlan from "@/components/semester-plan";
-import { ParsedPlan, TransferPlan } from "@/types/plan";
+import CourseStatusMenu from "@/components/course-status-menu";
+import { ParsedPlan, TransferPlan, PlanCourse, CourseStatus } from "@/types/plan";
 import { createClient } from "@/utils/supabase/client";
 
 interface PlanDetailClientProps {
@@ -25,6 +26,13 @@ export default function PlanDetailClient({ plan }: PlanDetailClientProps) {
       ? initialPlanData
       : null
   );
+
+  // Course status menu state
+  const [selectedCourse, setSelectedCourse] = useState<{
+    course: PlanCourse & { semesterNumber: number };
+    currentStatus: CourseStatus;
+  } | null>(null);
+  const [isStatusMenuOpen, setIsStatusMenuOpen] = useState(false);
 
   // Initialize chat history from saved plan
   const initialMessages: UIMessage[] = (() => {
@@ -86,6 +94,82 @@ export default function PlanDetailClient({ plan }: PlanDetailClientProps) {
     // Save will be triggered by Chat's onSavePlan callback
   }, []);
 
+  // Handle course click - opens status menu
+  const handleCourseClick = useCallback((course: PlanCourse & { semesterNumber: number }, currentStatus: CourseStatus) => {
+    setSelectedCourse({ course, currentStatus });
+    setIsStatusMenuOpen(true);
+  }, []);
+
+  // Handle status selection - updates both UI and database
+  const handleStatusSelect = useCallback(async (newStatus: CourseStatus) => {
+    if (!selectedCourse) return;
+
+    const { course } = selectedCourse;
+
+    // Update local state immediately for responsive UI
+    setCurrentPlan((prev) => {
+      if (!prev || "isNoData" in prev) return prev;
+
+      const updatedPlan = { ...prev };
+      updatedPlan.semesters = prev.semesters.map((semester) => {
+        if (semester.number !== course.semesterNumber) return semester;
+
+        const updatedCourses = semester.courses.map((c) => {
+          if (c.code === course.code && c.title === course.title) {
+            return { ...c, status: newStatus };
+          }
+          return c;
+        });
+
+        return { ...semester, courses: updatedCourses };
+      });
+
+      return updatedPlan;
+    });
+
+    // Persist to database
+    try {
+      const response = await fetch(`/api/plan/${plan.id}/course-status`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          courseCode: course.code,
+          semesterNumber: course.semesterNumber,
+          status: newStatus,
+        }),
+      });
+
+      if (!response.ok) {
+        console.error("Failed to update course status:", response.statusText);
+        // Revert local state on failure
+        setCurrentPlan((prev) => {
+          if (!prev || "isNoData" in prev) return prev;
+          const updatedPlan = { ...prev };
+          updatedPlan.semesters = prev.semesters.map((semester) => {
+            if (semester.number !== course.semesterNumber) return semester;
+            const updatedCourses = semester.courses.map((c) => {
+              if (c.code === course.code && c.title === course.title) {
+                return { ...c, status: course.status || "planned" };
+              }
+              return c;
+            });
+            return { ...semester, courses: updatedCourses };
+          });
+          return updatedPlan;
+        });
+      }
+
+      // Save the updated plan_data to persist the status changes
+      if (currentPlan && !("isNoData" in currentPlan)) {
+        await handleSavePlan(currentPlan, messages);
+      }
+    } catch (err) {
+      console.error("Error updating course status:", err);
+    }
+
+    setSelectedCourse(null);
+  }, [selectedCourse, plan.id, currentPlan, messages, handleSavePlan]);
+
   return (
     <div className="flex flex-col h-[calc(100vh-4rem)]">
       {/* Header */}
@@ -121,7 +205,7 @@ export default function PlanDetailClient({ plan }: PlanDetailClientProps) {
         {/* Plan display area */}
         <div className="hidden lg:flex lg:w-1/2 flex-col bg-zinc-50 dark:bg-zinc-900">
           {currentPlan ? (
-            <SemesterPlan plan={currentPlan} />
+            <SemesterPlan plan={currentPlan} onCourseClick={handleCourseClick} />
           ) : (
             <div className="flex-1 flex items-center justify-center p-8">
               <div className="text-center">
@@ -151,6 +235,19 @@ export default function PlanDetailClient({ plan }: PlanDetailClientProps) {
           )}
         </div>
       </div>
+
+      {/* Course Status Menu */}
+      {selectedCourse && (
+        <CourseStatusMenu
+          currentStatus={selectedCourse.currentStatus}
+          onSelect={handleStatusSelect}
+          isOpen={isStatusMenuOpen}
+          onClose={() => {
+            setIsStatusMenuOpen(false);
+            setSelectedCourse(null);
+          }}
+        />
+      )}
     </div>
   );
 }

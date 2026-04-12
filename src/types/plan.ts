@@ -1,3 +1,5 @@
+export type CourseStatus = "planned" | "in_progress" | "completed" | "cancelled" | "waitlisted" | "failed";
+
 export interface PlanCourse {
   code: string;
   title: string;
@@ -5,6 +7,12 @@ export interface PlanCourse {
   transferEquivalency?: string;
   prerequisites?: string[];
   notes?: string;
+  /** Course status for tracking progress. Defaults to 'planned'. */
+  status?: CourseStatus;
+  /** Database ID for the plan_course record (used for status updates) */
+  id?: string;
+  /** Semester number this course belongs to */
+  semesterNumber?: number;
 }
 
 export interface PlanSemester {
