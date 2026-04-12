@@ -18,10 +18,11 @@ export async function PATCH(
 
     const { id: planId } = await params;
     const body = await req.json();
-    const { courseCode, semesterNumber, status } = body as {
+    const { courseCode, semesterNumber, status, planCourseId } = body as {
       courseCode: string;
       semesterNumber: number;
       status: CourseStatus;
+      planCourseId?: string;
     };
 
     if (!courseCode || !status) {
@@ -43,10 +44,8 @@ export async function PATCH(
       return NextResponse.json({ error: "Plan not found" }, { status: 404 });
     }
 
-    // Update plan_courses status by matching course code and semester
-    // Note: plan_courses may not have a direct course_code column, so we need to match via the plan_data JSONB
-    // First, let's try to find and update the plan_course record
-    const { data: updatedCourse, error: updateError } = await supabase
+    // Update plan_courses status
+    let updateQuery = supabase
       .from("plan_courses")
       .update({
         status,
@@ -57,6 +56,21 @@ export async function PATCH(
       .select()
       .maybeSingle();
 
+    // If we have a planCourseId, use it for more precise matching
+    if (planCourseId) {
+      updateQuery = supabase
+        .from("plan_courses")
+        .update({
+          status,
+          updated_at: new Date().toISOString(),
+        } as never)
+        .eq("id", planCourseId)
+        .select()
+        .maybeSingle();
+    }
+
+    const { data: updatedCourse, error: updateError } = await updateQuery;
+
     if (updateError) {
       console.error("Error updating course status:", updateError);
       return NextResponse.json(
@@ -65,10 +79,37 @@ export async function PATCH(
       );
     }
 
+    // Create a failure event if the status is failed, cancelled, or waitlisted
+    let failureEvent = null;
+    const isFailureStatus = status === "failed" || status === "cancelled" || status === "waitlisted";
+
+    if (isFailureStatus && updatedCourse) {
+      const courseId = (updatedCourse as Record<string, unknown>).id as string;
+      const { data: failureData, error: failureError } = await supabase
+        .from("failure_events")
+        .insert({
+          plan_id: planId,
+          plan_course_id: courseId,
+          failure_type: status === "waitlisted" ? "waitlisted" : status === "cancelled" ? "cancelled" : "failed",
+          created_at: new Date().toISOString(),
+        } as never)
+        .select()
+        .maybeSingle();
+
+      if (failureError) {
+        console.error("Error creating failure event:", failureError);
+        // Don't fail the whole request if failure event creation fails
+      } else {
+        failureEvent = failureData;
+      }
+    }
+
     return NextResponse.json({
       success: true,
       course: updatedCourse,
       status,
+      failureEvent,
+      triggerRecovery: isFailureStatus,
     });
   } catch (error) {
     console.error("Course status update error:", error);

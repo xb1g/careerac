@@ -2,7 +2,8 @@
 
 import { useState, useCallback } from "react";
 import { useChat, UIMessage } from "@ai-sdk/react";
-import Chat from "@/components/chat";
+import Chat, { RecoveryContext } from "@/components/chat";
+import { RecoveryAlternative } from "@/components/recovery-message";
 import SemesterPlan from "@/components/semester-plan";
 import CourseStatusMenu from "@/components/course-status-menu";
 import { ParsedPlan, TransferPlan, PlanCourse, CourseStatus } from "@/types/plan";
@@ -31,8 +32,12 @@ export default function PlanDetailClient({ plan }: PlanDetailClientProps) {
   const [selectedCourse, setSelectedCourse] = useState<{
     course: PlanCourse & { semesterNumber: number };
     currentStatus: CourseStatus;
+    planCourseId?: string;
   } | null>(null);
   const [isStatusMenuOpen, setIsStatusMenuOpen] = useState(false);
+
+  // Recovery state
+  const [recoveryContext, setRecoveryContext] = useState<RecoveryContext | null>(null);
 
   // Initialize chat history from saved plan
   const initialMessages: UIMessage[] = (() => {
@@ -48,7 +53,6 @@ export default function PlanDetailClient({ plan }: PlanDetailClientProps) {
     ];
   })();
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { messages, status } = useChat({
     messages: initialMessages,
   });
@@ -100,11 +104,82 @@ export default function PlanDetailClient({ plan }: PlanDetailClientProps) {
     setIsStatusMenuOpen(true);
   }, []);
 
+  // Handle accepting a recovery alternative
+  const handleAcceptAlternative = useCallback(async (alternative: RecoveryAlternative) => {
+    if (!selectedCourse) return;
+
+    const { course, planCourseId } = selectedCourse;
+
+    try {
+      const response = await fetch(`/api/plan/${plan.id}/accept-alternative`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          alternative: {
+            code: alternative.code,
+            title: alternative.title,
+            units: alternative.units,
+            transferEquivalency: alternative.transferEquivalency,
+            prerequisites: [],
+          },
+          failedCourseCode: course.code,
+          failedCourseTitle: course.title,
+          semesterNumber: course.semesterNumber,
+          planCourseId,
+        }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        console.error("Failed to accept alternative:", error);
+        return;
+      }
+
+      const result = await response.json();
+      console.log("Alternative accepted:", result);
+
+      // Update local plan state to reflect the new course
+      if (currentPlan && !("isNoData" in currentPlan)) {
+        const updatedPlan: TransferPlan = {
+          ...currentPlan,
+          semesters: currentPlan.semesters.map((semester) => {
+            const targetSemester = result.updatedSemester ?? course.semesterNumber;
+            if (semester.number === targetSemester) {
+              return {
+                ...semester,
+                courses: [
+                  ...semester.courses,
+                  {
+                    code: alternative.code,
+                    title: alternative.title,
+                    units: alternative.units,
+                    transferEquivalency: alternative.transferEquivalency,
+                    prerequisites: [],
+                    status: "planned" as const,
+                    alternative_for: course.code,
+                  },
+                ],
+              };
+            }
+            return semester;
+          }),
+          totalUnits: currentPlan.totalUnits + alternative.units,
+        };
+        setCurrentPlan(updatedPlan);
+
+        // Re-save the plan with the update
+        await handleSavePlan(updatedPlan, messages);
+      }
+    } catch (err) {
+      console.error("Error accepting alternative:", err);
+    }
+  }, [selectedCourse, plan.id, currentPlan, messages, handleSavePlan]);
+
   // Handle status selection - updates both UI and database
   const handleStatusSelect = useCallback(async (newStatus: CourseStatus) => {
     if (!selectedCourse) return;
 
-    const { course } = selectedCourse;
+    const { course, planCourseId } = selectedCourse;
 
     // Build the updated plan
     const buildUpdatedPlan = (prev: ParsedPlan | null): TransferPlan | null => {
@@ -141,6 +216,7 @@ export default function PlanDetailClient({ plan }: PlanDetailClientProps) {
           courseCode: course.code,
           semesterNumber: course.semesterNumber,
           status: newStatus,
+          planCourseId,
         }),
       });
 
@@ -148,6 +224,18 @@ export default function PlanDetailClient({ plan }: PlanDetailClientProps) {
         console.error("Failed to update course status:", response.statusText);
         // Revert local state on failure
         setCurrentPlan(currentPlan);
+      } else {
+        const result = await response.json();
+
+        // Trigger recovery if this is a failure/cancellation/waitlist
+        if (result.triggerRecovery && updatedPlan && !("isNoData" in updatedPlan)) {
+          setRecoveryContext({
+            failedCourseCode: course.code,
+            failedCourseTitle: course.title,
+            status: newStatus as "failed" | "cancelled" | "waitlisted",
+            planData: JSON.parse(JSON.stringify(updatedPlan)),
+          });
+        }
       }
 
       // Save the updated plan_data to persist the status changes
@@ -190,6 +278,9 @@ export default function PlanDetailClient({ plan }: PlanDetailClientProps) {
           <Chat
             onPlanGenerated={handlePlanGenerated}
             onSavePlan={handleSavePlan}
+            recoveryContext={recoveryContext}
+            onAcceptAlternative={handleAcceptAlternative}
+            planId={plan.id}
           />
         </div>
 

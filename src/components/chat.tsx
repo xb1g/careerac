@@ -1,9 +1,17 @@
 "use client";
 
 import { useChat, UIMessage } from "@ai-sdk/react";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { ParsedPlan } from "@/types/plan";
 import { parsePlanFromAIResponse } from "@/utils/plan-parser";
+import RecoveryMessage, { RecoveryAlternative } from "./recovery-message";
+
+export interface RecoveryContext {
+  failedCourseCode: string;
+  failedCourseTitle: string;
+  status: "failed" | "cancelled" | "waitlisted";
+  planData: Record<string, unknown> | null;
+}
 
 interface ChatProps {
   welcomeMessage?: string;
@@ -13,6 +21,12 @@ interface ChatProps {
   onSavePlan?: (plan: ParsedPlan, messages: unknown[]) => void;
   /** Initial chat messages to load (for existing plan editing) */
   initialMessages?: UIMessage[];
+  /** Recovery context for triggering AI recovery conversation */
+  recoveryContext?: RecoveryContext | null;
+  /** Called when a recovery alternative is accepted */
+  onAcceptAlternative?: (alternative: RecoveryAlternative, planId: string) => Promise<void>;
+  /** The current plan ID for recovery acceptance */
+  planId?: string | null;
 }
 
 export default function Chat({
@@ -21,9 +35,14 @@ export default function Chat({
   onPlanGenerated,
   onSavePlan,
   initialMessages,
+  recoveryContext,
+  onAcceptAlternative,
+  planId,
 }: ChatProps) {
   const [input, setInput] = useState("");
   const lastProcessedMessageId = useRef<string | null>(null);
+  const [isAccepting, setIsAccepting] = useState(false);
+  const recoverySentRef = useRef<string | null>(null);
 
   const defaultMessages: UIMessage[] = [
     {
@@ -41,6 +60,28 @@ export default function Chat({
   const isLoading = status === "submitted" || isStreaming;
 
   const isInputEmpty = input.trim().length === 0;
+
+  // Send recovery system message when recovery context changes
+  useEffect(() => {
+    if (!recoveryContext || isLoading) return;
+
+    // Create a unique key for this recovery to avoid duplicate messages
+    const recoveryKey = `${recoveryContext.failedCourseCode}-${recoveryContext.status}-${recoveryContext.failedCourseTitle}`;
+    if (recoverySentRef.current === recoveryKey) return;
+
+    recoverySentRef.current = recoveryKey;
+
+    // Send a system message to trigger recovery
+    const statusLabel = recoveryContext.status === "waitlisted"
+      ? "waitlisted"
+      : recoveryContext.status === "cancelled"
+      ? "cancelled"
+      : "failed";
+
+    sendMessage({
+      text: `[SYSTEM: Recovery needed] The student has marked "${recoveryContext.failedCourseCode} (${recoveryContext.failedCourseTitle})" as ${statusLabel}. Please analyze the impact and suggest alternatives.`,
+    });
+  }, [recoveryContext, isLoading, sendMessage]);
 
   // Check the latest assistant message for a plan
   const lastAssistantMessage = messages.filter((m) => m.role === "assistant").pop();
@@ -94,6 +135,91 @@ export default function Chat({
     setInput("");
   };
 
+  const handleAcceptAlternative = useCallback(async (alternative: RecoveryAlternative) => {
+    if (!planId || !onAcceptAlternative) return;
+    setIsAccepting(true);
+    try {
+      await onAcceptAlternative(alternative, planId);
+    } catch (err) {
+      console.error("Failed to accept alternative:", err);
+    } finally {
+      setIsAccepting(false);
+    }
+  }, [planId, onAcceptAlternative]);
+
+  // Parse recovery alternatives from the latest recovery message
+  const parseRecoveryAlternatives = useCallback((text: string): {
+    alternatives: RecoveryAlternative[];
+    noAlternatives: boolean;
+    dependentCourses: string[];
+  } => {
+    const alternatives: RecoveryAlternative[] = [];
+    const dependentCourses: string[] = [];
+
+    // Check for "no alternatives" message
+    const hasNoAlternatives = /no alternative.*found/i.test(text) && /consult.*counselor|consult.*academic|no suitable/i.test(text);
+
+    // Parse dependent courses
+    // Look for lines that list affected courses
+    const affectedMatch = text.match(/(?:affected|dependent).*?(?:courses?:?\s*)((?:\n|.)*?)(?=\n\n|💡|alternative|No alternative)/i);
+    if (affectedMatch) {
+      const lines = affectedMatch[1].split("\n").filter(l => l.trim());
+      for (const line of lines) {
+        const cleaned = line.replace(/^[\s•\-*]+\s*/, "").trim();
+        if (cleaned) dependentCourses.push(cleaned);
+      }
+    }
+
+    // Parse alternative suggestions: **CODE** — Title (units units) — Transfer
+    const altPattern = /\*\*(\w[\w\s]+\d+\w*)\*\*\s*[—–-]\s*([^(]+?)\s*\((\d+)\s+units?\)\s*[—–-]\s*([^\n.]+)/g;
+    let match;
+    while ((match = altPattern.exec(text)) !== null) {
+      // Get reasoning from text after the alternative
+      const restOfText = text.substring(match.index + match[0].length);
+      const reasoningMatch = restOfText.match(/^(?:Reasoning:?\s*)?([^*\n]{20,})/i);
+      const reasoning = reasoningMatch
+        ? reasoningMatch[1].trim()
+        : `This course could substitute for the failed/cancelled course.`;
+
+      alternatives.push({
+        code: match[1].trim(),
+        title: match[2].trim(),
+        units: parseInt(match[3], 10),
+        transferEquivalency: match[4].trim(),
+        reasoning,
+      });
+    }
+
+    return {
+      alternatives,
+      noAlternatives: hasNoAlternatives || alternatives.length === 0,
+      dependentCourses,
+    };
+  }, []);
+
+  // Find the latest recovery message and parse it
+  const recoveryMessage = messages
+    .filter((m) => m.role === "assistant")
+    .reverse()
+    .find((m) => {
+      const text = m.parts
+        .filter((p) => p.type === "text")
+        .map((p) => (p as { text: string }).text)
+        .join("\n");
+      return text.includes("[SYSTEM: Recovery needed]") || text.includes("Recovery needed");
+    });
+
+  const recoveryParsed = recoveryMessage
+    ? parseRecoveryAlternatives(
+        recoveryMessage.parts
+          .filter((p) => p.type === "text")
+          .map((p) => (p as { text: string }).text)
+          .join("\n")
+      )
+    : null;
+
+  const showRecoveryUI = recoveryContext && recoveryMessage && !isLoading && recoveryParsed;
+
   return (
     <div className={`flex flex-col h-full ${className}`}>
       {/* Messages area */}
@@ -114,9 +240,14 @@ export default function Chat({
             >
               {message.parts.map((part, i) => {
                 if (part.type === "text") {
+                  const text = (part as { text: string }).text;
+                  // Hide system messages but still process them
+                  if (text.startsWith("[SYSTEM:")) {
+                    return null;
+                  }
                   return (
                     <div key={`${message.id}-${i}`} className="whitespace-pre-wrap text-sm">
-                      {(part as { text: string }).text}
+                      {text}
                     </div>
                   );
                 }
@@ -125,6 +256,24 @@ export default function Chat({
             </div>
           </div>
         ))}
+
+        {/* Recovery message UI */}
+        {showRecoveryUI && recoveryContext && recoveryParsed && (
+          <div className="flex justify-start">
+            <div className="max-w-full w-full" data-testid="recovery-message">
+              <RecoveryMessage
+                failedCourseCode={recoveryContext.failedCourseCode}
+                failedCourseTitle={recoveryContext.failedCourseTitle}
+                status={recoveryContext.status}
+                dependentCourses={recoveryParsed.dependentCourses}
+                alternatives={recoveryParsed.alternatives}
+                noAlternatives={recoveryParsed.noAlternatives}
+                onAcceptAlternative={handleAcceptAlternative}
+                isAccepting={isAccepting}
+              />
+            </div>
+          </div>
+        )}
 
         {/* Loading indicator */}
         {isLoading && (
@@ -136,7 +285,7 @@ export default function Chat({
                   <div className="w-2 h-2 bg-zinc-400 dark:bg-zinc-500 rounded-full animate-bounce [animation-delay:-0.15s]" />
                   <div className="w-2 h-2 bg-zinc-400 dark:bg-zinc-500 rounded-full animate-bounce" />
                 </div>
-                <span>Thinking...</span>
+                <span>{recoveryContext ? "Analyzing recovery options..." : "Thinking..."}</span>
               </div>
             </div>
           </div>
