@@ -1,0 +1,50 @@
+{
+  "featureId": "course-status-tracking",
+  "reviewedAt": "2026-04-11T21:20:00.000Z",
+  "commitId": "c82db7d",
+  "transcriptSkeletonReviewed": true,
+  "diffReviewed": true,
+  "status": "pass",
+  "codeReview": {
+    "summary": "The course status tracking feature has been well-implemented with comprehensive test coverage (34 new tests) and clean code. The implementation correctly handles all 5 required status options (completed, in-progress, cancelled, waitlisted, failed) with visually distinct indicators using both color and non-color cues (unique icons, strikethrough for failed/cancelled). The persistence mechanism properly saves status changes to both plan_courses table and plan_data JSONB. The fix in commit c82db7d resolved a stale closure issue that was preventing second+ status changes from persisting correctly.",
+    "issues": [
+      {
+        "file": "src/components/course-card.tsx",
+        "line": 55,
+        "severity": "suggestion",
+        "description": "The statusStyles type definition uses `Exclude<CourseStatus, \"planned\">` which is correct, but the component renders a status badge for all non-planned statuses. Consider documenting this design decision explicitly in comments."
+      },
+      {
+        "file": "src/app/api/plan/[id]/course-status/route.ts",
+        "line": 90,
+        "severity": "suggestion",
+        "description": "Failure event creation has a comment '// Don't fail the whole request if failure event creation fails' but this could lead to silent data inconsistency where a status is updated but the failure event isn't recorded. Consider whether this is the desired behavior or if the transaction should be atomic."
+      },
+      {
+        "file": "src/app/(protected)/plan/[id]/plan-detail-client.tsx",
+        "line": 153,
+        "severity": "non_blocking",
+        "description": "The error handling on line 153 reverts to the old `currentPlan` state using `setCurrentPlan(currentPlan)`. While this works after the fix, consider using functional state updates consistently to avoid any edge cases with stale closures."
+      }
+    ]
+  },
+  "sharedStateObservations": [
+    {
+      "area": "conventions",
+      "observation": "The project uses a pattern of co-locating test files with components (e.g., course-card.tsx and course-card.test.tsx in the same directory). This is consistent across the codebase and should be documented in AGENTS.md as the preferred testing pattern.",
+      "evidence": "src/components/ directory shows multiple component.test.tsx files alongside their component.tsx files"
+    },
+    {
+      "area": "conventions",
+      "observation": "The project uses explicit 'as never' type assertions when updating Supabase tables to work around TypeScript strictness. This pattern appears in multiple API routes and could benefit from documentation or a typed helper function.",
+      "evidence": "src/app/api/plan/[id]/course-status/route.ts lines 67, 76, 95 use 'as never' for Supabase insert/update calls"
+    },
+    {
+      "area": "knowledge",
+      "observation": "The fix in commit c82db7d addresses a React stale closure issue when using useCallback with state-dependent functions. The solution extracts the plan building logic into a pure function that takes the previous state as a parameter, then uses the computed value for both state update and persistence. This is a pattern that should be documented for future reference.",
+      "evidence": "Commit c82db7d shows the transformation from functional setState to computed variable approach: const updatedPlan = buildUpdatedPlan(currentPlan); setCurrentPlan(updatedPlan); await handleSavePlan(updatedPlan, messages);"
+    }
+  ],
+  "addressesFailureFrom": null,
+  "summary": "Course status tracking feature is well-implemented and passes review. All requirements from the feature description are met: 5 status options with distinct visual indicators (color + icons), completed courses excluded from unit counts, status persistence to database, and comprehensive test coverage (34 tests). The stale closure fix in c82db7d correctly resolved a persistence bug. No blocking issues found."
+}

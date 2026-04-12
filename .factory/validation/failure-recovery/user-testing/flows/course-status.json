@@ -1,0 +1,81 @@
+{
+  "groupId": "course-status",
+  "testedAt": "2026-04-11T12:00:00Z",
+  "isolation": {
+    "appUrl": "http://localhost:3000",
+    "testUserEmail": "test+recovery1@example.com",
+    "testUserPassword": "TestPassword123!",
+    "evidenceDirectory": "/Users/bunyasit/.factory/missions/55ce484e-3238-40ce-861d-f5eacf6ed079/evidence/failure-recovery/course-status/"
+  },
+  "toolsUsed": ["agent-browser"],
+  "assertions": [
+    {
+      "id": "VAL-RECOVER-001",
+      "title": "Course status change menu",
+      "status": "blocked",
+      "steps": [
+        { "action": "Navigate to signup page", "expected": "Signup form displayed", "observed": "Signup form displayed" },
+        { "action": "Create account with test+recovery1@example.com", "expected": "Account created and redirected to dashboard", "observed": "Account created, redirected to dashboard" },
+        { "action": "Navigate to /plan/new", "expected": "Plan creation page with chat interface", "observed": "Plan creation page loaded" },
+        { "action": "Submit plan request for SMC to UCLA CS", "expected": "AI generates semester grid", "observed": "Rate limit error from OpenRouter API" }
+      ],
+      "evidence": {
+        "screenshots": [
+          "failure-recovery/course-status/landing-page.png",
+          "failure-recovery/course-status/signup-page.png",
+          "failure-recovery/course-status/post-signup.png",
+          "failure-recovery/course-status/plan-new-page.png",
+          "failure-recovery/course-status/plan-current.png",
+          "failure-recovery/course-status/dashboard.png"
+        ],
+        "consoleErrors": "none",
+        "network": "N/A - blocked before course interaction"
+      },
+      "issues": "OpenRouter API rate limit (20 req/min, 50 req/day) prevents AI plan generation. Without a generated plan, course status menu cannot be tested."
+    },
+    {
+      "id": "VAL-RECOVER-011",
+      "title": "Failed/cancelled courses visually distinct",
+      "status": "blocked",
+      "steps": [
+        { "action": "Attempt to create plan and mark courses as failed/cancelled", "expected": "Visual distinction for failed/cancelled courses", "observed": "Cannot create plan due to rate limiting" }
+      ],
+      "evidence": {
+        "screenshots": [],
+        "consoleErrors": "none",
+        "network": "N/A"
+      },
+      "issues": "Blocked by VAL-RECOVER-001 - no plan available to test course status visual distinctions"
+    },
+    {
+      "id": "VAL-RECOVER-012",
+      "title": "Completed course adjusts remaining plan",
+      "status": "blocked",
+      "steps": [
+        { "action": "Attempt to create plan and mark course as completed", "expected": "Remaining units decrease, course visually distinguished", "observed": "Cannot create plan due to rate limiting" }
+      ],
+      "evidence": {
+        "screenshots": [],
+        "consoleErrors": "none",
+        "network": "N/A"
+      },
+      "issues": "Blocked by VAL-RECOVER-001 - no plan available to test completed course behavior"
+    }
+  ],
+  "frictions": [
+    {
+      "description": "OpenRouter free tier rate limit (20 req/min, 50 req/day) is too restrictive for testing. Multiple test attempts quickly exhaust the daily limit.",
+      "resolved": false,
+      "resolution": null,
+      "affectedAssertions": ["VAL-RECOVER-001", "VAL-RECOVER-011", "VAL-RECOVER-012"]
+    }
+  ],
+  "blockers": [
+    {
+      "description": "OpenRouter API rate limit exceeded - AI plan generation is unavailable. The API returns 'Rate limited, try again in a moment' error. Free tier limits: 20 requests/minute, 50 requests/day.",
+      "affectedAssertions": ["VAL-RECOVER-001", "VAL-RECOVER-011", "VAL-RECOVER-012"],
+      "quickFixAttempted": "Waited 30+ seconds between requests, but daily limit already exhausted from previous tests"
+    }
+  ],
+  "summary": "Tested 0 assertions: 0 passed, 0 failed, 3 blocked. All assertions blocked by OpenRouter API rate limiting that prevents plan generation. The rate limit (50 req/day on free tier) was exhausted from previous testing activities. Auth flow works correctly - user account was successfully created."
+}

@@ -19,7 +19,7 @@
           "observed": "Signup form with Email, Password fields and Sign Up button displayed"
         },
         {
-          "action": "Fill signup form with unique email (test+71679b8b-fcfc-485d-ba85-ce876f513d9b@example.com) and password (TestPassword123!)",
+          "action": "Fill signup form with unique email (test+71679b8b-fcfc-485d-ba85-ce876f513d9b@example.com) and password (REDACTED)",
           "expected": "Fields populated correctly",
           "observed": "Email and password fields filled"
         },
@@ -41,7 +41,7 @@
         {
           "action": "Fill signin form with same credentials",
           "expected": "Fields populated correctly",
-          "observed": "Email and password fields filled with test credentials"
+          "observed": "Email and password fields filled with test credentials (password redacted)"
         },
         {
           "action": "Click Sign In button",

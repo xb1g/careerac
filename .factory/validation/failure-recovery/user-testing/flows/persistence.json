@@ -1,0 +1,178 @@
+{
+  "groupId": "persistence",
+  "testedAt": "2026-04-12T04:55:00Z",
+  "isolation": {
+    "appUrl": "http://localhost:3000",
+    "testUserEmail": "test+recovery3@example.com",
+    "testUserPassword": "TestPassword123!",
+    "testUserId": "b0b3d074-2f7d-45a5-98be-de305d3a1ae2",
+    "evidenceDirectory": "/Users/bunyasit/.factory/missions/55ce484e-3238-40ce-861d-f5eacf6ed079/evidence/failure-recovery/persistence/"
+  },
+  "toolsUsed": ["agent-browser"],
+  "assertions": [
+    {
+      "id": "VAL-RECOVER-007",
+      "title": "Recovery preserves prerequisite integrity",
+      "status": "blocked",
+      "steps": [
+        {
+          "action": "Navigate to /plan/new",
+          "expected": "Chat interface loads with welcome message",
+          "observed": "Chat interface loaded with welcome message"
+        },
+        {
+          "action": "Submit plan request 'Santa Monica College to UCLA Computer Science'",
+          "expected": "AI generates plan with semester grid",
+          "observed": "Rate limit error: 'Rate limited, try again in a moment'"
+        },
+        {
+          "action": "Mark course as failed and accept recovery alternative",
+          "expected": "Alternative accepted with no prerequisite violations",
+          "observed": "Cannot proceed - plan generation blocked by OpenRouter rate limit"
+        },
+        {
+          "action": "Verify no prerequisite violations exist post-recovery",
+          "expected": "All courses scheduled after their prerequisites",
+          "observed": "Cannot verify - plan generation blocked"
+        }
+      ],
+      "evidence": {
+        "screenshots": ["failure-recovery/persistence/rate-limit-error.png"],
+        "consoleErrors": "none",
+        "network": "POST /api/chat -> 429 Rate Limited"
+      },
+      "issues": "OpenRouter API rate limit (50 req/day) prevents plan generation. Cannot test prerequisite integrity without a generated plan."
+    },
+    {
+      "id": "VAL-RECOVER-008",
+      "title": "Multiple simultaneous failures tracked",
+      "status": "blocked",
+      "steps": [
+        {
+          "action": "Navigate to /plan/new and create plan",
+          "expected": "Plan generated successfully",
+          "observed": "Rate limit error prevented plan generation"
+        },
+        {
+          "action": "Mark two courses as failed simultaneously",
+          "expected": "Both courses show failure indicator",
+          "observed": "Cannot proceed - plan generation blocked by OpenRouter rate limit"
+        },
+        {
+          "action": "Verify AI addresses recovery for both failures",
+          "expected": "Chat shows recovery messages for both courses",
+          "observed": "Cannot verify - plan generation blocked"
+        }
+      ],
+      "evidence": {
+        "screenshots": ["failure-recovery/persistence/rate-limit-error.png"],
+        "consoleErrors": "none",
+        "network": "POST /api/chat -> 429 Rate Limited"
+      },
+      "issues": "OpenRouter API rate limit prevents plan generation. Cannot test multiple simultaneous failures without a plan."
+    },
+    {
+      "id": "VAL-RECOVER-009",
+      "title": "Failure events persist across sessions",
+      "status": "blocked",
+      "steps": [
+        {
+          "action": "Navigate to /plan/new and create plan",
+          "expected": "Plan generated successfully",
+          "observed": "Rate limit error prevented plan generation"
+        },
+        {
+          "action": "Mark course as failed and accept recovery alternative",
+          "expected": "Failure status and alternative saved to database",
+          "observed": "Cannot proceed - plan generation blocked by OpenRouter rate limit"
+        },
+        {
+          "action": "Reload the page",
+          "expected": "Failure status and alternatives retained",
+          "observed": "Cannot verify - plan generation blocked"
+        }
+      ],
+      "evidence": {
+        "screenshots": ["failure-recovery/persistence/rate-limit-error.png"],
+        "consoleErrors": "none",
+        "network": "POST /api/chat -> 429 Rate Limited"
+      },
+      "issues": "OpenRouter API rate limit prevents plan generation. Cannot test persistence across sessions without a plan with failure events."
+    },
+    {
+      "id": "VAL-CROSS-010",
+      "title": "Concurrent plan editing isolation",
+      "status": "blocked",
+      "steps": [
+        {
+          "action": "Navigate to /plan/new and create Plan A",
+          "expected": "Plan A generated successfully",
+          "observed": "Rate limit error prevented plan generation"
+        },
+        {
+          "action": "Create Plan B with different parameters",
+          "expected": "Plan B generated successfully",
+          "observed": "Cannot proceed - plan generation blocked by OpenRouter rate limit"
+        },
+        {
+          "action": "Mark course as failed in Plan A and accept recovery",
+          "expected": "Plan A updated with failure status and alternative",
+          "observed": "Cannot proceed - plan generation blocked"
+        },
+        {
+          "action": "Reload Plan B",
+          "expected": "Plan B unaffected by changes to Plan A",
+          "observed": "Cannot verify - plan generation blocked"
+        }
+      ],
+      "evidence": {
+        "screenshots": ["failure-recovery/persistence/rate-limit-error.png"],
+        "consoleErrors": "none",
+        "network": "POST /api/chat -> 429 Rate Limited"
+      },
+      "issues": "OpenRouter API rate limit prevents plan generation. Cannot test plan isolation without multiple generated plans."
+    },
+    {
+      "id": "VAL-CROSS-012",
+      "title": "Completed courses respected during recovery",
+      "status": "blocked",
+      "steps": [
+        {
+          "action": "Navigate to /plan/new and create plan",
+          "expected": "Plan generated successfully",
+          "observed": "Rate limit error prevented plan generation"
+        },
+        {
+          "action": "Mark multiple courses as completed",
+          "expected": "Completed courses show visual distinction, remaining units decrease",
+          "observed": "Cannot proceed - plan generation blocked by OpenRouter rate limit"
+        },
+        {
+          "action": "Mark subsequent course as failed",
+          "expected": "AI recovery suggestions respect completed courses",
+          "observed": "Cannot proceed - plan generation blocked"
+        },
+        {
+          "action": "Verify recovery does not suggest re-taking completed courses",
+          "expected": "Recovery alternatives build on completed foundation",
+          "observed": "Cannot verify - plan generation blocked"
+        }
+      ],
+      "evidence": {
+        "screenshots": ["failure-recovery/persistence/rate-limit-error.png"],
+        "consoleErrors": "none",
+        "network": "POST /api/chat -> 429 Rate Limited"
+      },
+      "issues": "OpenRouter API rate limit prevents plan generation. Cannot test completed course handling during recovery without a plan."
+    }
+  ],
+  "frictions": [],
+  "blockers": [
+    {
+      "description": "OpenRouter API rate limit (50 requests/day) prevents AI plan generation. All attempts to generate a plan via /api/chat returned HTTP 429 'Rate limited, try again in a moment'. The API key has no remaining quota for today.",
+      "affectedAssertions": ["VAL-RECOVER-007", "VAL-RECOVER-008", "VAL-RECOVER-009", "VAL-CROSS-010", "VAL-CROSS-012"],
+      "quickFixAttempted": "Retried plan generation multiple times over 10+ minutes; rate limit persisted. Attempted to create plans directly via Supabase REST API but was blocked by RLS policies requiring authenticated JWT."
+    }
+  ],
+  "summary": "Tested 0 assertions: 0 passed, 0 failed, 5 blocked. All assertions blocked by OpenRouter API rate limit preventing plan generation. The test user (test+recovery3@example.com) was successfully created and authenticated, but plan generation - a prerequisite for all assigned assertions - is unavailable due to external API quota exhaustion."
+}
