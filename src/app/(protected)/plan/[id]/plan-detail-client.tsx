@@ -106,26 +106,31 @@ export default function PlanDetailClient({ plan }: PlanDetailClientProps) {
 
     const { course } = selectedCourse;
 
+    // Build the updated plan
+    const buildUpdatedPlan = (prev: ParsedPlan | null): TransferPlan | null => {
+      if (!prev || "isNoData" in prev) return null;
+      return {
+        ...prev,
+        semesters: prev.semesters.map((semester) => {
+          if (semester.number !== course.semesterNumber) return semester;
+          return {
+            ...semester,
+            courses: semester.courses.map((c) => {
+              if (c.code === course.code && c.title === course.title) {
+                return { ...c, status: newStatus };
+              }
+              return c;
+            }),
+          };
+        }),
+      };
+    };
+
     // Update local state immediately for responsive UI
-    setCurrentPlan((prev) => {
-      if (!prev || "isNoData" in prev) return prev;
-
-      const updatedPlan = { ...prev };
-      updatedPlan.semesters = prev.semesters.map((semester) => {
-        if (semester.number !== course.semesterNumber) return semester;
-
-        const updatedCourses = semester.courses.map((c) => {
-          if (c.code === course.code && c.title === course.title) {
-            return { ...c, status: newStatus };
-          }
-          return c;
-        });
-
-        return { ...semester, courses: updatedCourses };
-      });
-
-      return updatedPlan;
-    });
+    const updatedPlan = buildUpdatedPlan(currentPlan);
+    if (updatedPlan) {
+      setCurrentPlan(updatedPlan);
+    }
 
     // Persist to database
     try {
@@ -142,26 +147,12 @@ export default function PlanDetailClient({ plan }: PlanDetailClientProps) {
       if (!response.ok) {
         console.error("Failed to update course status:", response.statusText);
         // Revert local state on failure
-        setCurrentPlan((prev) => {
-          if (!prev || "isNoData" in prev) return prev;
-          const updatedPlan = { ...prev };
-          updatedPlan.semesters = prev.semesters.map((semester) => {
-            if (semester.number !== course.semesterNumber) return semester;
-            const updatedCourses = semester.courses.map((c) => {
-              if (c.code === course.code && c.title === course.title) {
-                return { ...c, status: course.status || "planned" };
-              }
-              return c;
-            });
-            return { ...semester, courses: updatedCourses };
-          });
-          return updatedPlan;
-        });
+        setCurrentPlan(currentPlan);
       }
 
       // Save the updated plan_data to persist the status changes
-      if (currentPlan && !("isNoData" in currentPlan)) {
-        await handleSavePlan(currentPlan, messages);
+      if (updatedPlan) {
+        await handleSavePlan(updatedPlan, messages);
       }
     } catch (err) {
       console.error("Error updating course status:", err);
