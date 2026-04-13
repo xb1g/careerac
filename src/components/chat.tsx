@@ -6,6 +6,7 @@ import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { ParsedPlan } from "@/types/plan";
 import { parsePlanFromAIResponse } from "@/utils/plan-parser";
 import RecoveryMessage, { RecoveryAlternative } from "./recovery-message";
+import type { TranscriptData } from "@/types/transcript";
 
 export interface RecoveryContext {
   failedCourseCode: string;
@@ -34,6 +35,12 @@ interface ChatProps {
     targetInstitutionId?: string;
     targetMajor?: string;
   };
+  /** Parsed transcript data to pass to AI */
+  transcriptData?: TranscriptData;
+  /** Max credits per semester (strict limit) */
+  maxCreditsPerSemester?: number;
+  /** Whether the student has a target school */
+  hasTargetSchool?: boolean;
 }
 
 export default function Chat({
@@ -46,6 +53,9 @@ export default function Chat({
   onAcceptAlternative,
   planId,
   planContext,
+  transcriptData,
+  maxCreditsPerSemester,
+  hasTargetSchool,
 }: ChatProps) {
   const [input, setInput] = useState("");
   const lastProcessedMessageId = useRef<string | null>(null);
@@ -64,9 +74,14 @@ export default function Chat({
     () =>
       new DefaultChatTransport({
         api: "/api/chat",
-        body: planContext ? { planContext } : undefined,
+        body: {
+          ...(planContext ? { planContext } : {}),
+          ...(transcriptData ? { transcriptData } : {}),
+          ...(maxCreditsPerSemester ? { maxCreditsPerSemester } : {}),
+          ...(hasTargetSchool !== undefined ? { hasTargetSchool } : {}),
+        },
       }),
-    [planContext],
+    [planContext, transcriptData, maxCreditsPerSemester, hasTargetSchool],
   );
 
   const { messages, sendMessage, status, error, clearError } = useChat({
@@ -239,46 +254,48 @@ export default function Chat({
   const showRecoveryUI = recoveryContext && recoveryMessage && !isLoading && recoveryParsed;
 
   return (
-    <div className={`flex flex-col h-full ${className}`}>
+    <div className={`flex flex-col h-full bg-[#FAFAFA] dark:bg-zinc-950 ${className}`}>
       {/* Messages area */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
-        {messages.map((message) => (
-          <div
-            key={message.id}
-            className={`flex ${
-              message.role === "user" ? "justify-end" : "justify-start"
-            }`}
-          >
+      <div className="flex-1 overflow-y-auto px-4 md:px-6 py-6 md:py-8 space-y-6 scroll-smooth">
+        {messages.map((message) => {
+          // Skip mapping system messages to the UI rendering loop entirely
+          const isSystem = message.parts.some(p => p.type === "text" && (p as {text: string}).text.startsWith("[SYSTEM:"));
+          if (isSystem) return null;
+
+          return (
             <div
-              className={`max-w-[85%] rounded-lg px-4 py-3 ${
-                message.role === "user"
-                  ? "bg-blue-600 text-white"
-                  : "bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100"
+              key={message.id}
+              className={`flex ${
+                message.role === "user" ? "justify-end" : "justify-start"
               }`}
             >
-              {message.parts.map((part, i) => {
-                if (part.type === "text") {
-                  const text = (part as { text: string }).text;
-                  // Hide system messages but still process them
-                  if (text.startsWith("[SYSTEM:")) {
-                    return null;
+              <div
+                className={`max-w-[85%] rounded-[1.25rem] px-5 py-3.5 shadow-sm transition-all duration-300 ${
+                  message.role === "user"
+                    ? "bg-blue-600 text-white rounded-br-sm shadow-blue-500/10"
+                    : "bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md border border-zinc-200/60 dark:border-zinc-800/60 text-zinc-800 dark:text-zinc-200 rounded-bl-sm"
+                }`}
+              >
+                {message.parts.map((part, i) => {
+                  if (part.type === "text") {
+                    const text = (part as { text: string }).text;
+                    return (
+                      <div key={`${message.id}-${i}`} className="whitespace-pre-wrap text-[15px] leading-relaxed">
+                        {text}
+                      </div>
+                    );
                   }
-                  return (
-                    <div key={`${message.id}-${i}`} className="whitespace-pre-wrap text-sm">
-                      {text}
-                    </div>
-                  );
-                }
-                return null;
-              })}
+                  return null;
+                })}
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
 
         {/* Recovery message UI */}
         {showRecoveryUI && recoveryContext && recoveryParsed && (
           <div className="flex justify-start">
-            <div className="max-w-full w-full" data-testid="recovery-message">
+            <div className="max-w-[90%] w-full" data-testid="recovery-message">
               <RecoveryMessage
                 failedCourseCode={recoveryContext.failedCourseCode}
                 failedCourseTitle={recoveryContext.failedCourseTitle}
@@ -296,14 +313,16 @@ export default function Chat({
         {/* Loading indicator */}
         {isLoading && (
           <div className="flex justify-start">
-            <div className="bg-zinc-100 dark:bg-zinc-800 rounded-lg px-4 py-3">
-              <div className="flex items-center gap-2 text-sm text-zinc-500 dark:text-zinc-400">
-                <div className="flex gap-1">
-                  <div className="w-2 h-2 bg-zinc-400 dark:bg-zinc-500 rounded-full animate-bounce [animation-delay:-0.3s]" />
-                  <div className="w-2 h-2 bg-zinc-400 dark:bg-zinc-500 rounded-full animate-bounce [animation-delay:-0.15s]" />
-                  <div className="w-2 h-2 bg-zinc-400 dark:bg-zinc-500 rounded-full animate-bounce" />
+            <div className="bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md border border-zinc-200/60 dark:border-zinc-800/60 rounded-[1.25rem] rounded-bl-sm px-5 py-4 shadow-sm">
+              <div className="flex items-center gap-3 text-sm font-medium text-zinc-500 dark:text-zinc-400">
+                <div className="flex gap-1.5">
+                  <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-bounce [animation-delay:-0.3s]" />
+                  <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-bounce [animation-delay:-0.15s]" />
+                  <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-bounce" />
                 </div>
-                <span>{recoveryContext ? "Analyzing recovery options..." : "Thinking..."}</span>
+                <span className="tracking-wide">
+                  {recoveryContext ? "Analyzing recovery options..." : "Thinking..."}
+                </span>
               </div>
             </div>
           </div>
@@ -312,13 +331,13 @@ export default function Chat({
         {/* Error message */}
         {error && (
           <div className="flex justify-start">
-            <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg px-4 py-3 max-w-[85%]">
-              <p className="text-sm text-red-700 dark:text-red-300">
+            <div className="bg-rose-50/90 dark:bg-rose-900/20 backdrop-blur-md border border-rose-200 dark:border-rose-800/50 rounded-[1.25rem] rounded-bl-sm px-5 py-3.5 max-w-[85%] shadow-sm">
+              <p className="text-[14px] font-medium text-rose-700 dark:text-rose-300">
                 {getErrorMessage(error)}
               </p>
               <button
                 onClick={() => clearError()}
-                className="mt-2 text-xs text-red-600 dark:text-red-400 hover:underline"
+                className="mt-2 text-xs font-semibold uppercase tracking-wider text-rose-500 hover:text-rose-700 dark:hover:text-rose-200 transition-colors"
               >
                 Dismiss
               </button>
@@ -328,24 +347,26 @@ export default function Chat({
       </div>
 
       {/* Input area */}
-      <div className="border-t border-zinc-200 dark:border-zinc-800 p-4">
-        <form onSubmit={handleSubmit} className="flex gap-2">
+      <div className="px-4 md:px-6 pb-6 md:pb-8 pt-2 bg-gradient-to-t from-[#FAFAFA] dark:from-zinc-950 via-[#FAFAFA]/80 dark:via-zinc-950/80 to-transparent sticky bottom-0 z-10 w-full">
+        <form onSubmit={handleSubmit} className="relative max-w-3xl mx-auto flex w-full">
           <input
             type="text"
             value={input}
             onChange={(e) => setInput(e.currentTarget.value)}
             placeholder="Describe your transfer goals..."
             disabled={isLoading}
-            className="flex-1 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-4 py-2 text-sm text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full rounded-full border border-zinc-200/80 dark:border-zinc-800/80 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-2xl pl-6 pr-14 py-4 text-[15px] text-zinc-900 dark:text-zinc-100 shadow-[0_4px_24px_rgba(0,0,0,0.03)] dark:shadow-[0_4px_24px_rgba(0,0,0,0.2)] placeholder-zinc-400 dark:placeholder-zinc-500 hover:border-zinc-300 dark:hover:border-zinc-700 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
             aria-label="Chat message input"
           />
           <button
             type="submit"
             disabled={isInputEmpty || isLoading}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="absolute right-2 top-1/2 -translate-y-1/2 p-2.5 rounded-full bg-blue-600 hover:bg-blue-700 text-white shadow-sm transition-all duration-300 disabled:opacity-0 disabled:scale-90 scale-100"
             aria-label="Send message"
           >
-            Send
+            <svg className="w-4 h-4 translate-x-[1px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 19V5M5 12l7-7 7 7" />
+            </svg>
           </button>
         </form>
       </div>

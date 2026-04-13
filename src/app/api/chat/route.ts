@@ -3,6 +3,7 @@ import { createOpenRouter } from "@openrouter/ai-sdk-provider";
 import { createClient } from "@/utils/supabase/server";
 import { getVerifiedPlaybooksContext } from "@/utils/playbook-context";
 import type { Database } from "@/types/database";
+import type { TranscriptData } from "@/types/transcript";
 
 const openrouter = createOpenRouter({
   apiKey: process.env.OPENROUTER_API_KEY,
@@ -300,6 +301,9 @@ export async function POST(req: Request) {
       messages,
       recoveryContext,
       planContext,
+      transcriptData,
+      maxCreditsPerSemester,
+      hasTargetSchool,
     }: {
       messages: UIMessage[];
       recoveryContext?: RecoveryContext;
@@ -308,6 +312,9 @@ export async function POST(req: Request) {
         targetInstitutionId?: string;
         targetMajor?: string;
       };
+      transcriptData?: TranscriptData;
+      maxCreditsPerSemester?: number;
+      hasTargetSchool?: boolean;
     } = await req.json();
 
     // Fetch articulation data, prerequisites, and verified playbooks in parallel
@@ -381,6 +388,92 @@ If the user already has a plan and asks to modify it (e.g., "Move MATH 101 to se
     // Add verified playbook context if available
     if (verifiedPlaybooksContext) {
       baseSystemPrompt += verifiedPlaybooksContext;
+    }
+
+    // Add transcript context if available
+    if (transcriptData && transcriptData.courses.length > 0) {
+      const completedCoursesList = transcriptData.courses
+        .filter((c) => c.status === "completed")
+        .map((c) => `- ${c.code}: ${c.title} (${c.units} units, Grade: ${c.grade})`)
+        .join("\n");
+      const inProgressList = transcriptData.courses
+        .filter((c) => c.status === "in_progress")
+        .map((c) => `- ${c.code}: ${c.title} (${c.units} units)`)
+        .join("\n");
+
+      baseSystemPrompt += `
+
+## STUDENT TRANSCRIPT
+The student has uploaded their transcript from ${transcriptData.institution}.
+
+COMPLETED COURSES:
+${completedCoursesList || "None"}
+
+IN-PROGRESS COURSES:
+${inProgressList || "None"}
+
+Total completed units: ${transcriptData.totalUnitsCompleted}${transcriptData.gpa !== undefined ? ` | GPA: ${transcriptData.gpa}` : ""}
+
+IMPORTANT: Do NOT include any completed courses in the generated plan. Only schedule remaining required courses that the student still needs to take. In-progress courses should only be included if they might need to be retaken.`;
+    }
+
+    // Add max credits enforcement
+    if (maxCreditsPerSemester) {
+      baseSystemPrompt += `
+
+## MAX CREDITS PER SEMESTER: ${maxCreditsPerSemester} units
+This is a STRICT limit. Every semester in the plan MUST have ${maxCreditsPerSemester} or fewer total units. No exceptions. If you cannot fit all required courses within this limit, add more semesters rather than exceeding the limit. NEVER generate a semester that exceeds ${maxCreditsPerSemester} units.`;
+    }
+
+    // Add multi-university mode if no target school
+    if (hasTargetSchool === false) {
+      baseSystemPrompt += `
+
+## MULTI-UNIVERSITY ANALYSIS MODE
+The student does NOT have a specific target school. Analyze the articulation data and generate plans for MULTIPLE universities that match their CC and major.
+
+You MUST output a JSON code block with this structure instead of the standard plan format:
+
+\`\`\`json
+{
+  "isMultiUniversity": true,
+  "studentCC": "Community College Name",
+  "major": "Student's Major",
+  "maxCreditsPerSemester": ${maxCreditsPerSemester || 15},
+  "transcriptSummary": {
+    "completedCourses": 10,
+    "totalUnits": 32,
+    "gpa": 3.45
+  },
+  "universities": [
+    {
+      "universityName": "University Name",
+      "fitScore": 85,
+      "articulatedUnits": 40,
+      "totalRequiredUnits": 60,
+      "completedPrereqs": 8,
+      "totalPrereqs": 10,
+      "remainingSemesters": 3,
+      "plan": {
+        "ccName": "...",
+        "targetUniversity": "...",
+        "targetMajor": "...",
+        "semesters": [...],
+        "totalUnits": 60
+      },
+      "highlights": ["85% of lower-div major requirements completed", "All math prerequisites satisfied"]
+    }
+  ]
+}
+\`\`\`
+
+RANKING: Sort universities by fitScore (highest first). Calculate fitScore as:
+- 40% weight: percentage of required courses already completed or articulated
+- 30% weight: percentage of prerequisites already satisfied
+- 20% weight: fewer remaining semesters = higher score
+- 10% weight: GPA competitiveness for the program
+
+Each university's plan must respect the max credits per semester limit. Include only universities where articulation data exists.`;
     }
 
     // If this is a recovery request, fetch additional context and append recovery prompt

@@ -5,48 +5,42 @@ interface CourseCardProps {
   onClick?: (course: PlanCourse) => void;
 }
 
-const statusStyles: Record<Exclude<CourseStatus, "planned">, { border: string; badge: string; badgeText: string; icon: string; textEffect: string }> = {
+const statusStyles: Record<Exclude<CourseStatus, "planned">, { indicator: string; bg: string; textClass: string }> = {
   completed: {
-    border: "border-green-400 dark:border-green-600",
-    badge: "bg-green-100 dark:bg-green-900/40 border-green-200 dark:border-green-700",
-    badgeText: "text-green-800 dark:text-green-200",
-    icon: "✓",
-    textEffect: "",
+    indicator: "border-l-emerald-500 dark:border-l-emerald-400 shadow-[inset_3px_0_0_0_rgba(16,185,129,0.1)]",
+    bg: "bg-emerald-50/50 dark:bg-emerald-500/10 border-emerald-100/50 dark:border-emerald-500/20",
+    textClass: "",
   },
   in_progress: {
-    border: "border-blue-400 dark:border-blue-600",
-    badge: "bg-blue-100 dark:bg-blue-900/40 border-blue-200 dark:border-blue-700",
-    badgeText: "text-blue-800 dark:text-blue-200",
-    icon: "◐",
-    textEffect: "",
+    indicator: "border-l-blue-500 dark:border-l-blue-400 shadow-[inset_3px_0_0_0_rgba(59,130,246,0.1)]",
+    bg: "bg-blue-50/50 dark:bg-blue-500/10 border-blue-100/50 dark:border-blue-500/20",
+    textClass: "",
   },
   cancelled: {
-    border: "border-zinc-300 dark:border-zinc-600",
-    badge: "bg-zinc-100 dark:bg-zinc-700/50 border-zinc-200 dark:border-zinc-600",
-    badgeText: "text-zinc-700 dark:text-zinc-200",
-    icon: "✕",
-    textEffect: "line-through opacity-60",
+    indicator: "border-l-zinc-400 dark:border-l-zinc-500 shadow-[inset_3px_0_0_0_rgba(161,161,170,0.1)]",
+    bg: "bg-zinc-50/80 dark:bg-zinc-800/40 border-zinc-200/50 dark:border-zinc-700/50",
+    textClass: "opacity-60 text-zinc-500",
   },
   waitlisted: {
-    border: "border-amber-400 dark:border-amber-600",
-    badge: "bg-amber-100 dark:bg-amber-900/40 border-amber-200 dark:border-amber-700",
-    badgeText: "text-amber-800 dark:text-amber-200",
-    icon: "⏳",
-    textEffect: "",
+    indicator: "border-l-amber-500 dark:border-l-amber-400 shadow-[inset_3px_0_0_0_rgba(245,158,11,0.1)]",
+    bg: "bg-amber-50/50 dark:bg-amber-500/10 border-amber-100/50 dark:border-amber-500/20",
+    textClass: "",
   },
   failed: {
-    border: "border-red-400 dark:border-red-600",
-    badge: "bg-red-100 dark:bg-red-900/40 border-red-200 dark:border-red-700",
-    badgeText: "text-red-800 dark:text-red-200",
-    icon: "✗",
-    textEffect: "line-through opacity-60",
+    indicator: "border-l-rose-500 dark:border-l-rose-400 shadow-[inset_3px_0_0_0_rgba(244,63,94,0.1)]",
+    bg: "bg-rose-50/50 dark:bg-rose-500/10 border-rose-100/50 dark:border-rose-500/20",
+    textClass: "opacity-80 text-rose-900 dark:text-rose-200",
   },
 };
 
 export default function CourseCard({ course, onClick }: CourseCardProps) {
   const status = course.status || "planned";
   const isInteractive = !!onClick;
-  const style = status !== "planned" ? statusStyles[status] : null;
+  const style = status !== "planned" ? statusStyles[status] : {
+    indicator: "border-l-zinc-300 dark:border-l-zinc-600",
+    bg: "bg-white dark:bg-zinc-900 border-zinc-200/60 dark:border-zinc-800",
+    textClass: "",
+  };
 
   const handleClick = () => {
     onClick?.(course);
@@ -54,9 +48,9 @@ export default function CourseCard({ course, onClick }: CourseCardProps) {
 
   return (
     <div
-      className={`flex flex-col gap-1 rounded-lg border ${style?.border || "border-zinc-200 dark:border-zinc-700"} bg-white dark:bg-zinc-800 p-3 shadow-sm ${
-        isInteractive ? "cursor-pointer hover:shadow-md hover:border-blue-300 dark:hover:border-blue-600 transition-shadow" : ""
-      } ${style?.textEffect || ""}`}
+      className={`group relative flex flex-col gap-1.5 rounded-xl border border-l-[3px] ${style.bg} ${style.indicator} px-4 py-3 shadow-sm transition-all duration-200 ${
+        isInteractive ? "cursor-pointer hover:-translate-y-0.5 hover:shadow-md hover:border-zinc-300 dark:hover:border-zinc-600" : ""
+      } ${style.textClass} overflow-hidden`}
       role={isInteractive ? "button" : "article"}
       tabIndex={isInteractive ? 0 : undefined}
       aria-label={`${course.code}: ${course.title}${status !== "planned" ? ` - Status: ${status.replace("_", " ")}` : ""}`}
@@ -69,65 +63,60 @@ export default function CourseCard({ course, onClick }: CourseCardProps) {
       }}
       data-testid={`course-card-${course.code}`}
     >
-      <div className="flex items-start justify-between gap-2">
+      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2">
         <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-1.5">
-            <h4 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 truncate" data-testid="course-code">
+          <div className="flex items-center gap-2">
+            <h4 className="text-[13px] font-semibold text-zinc-900 dark:text-zinc-100 uppercase tracking-wider" data-testid="course-code">
               {course.code}
             </h4>
-            {style && (
-              <span className="shrink-0 text-xs" aria-hidden="true">
-                {style.icon}
+            {status !== "planned" && (
+              <span className="text-[10px] uppercase font-bold tracking-widest text-zinc-500 dark:text-zinc-400">
+                {status.replace("_", " ")}
               </span>
             )}
           </div>
-          <p className="text-xs text-zinc-600 dark:text-zinc-400 mt-0.5" data-testid="course-title">
+          <p className="text-[15px] font-medium leading-tight text-zinc-800 dark:text-zinc-300 mt-1" data-testid="course-title">
             {course.title}
           </p>
         </div>
-        <div className="shrink-0 flex items-center gap-1.5">
-          {/* Status badge - visible for non-planned statuses */}
-          {style && (
-            <span
-              className={`inline-flex items-center gap-1 rounded-full ${style.badge} px-2 py-0.5 text-xs font-medium ${style.badgeText}`}
-              data-testid="course-status-badge"
-            >
-              <span aria-hidden="true">{style.icon}</span>
-              <span>{status.replace("_", " ")}</span>
-            </span>
-          )}
-          <span className={`shrink-0 inline-flex items-center rounded-full ${
-            status === "completed"
-              ? "bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300"
-              : status === "failed" || status === "cancelled"
-              ? "bg-zinc-100 dark:bg-zinc-700/50 text-zinc-500 dark:text-zinc-400"
-              : "bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300"
-          } px-2 py-0.5 text-xs font-medium`} data-testid="course-units">
-            {course.units} {course.units === 1 ? "unit" : "units"}
+
+        <div className="shrink-0 flex items-center justify-end">
+          <span className="inline-flex items-center rounded-md bg-zinc-100/80 dark:bg-zinc-800/80 px-2 py-1 text-[11px] font-medium text-zinc-600 dark:text-zinc-300" data-testid="course-units">
+            {course.units} {course.units === 1 ? "Unit" : "Units"}
           </span>
         </div>
       </div>
 
-      {course.transferEquivalency && (
-        <div className="mt-1" data-testid="course-equivalency">
-          <p className="text-xs text-zinc-500 dark:text-zinc-400">
-            <span className="font-medium">Transfer to:</span> {course.transferEquivalency}
-          </p>
-        </div>
-      )}
+      {(course.transferEquivalency || (course.prerequisites && course.prerequisites.length > 0) || course.notes) && (
+        <div className="mt-1 space-y-1.5 border-t border-zinc-100 dark:border-zinc-800/50 pt-2">
+          {course.transferEquivalency && (
+            <div className="flex items-start gap-1.5" data-testid="course-equivalency">
+              <svg className="w-3.5 h-3.5 mt-0.5 text-zinc-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13 5l7 7-7 7M5 5l7 7-7 7" />
+              </svg>
+              <p className="text-[13px] text-zinc-600 dark:text-zinc-400">
+                <span className="font-medium text-zinc-700 dark:text-zinc-300">Transfers as:</span> {course.transferEquivalency}
+              </p>
+            </div>
+          )}
 
-      {course.prerequisites && course.prerequisites.length > 0 && (
-        <div className="mt-1" data-testid="course-prerequisites">
-          <p className="text-xs text-amber-600 dark:text-amber-400">
-            <span className="font-medium">Prerequisites:</span> {course.prerequisites.join(", ")}
-          </p>
-        </div>
-      )}
+          {course.prerequisites && course.prerequisites.length > 0 && (
+            <div className="flex items-start gap-1.5" data-testid="course-prerequisites">
+              <svg className="w-3.5 h-3.5 mt-0.5 text-amber-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+              </svg>
+              <p className="text-[13px] text-zinc-600 dark:text-zinc-400">
+                <span className="font-medium text-amber-700 dark:text-amber-400">Prereqs:</span> {course.prerequisites.join(", ")}
+              </p>
+            </div>
+          )}
 
-      {course.notes && (
-        <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400 italic">
-          {course.notes}
-        </p>
+          {course.notes && (
+            <p className="text-[13px] text-zinc-500 dark:text-zinc-500 italic mt-0.5" data-testid="course-notes">
+              {course.notes}
+            </p>
+          )}
+        </div>
       )}
     </div>
   );

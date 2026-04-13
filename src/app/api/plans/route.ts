@@ -23,6 +23,9 @@ export async function POST(req: NextRequest) {
       target_major,
       plan_data,
       chat_history,
+      max_credits_per_semester,
+      transcript_id,
+      has_target_school,
     } = body;
 
     if (!title || !target_major) {
@@ -41,6 +44,9 @@ export async function POST(req: NextRequest) {
       plan_data: plan_data ?? null,
       chat_history: chat_history ?? null,
       status: "active",
+      max_credits_per_semester: max_credits_per_semester ?? null,
+      transcript_id: transcript_id ?? null,
+      has_target_school: has_target_school ?? true,
     };
 
     const { data, error } = await supabase

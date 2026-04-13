@@ -1,4 +1,4 @@
-import type { ParsedPlan, TransferPlan, NoDataResponse, PlanCourse, PlanSemester } from "@/types/plan";
+import type { ParsedPlan, TransferPlan, NoDataResponse, PlanCourse, PlanSemester, MultiUniversityPlan, UniversityFit } from "@/types/plan";
 
 /**
  * Extracts and parses a structured transfer plan from AI response text.
@@ -17,6 +17,12 @@ export function parsePlanFromAIResponse(text: string): ParsedPlan | null {
 
   try {
     const parsed = JSON.parse(jsonMatch[1].trim());
+
+    // Check for multi-university plan format
+    if (parsed && typeof parsed === "object" && parsed.isMultiUniversity === true) {
+      return validateMultiUniversityPlan(parsed);
+    }
+
     return validateAndNormalizePlan(parsed);
   } catch {
     // If JSON parsing fails, check for no-data indicators in the text
@@ -374,4 +380,191 @@ ${options.existingPlan}`);
   }
 
   return parts.join("\n\n");
+}
+
+/**
+ * Validates and normalizes a multi-university plan from AI response.
+ */
+function validateMultiUniversityPlan(raw: Record<string, unknown>): MultiUniversityPlan | null {
+  if (!raw.universities || !Array.isArray(raw.universities) || raw.universities.length === 0) {
+    return null;
+  }
+
+  const universities: UniversityFit[] = [];
+
+  for (const uni of raw.universities) {
+    if (!uni || typeof uni !== "object") continue;
+    const u = uni as Record<string, unknown>;
+
+    if (typeof u.universityName !== "string" || typeof u.fitScore !== "number") continue;
+
+    // Validate the embedded plan
+    let plan: TransferPlan | null = null;
+    if (u.plan && typeof u.plan === "object") {
+      const validated = validateAndNormalizePlan(u.plan);
+      if (validated && !("isNoData" in validated)) {
+        plan = validated as TransferPlan;
+      }
+    }
+
+    if (!plan) continue;
+
+    universities.push({
+      universityName: u.universityName,
+      fitScore: Math.max(0, Math.min(100, u.fitScore)),
+      articulatedUnits: typeof u.articulatedUnits === "number" ? u.articulatedUnits : 0,
+      totalRequiredUnits: typeof u.totalRequiredUnits === "number" ? u.totalRequiredUnits : 0,
+      completedPrereqs: typeof u.completedPrereqs === "number" ? u.completedPrereqs : 0,
+      totalPrereqs: typeof u.totalPrereqs === "number" ? u.totalPrereqs : 0,
+      remainingSemesters: typeof u.remainingSemesters === "number" ? u.remainingSemesters : plan.semesters.length,
+      plan,
+      highlights: Array.isArray(u.highlights) ? u.highlights.filter((h): h is string => typeof h === "string") : [],
+    });
+  }
+
+  if (universities.length === 0) return null;
+
+  // Sort by fitScore descending
+  universities.sort((a, b) => b.fitScore - a.fitScore);
+
+  const summary = raw.transcriptSummary as Record<string, unknown> | undefined;
+
+  return {
+    isMultiUniversity: true,
+    studentCC: typeof raw.studentCC === "string" ? raw.studentCC : "",
+    major: typeof raw.major === "string" ? raw.major : "",
+    maxCreditsPerSemester: typeof raw.maxCreditsPerSemester === "number" ? raw.maxCreditsPerSemester : 15,
+    transcriptSummary: {
+      completedCourses: typeof summary?.completedCourses === "number" ? summary.completedCourses : 0,
+      totalUnits: typeof summary?.totalUnits === "number" ? summary.totalUnits : 0,
+      gpa: typeof summary?.gpa === "number" ? summary.gpa : undefined,
+    },
+    universities,
+  };
+}
+
+/**
+ * Enforces a max credit limit on every semester of a plan.
+ * If any semester exceeds the limit, courses are redistributed into new semesters
+ * while respecting prerequisite ordering.
+ */
+export function enforceMaxCredits(plan: TransferPlan, maxCredits: number): TransferPlan {
+  const needsFix = plan.semesters.some((s) => s.totalUnits > maxCredits);
+  if (!needsFix) return plan;
+
+  // Flatten all courses with their prerequisite info
+  const allCourses: PlanCourse[] = [];
+  for (const sem of plan.semesters) {
+    for (const course of sem.courses) {
+      allCourses.push(course);
+    }
+  }
+
+  // Build prerequisite map
+  const prereqMap = new Map<string, string[]>();
+  for (const course of allCourses) {
+    prereqMap.set(course.code.toLowerCase(), course.prerequisites?.map((p) => p.toLowerCase()) || []);
+  }
+
+  // Topological sort
+  const inDegree = new Map<string, number>();
+  const dependents = new Map<string, string[]>();
+
+  for (const course of allCourses) {
+    const code = course.code.toLowerCase();
+    inDegree.set(code, 0);
+    dependents.set(code, []);
+  }
+
+  for (const [code, prereqs] of prereqMap) {
+    let degree = 0;
+    for (const prereq of prereqs) {
+      if (dependents.has(prereq)) {
+        dependents.get(prereq)!.push(code);
+        degree++;
+      }
+    }
+    inDegree.set(code, degree);
+  }
+
+  const queue: string[] = [];
+  for (const [code, degree] of inDegree) {
+    if (degree === 0) queue.push(code);
+  }
+
+  const ordered: string[] = [];
+  while (queue.length > 0) {
+    const current = queue.shift()!;
+    ordered.push(current);
+    for (const dep of dependents.get(current) || []) {
+      inDegree.set(dep, inDegree.get(dep)! - 1);
+      if (inDegree.get(dep) === 0) queue.push(dep);
+    }
+  }
+
+  // Assign semester levels based on prerequisite chains
+  const semesterLevel = new Map<string, number>();
+  for (const code of ordered) {
+    const prereqs = prereqMap.get(code) || [];
+    if (prereqs.length === 0) {
+      semesterLevel.set(code, 0);
+    } else {
+      const maxLevel = Math.max(
+        ...prereqs.filter((p) => semesterLevel.has(p)).map((p) => semesterLevel.get(p)!)
+      );
+      semesterLevel.set(code, maxLevel + 1);
+    }
+  }
+
+  // Group by level, then split groups that exceed max credits
+  const courseByCode = new Map<string, PlanCourse>();
+  for (const c of allCourses) courseByCode.set(c.code.toLowerCase(), c);
+
+  const levelGroups = new Map<number, PlanCourse[]>();
+  for (const [code, level] of semesterLevel) {
+    if (!levelGroups.has(level)) levelGroups.set(level, []);
+    const course = courseByCode.get(code);
+    if (course) levelGroups.get(level)!.push(course);
+  }
+
+  const newSemesters: PlanSemester[] = [];
+  const levels = [...levelGroups.keys()].sort((a, b) => a - b);
+
+  for (const level of levels) {
+    const courses = levelGroups.get(level)!;
+    let currentBatch: PlanCourse[] = [];
+    let currentUnits = 0;
+
+    for (const course of courses) {
+      if (currentUnits + course.units > maxCredits && currentBatch.length > 0) {
+        const semUnits = currentBatch.reduce((s, c) => s + c.units, 0);
+        newSemesters.push({
+          number: newSemesters.length + 1,
+          label: `Semester ${newSemesters.length + 1}`,
+          courses: currentBatch,
+          totalUnits: semUnits,
+        });
+        currentBatch = [];
+        currentUnits = 0;
+      }
+      currentBatch.push(course);
+      currentUnits += course.units;
+    }
+
+    if (currentBatch.length > 0) {
+      const semUnits = currentBatch.reduce((s, c) => s + c.units, 0);
+      newSemesters.push({
+        number: newSemesters.length + 1,
+        label: `Semester ${newSemesters.length + 1}`,
+        courses: currentBatch,
+        totalUnits: semUnits,
+      });
+    }
+  }
+
+  return {
+    ...plan,
+    semesters: newSemesters,
+    totalUnits: newSemesters.reduce((s, sem) => s + sem.totalUnits, 0),
+  };
 }

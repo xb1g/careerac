@@ -37,4 +37,29 @@ export interface NoDataResponse {
   message: string;
 }
 
-export type ParsedPlan = TransferPlan | NoDataResponse;
+export interface UniversityFit {
+  universityName: string;
+  fitScore: number;
+  articulatedUnits: number;
+  totalRequiredUnits: number;
+  completedPrereqs: number;
+  totalPrereqs: number;
+  remainingSemesters: number;
+  plan: TransferPlan;
+  highlights: string[];
+}
+
+export interface MultiUniversityPlan {
+  isMultiUniversity: true;
+  studentCC: string;
+  major: string;
+  maxCreditsPerSemester: number;
+  transcriptSummary: {
+    completedCourses: number;
+    totalUnits: number;
+    gpa?: number;
+  };
+  universities: UniversityFit[];
+}
+
+export type ParsedPlan = TransferPlan | NoDataResponse | MultiUniversityPlan;

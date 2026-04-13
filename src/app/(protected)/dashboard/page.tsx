@@ -42,24 +42,35 @@ function PlanCard({ plan }: { plan: PlanCard }) {
   return (
     <Link
       href={`/plan/${plan.id}`}
-      className="group rounded-lg border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 p-5 hover:border-blue-300 dark:hover:border-blue-700 hover:shadow-sm transition-all"
+      className="group relative flex flex-col justify-between overflow-hidden rounded-[1.25rem] bg-white/70 dark:bg-zinc-900/70 backdrop-blur-xl border border-white/80 dark:border-zinc-700/50 p-6 hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] dark:hover:shadow-[0_8px_30px_rgb(0,0,0,0.2)] hover:-translate-y-1 transition-all duration-300"
     >
-      <div className="flex items-start justify-between">
-        <div className="flex-1 min-w-0">
-          <h3 className="text-base font-semibold text-zinc-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 truncate">
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-indigo-50/50 dark:from-blue-900/10 dark:to-indigo-900/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      <div className="relative z-10 flex items-start justify-between">
+        <div className="flex-1 min-w-0 pr-4">
+          <h3 className="text-[17px] font-bold text-zinc-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors truncate">
             {plan.title}
           </h3>
-          <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+          <p className="mt-1.5 text-[14px] font-medium text-zinc-500 dark:text-zinc-400 truncate">
             {plan.target_major}
           </p>
         </div>
-        <div className="ml-4 text-right flex-shrink-0">
-          <span className="inline-flex items-center rounded-full bg-zinc-100 dark:bg-zinc-800 px-2.5 py-0.5 text-xs font-medium text-zinc-600 dark:text-zinc-400">
+        <div className="flex-shrink-0">
+          <span className="inline-flex items-center rounded-full bg-zinc-100/80 dark:bg-zinc-800/80 px-3 py-1 text-[11px] font-bold tracking-wider uppercase text-zinc-600 dark:text-zinc-400 backdrop-blur-sm border border-zinc-200/50 dark:border-zinc-700/50">
             {plan.status}
           </span>
-          <p className="mt-1 text-xs text-zinc-400 dark:text-zinc-500">
-            {formattedDate}
-          </p>
+        </div>
+      </div>
+      <div className="relative z-10 mt-6 flex items-center justify-between border-t border-zinc-200/50 dark:border-zinc-800/50 pt-4">
+        <p className="text-[13px] font-medium text-zinc-400 dark:text-zinc-500 flex items-center gap-1.5">
+          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          {formattedDate}
+        </p>
+        <div className="text-blue-600 dark:text-blue-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform group-hover:translate-x-1">
+          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+          </svg>
         </div>
       </div>
     </Link>
@@ -70,41 +81,40 @@ export default async function DashboardPage() {
   const plans = await getUserPlans();
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-white">
-          Dashboard
-        </h1>
-        <p className="mt-2 text-zinc-600 dark:text-zinc-400">
-          Manage your transfer plans and explore community playbooks.
-        </p>
-      </div>
-
-      {plans.length === 0 ? (
-        <EmptyState />
-      ) : (
-        <div className="space-y-4">
-          <div className="flex items-center justify-between mb-2">
-            <h2 className="text-lg font-semibold text-zinc-900 dark:text-white">
-              Your Plans
-            </h2>
+    <div className="min-h-screen bg-[#FAFAFA] dark:bg-zinc-950 pb-20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <div>
+            <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-zinc-900 dark:text-white">
+              Dashboard
+            </h1>
+            <p className="mt-2 text-[15px] text-zinc-600 dark:text-zinc-400 font-medium">
+              Manage your transfer plans and explore community playbooks.
+            </p>
+          </div>
+          {plans.length > 0 && (
             <Link
               href="/plan/new"
-              className="inline-flex items-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 transition-colors"
+              className="inline-flex items-center justify-center rounded-full bg-blue-600 px-6 py-2.5 text-[14px] font-bold text-white hover:bg-blue-700 hover:shadow-lg hover:shadow-blue-600/20 transition-all duration-300"
             >
-              <svg className="w-4 h-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <svg className="w-4 h-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
               </svg>
               New Plan
             </Link>
-          </div>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          )}
+        </div>
+
+        {plans.length === 0 ? (
+          <EmptyState />
+        ) : (
+          <div className="grid gap-6 sm:gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {plans.map((plan) => (
               <PlanCard key={plan.id} plan={plan} />
             ))}
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }

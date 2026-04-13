@@ -139,7 +139,7 @@ export default function PlanDetailClient({ plan }: PlanDetailClientProps) {
       console.log("Alternative accepted:", result);
 
       // Update local plan state to reflect the new course
-      if (currentPlan && !("isNoData" in currentPlan)) {
+      if (currentPlan && !("isNoData" in currentPlan) && !("isMultiUniversity" in currentPlan)) {
         const updatedPlan: TransferPlan = {
           ...currentPlan,
           semesters: currentPlan.semesters.map((semester) => {
@@ -163,7 +163,7 @@ export default function PlanDetailClient({ plan }: PlanDetailClientProps) {
             }
             return semester;
           }),
-          totalUnits: currentPlan.totalUnits + alternative.units,
+          totalUnits: (currentPlan as TransferPlan).totalUnits + alternative.units,
         };
         setCurrentPlan(updatedPlan);
 
@@ -183,7 +183,7 @@ export default function PlanDetailClient({ plan }: PlanDetailClientProps) {
 
     // Build the updated plan
     const buildUpdatedPlan = (prev: ParsedPlan | null): TransferPlan | null => {
-      if (!prev || "isNoData" in prev) return null;
+      if (!prev || "isNoData" in prev || "isMultiUniversity" in prev) return null;
       return {
         ...prev,
         semesters: prev.semesters.map((semester) => {
@@ -252,29 +252,26 @@ export default function PlanDetailClient({ plan }: PlanDetailClientProps) {
   return (
     <div className="flex flex-col h-[calc(100vh-4rem)]">
       {/* Header */}
-      <div className="px-4 sm:px-6 lg:px-8 py-4 border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950">
+      <div className="px-6 lg:px-8 py-4 lg:py-5 border-b border-zinc-200/50 dark:border-zinc-800/50 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-xl relative z-20 shadow-[0_1px_2px_rgba(0,0,0,0.02)]">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-white">
+            <h1 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 flex items-center gap-3">
               {plan.title}
+              {isLoading && (
+                <div className="inline-flex w-4 h-4 ml-2 border-[2.5px] border-blue-500/30 border-t-blue-600 rounded-full animate-spin" />
+              )}
             </h1>
-            <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
+            <p className="mt-1 text-[15px] font-medium text-zinc-500 dark:text-zinc-400">
               {plan.target_major}
             </p>
           </div>
-          {isLoading && (
-            <div className="flex items-center gap-2 text-sm text-zinc-500 dark:text-zinc-400">
-              <div className="w-3 h-3 border-2 border-zinc-400 border-t-transparent rounded-full animate-spin" />
-              Saving...
-            </div>
-          )}
         </div>
       </div>
 
       {/* Split layout: chat panel (left) + plan display (right) */}
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex flex-1 overflow-hidden bg-[#FAFAFA] dark:bg-zinc-950">
         {/* Chat panel */}
-        <div className="w-full lg:w-1/2 border-r border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950">
+        <div className="w-full lg:w-1/2 border-r border-zinc-200/50 dark:border-zinc-800/50 z-10 relative">
           <Chat
             onPlanGenerated={handlePlanGenerated}
             onSavePlan={handleSavePlan}
@@ -285,7 +282,7 @@ export default function PlanDetailClient({ plan }: PlanDetailClientProps) {
         </div>
 
         {/* Plan display area */}
-        <div className="hidden lg:flex lg:w-1/2 flex-col bg-zinc-50 dark:bg-zinc-900">
+        <div className="hidden lg:flex lg:w-1/2 flex-col bg-[#FAFAFA] dark:bg-zinc-900/50 relative">
           {currentPlan ? (
             <SemesterPlan plan={currentPlan} onCourseClick={handleCourseClick} />
           ) : (

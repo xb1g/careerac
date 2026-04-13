@@ -156,6 +156,9 @@ export interface Database {
           status: "draft" | "active" | "completed"
           plan_data: Json | null
           chat_history: Json | null
+          max_credits_per_semester: number | null
+          transcript_id: string | null
+          has_target_school: boolean
           created_at: string
           updated_at: string
         }
@@ -169,6 +172,9 @@ export interface Database {
           status?: "draft" | "active" | "completed"
           plan_data?: Json | null
           chat_history?: Json | null
+          max_credits_per_semester?: number | null
+          transcript_id?: string | null
+          has_target_school?: boolean
           created_at?: string
           updated_at?: string
         }
@@ -182,6 +188,9 @@ export interface Database {
           status?: "draft" | "active" | "completed"
           plan_data?: Json | null
           chat_history?: Json | null
+          max_credits_per_semester?: number | null
+          transcript_id?: string | null
+          has_target_school?: boolean
           created_at?: string
           updated_at?: string
         }
@@ -244,6 +253,38 @@ export interface Database {
           failure_type?: "cancelled" | "waitlisted" | "failed"
           resolution?: string | null
           resolved_at?: string | null
+          created_at?: string
+        }
+      }
+      transcripts: {
+        Row: {
+          id: string
+          user_id: string
+          file_path: string
+          file_name: string
+          parsed_data: Json | null
+          parse_status: "pending" | "parsing" | "completed" | "failed"
+          parse_error: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          file_path: string
+          file_name: string
+          parsed_data?: Json | null
+          parse_status?: "pending" | "parsing" | "completed" | "failed"
+          parse_error?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          file_path?: string
+          file_name?: string
+          parsed_data?: Json | null
+          parse_status?: "pending" | "parsing" | "completed" | "failed"
+          parse_error?: string | null
           created_at?: string
         }
       }

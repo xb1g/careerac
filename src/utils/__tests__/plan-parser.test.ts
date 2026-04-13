@@ -54,7 +54,7 @@ Let me know if you have any questions!`;
       const result = parsePlanFromAIResponse(response);
 
       expect(result).not.toBeNull();
-      if (result && !("isNoData" in result)) {
+      if (result && !("isNoData" in result) && !("isMultiUniversity" in result)) {
         expect(result.ccName).toBe("Santa Monica College");
         expect(result.targetUniversity).toBe("UCLA");
         expect(result.targetMajor).toBe("Computer Science");
@@ -129,7 +129,7 @@ Let me know if you have any questions!`;
 
       // The parser should attempt to fix ordering via topological sort
       // If it can fix it, result should be valid; if not, null
-      if (result && !("isNoData" in result)) {
+      if (result && !("isNoData" in result) && !("isMultiUniversity" in result)) {
         // Verify that CS 1 now comes before CS 2
         const cs1Semester = result.semesters.find((s) =>
           s.courses.some((c) => c.code === "CS 1")
@@ -165,7 +165,7 @@ Let me know if you have any questions!`;
       const result = parsePlanFromAIResponse(response);
 
       expect(result).not.toBeNull();
-      if (result && !("isNoData" in result)) {
+      if (result && !("isNoData" in result) && !("isMultiUniversity" in result)) {
         expect(result.semesters[0].totalUnits).toBe(7);
         expect(result.totalUnits).toBe(7);
       }
@@ -192,7 +192,7 @@ Let me know if you have any questions!`;
       const result = parsePlanFromAIResponse(response);
 
       expect(result).not.toBeNull();
-      if (result && !("isNoData" in result)) {
+      if (result && !("isNoData" in result) && !("isMultiUniversity" in result)) {
         expect(result.semesters[0].courses[0].code).toBe("CS 1");
         expect(result.semesters[0].courses[0].prerequisites).toBeUndefined();
         expect(result.semesters[0].courses[0].transferEquivalency).toBeUndefined();

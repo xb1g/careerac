@@ -34,7 +34,7 @@ export default function Header({ userEmail }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <header className="w-full border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950">
+    <header className="sticky top-0 z-50 w-full border-b border-zinc-200/50 dark:border-zinc-800/50 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-xl transition-all duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           {/* Logo and desktop nav */}
@@ -47,10 +47,10 @@ export default function Header({ userEmail }: HeaderProps) {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`text-sm font-medium transition-colors ${
+                  className={`text-[14px] font-semibold tracking-wide transition-all duration-200 px-3 py-1.5 rounded-full ${
                     isActive(link.href, pathname)
-                      ? "text-zinc-900 dark:text-white"
-                      : "text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white"
+                      ? "bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white"
+                      : "text-zinc-500 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white"
                   }`}
                 >
                   {link.label}
@@ -62,14 +62,14 @@ export default function Header({ userEmail }: HeaderProps) {
           {/* Right side: user info, sign out, mobile menu button */}
           <div className="flex items-center gap-4">
             {userEmail && (
-              <span className="text-sm text-zinc-500 dark:text-zinc-400 hidden sm:inline">
+              <span className="text-[14px] font-medium text-zinc-500 dark:text-zinc-400 hidden sm:inline mr-2">
                 {userEmail}
               </span>
             )}
             <form action={signout}>
               <button
                 type="submit"
-                className="text-sm font-medium text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white transition-colors"
+                className="text-[14px] font-semibold tracking-wide text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white px-3 py-1.5 rounded-full hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-all duration-200"
               >
                 Sign Out
               </button>
