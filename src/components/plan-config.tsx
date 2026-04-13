@@ -73,10 +73,10 @@ export default function PlanConfig({ transcriptData, onConfigured, onBack }: Pla
       )}
 
       {/* Max Credits Per Semester */}
-      <div className="space-y-3">
-        <label className="block text-sm font-medium text-zinc-900 dark:text-white">
+      <fieldset className="space-y-3">
+        <legend className="block text-sm font-medium text-zinc-900 dark:text-white">
           Maximum Credits Per Semester
-        </label>
+        </legend>
         <p className="text-xs text-zinc-500 dark:text-zinc-400">
           This is a strict limit. Every semester in your plan will have this many units or fewer.
         </p>
@@ -119,14 +119,15 @@ export default function PlanConfig({ transcriptData, onConfigured, onBack }: Pla
           />
         )}
         {errors.credits && <p className="text-sm text-red-600 dark:text-red-400">{errors.credits}</p>}
-      </div>
+      </fieldset>
 
       {/* Major */}
       <div className="space-y-2">
-        <label className="block text-sm font-medium text-zinc-900 dark:text-white">
+        <label htmlFor="major-input" className="block text-sm font-medium text-zinc-900 dark:text-white">
           Intended Major
         </label>
         <input
+          id="major-input"
           type="text"
           value={major}
           onChange={(e) => setMajor(e.target.value)}
@@ -137,12 +138,12 @@ export default function PlanConfig({ transcriptData, onConfigured, onBack }: Pla
       </div>
 
       {/* Target School */}
-      <div className="space-y-3">
-        <label className="block text-sm font-medium text-zinc-900 dark:text-white">
+      <fieldset className="space-y-3">
+        <legend className="block text-sm font-medium text-zinc-900 dark:text-white">
           Do you have a target school?
-        </label>
+        </legend>
         <div className="flex flex-col gap-3">
-          <label className="flex items-start gap-3 cursor-pointer">
+          <label aria-label="Yes, I have a target school" className="flex items-start gap-3 cursor-pointer">
             <input
               type="radio"
               name="targetSchool"
@@ -170,7 +171,7 @@ export default function PlanConfig({ transcriptData, onConfigured, onBack }: Pla
             </div>
           )}
 
-          <label className="flex items-start gap-3 cursor-pointer">
+          <label aria-label="Help me find the best fit" className="flex items-start gap-3 cursor-pointer">
             <input
               type="radio"
               name="targetSchool"
@@ -186,7 +187,7 @@ export default function PlanConfig({ transcriptData, onConfigured, onBack }: Pla
             </div>
           </label>
         </div>
-      </div>
+      </fieldset>
 
       {/* Actions */}
       <div className="flex gap-3">

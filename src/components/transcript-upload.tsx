@@ -155,10 +155,11 @@ export default function TranscriptUpload({ onTranscriptParsed, onSkip }: Transcr
         )}
 
         <div>
-          <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">
+          <label htmlFor="institution-name" className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">
             Institution Name
           </label>
           <input
+            id="institution-name"
             type="text"
             value={manualInstitution}
             onChange={(e) => setManualInstitution(e.target.value)}
@@ -379,10 +380,13 @@ export default function TranscriptUpload({ onTranscriptParsed, onSkip }: Transcr
       )}
 
       <div
+        role="button"
+        tabIndex={0}
         onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
         onDragLeave={() => setIsDragging(false)}
         onDrop={handleDrop}
         onClick={() => fileInputRef.current?.click()}
+        onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); fileInputRef.current?.click(); } }}
         className={`cursor-pointer rounded-xl border-2 border-dashed p-12 text-center transition-all ${
           isDragging
             ? "border-blue-500 bg-blue-50 dark:bg-blue-900/10"
