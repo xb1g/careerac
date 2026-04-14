@@ -168,46 +168,46 @@ export default function TranscriptUpload({ onTranscriptParsed, onSkip }: Transcr
           />
         </div>
 
-        <div className="grid grid-cols-12 gap-2">
+        <div className="flex flex-col sm:flex-row gap-2">
           <input
             type="text"
             value={manualCourse.code}
             onChange={(e) => setManualCourse((p) => ({ ...p, code: e.target.value }))}
             placeholder="Code (CS 1)"
-            className="col-span-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
+            className="w-full sm:w-24 xl:w-28 shrink-0 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
           />
           <input
             type="text"
             value={manualCourse.title}
             onChange={(e) => setManualCourse((p) => ({ ...p, title: e.target.value }))}
             placeholder="Course Title"
-            className="col-span-4 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
+            className="w-full sm:flex-1 min-w-0 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
           />
           <input
             type="number"
             value={manualCourse.units}
             onChange={(e) => setManualCourse((p) => ({ ...p, units: e.target.value }))}
             placeholder="Units"
-            className="col-span-1 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
+            className="w-full sm:w-24 shrink-0 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
           />
           <input
             type="text"
             value={manualCourse.grade}
             onChange={(e) => setManualCourse((p) => ({ ...p, grade: e.target.value }))}
             placeholder="Grade"
-            className="col-span-1 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
+            className="w-full sm:w-24 shrink-0 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
           />
           <input
             type="text"
             value={manualCourse.semester}
             onChange={(e) => setManualCourse((p) => ({ ...p, semester: e.target.value }))}
             placeholder="Semester"
-            className="col-span-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
+            className="w-full sm:w-32 shrink-0 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
           />
           <button
             onClick={handleAddManualCourse}
             disabled={!manualCourse.code || !manualCourse.title || !manualCourse.units || !manualCourse.grade}
-            className="col-span-2 rounded-lg bg-blue-600 text-white text-sm font-medium px-3 py-2 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="w-full sm:w-auto shrink-0 whitespace-nowrap rounded-lg bg-blue-600 text-white text-sm font-medium px-4 py-2 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             Add Course
           </button>

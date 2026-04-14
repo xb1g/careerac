@@ -104,6 +104,18 @@ export default async function PlanDetail({ params }: PlanDetailProps) {
     .eq("plan_id", id)
     .order("created_at", { ascending: true }) as { data: Array<{ semester_number: number; status: string; alternative_for: string | null }> | null; error: unknown };
 
+  // Fetch linked transcript if transcript_id exists
+  let transcript = null;
+  if (plan.transcript_id) {
+    const { data: transcriptData } = await supabase
+      .from("transcripts")
+      .select("*")
+      .eq("id", plan.transcript_id)
+      .eq("user_id", user.id)
+      .single();
+    transcript = transcriptData;
+  }
+
   // Merge plan_courses status into plan_data for persistence
   let mergedPlanData: unknown = plan.plan_data;
   if (planCourses && planCourses.length > 0) {
@@ -119,7 +131,7 @@ export default async function PlanDetail({ params }: PlanDetailProps) {
     chat_history: (plan.chat_history as unknown[]) ?? [],
   };
 
-  return <PlanDetailPage plan={planWithMergedData} />;
+  return <PlanDetailPage plan={planWithMergedData} transcript={transcript as never} />;
 }
 
 function PlanNotFound() {

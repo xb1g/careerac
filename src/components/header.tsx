@@ -13,6 +13,7 @@ const navLinks = [
   { href: "/dashboard", label: "Dashboard" },
   { href: "/plan/new", label: "New Plan" },
   { href: "/playbooks", label: "Playbooks" },
+  { href: "/settings", label: "My Courses" },
 ];
 
 function isActive(href: string, pathname: string): boolean {
@@ -25,6 +26,9 @@ function isActive(href: string, pathname: string): boolean {
   }
   if (href === "/playbooks") {
     return pathname === "/playbooks" || pathname.startsWith("/playbooks/");
+  }
+  if (href === "/settings") {
+    return pathname === "/settings";
   }
   return pathname === href;
 }

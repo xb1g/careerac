@@ -45,23 +45,23 @@ function PlanCard({ plan }: { plan: PlanCard }) {
       className="group relative flex flex-col justify-between overflow-hidden rounded-[1.25rem] bg-white/70 dark:bg-zinc-900/70 backdrop-blur-xl border border-white/80 dark:border-zinc-700/50 p-6 hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] dark:hover:shadow-[0_8px_30px_rgb(0,0,0,0.2)] hover:-translate-y-1 transition-all duration-300"
     >
       <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-indigo-50/50 dark:from-blue-900/10 dark:to-indigo-900/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-      <div className="relative z-10 flex items-start justify-between">
-        <div className="flex-1 min-w-0 pr-4">
-          <h3 className="text-[17px] font-bold text-zinc-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors truncate">
+      <div className="relative z-10 flex items-start justify-between gap-4">
+        <div className="flex-1 min-w-0">
+          <h3 className="text-[17px] font-bold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors whitespace-normal break-words">
             {plan.title}
           </h3>
-          <p className="mt-1.5 text-[14px] font-medium text-zinc-500 dark:text-zinc-400 truncate">
+          <p className="mt-1.5 text-[14px] font-medium text-gray-500 dark:text-gray-400 whitespace-normal break-words">
             {plan.target_major}
           </p>
         </div>
         <div className="flex-shrink-0">
-          <span className="inline-flex items-center rounded-full bg-zinc-100/80 dark:bg-zinc-800/80 px-3 py-1 text-[11px] font-bold tracking-wider uppercase text-zinc-600 dark:text-zinc-400 backdrop-blur-sm border border-zinc-200/50 dark:border-zinc-700/50">
+          <span className="inline-flex items-center rounded-full bg-gray-100/80 dark:bg-gray-800/80 px-3 py-1 text-[11px] font-bold tracking-wider uppercase text-gray-600 dark:text-gray-400 backdrop-blur-sm border border-gray-200/50 dark:border-gray-700/50">
             {plan.status}
           </span>
         </div>
       </div>
-      <div className="relative z-10 mt-6 flex items-center justify-between border-t border-zinc-200/50 dark:border-zinc-800/50 pt-4">
-        <p className="text-[13px] font-medium text-zinc-400 dark:text-zinc-500 flex items-center gap-1.5">
+      <div className="relative z-10 mt-6 flex items-center justify-between border-t border-gray-200/50 dark:border-gray-800/50 pt-4">
+        <p className="text-[13px] font-medium text-gray-400 dark:text-gray-500 flex items-center gap-1.5">
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
@@ -81,14 +81,14 @@ export default async function DashboardPage() {
   const plans = await getUserPlans();
 
   return (
-    <div className="min-h-screen bg-[#FAFAFA] dark:bg-zinc-950 pb-20">
+    <div className="min-h-screen bg-gray-50 dark:bg-zinc-950 pb-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div>
-            <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-zinc-900 dark:text-white">
+            <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-gray-900 dark:text-white">
               Dashboard
             </h1>
-            <p className="mt-2 text-[15px] text-zinc-600 dark:text-zinc-400 font-medium">
+            <p className="mt-2 text-[15px] text-gray-600 dark:text-gray-400 font-medium">
               Manage your transfer plans and explore community playbooks.
             </p>
           </div>
@@ -108,7 +108,7 @@ export default async function DashboardPage() {
         {plans.length === 0 ? (
           <EmptyState />
         ) : (
-          <div className="grid gap-6 sm:gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <div className="grid gap-6 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3">
             {plans.map((plan) => (
               <PlanCard key={plan.id} plan={plan} />
             ))}

@@ -265,7 +265,9 @@ export interface Database {
           parsed_data: Json | null
           parse_status: "pending" | "parsing" | "completed" | "failed"
           parse_error: string | null
+          parse_method: "ai" | "regex" | null
           created_at: string
+          updated_at: string
         }
         Insert: {
           id?: string
@@ -275,7 +277,9 @@ export interface Database {
           parsed_data?: Json | null
           parse_status?: "pending" | "parsing" | "completed" | "failed"
           parse_error?: string | null
+          parse_method?: "ai" | "regex" | null
           created_at?: string
+          updated_at?: string
         }
         Update: {
           id?: string
@@ -285,7 +289,50 @@ export interface Database {
           parsed_data?: Json | null
           parse_status?: "pending" | "parsing" | "completed" | "failed"
           parse_error?: string | null
+          parse_method?: "ai" | "regex" | null
           created_at?: string
+          updated_at?: string
+        }
+      }
+      user_courses: {
+        Row: {
+          id: string
+          user_id: string
+          course_code: string
+          course_title: string
+          units: number
+          grade: string | null
+          term: string | null
+          status: "completed" | "in_progress" | "planned"
+          notes: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          course_code: string
+          course_title: string
+          units?: number
+          grade?: string | null
+          term?: string | null
+          status?: "completed" | "in_progress" | "planned"
+          notes?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          course_code?: string
+          course_title?: string
+          units?: number
+          grade?: string | null
+          term?: string | null
+          status?: "completed" | "in_progress" | "planned"
+          notes?: string | null
+          created_at?: string
+          updated_at?: string
         }
       }
       playbooks: {

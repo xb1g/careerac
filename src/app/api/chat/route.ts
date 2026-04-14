@@ -9,31 +9,101 @@ type CourseRow = Database["public"]["Tables"]["courses"]["Row"];
 type InstitutionRow = Database["public"]["Tables"]["institutions"]["Row"];
 type PrerequisiteRow = Database["public"]["Tables"]["prerequisites"]["Row"];
 
+interface PlanContext {
+  ccInstitutionId?: string;
+  targetInstitutionId?: string;
+  targetMajor?: string;
+}
+
+interface ArticulationContextResult {
+  context: string;
+  exactMatchCount: number;
+  institutionMatchCount: number;
+}
+
+function normalizeMajor(value: string): string {
+  return value
+    .toLowerCase()
+    .replace(/[^a-z0-9\s]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function isMajorMatch(agreementMajor: string | null, targetMajor?: string): boolean {
+  if (!targetMajor) return true;
+  if (!agreementMajor) return false;
+
+  const normalizedAgreementMajor = normalizeMajor(agreementMajor);
+  const normalizedTargetMajor = normalizeMajor(targetMajor);
+
+  if (!normalizedAgreementMajor || !normalizedTargetMajor) return false;
+  if (normalizedAgreementMajor.includes(normalizedTargetMajor) || normalizedTargetMajor.includes(normalizedAgreementMajor)) {
+    return true;
+  }
+
+  const agreementTokens = new Set(normalizedAgreementMajor.split(" ").filter((t) => t.length > 2));
+  const targetTokens = new Set(normalizedTargetMajor.split(" ").filter((t) => t.length > 2));
+
+  let overlap = 0;
+  for (const token of agreementTokens) {
+    if (targetTokens.has(token)) {
+      overlap += 1;
+    }
+  }
+
+  const requiredOverlap = Math.min(2, targetTokens.size);
+  return overlap >= requiredOverlap && overlap > 0;
+}
+
 /**
  * Fetches articulation data for the user's path (CC + target school + major).
  * Returns formatted text that can be included in the system prompt.
  */
-async function getArticulationContext(): Promise<string> {
+async function getArticulationContext(
+  planContext?: PlanContext,
+  hasTargetSchool = true,
+): Promise<ArticulationContextResult> {
   try {
     const supabase = await createClient();
 
-    // Fetch all articulation agreements without nested joins to avoid FK hint issues
-    const { data: agreements, error } = await supabase
+    // Scope articulation agreements to the student's context when available.
+    let query = supabase
       .from("articulation_agreements")
       .select("id, cc_course_id, university_course_id, cc_institution_id, university_institution_id, major, notes")
-      .limit(200)
+      .limit(1500)
       .returns<ArticulationRow[]>();
 
-    if (error || !agreements) {
-      console.error("Error fetching articulation data:", error);
-      return "Articulation data is currently unavailable.";
+    if (planContext?.ccInstitutionId) {
+      query = query.eq("cc_institution_id", planContext.ccInstitutionId);
     }
 
+    if (hasTargetSchool !== false && planContext?.targetInstitutionId) {
+      query = query.eq("university_institution_id", planContext.targetInstitutionId);
+    }
+
+    const { data: scopedAgreements, error } = await query;
+
+    if (error || !scopedAgreements) {
+      console.error("Error fetching articulation data:", error);
+      return {
+        context: "Articulation data is currently unavailable.",
+        exactMatchCount: 0,
+        institutionMatchCount: 0,
+      };
+    }
+
+    const institutionMatchCount = scopedAgreements.length;
+    const exactMajorMatches = scopedAgreements.filter((agreement) =>
+      isMajorMatch(agreement.major, planContext?.targetMajor),
+    );
+    const exactMatchCount = exactMajorMatches.length;
+    const agreementsForPrompt = exactMatchCount > 0 ? exactMajorMatches : scopedAgreements;
+
     // Collect unique IDs to fetch related data
-    const ccCourseIds = [...new Set(agreements.map(a => a.cc_course_id).filter(Boolean))];
-    const uniCourseIds = [...new Set(agreements.map(a => a.university_course_id).filter(Boolean))];
-    const ccInstIds = [...new Set(agreements.map(a => a.cc_institution_id).filter(Boolean))];
-    const uniInstIds = [...new Set(agreements.map(a => a.university_institution_id).filter(Boolean))];
+    const ccCourseIds = [...new Set(agreementsForPrompt.map((a) => a.cc_course_id).filter(Boolean))];
+    const uniCourseIds = [...new Set(agreementsForPrompt.map((a) => a.university_course_id).filter(Boolean))];
+    const ccInstIds = [...new Set(agreementsForPrompt.map((a) => a.cc_institution_id).filter(Boolean))];
+    const uniInstIds = [...new Set(agreementsForPrompt.map((a) => a.university_institution_id).filter(Boolean))];
 
     // Fetch courses and institutions in parallel
     const ccCoursesResult = ccCourseIds.length > 0
@@ -60,7 +130,7 @@ async function getArticulationContext(): Promise<string> {
     }
 
     // Format articulation data into a readable string
-    const formatted = agreements.map((a) => {
+    const formatted = agreementsForPrompt.map((a) => {
       const ccCourse = courseMap.get(a.cc_course_id);
       const uniCourse = courseMap.get(a.university_course_id);
       const ccInst = instMap.get(a.cc_institution_id);
@@ -71,9 +141,22 @@ async function getArticulationContext(): Promise<string> {
       return `- ${ccInst.abbreviation || ccInst.name}: ${ccCourse.code} (${ccCourse.title}, ${ccCourse.units} units) → ${uniInst.abbreviation || uniInst.name}: ${uniCourse.code} (${uniCourse.title}, ${uniCourse.units} units) [${a.major || "General"}]`;
     }).filter(Boolean).join("\n");
 
-    return formatted || "No articulation agreements found in the database.";
+    const contextPrefix = [
+      `Exact path major matches: ${exactMatchCount}`,
+      `Institution-scoped matches: ${institutionMatchCount}`,
+    ].join("\n");
+
+    return {
+      context: `${contextPrefix}\n\n${formatted || "No articulation agreements found for the current filters."}`,
+      exactMatchCount,
+      institutionMatchCount,
+    };
   } catch {
-    return "Articulation data is currently unavailable.";
+    return {
+      context: "Articulation data is currently unavailable.",
+      exactMatchCount: 0,
+      institutionMatchCount: 0,
+    };
   }
 }
 
@@ -235,8 +318,8 @@ function buildRecoveryPrompt(recovery: RecoveryContext, availableCourses: Array<
   const statusContext = status === "waitlisted"
     ? `The student has marked "${failedCourseCode} (${failedCourseTitle})" as WAITLISTED. This means they may or may not get into the course — there's uncertainty.`
     : status === "cancelled"
-    ? `The student has marked "${failedCourseCode} (${failedCourseTitle})" as CANCELLED by the institution.`
-    : `The student has marked "${failedCourseCode} (${failedCourseTitle})" as FAILED.`;
+      ? `The student has marked "${failedCourseCode} (${failedCourseTitle})" as CANCELLED by the institution.`
+      : `The student has marked "${failedCourseCode} (${failedCourseTitle})" as FAILED.`;
 
   const dependentList = dependents.length > 0
     ? `Courses in the plan that depend on ${failedCourseCode}: ${dependents.map(d => `${d.code} (${d.title}) in semester ${d.semesterNumber}`).join(", ")}.`
@@ -270,7 +353,7 @@ ${planData ? JSON.stringify(planData, null, 2) : "No plan data available."}
 
 ### YOUR RESPONSE
 ${isWaitlisted
-    ? `Since this course is WAITLISTED (not confirmed failed), respond with:
+      ? `Since this course is WAITLISTED (not confirmed failed), respond with:
 1. Acknowledge the uncertainty — they might still get into the course
 2. Identify the downstream impact if they don't get in
 3. Suggest backup plan alternatives from the available courses, with course code, title, units, transfer equivalency, and reasoning
@@ -278,7 +361,7 @@ ${isWaitlisted
 5. If no alternatives exist, clearly say "No alternative courses found" and suggest consulting a counselor
 
 Format alternative suggestions as: **{code}** — {title} ({units} units) — {transfer equivalency}. Reasoning: {reasoning}`
-    : `Since this course has ${status === "failed" ? "failed" : "been cancelled"}, respond with:
+      : `Since this course has ${status === "failed" ? "failed" : "been cancelled"}, respond with:
 1. Name the specific course that failed/was cancelled
 2. List ALL dependent courses from the downstream impact section above
 3. Suggest alternative courses from the available courses list. For each alternative include: course code, title, units, transfer equivalency, and reasoning for why it's a good substitute
@@ -287,7 +370,7 @@ Format alternative suggestions as: **{code}** — {title} ({units} units) — {t
 6. If no alternatives exist, clearly say "No alternative courses found" and recommend the student consult with an academic counselor
 
 Format alternative suggestions as: **{code}** — {title} ({units} units) — {transfer equivalency}. Reasoning: {reasoning}`
-}`;
+    }`;
 }
 
 // Helper function to convert UIMessages to OpenAI format
@@ -321,19 +404,15 @@ export async function POST(req: Request) {
     }: {
       messages: UIMessage[];
       recoveryContext?: RecoveryContext;
-      planContext?: {
-        ccInstitutionId?: string;
-        targetInstitutionId?: string;
-        targetMajor?: string;
-      };
+      planContext?: PlanContext;
       transcriptData?: TranscriptData;
       maxCreditsPerSemester?: number;
       hasTargetSchool?: boolean;
     } = await req.json();
 
     // Fetch articulation data, prerequisites, and verified playbooks in parallel
-    const [articulationData, prerequisiteData, verifiedPlaybooksContext] = await Promise.all([
-      getArticulationContext(),
+    const [articulationResult, prerequisiteData, verifiedPlaybooksContext] = await Promise.all([
+      getArticulationContext(planContext, hasTargetSchool !== false),
       getPrerequisiteContext(),
       getVerifiedPlaybooksContext(
         planContext?.ccInstitutionId,
@@ -378,7 +457,13 @@ When generating a transfer plan, you MUST output a JSON code block with this exa
 ## GUARDRAILS
 1. **Stay on topic**: Only discuss transfer planning, articulation, and course planning.
 2. **Don't fabricate courses**: ONLY use courses from the articulation data provided below. If a course doesn't exist in the data, don't invent it.
-3. **Admit when no data**: If no articulation data matches the student's CC + target school + major combination, output:
+3. **Admit when no data (strict)**: You may output isNoData=true ONLY when both values are 0:
+  - Exact path major matches
+  - Institution-scoped matches
+
+If Institution-scoped matches is greater than 0, you MUST generate a best-effort plan from the provided articulation courses and clearly mark limitations in course notes.
+
+If no data condition is met, output:
 \`\`\`json
 {
   "isNoData": true,
@@ -391,7 +476,7 @@ When generating a transfer plan, you MUST output a JSON code block with this exa
 ## AVAILABLE ARTICULATION DATA
 The following are the articulation agreements in our database. Use ONLY these courses when generating plans:
 
-${articulationData}
+${articulationResult.context}
 
 ## PREREQUISITE RELATIONSHIPS
 ${prerequisiteData || "No prerequisite data is currently available. Use your knowledge of typical course sequences."}

@@ -50,6 +50,7 @@ describe("Header", () => {
     expect(screen.getByRole("link", { name: /dashboard/i })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /new plan/i })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /playbooks/i })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /my courses/i })).toBeInTheDocument();
   });
 
   it("highlights the active route (Dashboard)", () => {
@@ -150,6 +151,7 @@ describe("Header", () => {
     expect(within(mobileNav).getByRole("link", { name: /dashboard/i })).toBeInTheDocument();
     expect(within(mobileNav).getByRole("link", { name: /new plan/i })).toBeInTheDocument();
     expect(within(mobileNav).getByRole("link", { name: /playbooks/i })).toBeInTheDocument();
+    expect(within(mobileNav).getByRole("link", { name: /my courses/i })).toBeInTheDocument();
   });
 
   it("displays user email in mobile menu when provided", async () => {

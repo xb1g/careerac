@@ -1,9 +1,41 @@
 import { createClient } from "@/utils/supabase/server";
 import { parseTranscriptText } from "@/utils/transcript-parser";
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const pdfParse = require("pdf-parse");
+import { parseTranscriptWithAI } from "@/utils/transcript-ai-parser";
+import type { Database } from "@/types/database";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+export const runtime = "nodejs";
+
+async function extractTextFromPdf(buffer: Buffer): Promise<string> {
+  // Use the legacy build in Node.js to avoid browser-only globals.
+  // The specifier is held in a variable + `/* @vite-ignore */` so Vite's
+  // import-analysis plugin (used by Vitest) does not try to statically
+  // resolve it at transform time — resolution happens at runtime only.
+  const pdfjsSpecifier = "pdfjs-dist/legacy/build/pdf.mjs";
+  const pdfjsLib = await import(/* webpackIgnore: true */ /* @vite-ignore */ pdfjsSpecifier);
+  const loadingTask = pdfjsLib.getDocument({
+    data: new Uint8Array(buffer),
+    useSystemFonts: false,
+  });
+  const pdf = await loadingTask.promise;
+
+  try {
+    let fullText = "";
+
+    for (let i = 1; i <= pdf.numPages; i++) {
+      const page = await pdf.getPage(i);
+      const textContent = await page.getTextContent();
+      const pageText = textContent.items
+        .map((item: { str?: string }) => ("str" in item ? item.str : ""))
+        .join(" ");
+      fullText += pageText + "\n\n";
+    }
+
+    return fullText.trim();
+  } finally {
+    await pdf.destroy();
+  }
+}
 
 export async function POST(req: Request) {
   try {
@@ -46,21 +78,49 @@ export async function POST(req: Request) {
 
     if (uploadError) {
       console.error("Storage upload error:", uploadError);
-      // Continue even if storage fails — we still have the buffer to parse
+      const message = uploadError.message ?? "";
+      const isRlsViolation = /row-level security|violates row-level/i.test(message);
+      const errorPayload = isRlsViolation
+        ? {
+            error:
+              "Failed to upload to the 'transcripts' storage bucket: row-level security policy violation. " +
+              "Verify the bucket exists and migration 011_storage_transcripts_bucket_policies.sql has been applied to the Supabase project.",
+            details: message,
+          }
+        : {
+            error: "Failed to upload transcript file to the 'transcripts' storage bucket.",
+            details: message,
+          };
+      return Response.json(errorPayload, { status: 500 });
     }
 
     // Parse PDF text
     let parsedData;
     let parseStatus: "completed" | "failed" = "completed";
     let parseError: string | null = null;
+    let parseMethod: "ai" | "regex" = "regex";
 
     try {
-      const pdfData = await pdfParse(buffer);
-      parsedData = parseTranscriptText(pdfData.text);
+      const pdfData = { text: await extractTextFromPdf(buffer) };
 
-      if (parsedData.courses.length === 0) {
-        parseStatus = "failed";
-        parseError = "Could not extract any courses from the transcript. The format may not be supported. Please use manual entry.";
+      // Try AI parsing first if API key is available
+      if (process.env.MINIMAX_API_KEY) {
+        try {
+          parsedData = await parseTranscriptWithAI(pdfData.text);
+          parseMethod = "ai";
+        } catch (aiError) {
+          console.warn("AI parsing failed, falling back to regex:", aiError);
+          // Fall through to regex
+        }
+      }
+
+      // Fallback to regex if AI failed or no API key
+      if (!parsedData) {
+        parsedData = parseTranscriptText(pdfData.text);
+        if (parsedData.courses.length === 0) {
+          parseStatus = "failed";
+          parseError = "Could not extract any courses from the transcript. The format may not be supported. Please use manual entry.";
+        }
       }
     } catch (err) {
       parseStatus = "failed";
@@ -69,21 +129,33 @@ export async function POST(req: Request) {
     }
 
     // Save transcript record to database
+    const insertPayload: Database["public"]["Tables"]["transcripts"]["Insert"] = {
+      user_id: user.id,
+      file_path: filePath,
+      file_name: file.name,
+      parsed_data: parsedData ? JSON.parse(JSON.stringify(parsedData)) : null,
+      parse_status: parseStatus,
+      parse_error: parseError,
+      parse_method: parseMethod,
+      updated_at: new Date().toISOString(),
+    };
+
     const { data: transcript, error: dbError } = await supabase
       .from("transcripts")
-      .insert({
-        user_id: user.id,
-        file_path: filePath,
-        file_name: file.name,
-        parsed_data: parsedData ? JSON.parse(JSON.stringify(parsedData)) : null,
-        parse_status: parseStatus,
-        parse_error: parseError,
-      } as never)
+      .insert(insertPayload as never)
       .select("id")
       .single();
 
     if (dbError) {
       console.error("Database insert error:", dbError);
+
+      if (dbError.code === "PGRST205") {
+        return Response.json(
+          { error: "Transcript schema is not deployed. Please run pending Supabase migrations." },
+          { status: 500 },
+        );
+      }
+
       return Response.json({ error: "Failed to save transcript record" }, { status: 500 });
     }
 
@@ -92,6 +164,7 @@ export async function POST(req: Request) {
       parsedData,
       parseStatus,
       parseError,
+      parseMethod,
     });
   } catch (error) {
     console.error("Transcript upload error:", error);

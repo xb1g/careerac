@@ -32,7 +32,7 @@ export async function updateSession(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   // Define protected routes
-  const protectedPrefixes = ["/dashboard", "/plan", "/playbooks/submit"];
+  const protectedPrefixes = ["/dashboard", "/plan", "/playbooks/submit", "/settings"];
   const isProtectedRoute = protectedPrefixes.some((prefix) =>
     request.nextUrl.pathname.startsWith(prefix)
   );

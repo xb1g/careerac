@@ -6,7 +6,9 @@ import Chat, { RecoveryContext } from "@/components/chat";
 import { RecoveryAlternative } from "@/components/recovery-message";
 import SemesterPlan from "@/components/semester-plan";
 import CourseStatusMenu from "@/components/course-status-menu";
+import TranscriptEditor from "@/components/transcript-editor";
 import { ParsedPlan, TransferPlan, PlanCourse, CourseStatus } from "@/types/plan";
+import { TranscriptData } from "@/types/transcript";
 import { createClient } from "@/utils/supabase/client";
 
 interface PlanDetailClientProps {
@@ -17,9 +19,15 @@ interface PlanDetailClientProps {
     plan_data: unknown;
     chat_history: unknown[];
   };
+  transcript: {
+    id: string;
+    file_name: string;
+    parsed_data: TranscriptData;
+    parse_status: string;
+  } | null;
 }
 
-export default function PlanDetailClient({ plan }: PlanDetailClientProps) {
+export default function PlanDetailClient({ plan, transcript }: PlanDetailClientProps) {
   // Initialize currentPlan directly from the prop
   const initialPlanData = plan.plan_data as unknown as ParsedPlan | null;
   const [currentPlan, setCurrentPlan] = useState<ParsedPlan | null>(
@@ -38,6 +46,13 @@ export default function PlanDetailClient({ plan }: PlanDetailClientProps) {
 
   // Recovery state
   const [recoveryContext, setRecoveryContext] = useState<RecoveryContext | null>(null);
+
+  // Transcript editor state
+  const [transcriptExpanded, setTranscriptExpanded] = useState(false);
+  const [transcriptEditorData, setTranscriptEditorData] = useState<TranscriptData | null>(
+    transcript?.parsed_data ?? null
+  );
+  const transcriptData = transcriptEditorData;
 
   // Initialize chat history from saved plan
   const initialMessages: UIMessage[] = (() => {
@@ -249,6 +264,11 @@ export default function PlanDetailClient({ plan }: PlanDetailClientProps) {
     setSelectedCourse(null);
   }, [selectedCourse, plan.id, currentPlan, messages, handleSavePlan]);
 
+  const handleTranscriptSave = useCallback((updatedData: TranscriptData) => {
+    setTranscriptEditorData(updatedData);
+    setTranscriptExpanded(false);
+  }, []);
+
   return (
     <div className="flex flex-col h-[calc(100vh-4rem)]">
       {/* Header */}
@@ -268,6 +288,55 @@ export default function PlanDetailClient({ plan }: PlanDetailClientProps) {
         </div>
       </div>
 
+      {/* Transcript Summary */}
+      {transcript && transcriptData && (
+        <div className="px-6 lg:px-8 py-3 border-b border-zinc-200/50 dark:border-zinc-800/50 bg-zinc-50/50 dark:bg-zinc-900/50">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2">
+                <svg className="w-4 h-4 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                  {transcriptData.institution || transcript.file_name}
+                </span>
+              </div>
+              <span className="text-sm text-zinc-500 dark:text-zinc-400">
+                {transcriptData.courses.length} courses
+              </span>
+              <span className="text-sm text-zinc-500 dark:text-zinc-400">
+                {transcriptData.totalUnitsCompleted} units
+              </span>
+              {transcriptData.gpa && (
+                <span className="text-sm text-zinc-500 dark:text-zinc-400">
+                  GPA: {transcriptData.gpa.toFixed(2)}
+                </span>
+              )}
+            </div>
+            <button
+              onClick={() => setTranscriptExpanded((prev) => !prev)}
+              className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+              </svg>
+              {transcriptExpanded ? "Hide Editor" : "Edit Transcript"}
+            </button>
+          </div>
+
+          {transcriptExpanded && transcript && (
+            <div className="mt-3">
+              <TranscriptEditor
+                transcriptId={transcript.id}
+                transcriptData={transcriptData}
+                onSave={handleTranscriptSave}
+                onCancel={() => setTranscriptExpanded(false)}
+              />
+            </div>
+          )}
+        </div>
+      )}
+
       {/* Split layout: chat panel (left) + plan display (right) */}
       <div className="flex flex-1 overflow-hidden bg-[#FAFAFA] dark:bg-zinc-950">
         {/* Chat panel */}
@@ -278,6 +347,7 @@ export default function PlanDetailClient({ plan }: PlanDetailClientProps) {
             recoveryContext={recoveryContext}
             onAcceptAlternative={handleAcceptAlternative}
             planId={plan.id}
+            transcriptData={transcriptData}
           />
         </div>
 
