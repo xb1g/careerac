@@ -609,7 +609,7 @@ Each university's plan must respect the max credits per semester limit. Include 
                       role: "assistant",
                       content: [],
                     };
-                    controller.enqueue(encoder.encode(`0:${JSON.stringify(startEvent)}\n`));
+                    controller.enqueue(encoder.encode(`data: ${JSON.stringify(startEvent)}\n`));
                   }
 
                   if (content) {
@@ -617,7 +617,7 @@ Each university's plan must respect the max credits per semester limit. Include 
                       type: "text",
                       text: content,
                     };
-                    controller.enqueue(encoder.encode(`1:${JSON.stringify(textEvent)}\n`));
+                    controller.enqueue(encoder.encode(`data: ${JSON.stringify(textEvent)}\n`));
                   }
                 } catch {
                   // SSE chunks may be incomplete, ignore parse errors
@@ -630,7 +630,7 @@ Each university's plan must respect the max credits per semester limit. Include 
             type: "finish",
             finishReason: "stop",
           };
-          controller.enqueue(encoder.encode(`2:${JSON.stringify(finishEvent)}\n`));
+          controller.enqueue(encoder.encode(`data: ${JSON.stringify(finishEvent)}\n`));
           controller.close();
         } catch (error) {
           console.error("Streaming error:", error);
