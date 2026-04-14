@@ -162,8 +162,10 @@ export default function Chat({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    console.log("[Chat] Submit clicked - isInputEmpty:", isInputEmpty, "isLoading:", isLoading, "input:", input);
     if (isInputEmpty || isLoading) return;
 
+    console.log("[Chat] Sending message:", input);
     sendMessage({ text: input });
     setInput("");
   };

@@ -1,13 +1,8 @@
-import { streamText, UIMessage, convertToModelMessages } from "ai";
-import { createOpenRouter } from "@openrouter/ai-sdk-provider";
+import { UIMessage } from "ai";
 import { createClient } from "@/utils/supabase/server";
 import { getVerifiedPlaybooksContext } from "@/utils/playbook-context";
 import type { Database } from "@/types/database";
 import type { TranscriptData } from "@/types/transcript";
-
-const openrouter = createOpenRouter({
-  apiKey: process.env.OPENROUTER_API_KEY,
-});
 
 type ArticulationRow = Database["public"]["Tables"]["articulation_agreements"]["Row"];
 type CourseRow = Database["public"]["Tables"]["courses"]["Row"];
@@ -295,6 +290,25 @@ Format alternative suggestions as: **{code}** — {title} ({units} units) — {t
 }`;
 }
 
+// Helper function to convert UIMessages to OpenAI format
+function convertToOpenAIMessages(messages: UIMessage[]): Array<{ role: "system" | "user" | "assistant"; content: string }> {
+  return messages.map((msg) => {
+    // Extract text content from parts
+    let content = "";
+    if (Array.isArray(msg.parts)) {
+      content = msg.parts
+        .filter((part): part is { type: "text"; text: string } => part.type === "text")
+        .map((part) => part.text)
+        .join("");
+    }
+
+    return {
+      role: msg.role as "system" | "user" | "assistant",
+      content,
+    };
+  });
+}
+
 export async function POST(req: Request) {
   try {
     const {
@@ -502,23 +516,146 @@ Each university's plan must respect the max credits per semester limit. Include 
       }
     }
 
-    const result = streamText({
-      model: openrouter("google/gemma-4-31b-it:free"),
-      messages: await convertToModelMessages(messages),
-      system: baseSystemPrompt,
+    const openaiMessages = convertToOpenAIMessages(messages);
+
+    // Convert OpenAI format messages to Anthropic format
+    const anthropicMessages = openaiMessages
+      .filter((msg) => msg.role !== "system")
+      .map((msg) => ({
+        role: msg.role as "user" | "assistant",
+        content: [{ type: "text" as const, text: msg.content }],
+      }));
+
+    const token = process.env.MINIMAX_API_KEY ?? process.env.FIREWORKS_API_KEY ?? "YOUR_API_KEY";
+
+    const headers = {
+      "Authorization": "Bearer " + token,
+      "Content-Type": "application/json",
+    };
+
+    const body = {
+      "model": "MiniMax-M2.5",
+      "system": baseSystemPrompt,
+      "messages": anthropicMessages,
+      "max_tokens": 8192,
+      "temperature": 0.6,
+      "top_p": 0.95,
+      "stream": true,
+    };
+
+    const minimaxResponse = await fetch("https://api.minimax.io/anthropic/v1/messages", {
+      method: "POST",
+      headers,
+      body: JSON.stringify(body)
     });
 
-    return result.toUIMessageStreamResponse();
+    if (!minimaxResponse.ok) {
+      const errorText = await minimaxResponse.text();
+      console.error("MiniMax API error:", minimaxResponse.status, errorText);
+      return Response.json(
+        { error: "AI service error" },
+        { status: minimaxResponse.status }
+      );
+    }
+
+    const stream = new ReadableStream({
+      async start(controller) {
+        const encoder = new TextEncoder();
+        const reader = minimaxResponse.body?.getReader();
+
+        if (!reader) {
+          controller.error(new Error("No response body"));
+          return;
+        }
+
+        const messageId = `msg-${Date.now()}`;
+        let started = false;
+        let buffer = "";
+
+        try {
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+
+            buffer += new TextDecoder().decode(value);
+            const lines = buffer.split("\n");
+            buffer = lines.pop() ?? "";
+
+            for (const line of lines) {
+              if (line.startsWith("data: ")) {
+                const data = line.slice(6);
+                if (data === "[DONE]") continue;
+
+                try {
+                  const parsed = JSON.parse(data);
+                  // Anthropic format uses delta.type and delta.text
+                  const delta = parsed.delta;
+                  let content = "";
+
+                  if (delta) {
+                    if (delta.type === "text_delta" && delta.text) {
+                      content = delta.text;
+                    } else if (delta.type === "thinking_delta" && delta.thinking) {
+                      // Skip thinking content for now
+                      continue;
+                    }
+                  }
+
+                  if (!started) {
+                    started = true;
+                    const startEvent = {
+                      id: messageId,
+                      type: "assistant_message",
+                      role: "assistant",
+                      content: [],
+                    };
+                    controller.enqueue(encoder.encode(`0:${JSON.stringify(startEvent)}\n`));
+                  }
+
+                  if (content) {
+                    const textEvent = {
+                      type: "text",
+                      text: content,
+                    };
+                    controller.enqueue(encoder.encode(`1:${JSON.stringify(textEvent)}\n`));
+                  }
+                } catch {
+                  // SSE chunks may be incomplete, ignore parse errors
+                }
+              }
+            }
+          }
+
+          const finishEvent = {
+            type: "finish",
+            finishReason: "stop",
+          };
+          controller.enqueue(encoder.encode(`2:${JSON.stringify(finishEvent)}\n`));
+          controller.close();
+        } catch (error) {
+          console.error("Streaming error:", error);
+          controller.error(error);
+        }
+      },
+    });
+
+    return new Response(stream, {
+      headers: {
+        "Content-Type": "text/event-stream",
+        "Cache-Control": "no-cache",
+        "Connection": "keep-alive",
+      },
+    });
   } catch (error) {
     console.error("Chat API error:", error);
-    
+
     if (error instanceof Error && error.message?.includes("429")) {
       return Response.json(
         { error: "Rate limited, try again in a moment" },
         { status: 429 }
       );
     }
-    
+
     return Response.json(
       { error: "AI temporarily unavailable" },
       { status: 500 }
