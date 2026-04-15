@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import type { UIMessage } from "@ai-sdk/react";
 import Chat from "./chat";
 
 // Mock the useChat hook
@@ -40,6 +41,26 @@ describe("Chat", () => {
     render(<Chat welcomeMessage="Hello! How can I help?" />);
 
     expect(screen.getByText("Hello! How can I help?")).toBeInTheDocument();
+  });
+
+  it("passes initialMessages to useChat when provided", () => {
+    const initialMessages: UIMessage[] = [
+      {
+        id: "saved-message",
+        role: "assistant",
+        parts: [{ type: "text", text: "Saved conversation" }],
+      },
+    ] as unknown as UIMessage[];
+
+    render(<Chat initialMessages={initialMessages} />);
+
+    expect(mockUseChat).toHaveBeenCalledWith(
+      expect.objectContaining({
+        messages: expect.arrayContaining([
+          expect.objectContaining({ id: "saved-message" }),
+        ]),
+      }),
+    );
   });
 
   it("renders input field and send button", () => {

@@ -23,6 +23,10 @@ interface ChatProps {
   onSavePlan?: (plan: ParsedPlan, messages: unknown[]) => void;
   /** Initial chat messages to load (for existing plan editing) */
   initialMessages?: UIMessage[];
+  /** Emits the current chat messages so parent views can persist related actions */
+  onMessagesChange?: (messages: UIMessage[]) => void;
+  /** Emits loading state for parent UI chrome */
+  onLoadingChange?: (isLoading: boolean) => void;
   /** Recovery context for triggering AI recovery conversation */
   recoveryContext?: RecoveryContext | null;
   /** Called when a recovery alternative is accepted */
@@ -49,6 +53,8 @@ export default function Chat({
   onPlanGenerated,
   onSavePlan,
   initialMessages,
+  onMessagesChange,
+  onLoadingChange,
   recoveryContext,
   onAcceptAlternative,
   planId,
@@ -93,6 +99,14 @@ export default function Chat({
   const isLoading = status === "submitted" || isStreaming;
 
   const isInputEmpty = input.trim().length === 0;
+
+  useEffect(() => {
+    onMessagesChange?.(messages);
+  }, [messages, onMessagesChange]);
+
+  useEffect(() => {
+    onLoadingChange?.(isLoading);
+  }, [isLoading, onLoadingChange]);
 
   // Send recovery system message when recovery context changes
   useEffect(() => {

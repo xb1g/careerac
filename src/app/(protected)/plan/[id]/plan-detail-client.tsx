@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useCallback } from "react";
-import { useChat, UIMessage } from "@ai-sdk/react";
+import { useState, useCallback, useRef } from "react";
+import { UIMessage } from "@ai-sdk/react";
 import Chat, { RecoveryContext } from "@/components/chat";
 import { RecoveryAlternative } from "@/components/recovery-message";
 import SemesterPlan from "@/components/semester-plan";
@@ -28,6 +28,20 @@ interface PlanDetailClientProps {
 }
 
 export default function PlanDetailClient({ plan, transcript }: PlanDetailClientProps) {
+  // Initialize chat history from saved plan
+  const initialMessages: UIMessage[] = (() => {
+    if (plan.chat_history && Array.isArray(plan.chat_history) && plan.chat_history.length > 0) {
+      return plan.chat_history as UIMessage[];
+    }
+    return [
+      {
+        id: "welcome",
+        role: "assistant",
+        parts: [{ type: "text", text: `Welcome back! I'm working on your transfer plan: ${plan.title}. You can ask me to modify it or answer any questions about your transfer journey.` }],
+      } as unknown as UIMessage,
+    ];
+  })();
+
   // Initialize currentPlan directly from the prop
   const initialPlanData = plan.plan_data as unknown as ParsedPlan | null;
   const [currentPlan, setCurrentPlan] = useState<ParsedPlan | null>(
@@ -53,26 +67,8 @@ export default function PlanDetailClient({ plan, transcript }: PlanDetailClientP
     transcript?.parsed_data ?? null
   );
   const transcriptData = transcriptEditorData;
-
-  // Initialize chat history from saved plan
-  const initialMessages: UIMessage[] = (() => {
-    if (plan.chat_history && Array.isArray(plan.chat_history) && plan.chat_history.length > 0) {
-      return plan.chat_history as UIMessage[];
-    }
-    return [
-      {
-        id: "welcome",
-        role: "assistant",
-        parts: [{ type: "text", text: `Welcome back! I'm working on your transfer plan: ${plan.title}. You can ask me to modify it or answer any questions about your transfer journey.` }],
-      } as unknown as UIMessage,
-    ];
-  })();
-
-  const { messages, status } = useChat({
-    messages: initialMessages,
-  });
-
-  const isLoading = status === "submitted" || status === "streaming";
+  const latestMessagesRef = useRef<UIMessage[]>(initialMessages);
+  const [isChatLoading, setIsChatLoading] = useState(false);
 
   // Save plan to database - called via Chat's onSavePlan callback
   const handleSavePlan = useCallback(async (planData: ParsedPlan, chatMessages: unknown[]) => {
@@ -183,12 +179,12 @@ export default function PlanDetailClient({ plan, transcript }: PlanDetailClientP
         setCurrentPlan(updatedPlan);
 
         // Re-save the plan with the update
-        await handleSavePlan(updatedPlan, messages);
+        await handleSavePlan(updatedPlan, latestMessagesRef.current);
       }
     } catch (err) {
       console.error("Error accepting alternative:", err);
     }
-  }, [selectedCourse, plan.id, currentPlan, messages, handleSavePlan]);
+  }, [selectedCourse, plan.id, currentPlan, handleSavePlan]);
 
   // Handle status selection - updates both UI and database
   const handleStatusSelect = useCallback(async (newStatus: CourseStatus) => {
@@ -255,14 +251,14 @@ export default function PlanDetailClient({ plan, transcript }: PlanDetailClientP
 
       // Save the updated plan_data to persist the status changes
       if (updatedPlan) {
-        await handleSavePlan(updatedPlan, messages);
+        await handleSavePlan(updatedPlan, latestMessagesRef.current);
       }
     } catch (err) {
       console.error("Error updating course status:", err);
     }
 
     setSelectedCourse(null);
-  }, [selectedCourse, plan.id, currentPlan, messages, handleSavePlan]);
+  }, [selectedCourse, plan.id, currentPlan, handleSavePlan]);
 
   const handleTranscriptSave = useCallback((updatedData: TranscriptData) => {
     setTranscriptEditorData(updatedData);
@@ -277,7 +273,7 @@ export default function PlanDetailClient({ plan, transcript }: PlanDetailClientP
           <div>
             <h1 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 flex items-center gap-3">
               {plan.title}
-              {isLoading && (
+              {isChatLoading && (
                 <div className="inline-flex w-4 h-4 ml-2 border-[2.5px] border-blue-500/30 border-t-blue-600 rounded-full animate-spin" />
               )}
             </h1>
@@ -344,6 +340,11 @@ export default function PlanDetailClient({ plan, transcript }: PlanDetailClientP
           <Chat
             onPlanGenerated={handlePlanGenerated}
             onSavePlan={handleSavePlan}
+            initialMessages={initialMessages}
+            onMessagesChange={(messages) => {
+              latestMessagesRef.current = messages;
+            }}
+            onLoadingChange={setIsChatLoading}
             recoveryContext={recoveryContext}
             onAcceptAlternative={handleAcceptAlternative}
             planId={plan.id}

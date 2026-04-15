@@ -47,7 +47,7 @@ const eslintConfig = [
   },
   // Project-specific ignores
   {
-    ignores: [".next/**", "out/**", "build/**", "next-env.d.ts", "node_modules/**"],
+    ignores: [".next/**", "out/**", "build/**", "next-env.d.ts", "node_modules/**", "test-transcript.js"],
   },
 ];
 

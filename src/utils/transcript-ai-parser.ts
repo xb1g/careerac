@@ -6,9 +6,14 @@ interface MiniMaxMessage {
 }
 
 interface MiniMaxResponse {
+  // Response shape for POST https://api.minimax.io/v1/text/chatcompletion_v2
+  // and OpenAI-compatible /v1/chat/completions — `message` is a singular
+  // object per choice (not a `messages[]` array like the deprecated
+  // chatcompletion_pro endpoint).
   choices: Array<{
-    finish_reason: string;
-    messages: Array<{ content: string }>;
+    finish_reason?: string;
+    index?: number;
+    message: { role: string; content: string; name?: string };
   }>;
 }
 
@@ -51,7 +56,7 @@ Rules:
     { role: "user", content: `Parse this transcript:\n\n${rawText}` }
   ];
 
-  const response = await fetch("https://api.minimax.chat/v1/text/chatcompletion_pro", {
+  const response = await fetch("https://api.minimax.io/v1/text/chatcompletion_v2", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -60,7 +65,7 @@ Rules:
     body: JSON.stringify({
       model: "MiniMax-Text-01",
       messages,
-      tokens_to_generate: 4096,
+      max_tokens: 4096,
       temperature: 0.3
     })
   });
@@ -71,7 +76,7 @@ Rules:
   }
 
   const data: MiniMaxResponse = await response.json();
-  const content = data.choices[0]?.messages[0]?.content;
+  const content = data.choices?.[0]?.message?.content;
 
   if (!content) {
     throw new Error("No content returned from MiniMax");
