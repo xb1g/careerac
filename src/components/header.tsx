@@ -73,7 +73,7 @@ export default function Header({ userEmail }: HeaderProps) {
             <form action={signout}>
               <button
                 type="submit"
-                className="text-[14px] font-semibold tracking-wide text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white px-3 py-1.5 rounded-full hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-all duration-200"
+                className="text-[14px] font-semibold tracking-wide text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white px-3 py-1.5 rounded-full hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-all duration-200 cursor-pointer"
               >
                 Sign Out
               </button>
@@ -82,7 +82,7 @@ export default function Header({ userEmail }: HeaderProps) {
             {/* Mobile menu button */}
             <button
               type="button"
-              className="sm:hidden p-2 rounded-md text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:text-white dark:hover:bg-zinc-800 transition-colors"
+              className="sm:hidden p-2 rounded-md text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:text-white dark:hover:bg-zinc-800 transition-colors cursor-pointer"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
               aria-expanded={mobileMenuOpen}

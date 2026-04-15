@@ -259,7 +259,7 @@ export default function TranscriptUpload({ onTranscriptParsed, onSkip }: Transcr
           </button>
           <button
             onClick={onSkip}
-            className="rounded-lg border border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 px-6 py-2.5 text-sm font-medium hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors"
+            className="rounded-lg border border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 px-6 py-2.5 text-sm font-medium hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
           >
             Skip
           </button>
@@ -349,13 +349,13 @@ export default function TranscriptUpload({ onTranscriptParsed, onSkip }: Transcr
         <div className="flex gap-3">
           <button
             onClick={handleConfirm}
-            className="rounded-lg bg-blue-600 text-white px-6 py-2.5 text-sm font-medium hover:bg-blue-700 transition-colors"
+            className="rounded-lg bg-blue-600 text-white px-6 py-2.5 text-sm font-medium hover:bg-blue-700 transition-colors cursor-pointer"
           >
             Looks Good, Continue
           </button>
           <button
             onClick={() => { setParsedData(null); setTranscriptId(null); }}
-            className="rounded-lg border border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 px-6 py-2.5 text-sm font-medium hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors"
+            className="rounded-lg border border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 px-6 py-2.5 text-sm font-medium hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
           >
             Upload Different File
           </button>

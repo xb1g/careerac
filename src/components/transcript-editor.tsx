@@ -100,14 +100,14 @@ export default function TranscriptEditor({
         <div className="flex gap-2">
           <button
             onClick={onCancel}
-            className="px-3 py-1.5 text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors"
+            className="px-3 py-1.5 text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors cursor-pointer"
           >
             Cancel
           </button>
           <button
             onClick={handleSave}
             disabled={saving}
-            className="px-4 py-1.5 text-sm font-medium bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors"
+            className="px-4 py-1.5 text-sm font-medium bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer transition-colors"
           >
             {saving ? "Saving..." : "Save"}
           </button>
@@ -202,7 +202,7 @@ export default function TranscriptEditor({
                 <td>
                   <button
                     onClick={() => handleRemoveCourse(index)}
-                    className="p-1 text-zinc-400 hover:text-red-500 transition-colors"
+                    className="p-1 text-zinc-400 hover:text-red-500 transition-colors cursor-pointer"
                     title="Remove course"
                   >
                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -218,7 +218,7 @@ export default function TranscriptEditor({
 
       <button
         onClick={handleAddCourse}
-        className="mt-3 flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
+        className="mt-3 flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors cursor-pointer"
       >
         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />

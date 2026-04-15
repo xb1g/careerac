@@ -353,7 +353,7 @@ export default function Chat({
               </p>
               <button
                 onClick={() => clearError()}
-                className="mt-2 text-xs font-semibold uppercase tracking-wider text-rose-500 hover:text-rose-700 dark:hover:text-rose-200 transition-colors"
+                className="mt-2 text-xs font-semibold uppercase tracking-wider text-rose-500 hover:text-rose-700 dark:hover:text-rose-200 transition-colors cursor-pointer"
               >
                 Dismiss
               </button>
@@ -377,7 +377,7 @@ export default function Chat({
           <button
             type="submit"
             disabled={isInputEmpty || isLoading}
-            className="absolute right-2 top-1/2 -translate-y-1/2 p-2.5 rounded-full bg-blue-600 hover:bg-blue-700 text-white shadow-sm transition-all duration-300 disabled:opacity-0 disabled:scale-90 scale-100"
+            className="absolute right-2 top-1/2 -translate-y-1/2 p-2.5 rounded-full bg-blue-600 hover:bg-blue-700 text-white shadow-sm transition-all duration-300 disabled:opacity-0 disabled:scale-90 scale-100 cursor-pointer"
             aria-label="Send message"
           >
             <svg className="w-4 h-4 translate-x-[1px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
