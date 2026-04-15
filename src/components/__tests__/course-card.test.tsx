@@ -24,12 +24,12 @@ describe("CourseCard", () => {
 
   it("renders course units", () => {
     render(<CourseCard course={baseCourse} />);
-    expect(screen.getByTestId("course-units")).toHaveTextContent("4 units");
+    expect(screen.getByTestId("course-units")).toHaveTextContent("4 Units");
   });
 
   it("renders singular unit when units is 1", () => {
     render(<CourseCard course={{ ...baseCourse, units: 1 }} />);
-    expect(screen.getByTestId("course-units")).toHaveTextContent("1 unit");
+    expect(screen.getByTestId("course-units")).toHaveTextContent("1 Unit");
   });
 
   it("renders transfer equivalency when provided", () => {
@@ -39,7 +39,7 @@ describe("CourseCard", () => {
     };
     render(<CourseCard course={course} />);
     expect(screen.getByTestId("course-equivalency")).toHaveTextContent(
-      "Transfer to: UCLA CS 31"
+      "Transfers as: UCLA CS 31"
     );
   });
 
@@ -55,7 +55,7 @@ describe("CourseCard", () => {
     };
     render(<CourseCard course={course} />);
     expect(screen.getByTestId("course-prerequisites")).toHaveTextContent(
-      "Prerequisites: MATH 1, ENGL 1"
+      "Prereqs: MATH 1, ENGL 1"
     );
   });
 

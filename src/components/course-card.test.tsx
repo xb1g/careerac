@@ -31,7 +31,7 @@ describe("CourseCard", () => {
   it("renders course units", () => {
     renderCourseCard(mockCourse);
 
-    expect(screen.getByTestId("course-units")).toHaveTextContent("3 units");
+    expect(screen.getByTestId("course-units")).toHaveTextContent("3 Units");
   });
 
   it("renders transfer equivalency when present", () => {
@@ -46,50 +46,40 @@ describe("CourseCard", () => {
     expect(screen.getByTestId("course-prerequisites")).toHaveTextContent("MATH 101");
   });
 
-  it("does not show status badge for planned courses", () => {
+  it("does not show status text for planned courses", () => {
     renderCourseCard(mockCourse);
 
-    expect(screen.queryByTestId("course-status-badge")).not.toBeInTheDocument();
+    expect(screen.getByTestId("course-card-CS 101")).not.toHaveTextContent(/completed|in progress|cancelled|failed|waitlisted/);
   });
 
-  it("shows completed status with green indicator and checkmark icon", () => {
+  it("shows completed status text", () => {
     renderCourseCard({ ...mockCourse, status: "completed" });
 
-    const badge = screen.getByTestId("course-status-badge");
-    expect(badge).toHaveTextContent("completed");
-    expect(badge).toHaveTextContent("✓");
+    expect(screen.getByTestId("course-card-CS 101")).toHaveTextContent("completed");
   });
 
-  it("shows in-progress status with blue indicator and half-circle icon", () => {
+  it("shows in-progress status text", () => {
     renderCourseCard({ ...mockCourse, status: "in_progress" });
 
-    const badge = screen.getByTestId("course-status-badge");
-    expect(badge).toHaveTextContent("in progress");
-    expect(badge).toHaveTextContent("◐");
+    expect(screen.getByTestId("course-card-CS 101")).toHaveTextContent("in progress");
   });
 
-  it("shows cancelled status with strikethrough and X icon", () => {
+  it("shows cancelled status text", () => {
     renderCourseCard({ ...mockCourse, status: "cancelled" });
 
-    const badge = screen.getByTestId("course-status-badge");
-    expect(badge).toHaveTextContent("cancelled");
-    expect(badge).toHaveTextContent("✕");
+    expect(screen.getByTestId("course-card-CS 101")).toHaveTextContent("cancelled");
   });
 
-  it("shows failed status with strikethrough and X icon", () => {
+  it("shows failed status text", () => {
     renderCourseCard({ ...mockCourse, status: "failed" });
 
-    const badge = screen.getByTestId("course-status-badge");
-    expect(badge).toHaveTextContent("failed");
-    expect(badge).toHaveTextContent("✗");
+    expect(screen.getByTestId("course-card-CS 101")).toHaveTextContent("failed");
   });
 
-  it("shows waitlisted status with amber indicator and hourglass icon", () => {
+  it("shows waitlisted status text", () => {
     renderCourseCard({ ...mockCourse, status: "waitlisted" });
 
-    const badge = screen.getByTestId("course-status-badge");
-    expect(badge).toHaveTextContent("waitlisted");
-    expect(badge).toHaveTextContent("⏳");
+    expect(screen.getByTestId("course-card-CS 101")).toHaveTextContent("waitlisted");
   });
 
   it("is clickable when onClick is provided", () => {

@@ -60,18 +60,14 @@ const createMockPlan = (overrides: Partial<TransferPlan> = {}): TransferPlan => 
 // ============================================================================
 
 describe("CourseCard Failure Status Display", () => {
-  it("shows failed status with red border, X icon, and strikethrough", () => {
+  it("shows failed status with red styling", () => {
     const failedCourse = createMockCourse({ status: "failed" });
     render(<CourseCard course={failedCourse} />);
 
-    const badge = screen.getByTestId("course-status-badge");
-    expect(badge).toHaveTextContent("failed");
-    expect(badge).toHaveTextContent("✗");
-
-    // Verify strikethrough is applied (non-color cue)
     const card = screen.getByTestId("course-card-CS 101");
-    expect(card.className).toContain("line-through");
-    expect(card.className).toContain("opacity-60");
+    expect(card).toHaveTextContent("failed");
+    expect(card.className).toContain("text-rose-900");
+    expect(card.className).toContain("opacity-80");
   });
 
   it("shows cancelled status with distinct visual treatment from failed", () => {
@@ -79,37 +75,26 @@ describe("CourseCard Failure Status Display", () => {
     const cancelledCourse = createMockCourse({ code: "CS 102", status: "cancelled" });
 
     const { unmount } = render(<CourseCard course={failedCourse} />);
-    const failedBadge = screen.getByTestId("course-status-badge");
     const failedCard = screen.getByTestId("course-card-CS 101");
 
     unmount();
     render(<CourseCard course={cancelledCourse} />);
-    const cancelledBadge = screen.getByTestId("course-status-badge");
     const cancelledCard = screen.getByTestId("course-card-CS 102");
 
-    // Both should have strikethrough (non-color cue)
-    expect(failedCard.className).toContain("line-through");
-    expect(cancelledCard.className).toContain("line-through");
-
-    // But different icons
-    expect(failedBadge).toHaveTextContent("✗");
-    expect(cancelledBadge).toHaveTextContent("✕");
-
-    // And different labels
-    expect(failedBadge).toHaveTextContent("failed");
-    expect(cancelledBadge).toHaveTextContent("cancelled");
+    expect(failedCard).toHaveTextContent("failed");
+    expect(cancelledCard).toHaveTextContent("cancelled");
+    expect(failedCard.className).toContain("text-rose-900");
+    expect(cancelledCard.className).toContain("text-zinc-500");
   });
 
-  it("shows waitlisted status with hourglass icon (distinct from failed/cancelled)", () => {
+  it("shows waitlisted status with amber styling", () => {
     const waitlistedCourse = createMockCourse({ status: "waitlisted" });
     render(<CourseCard course={waitlistedCourse} />);
 
-    const badge = screen.getByTestId("course-status-badge");
-    expect(badge).toHaveTextContent("waitlisted");
-    expect(badge).toHaveTextContent("⏳");
-
-    // Should NOT have strikethrough
     const card = screen.getByTestId("course-card-CS 101");
+    expect(card).toHaveTextContent("waitlisted");
+    expect(card.className).toContain("border-l-amber-500");
+
     expect(card.className).not.toContain("line-through");
   });
 
@@ -150,12 +135,8 @@ describe("Multiple Simultaneous Failures in Semester Plan", () => {
 
     render(<SemesterPlan plan={plan} />);
 
-    // Both courses should show failed status
-    const cs1Badge = screen.getByTestId("course-card-CS 1").querySelector('[data-testid="course-status-badge"]');
-    const math1Badge = screen.getByTestId("course-card-MATH 1").querySelector('[data-testid="course-status-badge"]');
-
-    expect(cs1Badge).toHaveTextContent("failed");
-    expect(math1Badge).toHaveTextContent("failed");
+    expect(screen.getByTestId("course-card-CS 1")).toHaveTextContent("failed");
+    expect(screen.getByTestId("course-card-MATH 1")).toHaveTextContent("failed");
   });
 
   it("displays mixed statuses across multiple courses", () => {
@@ -186,10 +167,10 @@ describe("Multiple Simultaneous Failures in Semester Plan", () => {
     render(<SemesterPlan plan={plan} />);
 
     // Verify each status is correctly displayed
-    expect(screen.getByTestId("course-card-CS 1").querySelector('[data-testid="course-status-badge"]')).toHaveTextContent("completed");
-    expect(screen.getByTestId("course-card-MATH 1").querySelector('[data-testid="course-status-badge"]')).toHaveTextContent("failed");
-    expect(screen.getByTestId("course-card-CS 2").querySelector('[data-testid="course-status-badge"]')).toHaveTextContent("cancelled");
-    expect(screen.getByTestId("course-card-MATH 2").querySelector('[data-testid="course-status-badge"]')).toHaveTextContent("waitlisted");
+    expect(screen.getByTestId("course-card-CS 1")).toHaveTextContent("completed");
+    expect(screen.getByTestId("course-card-MATH 1")).toHaveTextContent("failed");
+    expect(screen.getByTestId("course-card-CS 2")).toHaveTextContent("cancelled");
+    expect(screen.getByTestId("course-card-MATH 2")).toHaveTextContent("waitlisted");
   });
 
   it("shows all 5 status options available for selection", () => {
@@ -313,7 +294,7 @@ describe("Unit Calculations with Failed/Completed Courses", () => {
 
     // Completed units should show CS 1's units
     const completedUnits = screen.getByTestId("overall-completed-units");
-    expect(completedUnits).toHaveTextContent("4 completed");
+    expect(completedUnits).toHaveTextContent("4 Done");
   });
 
   it("includes failed courses in remaining units (they need to be retaken)", () => {

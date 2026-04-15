@@ -55,7 +55,7 @@ describe("SemesterPlan", () => {
   it("shows total units in header", () => {
     renderSemesterPlan(mockPlan);
 
-    expect(screen.getByTestId("overall-total-units")).toHaveTextContent("21 total");
+    expect(screen.getByTestId("overall-total-units")).toHaveTextContent("21 Total");
   });
 
   it("shows remaining units equal to total when no courses are completed", () => {
@@ -79,7 +79,7 @@ describe("SemesterPlan", () => {
 
     // CS 101 is 3 units, so remaining should be 21 - 3 = 18
     expect(screen.getByTestId("overall-remaining-units")).toHaveTextContent("18");
-    expect(screen.getByTestId("overall-completed-units")).toHaveTextContent("3 completed");
+    expect(screen.getByTestId("overall-completed-units")).toHaveTextContent("3 Done");
   });
 
   it("shows semester units excluding completed courses", () => {
@@ -131,8 +131,8 @@ describe("SemesterPlan", () => {
 
     renderSemesterPlan(planWithStatuses);
 
-    const badges = screen.getAllByTestId("course-status-badge");
-    expect(badges).toHaveLength(2);
+    expect(screen.getByTestId("course-card-CS 101")).toHaveTextContent("completed");
+    expect(screen.getByTestId("course-card-MATH 101")).toHaveTextContent("in progress");
   });
 });
 

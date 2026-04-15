@@ -55,16 +55,14 @@ describe("SemesterPlan", () => {
     it("renders plan header with CC, target university, and major", () => {
       render(<SemesterPlan plan={mockTransferPlan} />);
 
-      expect(screen.getByTestId("plan-header")).toHaveTextContent(
-        "Santa Monica College → UCLA"
-      );
+    expect(screen.getByTestId("plan-header")).toHaveTextContent("Santa Monica CollegeUCLA");
       expect(screen.getByText("Computer Science")).toBeInTheDocument();
     });
 
     it("displays overall total units", () => {
       render(<SemesterPlan plan={mockTransferPlan} />);
 
-      expect(screen.getByTestId("overall-total-units")).toHaveTextContent("13");
+    expect(screen.getByTestId("overall-total-units")).toHaveTextContent("13 Total");
     });
 
     it("renders semester grid with all semesters", () => {
@@ -81,8 +79,8 @@ describe("SemesterPlan", () => {
       render(<SemesterPlan plan={mockTransferPlan} />);
 
       const semesterUnits = screen.getAllByTestId("semester-units");
-      expect(semesterUnits[0]).toHaveTextContent("9 units");
-      expect(semesterUnits[1]).toHaveTextContent("4 units");
+    expect(semesterUnits[0]).toHaveTextContent("9 units remaining");
+    expect(semesterUnits[1]).toHaveTextContent("4 units remaining");
     });
 
     it("renders course cards with code, title, units", () => {
@@ -109,7 +107,7 @@ describe("SemesterPlan", () => {
 
       const prereqElements = screen.getAllByTestId("course-prerequisites");
       expect(prereqElements.length).toBeGreaterThan(0);
-      expect(prereqElements[0]).toHaveTextContent("Prerequisites: CS 1");
+    expect(prereqElements[0]).toHaveTextContent("Prereqs: CS 1");
     });
   });
 
@@ -136,14 +134,14 @@ describe("SemesterPlan", () => {
 
       // Fall 2024: CS 1 (4) + MATH 1 (5) = 9
       const semesterUnits = screen.getAllByTestId("semester-units");
-      expect(semesterUnits[0]).toHaveTextContent("9 units");
+    expect(semesterUnits[0]).toHaveTextContent("9 units remaining");
     });
 
     it("overall total matches sum of semester totals", () => {
       render(<SemesterPlan plan={mockTransferPlan} />);
 
       // 9 + 4 = 13
-      expect(screen.getByTestId("overall-total-units")).toHaveTextContent("13");
+    expect(screen.getByTestId("overall-total-units")).toHaveTextContent("13 Total");
     });
   });
 });

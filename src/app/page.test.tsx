@@ -6,22 +6,22 @@ describe("Landing Page", () => {
     render(<HomePage />);
     const heading = screen.getByRole("heading", { level: 1 });
     expect(heading).toBeInTheDocument();
-    expect(heading.textContent).toMatch(/careerac/i);
+    expect(heading).toHaveTextContent("Your Transfer Path, Perfectly Clear");
   });
 
-  it("renders a subheadline mentioning AI-powered transfer planning", () => {
+  it("renders a subheadline mentioning intelligent AI planning", () => {
     render(<HomePage />);
-    expect(screen.getByText(/ai-powered/i)).toBeInTheDocument();
+    expect(screen.getByText(/intelligent AI/i)).toBeInTheDocument();
   });
 
-  it("renders subheadline content about failure recovery", () => {
+  it("renders subheadline content about recovery suggestions", () => {
     render(<HomePage />);
-    expect(screen.getByText(/recovery/i)).toBeInTheDocument();
+    expect(screen.getByText(/if life happens/i)).toBeInTheDocument();
   });
 
-  it("renders subheadline content about community playbooks", () => {
+  it("renders the how-it-works section", () => {
     render(<HomePage />);
-    expect(screen.getByText(/playbook/i)).toBeInTheDocument();
+    expect(screen.getByText(/How It Works/i)).toBeInTheDocument();
   });
 
   it("renders a CTA button linking to /auth/signup", () => {

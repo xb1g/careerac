@@ -96,8 +96,8 @@ describe("Header", () => {
     // Active: "text-zinc-900 dark:text-white" (base color)
     // Inactive: "text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white"
     expect(dashboardLink.className).not.toBe(newPlanLink.className);
-    // Inactive should contain text-zinc-600
-    expect(newPlanLink.className).toContain("text-zinc-600");
+    // Inactive should contain text-zinc-500
+    expect(newPlanLink.className).toContain("text-zinc-500");
   });
 
   it("displays user email when provided", () => {
