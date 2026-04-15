@@ -111,9 +111,11 @@ describe("POST /api/plans/generate-auto", () => {
     expect(body.planId).toBe("plan-123");
     expect(body.plan).toEqual(parsedPlan);
     expect(body.detectedMajor).toBe("Computer Science");
-    expect(body.chatHistory).toHaveLength(2);
-    expect(body.chatHistory[0]).toMatchObject({ role: "user" });
-    expect(body.chatHistory[1]).toMatchObject({ role: "assistant" });
+    expect(body.chatHistory).toHaveLength(3);
+    expect(body.chatHistory[0]).toMatchObject({ role: "assistant" });
+    expect(body.chatHistory[0].parts[0].text).toContain("De Anza College");
+    expect(body.chatHistory[1]).toMatchObject({ role: "user" });
+    expect(body.chatHistory[2]).toMatchObject({ role: "assistant" });
 
     expect(mockGenerate).toHaveBeenCalledWith(
       {

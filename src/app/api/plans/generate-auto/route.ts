@@ -83,14 +83,31 @@ function buildSyntheticUserPrompt(
 }
 
 function buildSyntheticChatHistory(
-  userPrompt: string,
+  transcriptData: TranscriptData,
+  detectedMajor: string,
+  targetSchool: string | null,
   rawText: string,
 ): UIMessage[] {
+  const destination = targetSchool
+    ? `transfer to ${targetSchool}`
+    : "find the best-fit transfer options";
+
+  const gpaText = transcriptData.gpa ? ` (GPA: ${transcriptData.gpa})` : "";
+
+  const welcomeText = transcriptData
+    ? `I see you've taken ${transcriptData.courses.length} courses at ${transcriptData.institution} with ${transcriptData.totalUnitsCompleted} completed units${gpaText}. Let me analyze your coursework and ${destination} for ${detectedMajor}.`
+    : `I'll analyze the available transfer paths and ${destination} for ${detectedMajor}.`;
+
   return [
+    {
+      id: "welcome",
+      role: "assistant",
+      parts: [{ type: "text", text: welcomeText }],
+    } as unknown as UIMessage,
     {
       id: "auto-plan-request",
       role: "user",
-      parts: [{ type: "text", text: userPrompt }],
+      parts: [{ type: "text", text: `Generate a complete 2-year transfer plan for ${detectedMajor}.` }],
     } as unknown as UIMessage,
     {
       id: "auto-plan-response",
@@ -244,7 +261,12 @@ export async function POST(req: Request) {
       );
     }
 
-    const chatHistory = buildSyntheticChatHistory(userPrompt, generated.rawText);
+    const chatHistory = buildSyntheticChatHistory(
+      body.transcriptData,
+      detectedMajor,
+      targetSchool,
+      generated.rawText,
+    );
 
     try {
       const savedPlan = await savePlanRecord(supabase, {
