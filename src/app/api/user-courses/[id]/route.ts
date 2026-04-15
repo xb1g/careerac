@@ -1,5 +1,8 @@
 import { createClient } from "@/utils/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
+import type { Database } from "@/types/database";
+
+type UserCourseUpdate = Database["public"]["Tables"]["user_courses"]["Update"];
 
 export async function PUT(
   request: NextRequest,
@@ -18,17 +21,18 @@ export async function PUT(
   const body = await request.json();
   const { course_code, course_title, units, grade, term, status, notes } = body;
 
+  const updateData: UserCourseUpdate = {};
+  if (course_code !== undefined) updateData.course_code = course_code;
+  if (course_title !== undefined) updateData.course_title = course_title;
+  if (units !== undefined) updateData.units = units;
+  if (grade !== undefined) updateData.grade = grade || null;
+  if (term !== undefined) updateData.term = term || null;
+  if (status !== undefined) updateData.status = status;
+  if (notes !== undefined) updateData.notes = notes || null;
+
   const { data, error } = await supabase
     .from("user_courses")
-    .update({
-      ...(course_code !== undefined && { course_code }),
-      ...(course_title !== undefined && { course_title }),
-      ...(units !== undefined && { units }),
-      ...(grade !== undefined && { grade: grade || null }),
-      ...(term !== undefined && { term: term || null }),
-      ...(status !== undefined && { status }),
-      ...(notes !== undefined && { notes: notes || null }),
-    })
+    .update(updateData as never)
     .eq("id", id)
     .eq("user_id", user.id)
     .select()

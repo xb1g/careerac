@@ -55,7 +55,7 @@ export async function POST(request: NextRequest) {
       term: term || null,
       status: status || "completed",
       notes: notes || null,
-    })
+    } as never)
     .select()
     .single();
 
