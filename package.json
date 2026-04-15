@@ -11,13 +11,14 @@
   "dependencies": {
     "@ai-sdk/openai": "^3.0.52",
     "@ai-sdk/react": "^3.0.160",
+    "@napi-rs/canvas": "^0.1.98",
     "@openrouter/ai-sdk-provider": "^2.5.1",
     "@supabase/ssr": "^0.10.2",
     "@supabase/supabase-js": "^2.103.0",
     "ai": "^6.0.158",
     "next": "15.5.15",
-    "pdfjs-dist": "^5.4.296",
     "openai": "^6.34.0",
+    "pdfjs-dist": "^5.4.296",
     "react": "19.2.4",
     "react-dom": "19.2.4"
   },
