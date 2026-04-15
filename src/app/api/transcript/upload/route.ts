@@ -14,22 +14,9 @@ async function extractTextFromPdf(buffer: Buffer): Promise<string> {
   const pdfjsSpecifier = "pdfjs-dist/legacy/build/pdf.mjs";
   const pdfjsLib = await import(/* webpackIgnore: true */ /* @vite-ignore */ pdfjsSpecifier);
 
-  // Tell pdfjs where its standard fonts live. Without this, pdfs that
-  // reference standard fonts (Helvetica, Times, etc.) log
-  // `UnknownErrorException: Ensure that the standardFontDataUrl API
-  // parameter is provided`. We resolve the pdfjs-dist package root via
-  // createRequire so this works regardless of pnpm's node_modules layout.
-  const { createRequire } = await import("node:module");
-  const path = await import("node:path");
-  const { pathToFileURL } = await import("node:url");
-  const requireFromRoute = createRequire(import.meta.url);
-  const pdfjsPkgRoot = path.dirname(requireFromRoute.resolve("pdfjs-dist/package.json"));
-  const standardFontDataUrl = pathToFileURL(path.join(pdfjsPkgRoot, "standard_fonts") + path.sep).href;
-
   const loadingTask = pdfjsLib.getDocument({
     data: new Uint8Array(buffer),
-    useSystemFonts: false,
-    standardFontDataUrl,
+    useSystemFonts: true,
   });
   const pdf = await loadingTask.promise;
 
