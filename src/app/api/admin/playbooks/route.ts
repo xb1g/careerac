@@ -66,13 +66,12 @@ export async function GET(request: NextRequest) {
     `,
     )
     .eq("verification_status", status)
-    .order("created_at", { ascending: false })
-    .returns<AdminPlaybookRow[]>();
+    .order("created_at", { ascending: false });
 
   if (error) {
     console.error("Error fetching admin playbooks:", error);
     return NextResponse.json({ error: "Failed to fetch playbooks" }, { status: 500 });
   }
 
-  return NextResponse.json(data ?? []);
+  return NextResponse.json((data ?? []) as AdminPlaybookRow[]);
 }
