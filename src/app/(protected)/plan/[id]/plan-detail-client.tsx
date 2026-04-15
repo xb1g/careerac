@@ -328,7 +328,7 @@ export default function PlanDetailClient({ plan, transcript }: PlanDetailClientP
             <div className="mt-3">
               <TranscriptEditor
                 transcriptId={transcript.id}
-                transcriptData={transcriptData}
+            transcriptData={transcriptData ?? undefined}
                 onSave={handleTranscriptSave}
                 onCancel={() => setTranscriptExpanded(false)}
               />
@@ -347,7 +347,7 @@ export default function PlanDetailClient({ plan, transcript }: PlanDetailClientP
             recoveryContext={recoveryContext}
             onAcceptAlternative={handleAcceptAlternative}
             planId={plan.id}
-            transcriptData={transcriptData}
+            transcriptData={transcriptData ?? undefined}
           />
         </div>
 

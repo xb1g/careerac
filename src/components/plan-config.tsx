@@ -23,9 +23,10 @@ export default function PlanConfig({ transcriptData, onConfigured, onBack }: Pla
   const [customCredits, setCustomCredits] = useState("");
   const [isCustom, setIsCustom] = useState(false);
   const [major, setMajor] = useState(transcriptData?.major || "");
-  const [hasTargetSchool, setHasTargetSchool] = useState(true);
+  const [hasTargetSchool, setHasTargetSchool] = useState(false);
   const [targetSchool, setTargetSchool] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [showAdvanced, setShowAdvanced] = useState(false);
 
   const effectiveCredits = isCustom ? parseInt(customCredits) || 0 : maxCredits;
 
@@ -56,12 +57,25 @@ export default function PlanConfig({ transcriptData, onConfigured, onBack }: Pla
     });
   };
 
+  const handleQuickStart = () => {
+    if (!major.trim()) {
+      setErrors({ major: "Enter your intended major to get started." });
+      return;
+    }
+    onConfigured({
+      maxCreditsPerSemester: 15,
+      major: major.trim(),
+      hasTargetSchool: false,
+      targetSchool: "",
+    });
+  };
+
   return (
-    <form onSubmit={handleSubmit} className="space-y-8">
+    <form onSubmit={handleSubmit} className="space-y-6">
       <div>
-        <h2 className="text-xl font-semibold text-zinc-900 dark:text-white">Plan Settings</h2>
+        <h2 className="text-xl font-semibold text-zinc-900 dark:text-white">What do you want to study?</h2>
         <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
-          Configure your transfer plan preferences.
+          I&apos;ll build your transfer plan with smart defaults. Adjust below if needed.
         </p>
       </div>
 
@@ -72,56 +86,6 @@ export default function PlanConfig({ transcriptData, onConfigured, onBack }: Pla
         </div>
       )}
 
-      {/* Max Credits Per Semester */}
-      <fieldset className="space-y-3">
-        <legend className="block text-sm font-medium text-zinc-900 dark:text-white">
-          Maximum Credits Per Semester
-        </legend>
-        <p className="text-xs text-zinc-500 dark:text-zinc-400">
-          This is a strict limit. Every semester in your plan will have this many units or fewer.
-        </p>
-        <div className="flex gap-2">
-          {CREDIT_PRESETS.map((preset) => (
-            <button
-              key={preset}
-              type="button"
-              onClick={() => { setMaxCredits(preset); setIsCustom(false); }}
-              className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
-                !isCustom && maxCredits === preset
-                  ? "bg-blue-600 text-white"
-                  : "border border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800"
-              }`}
-            >
-              {preset} units
-            </button>
-          ))}
-          <button
-            type="button"
-            onClick={() => setIsCustom(true)}
-            className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
-              isCustom
-                ? "bg-blue-600 text-white"
-                : "border border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800"
-            }`}
-          >
-            Custom
-          </button>
-        </div>
-        {isCustom && (
-          <input
-            type="number"
-            min={1}
-            max={24}
-            value={customCredits}
-            onChange={(e) => setCustomCredits(e.target.value)}
-            placeholder="Enter max units"
-            className="w-32 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
-          />
-        )}
-        {errors.credits && <p className="text-sm text-red-600 dark:text-red-400">{errors.credits}</p>}
-      </fieldset>
-
-      {/* Major */}
       <div className="space-y-2">
         <label htmlFor="major-input" className="block text-sm font-medium text-zinc-900 dark:text-white">
           Intended Major
@@ -130,81 +94,146 @@ export default function PlanConfig({ transcriptData, onConfigured, onBack }: Pla
           id="major-input"
           type="text"
           value={major}
-          onChange={(e) => setMajor(e.target.value)}
-          placeholder="e.g., Computer Science"
-          className="w-full max-w-md rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
+          onChange={(e) => { setMajor(e.target.value); setErrors({}); }}
+          placeholder="e.g., Computer Science, Psychology, Business"
+          className="w-full max-w-md rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2.5 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
+          autoFocus
         />
         {errors.major && <p className="text-sm text-red-600 dark:text-red-400">{errors.major}</p>}
       </div>
 
-      {/* Target School */}
-      <fieldset className="space-y-3">
-        <legend className="block text-sm font-medium text-zinc-900 dark:text-white">
-          Do you have a target school?
-        </legend>
-        <div className="flex flex-col gap-3">
-          <label aria-label="Yes, I have a target school" className="flex items-start gap-3 cursor-pointer">
-            <input
-              type="radio"
-              name="targetSchool"
-              checked={hasTargetSchool}
-              onChange={() => setHasTargetSchool(true)}
-              className="mt-0.5 h-4 w-4 text-blue-600 focus:ring-blue-500"
-            />
-            <div>
-              <span className="text-sm font-medium text-zinc-900 dark:text-white">Yes, I have a target school</span>
-              <p className="text-xs text-zinc-500 dark:text-zinc-400">
-                I&apos;ll generate a plan specifically for that school.
-              </p>
-            </div>
-          </label>
-          {hasTargetSchool && (
-            <div className="ml-7">
-              <input
-                type="text"
-                value={targetSchool}
-                onChange={(e) => setTargetSchool(e.target.value)}
-                placeholder="e.g., UCLA, UC Berkeley, San Jose State"
-                className="w-full max-w-md rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
-              />
-              {errors.targetSchool && <p className="text-sm text-red-600 dark:text-red-400 mt-1">{errors.targetSchool}</p>}
-            </div>
-          )}
-
-          <label aria-label="Help me find the best fit" className="flex items-start gap-3 cursor-pointer">
-            <input
-              type="radio"
-              name="targetSchool"
-              checked={!hasTargetSchool}
-              onChange={() => setHasTargetSchool(false)}
-              className="mt-0.5 h-4 w-4 text-blue-600 focus:ring-blue-500"
-            />
-            <div>
-              <span className="text-sm font-medium text-zinc-900 dark:text-white">Help me find the best fit</span>
-              <p className="text-xs text-zinc-500 dark:text-zinc-400">
-                I&apos;ll analyze your courses and show transfer likelihoods for multiple universities.
-              </p>
-            </div>
-          </label>
-        </div>
-      </fieldset>
-
-      {/* Actions */}
-      <div className="flex gap-3">
+      <div className="flex flex-col sm:flex-row gap-3">
         <button
-          type="submit"
+          type="button"
+          onClick={handleQuickStart}
           className="rounded-lg bg-blue-600 text-white px-6 py-2.5 text-sm font-medium hover:bg-blue-700 transition-colors"
         >
-          Generate Plan
+          Generate Plan Now
+        </button>
+        <button
+          type="button"
+          onClick={() => setShowAdvanced(!showAdvanced)}
+          className="rounded-lg border border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 px-6 py-2.5 text-sm font-medium hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors"
+        >
+          {showAdvanced ? "Hide Options" : "Customize"}
         </button>
         <button
           type="button"
           onClick={onBack}
-          className="rounded-lg border border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 px-6 py-2.5 text-sm font-medium hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors"
+          className="rounded-lg text-zinc-500 dark:text-zinc-400 px-4 py-2.5 text-sm hover:text-zinc-700 dark:hover:text-zinc-300 transition-colors"
         >
           Back
         </button>
       </div>
+
+      {showAdvanced && (
+        <div className="space-y-6 pt-4 border-t border-zinc-200 dark:border-zinc-800">
+          <fieldset className="space-y-3">
+            <legend className="block text-sm font-medium text-zinc-900 dark:text-white">
+              Maximum Credits Per Semester
+            </legend>
+            <p className="text-xs text-zinc-500 dark:text-zinc-400">
+              Default is 15 units (full-time). Plans won&apos;t exceed this limit per semester.
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {CREDIT_PRESETS.map((preset) => (
+                <button
+                  key={preset}
+                  type="button"
+                  onClick={() => { setMaxCredits(preset); setIsCustom(false); }}
+                  className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
+                    !isCustom && maxCredits === preset
+                      ? "bg-blue-600 text-white"
+                      : "border border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800"
+                  }`}
+                >
+                  {preset} units
+                </button>
+              ))}
+              <button
+                type="button"
+                onClick={() => setIsCustom(true)}
+                className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
+                  isCustom
+                    ? "bg-blue-600 text-white"
+                    : "border border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800"
+                }`}
+              >
+                Custom
+              </button>
+            </div>
+            {isCustom && (
+              <input
+                type="number"
+                min={1}
+                max={24}
+                value={customCredits}
+                onChange={(e) => setCustomCredits(e.target.value)}
+                placeholder="Enter max units"
+                className="w-32 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
+              />
+            )}
+            {errors.credits && <p className="text-sm text-red-600 dark:text-red-400">{errors.credits}</p>}
+          </fieldset>
+
+          <fieldset className="space-y-3">
+            <legend className="block text-sm font-medium text-zinc-900 dark:text-white">
+              Target School (Optional)
+            </legend>
+            <div className="flex flex-col gap-3">
+              <label className="flex items-start gap-3 cursor-pointer">
+                <input
+                  type="radio"
+                  name="targetSchool"
+                  checked={!hasTargetSchool}
+                  onChange={() => setHasTargetSchool(false)}
+                  className="mt-0.5 h-4 w-4 text-blue-600 focus:ring-blue-500"
+                />
+                <div>
+                  <span className="text-sm font-medium text-zinc-900 dark:text-white">Find my best fit</span>
+                  <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                    I&apos;ll analyze your courses and compare transfer likelihoods across multiple universities.
+                  </p>
+                </div>
+              </label>
+
+              <label className="flex items-start gap-3 cursor-pointer">
+                <input
+                  type="radio"
+                  name="targetSchool"
+                  checked={hasTargetSchool}
+                  onChange={() => setHasTargetSchool(true)}
+                  className="mt-0.5 h-4 w-4 text-blue-600 focus:ring-blue-500"
+                />
+                <div className="flex-1">
+                  <span className="text-sm font-medium text-zinc-900 dark:text-white">I know where I&apos;m going</span>
+                  {hasTargetSchool && (
+                    <div className="mt-2">
+                      <input
+                        type="text"
+                        value={targetSchool}
+                        onChange={(e) => setTargetSchool(e.target.value)}
+                        placeholder="e.g., UCLA, UC Berkeley, San Jose State"
+                        className="w-full max-w-md rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
+                      />
+                      {errors.targetSchool && <p className="text-sm text-red-600 dark:text-red-400 mt-1">{errors.targetSchool}</p>}
+                    </div>
+                  )}
+                </div>
+              </label>
+            </div>
+          </fieldset>
+
+          <div className="flex gap-3 pt-2">
+            <button
+              type="submit"
+              className="rounded-lg bg-blue-600 text-white px-6 py-2.5 text-sm font-medium hover:bg-blue-700 transition-colors"
+            >
+              Generate Plan
+            </button>
+          </div>
+        </div>
+      )}
     </form>
   );
 }

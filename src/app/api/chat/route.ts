@@ -1,4 +1,4 @@
-import { UIMessage } from "ai";
+import { createUIMessageStreamResponse, UIMessage } from "ai";
 import { createClient } from "@/utils/supabase/server";
 import { getVerifiedPlaybooksContext } from "@/utils/playbook-context";
 import type { Database } from "@/types/database";
@@ -70,8 +70,7 @@ async function getArticulationContext(
     let query = supabase
       .from("articulation_agreements")
       .select("id, cc_course_id, university_course_id, cc_institution_id, university_institution_id, major, notes")
-      .limit(1500)
-      .returns<ArticulationRow[]>();
+      .limit(1500);
 
     if (planContext?.ccInstitutionId) {
       query = query.eq("cc_institution_id", planContext.ccInstitutionId);
@@ -81,9 +80,10 @@ async function getArticulationContext(
       query = query.eq("university_institution_id", planContext.targetInstitutionId);
     }
 
-    const { data: scopedAgreements, error } = await query;
+    const { data: scopedAgreementsRaw, error } = await query.returns<ArticulationRow[]>();
+    const scopedAgreements = (scopedAgreementsRaw ?? []) as ArticulationRow[];
 
-    if (error || !scopedAgreements) {
+    if (error) {
       console.error("Error fetching articulation data:", error);
       return {
         context: "Articulation data is currently unavailable.",
@@ -645,7 +645,6 @@ Each university's plan must respect the max credits per semester limit. Include 
 
     const stream = new ReadableStream({
       async start(controller) {
-        const encoder = new TextEncoder();
         const reader = minimaxResponse.body?.getReader();
 
         if (!reader) {
@@ -654,6 +653,7 @@ Each university's plan must respect the max credits per semester limit. Include 
         }
 
         const messageId = `msg-${Date.now()}`;
+        const textId = `text-${Date.now()}`;
         let started = false;
         let buffer = "";
 
@@ -688,21 +688,22 @@ Each university's plan must respect the max credits per semester limit. Include 
 
                   if (!started) {
                     started = true;
-                    const startEvent = {
-                      id: messageId,
-                      type: "assistant_message",
-                      role: "assistant",
-                      content: [],
-                    };
-                    controller.enqueue(encoder.encode(`data: ${JSON.stringify(startEvent)}\n`));
+                    controller.enqueue({
+                      type: "start",
+                      messageId,
+                    });
+                    controller.enqueue({
+                      type: "text-start",
+                      id: textId,
+                    });
                   }
 
                   if (content) {
-                    const textEvent = {
-                      type: "text",
-                      text: content,
-                    };
-                    controller.enqueue(encoder.encode(`data: ${JSON.stringify(textEvent)}\n`));
+                    controller.enqueue({
+                      type: "text-delta",
+                      id: textId,
+                      delta: content,
+                    });
                   }
                 } catch {
                   // SSE chunks may be incomplete, ignore parse errors
@@ -711,11 +712,17 @@ Each university's plan must respect the max credits per semester limit. Include 
             }
           }
 
-          const finishEvent = {
+          if (started) {
+            controller.enqueue({
+              type: "text-end",
+              id: textId,
+            });
+          }
+
+          controller.enqueue({
             type: "finish",
             finishReason: "stop",
-          };
-          controller.enqueue(encoder.encode(`data: ${JSON.stringify(finishEvent)}\n`));
+          });
           controller.close();
         } catch (error) {
           console.error("Streaming error:", error);
@@ -724,12 +731,8 @@ Each university's plan must respect the max credits per semester limit. Include 
       },
     });
 
-    return new Response(stream, {
-      headers: {
-        "Content-Type": "text/event-stream",
-        "Cache-Control": "no-cache",
-        "Connection": "keep-alive",
-      },
+    return createUIMessageStreamResponse({
+      stream,
     });
   } catch (error) {
     console.error("Chat API error:", error);
