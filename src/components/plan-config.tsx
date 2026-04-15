@@ -97,7 +97,6 @@ export default function PlanConfig({ transcriptData, onConfigured, onBack }: Pla
           onChange={(e) => { setMajor(e.target.value); setErrors({}); }}
           placeholder="e.g., Computer Science, Psychology, Business"
           className="w-full max-w-md rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2.5 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
-          autoFocus
         />
         {errors.major && <p className="text-sm text-red-600 dark:text-red-400">{errors.major}</p>}
       </div>
@@ -181,8 +180,9 @@ export default function PlanConfig({ transcriptData, onConfigured, onBack }: Pla
               Target School (Optional)
             </legend>
             <div className="flex flex-col gap-3">
-              <label className="flex items-start gap-3 cursor-pointer">
+              <label htmlFor="target-find-fit" aria-label="Find my best fit - I'll analyze your courses and compare transfer likelihoods across multiple universities" className="flex items-start gap-3 cursor-pointer">
                 <input
+                  id="target-find-fit"
                   type="radio"
                   name="targetSchool"
                   checked={!hasTargetSchool}
@@ -197,8 +197,9 @@ export default function PlanConfig({ transcriptData, onConfigured, onBack }: Pla
                 </div>
               </label>
 
-              <label className="flex items-start gap-3 cursor-pointer">
+              <label htmlFor="target-known" aria-label="I know where I'm going" className="flex items-start gap-3 cursor-pointer">
                 <input
+                  id="target-known"
                   type="radio"
                   name="targetSchool"
                   checked={hasTargetSchool}
