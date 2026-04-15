@@ -4,6 +4,7 @@
  * This is the ONLY file that knows about the MiniMax wire protocol.
  */
 
+import { createUIMessageStreamResponse } from "ai";
 import type { UIMessage } from "ai";
 
 // ---------------------------------------------------------------------------
@@ -96,9 +97,11 @@ export async function streamFromMiniMax(
     );
   }
 
+  const messageId = `msg-${Date.now()}`;
+  const textId = `text-${Date.now()}`;
+
   const stream = new ReadableStream({
     async start(controller) {
-      const encoder = new TextEncoder();
       const reader = minimaxResponse.body?.getReader();
 
       if (!reader) {
@@ -106,7 +109,6 @@ export async function streamFromMiniMax(
         return;
       }
 
-      const messageId = `msg-${Date.now()}`;
       let started = false;
       let buffer = "";
 
@@ -132,36 +134,19 @@ export async function streamFromMiniMax(
                 if (delta) {
                   if (delta.type === "text_delta" && delta.text) {
                     content = delta.text;
-                  } else if (
-                    delta.type === "thinking_delta" &&
-                    delta.thinking
-                  ) {
+                  } else if (delta.type === "thinking_delta") {
                     continue;
                   }
                 }
 
                 if (!started) {
                   started = true;
-                  const startEvent = {
-                    id: messageId,
-                    type: "assistant_message",
-                    role: "assistant",
-                    content: [],
-                  };
-                  controller.enqueue(
-                    encoder.encode(
-                      `data: ${JSON.stringify(startEvent)}\n`,
-                    ),
-                  );
+                  controller.enqueue({ type: "start", messageId });
+                  controller.enqueue({ type: "text-start", id: textId });
                 }
 
                 if (content) {
-                  const textEvent = { type: "text", text: content };
-                  controller.enqueue(
-                    encoder.encode(
-                      `data: ${JSON.stringify(textEvent)}\n`,
-                    ),
-                  );
+                  controller.enqueue({ type: "text-delta", id: textId, delta: content });
                 }
               } catch {
                 // SSE chunks may be incomplete, ignore parse errors
@@ -170,10 +155,10 @@ export async function streamFromMiniMax(
           }
         }
 
-        const finishEvent = { type: "finish", finishReason: "stop" };
-        controller.enqueue(
-          encoder.encode(`data: ${JSON.stringify(finishEvent)}\n`),
-        );
+        if (started) {
+          controller.enqueue({ type: "text-end", id: textId });
+        }
+        controller.enqueue({ type: "finish", finishReason: "stop" });
         controller.close();
       } catch (error) {
         console.error("Streaming error:", error);
@@ -182,11 +167,5 @@ export async function streamFromMiniMax(
     },
   });
 
-  return new Response(stream, {
-    headers: {
-      "Content-Type": "text/event-stream",
-      "Cache-Control": "no-cache",
-      Connection: "keep-alive",
-    },
-  });
+  return createUIMessageStreamResponse({ stream });
 }

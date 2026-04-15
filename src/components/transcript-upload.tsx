@@ -237,7 +237,7 @@ export default function TranscriptUpload({ onTranscriptParsed, onSkip }: Transcr
                     <td className="px-3 py-2">
                       <button
                         onClick={() => setManualCourses((prev) => prev.filter((_, idx) => idx !== i))}
-                        className="text-red-500 hover:text-red-700 text-xs"
+                        className="inline-block rounded-full px-2 py-0.5 text-xs font-medium bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300 hover:bg-red-200 dark:hover:bg-red-900/50 cursor-pointer transition-colors"
                       >
                         Remove
                       </button>
@@ -334,7 +334,7 @@ export default function TranscriptUpload({ onTranscriptParsed, onSkip }: Transcr
                   <td className="px-3 py-2">
                     <button
                       onClick={() => handleRemoveCourse(i)}
-                      className="text-red-500 hover:text-red-700 text-xs"
+                      className="inline-block rounded-full px-2 py-0.5 text-xs font-medium bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300 hover:bg-red-200 dark:hover:bg-red-900/50 cursor-pointer transition-colors"
                       aria-label={`Remove ${course.code}`}
                     >
                       Remove
