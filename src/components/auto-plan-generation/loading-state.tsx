@@ -4,21 +4,26 @@ import { Button } from "@/components/ui/button";
 export type LoadingStep = "detecting" | "analyzing" | "creating" | "finalizing";
 
 interface LoadingStateProps {
-  currentStep: LoadingStep;
+  currentStep?: LoadingStep;
   detectedMajor?: string;
-  onCancel: () => void;
+  onCancel?: () => void;
+  major?: string | null;
+  isRecovering?: boolean;
 }
 
 export function AutoGenerationLoading({
   currentStep = "creating",
   detectedMajor = "Computer Science",
   onCancel,
+  major,
+  isRecovering = false,
 }: LoadingStateProps) {
+  const effectiveMajor = major ?? detectedMajor;
   
   const stepConfig = [
     {
       id: "detecting",
-      label: `Detected major: ${detectedMajor}`,
+      label: `Detected major: ${effectiveMajor}`,
       done: ["analyzing", "creating", "finalizing"].includes(currentStep),
       active: currentStep === "detecting",
     },
@@ -54,11 +59,13 @@ export function AutoGenerationLoading({
         </div>
 
         <h2 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50 mb-3">
-          Generating Your Plan
+          {isRecovering ? "Recovering Your Plan Request" : "Generating Your Plan"}
         </h2>
         
         <p className="text-zinc-500 dark:text-zinc-400 mb-10">
-          We&apos;re crunching the numbers to build your optimal transfer path.
+          {isRecovering
+            ? "We restored your in-progress request. Retry below if generation did not finish."
+            : "We&apos;re crunching the numbers to build your optimal transfer path."}
         </p>
 
         <div className="h-2 w-full bg-zinc-100 dark:bg-zinc-800 rounded-full overflow-hidden mb-10">
@@ -94,9 +101,11 @@ export function AutoGenerationLoading({
         </div>
 
         <div className="flex flex-col items-center justify-center gap-4">
-          <Button onClick={onCancel} variant="ghost" className="text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100">
-            Cancel & Customize Instead
-          </Button>
+          {onCancel && (
+            <Button onClick={onCancel} variant="ghost" className="text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100">
+              Cancel & Customize Instead
+            </Button>
+          )}
           <p className="text-xs text-zinc-400 dark:text-zinc-500">
             This usually takes 30-45 seconds
           </p>

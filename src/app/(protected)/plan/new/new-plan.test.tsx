@@ -33,14 +33,14 @@ describe("NewPlanPage", () => {
     expect(screen.getByRole("button", { name: "Generate Plan" })).toBeInTheDocument();
   });
 
-  it("shows the chat step after configuration", () => {
+  it("shows the compare step after configuration", () => {
     render(<NewPlanPage />);
 
     fireEvent.click(screen.getByRole("button", { name: "Skip This Step" }));
     fireEvent.change(screen.getByLabelText("Intended Major"), { target: { value: "Computer Science" } });
     fireEvent.click(screen.getByRole("button", { name: "Generate Plan" }));
 
-    expect(screen.getByTestId("chat-component")).toBeInTheDocument();
-    expect(screen.getByText("Your plan will appear here")).toBeInTheDocument();
+    expect(screen.getByText("Compare Schools")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Continue to Plan" })).toBeInTheDocument();
   });
 });

@@ -1,15 +1,22 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
+import type { TranscriptData } from "@/types/transcript";
 
 interface GenerationChoiceScreenProps {
   onAutoGenerate: () => void;
   onCustomize: () => void;
+  onBack?: () => void;
+  transcriptData?: TranscriptData;
+  isBusy?: boolean;
 }
 
 export function GenerationChoiceScreen({
   onAutoGenerate,
   onCustomize,
+  onBack,
+  transcriptData,
+  isBusy = false,
 }: GenerationChoiceScreenProps) {
   return (
     <div className="w-full max-w-4xl mx-auto py-8 px-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -18,7 +25,9 @@ export function GenerationChoiceScreen({
           How would you like to create your plan?
         </h2>
         <p className="text-lg text-zinc-500 dark:text-zinc-400">
-          You can always edit your plan later, no matter which option you choose.
+          {transcriptData
+            ? `We parsed ${transcriptData.courses.length} courses from ${transcriptData.institution}. You can always edit your plan later.`
+            : "You can always edit your plan later, no matter which option you choose."}
         </p>
       </div>
 
@@ -26,7 +35,7 @@ export function GenerationChoiceScreen({
         <Card 
           variant="glass" 
           className="relative overflow-hidden group cursor-pointer transition-all hover:shadow-xl hover:border-blue-500/50 dark:hover:border-blue-500/50 flex flex-col"
-          onClick={onAutoGenerate}
+          onClick={() => !isBusy && onAutoGenerate()}
         >
           <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
           <CardHeader className="pb-4">
@@ -61,16 +70,16 @@ export function GenerationChoiceScreen({
             </ul>
           </CardContent>
           <CardFooter className="pt-4">
-            <Button className="w-full text-base py-6" variant="default">
-              Generate My Plan
-            </Button>
-          </CardFooter>
-        </Card>
+              <Button className="w-full text-base py-6" variant="default" disabled={isBusy}>
+                Generate My Plan
+              </Button>
+            </CardFooter>
+          </Card>
 
         <Card 
           variant="glass" 
           className="relative overflow-hidden group cursor-pointer transition-all hover:shadow-xl hover:border-zinc-400 dark:hover:border-zinc-600 flex flex-col"
-          onClick={onCustomize}
+          onClick={() => !isBusy && onCustomize()}
         >
           <div className="absolute inset-0 bg-gradient-to-br from-zinc-500/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
           <CardHeader className="pb-4">
@@ -105,12 +114,20 @@ export function GenerationChoiceScreen({
             </ul>
           </CardContent>
           <CardFooter className="pt-4">
-            <Button className="w-full text-base py-6" variant="secondary">
-              Customize Manually
-            </Button>
-          </CardFooter>
-        </Card>
+              <Button className="w-full text-base py-6" variant="secondary" disabled={isBusy}>
+                Customize Manually
+              </Button>
+            </CardFooter>
+          </Card>
       </div>
+
+      {onBack && (
+        <div className="mt-6 text-center">
+          <Button variant="ghost" onClick={onBack} className="text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100">
+            Back to transcript review
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

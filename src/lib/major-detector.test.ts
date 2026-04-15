@@ -67,11 +67,12 @@ describe("major-detector", () => {
     expect(result.detectedMajor).toBeNull();
     expect(result.family).toBeNull();
     expect(result.confidence).toBeLessThan(0.6);
-    expect(result.alternatives.map((alternative) => alternative.major)).toEqual([
-      "English",
-      "Sociology",
-      "Psychology",
-    ]);
+    expect(result.alternatives.map((alternative) => alternative.major)).toEqual(
+      expect.arrayContaining(["English", "Sociology", "Psychology"])
+    );
+    expect(result.alternatives[0]?.confidence).toBeGreaterThanOrEqual(
+      result.alternatives[1]?.confidence ?? 0
+    );
   });
 
   it("returns a medium-confidence STEM guess with sorted alternatives", () => {

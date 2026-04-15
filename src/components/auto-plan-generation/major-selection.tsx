@@ -2,8 +2,13 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 
 interface MajorSelectionFallbackProps {
-  onContinue: (selectedMajor: string) => void;
-  onSwitchToCustomize: () => void;
+  open?: boolean;
+  suggestions?: string[];
+  initialValue?: string | null;
+  onContinue?: (selectedMajor: string) => void;
+  onConfirm?: (selectedMajor: string) => void;
+  onSwitchToCustomize?: () => void;
+  onCancel?: () => void;
 }
 
 const POPULAR_MAJORS = [
@@ -20,10 +25,25 @@ const POPULAR_MAJORS = [
 ];
 
 export function MajorSelectionFallback({
+  open = true,
+  suggestions = [],
+  initialValue,
   onContinue,
+  onConfirm,
   onSwitchToCustomize,
+  onCancel,
 }: MajorSelectionFallbackProps) {
-  const [selectedMajor, setSelectedMajor] = useState<string>("");
+  const [selectedMajor, setSelectedMajor] = useState<string>(initialValue ?? "");
+
+  const resolvedOptions = Array.from(new Set([...suggestions, ...POPULAR_MAJORS]));
+
+  if (!open) return null;
+
+  const handleContinue = () => {
+    const nextMajor = selectedMajor.trim();
+    if (!nextMajor || nextMajor === "other") return;
+    (onConfirm ?? onContinue)?.(nextMajor);
+  };
 
   return (
     <div className="w-full max-w-lg mx-auto py-10 px-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -55,7 +75,7 @@ export function MajorSelectionFallback({
                 className="w-full appearance-none rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-4 py-3 text-zinc-900 dark:text-zinc-100 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
               >
                 <option value="" disabled>Select a major...</option>
-                {POPULAR_MAJORS.map((major) => (
+                {resolvedOptions.map((major) => (
                   <option key={major} value={major}>
                     {major}
                   </option>
@@ -72,20 +92,22 @@ export function MajorSelectionFallback({
 
           <div className="flex flex-col gap-3">
             <Button 
-              onClick={() => onContinue(selectedMajor)} 
+              onClick={handleContinue}
               variant="default" 
               className="w-full py-5 text-base"
               disabled={!selectedMajor || selectedMajor === "other"}
             >
               Continue with Auto-Generation
             </Button>
-            <Button 
-              onClick={onSwitchToCustomize} 
-              variant="outline" 
-              className="w-full py-5 text-base"
-            >
-              Switch to Customize
-            </Button>
+            {(onSwitchToCustomize ?? onCancel) && (
+              <Button 
+                onClick={onSwitchToCustomize ?? onCancel} 
+                variant="outline" 
+                className="w-full py-5 text-base"
+              >
+                Switch to Customize
+              </Button>
+            )}
           </div>
         </div>
       </div>

@@ -1,15 +1,25 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import type { UIMessage } from "ai";
-import { PlanGenerationPipeline } from "@/lib/plan-pipeline";
 
-const mockGetArticulationContext = vi.fn();
-const mockGetPrerequisiteContext = vi.fn();
-const mockGetVerifiedPlaybooksContext = vi.fn();
-const mockBuildRecoveryContext = vi.fn();
-const mockBuildSystemPrompt = vi.fn();
-const mockConvertToAnthropicMessages = vi.fn();
-const mockGenerateTextFromMiniMax = vi.fn();
-const mockParsePlanFromAIResponse = vi.fn();
+const {
+  mockGetArticulationContext,
+  mockGetPrerequisiteContext,
+  mockGetVerifiedPlaybooksContext,
+  mockBuildRecoveryContext,
+  mockBuildSystemPrompt,
+  mockConvertToAnthropicMessages,
+  mockGenerateTextFromMiniMax,
+  mockParsePlanFromAIResponse,
+} = vi.hoisted(() => ({
+  mockGetArticulationContext: vi.fn(),
+  mockGetPrerequisiteContext: vi.fn(),
+  mockGetVerifiedPlaybooksContext: vi.fn(),
+  mockBuildRecoveryContext: vi.fn(),
+  mockBuildSystemPrompt: vi.fn(),
+  mockConvertToAnthropicMessages: vi.fn(),
+  mockGenerateTextFromMiniMax: vi.fn(),
+  mockParsePlanFromAIResponse: vi.fn(),
+}));
 
 vi.mock("@/lib/context/articulation", () => ({
   getArticulationContext: mockGetArticulationContext,
@@ -63,6 +73,8 @@ describe("PlanGenerationPipeline.generate", () => {
   });
 
   it("prepares context once and returns raw text with the parsed plan", async () => {
+    const { PlanGenerationPipeline } = await import("@/lib/plan-pipeline");
+
     const messages: UIMessage[] = [
       {
         id: "user-1",

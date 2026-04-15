@@ -1,56 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
-import type { Database } from "@/types/database";
-
-type TransferPlan = Database["public"]["Tables"]["transfer_plans"]["Insert"];
-type UserTargetInsert = Database["public"]["Tables"]["user_targets"]["Insert"];
-
-interface ComparisonTargetPayload {
-  institution_id: string;
-  name?: string;
-  abbreviation?: string | null;
-  priority_order?: number;
-}
-
-async function resolveMajorId(supabase: Awaited<ReturnType<typeof createClient>>, targetMajor: string): Promise<string | null> {
-  const { data } = await supabase
-    .from("majors")
-    .select("id, name")
-    .ilike("name", targetMajor)
-    .limit(1)
-    .maybeSingle();
-
-  const major = data as { id: string } | null;
-  return major?.id ?? null;
-}
-
-async function syncUserTargets(
-  supabase: Awaited<ReturnType<typeof createClient>>,
-  userId: string,
-  majorId: string | null,
-  primaryTargetId: string | null,
-  comparisonTargets: ComparisonTargetPayload[],
-) {
-  const uniqueTargets = Array.from(
-    new Set([
-      ...(primaryTargetId ? [primaryTargetId] : []),
-      ...comparisonTargets.map((target) => target.institution_id).filter(Boolean),
-    ]),
-  );
-
-  await supabase.from("user_targets").delete().eq("user_id", userId);
-
-  if (uniqueTargets.length === 0) return;
-
-  const inserts: UserTargetInsert[] = uniqueTargets.map((institutionId, index) => ({
-    user_id: userId,
-    institution_id: institutionId,
-    major_id: majorId,
-    priority_order: index + 1,
-  }));
-
-  await supabase.from("user_targets").insert(inserts as never);
-}
+import {
+  savePlanRecord,
+  type ComparisonTargetPayload,
+} from "@/lib/plan-service";
 
 export async function POST(req: NextRequest) {
   try {
@@ -84,42 +37,28 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const insertData: TransferPlan = {
-      user_id: user.id,
-      title,
-      cc_institution_id: cc_institution_id ?? null,
-      target_institution_id: target_institution_id ?? null,
-      target_major,
-      plan_data: plan_data ?? null,
-      chat_history: chat_history ?? null,
-      status: "active",
-      max_credits_per_semester: max_credits_per_semester ?? null,
-      transcript_id: transcript_id ?? null,
-      has_target_school: has_target_school ?? true,
-      comparison_targets: comparison_targets ?? null,
-    };
+    try {
+      const data = await savePlanRecord(supabase, {
+        userId: user.id,
+        title,
+        ccInstitutionId: cc_institution_id ?? null,
+        targetInstitutionId: target_institution_id ?? null,
+        targetMajor: target_major,
+        planData: plan_data ?? null,
+        chatHistory: Array.isArray(chat_history) ? chat_history : [],
+        maxCreditsPerSemester: max_credits_per_semester ?? null,
+        transcriptId: transcript_id ?? null,
+        hasTargetSchool: has_target_school ?? true,
+        comparisonTargets: Array.isArray(comparison_targets)
+          ? (comparison_targets as ComparisonTargetPayload[])
+          : null,
+      });
 
-    const { data, error } = await supabase
-      .from("transfer_plans")
-      .insert(insertData as never)
-      .select()
-      .single();
-
-    if (error) {
+      return NextResponse.json(data, { status: 201 });
+    } catch (error) {
       console.error("Error creating plan:", error);
       return NextResponse.json({ error: "Failed to create plan" }, { status: 500 });
     }
-
-    const majorId = await resolveMajorId(supabase, target_major);
-    await syncUserTargets(
-      supabase,
-      user.id,
-      majorId,
-      target_institution_id ?? null,
-      Array.isArray(comparison_targets) ? comparison_targets : [],
-    );
-
-    return NextResponse.json(data, { status: 201 });
   } catch (error) {
     console.error("Plan creation error:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });

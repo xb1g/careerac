@@ -13,7 +13,14 @@ import { getArticulationContext, getPrerequisiteContext } from "@/lib/context/ar
 import { buildRecoveryContext } from "@/lib/context/recovery";
 import { getVerifiedPlaybooksContext } from "@/utils/playbook-context";
 import { buildSystemPrompt } from "@/lib/prompt-builder";
-import { convertToAnthropicMessages, streamFromMiniMax } from "@/lib/ai-stream";
+import {
+  convertToAnthropicMessages,
+  generateTextFromMiniMax,
+  streamFromMiniMax,
+  type AnthropicMessage,
+} from "@/lib/ai-stream";
+import { parsePlanFromAIResponse } from "@/utils/plan-parser";
+import type { ParsedPlan } from "@/types/plan";
 
 // ---------------------------------------------------------------------------
 // Shared JSON schema constant — used by prompt-builder AND plan-parser
@@ -92,19 +99,25 @@ export interface PlanRequestOptions {
   recoveryContext?: RecoveryContext;
 }
 
+interface PreparedPlanPrompt {
+  systemPrompt: string;
+  messages: AnthropicMessage[];
+}
+
+interface GeneratedPlanResult {
+  rawText: string;
+  parsedPlan: ParsedPlan | null;
+}
+
 // ---------------------------------------------------------------------------
 // Pipeline
 // ---------------------------------------------------------------------------
 
 export class PlanGenerationPipeline {
-  /**
-   * Builds the full system prompt, calls the AI, and returns a streaming Response.
-   * This is the ONLY public method — everything else is internal.
-   */
-  static async stream(
+  private static async prepare(
     request: PlanRequest,
     options: PlanRequestOptions = {},
-  ): Promise<Response> {
+  ): Promise<PreparedPlanPrompt> {
     const { messages, planContext } = request;
     const {
       transcriptData,
@@ -113,7 +126,6 @@ export class PlanGenerationPipeline {
       recoveryContext,
     } = options;
 
-    // 1. Fetch all context in parallel
     const [articulationResult, prerequisiteData, playbookContext] =
       await Promise.all([
         getArticulationContext(planContext, hasTargetSchool !== false),
@@ -125,12 +137,10 @@ export class PlanGenerationPipeline {
         ),
       ]);
 
-    // 2. Build optional recovery context (may do additional DB queries)
     const recoveryPrompt = recoveryContext
       ? await buildRecoveryContext(recoveryContext, playbookContext)
       : undefined;
 
-    // 3. Assemble system prompt (pure function — no I/O)
     const systemPrompt = buildSystemPrompt({
       articulationContext: articulationResult.context,
       prerequisiteData,
@@ -141,8 +151,37 @@ export class PlanGenerationPipeline {
       recoveryPrompt,
     });
 
-    // 4. Convert messages and stream from AI
-    const anthropicMessages = convertToAnthropicMessages(messages);
-    return streamFromMiniMax(systemPrompt, anthropicMessages);
+    return {
+      systemPrompt,
+      messages: convertToAnthropicMessages(messages),
+    };
+  }
+
+  /**
+   * Builds the full system prompt, calls the AI, and returns a streaming Response.
+   * This is the ONLY public method — everything else is internal.
+   */
+  static async stream(
+    request: PlanRequest,
+    options: PlanRequestOptions = {},
+  ): Promise<Response> {
+    const prepared = await this.prepare(request, options);
+    return streamFromMiniMax(prepared.systemPrompt, prepared.messages);
+  }
+
+  static async generate(
+    request: PlanRequest,
+    options: PlanRequestOptions = {},
+  ): Promise<GeneratedPlanResult> {
+    const prepared = await this.prepare(request, options);
+    const rawText = await generateTextFromMiniMax(
+      prepared.systemPrompt,
+      prepared.messages,
+    );
+
+    return {
+      rawText,
+      parsedPlan: parsePlanFromAIResponse(rawText),
+    };
   }
 }

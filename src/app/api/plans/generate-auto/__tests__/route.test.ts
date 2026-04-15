@@ -1,9 +1,16 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-const mockGetUser = vi.fn();
-const mockGenerate = vi.fn();
-const mockResolveInstitutionIdsByName = vi.fn();
-const mockSavePlanRecord = vi.fn();
+const {
+  mockGetUser,
+  mockGenerate,
+  mockResolveInstitutionIdsByName,
+  mockSavePlanRecord,
+} = vi.hoisted(() => ({
+  mockGetUser: vi.fn(),
+  mockGenerate: vi.fn(),
+  mockResolveInstitutionIdsByName: vi.fn(),
+  mockSavePlanRecord: vi.fn(),
+}));
 
 vi.mock("@/utils/supabase/server", () => ({
   createClient: vi.fn(async () => ({

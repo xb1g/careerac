@@ -1,13 +1,22 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 
+export interface GenerationError {
+  code: string;
+  message: string;
+  retryable: boolean;
+  fallback: "retry" | "customize" | "retry_or_customize";
+}
+
 interface ErrorStateProps {
+  error?: GenerationError;
   onRetry: () => void;
   onCustomize: () => void;
-  onContactSupport: () => void;
+  onContactSupport?: () => void;
 }
 
 export function AutoGenerationError({
+  error,
   onRetry,
   onCustomize,
   onContactSupport,
@@ -29,20 +38,22 @@ export function AutoGenerationError({
           </h2>
           
           <p className="text-zinc-600 dark:text-zinc-400 mb-8 leading-relaxed">
-            We couldn&apos;t generate your plan automatically. This might be due to network issues or complex transcript requirements.
+            {error?.message ?? "We couldn&apos;t generate your plan automatically. This might be due to network issues or complex transcript requirements."}
           </p>
 
           <div className="space-y-3 mb-8">
-            <Button onClick={onRetry} variant="default" className="w-full py-5 text-base">
+            <Button onClick={onRetry} variant="default" className="w-full py-5 text-base" disabled={error?.retryable === false}>
               Try Again
             </Button>
             <Button onClick={onCustomize} variant="secondary" className="w-full py-5 text-base relative overflow-hidden group">
               <div className="absolute inset-0 bg-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity" />
               Customize Settings Instead
             </Button>
-            <Button onClick={onContactSupport} variant="outline" className="w-full py-5 text-base text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100">
-              Contact Support
-            </Button>
+            {onContactSupport && (
+              <Button onClick={onContactSupport} variant="outline" className="w-full py-5 text-base text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100">
+                Contact Support
+              </Button>
+            )}
           </div>
 
           <div className="bg-blue-50 dark:bg-blue-900/10 rounded-lg p-4 border border-blue-100 dark:border-blue-900/30 flex items-start gap-3 text-left">

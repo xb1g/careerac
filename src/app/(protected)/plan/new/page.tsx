@@ -14,7 +14,7 @@ import {
   MajorSelectionFallback,
   type GenerationError,
 } from "@/components/auto-plan-generation";
-import { detectMajor } from "@/lib/major-detector";
+import { detectMajorFromTranscript } from "@/lib/major-detector";
 import { ParsedPlan, TransferPlan, MultiUniversityPlan } from "@/types/plan";
 import type { TranscriptData } from "@/types/transcript";
 import { resolveInstitutionIds } from "@/utils/plan-institutions";
@@ -89,6 +89,7 @@ export default function NewPlanPage() {
   const [detectionConfidence, setDetectionConfidence] = useState(0);
   const [isGenerating, setIsGenerating] = useState(false);
   const [generationError, setGenerationError] = useState<GenerationError | null>(null);
+  const [hasCheckedRecoveryState, setHasCheckedRecoveryState] = useState(false);
   const [majorSuggestions, setMajorSuggestions] = useState<string[]>([]);
   const [showMajorConfirmation, setShowMajorConfirmation] = useState(false);
   const [showMajorSelection, setShowMajorSelection] = useState(false);
@@ -137,13 +138,17 @@ export default function NewPlanPage() {
     if (typeof window === "undefined") return;
 
     const stored = window.sessionStorage.getItem(AUTO_GENERATION_SESSION_KEY);
-    if (!stored) return;
+    if (!stored) {
+      setHasCheckedRecoveryState(true);
+      return;
+    }
 
     try {
       const recovered = JSON.parse(stored) as PersistedAutoGenerationState;
 
       if (recovered.step !== "auto-generating" || !recovered.transcriptData) {
         clearPersistedAutoGeneration();
+        setHasCheckedRecoveryState(true);
         return;
       }
 
@@ -160,11 +165,14 @@ export default function NewPlanPage() {
       setStep("auto-generating");
     } catch {
       clearPersistedAutoGeneration();
+    } finally {
+      setHasCheckedRecoveryState(true);
     }
   }, [clearPersistedAutoGeneration]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
+    if (!hasCheckedRecoveryState) return;
 
     if (step === "auto-generating" && transcriptData) {
       const persistedState: PersistedAutoGenerationState = {
@@ -180,7 +188,7 @@ export default function NewPlanPage() {
     }
 
     clearPersistedAutoGeneration();
-  }, [clearPersistedAutoGeneration, detectedMajor, detectionConfidence, step, transcriptData, transcriptId]);
+  }, [clearPersistedAutoGeneration, detectedMajor, detectionConfidence, hasCheckedRecoveryState, step, transcriptData, transcriptId]);
 
   useEffect(() => {
     if (!isGenerating || typeof window === "undefined") return;
@@ -287,7 +295,15 @@ export default function NewPlanPage() {
       return;
     }
 
-    const result = detectMajor(transcriptData.courses);
+    const detection = detectMajorFromTranscript(transcriptData.courses);
+    const result = {
+      detectedMajor: detection.detectedMajor,
+      confidence: detection.confidence,
+      suggestions: [
+        ...(detection.detectedMajor ? [detection.detectedMajor] : []),
+        ...detection.alternatives.map((alternative) => alternative.major),
+      ].slice(0, 6),
+    };
     setDetectedMajor(result.detectedMajor);
     setDetectionConfidence(result.confidence);
     setMajorSuggestions(result.suggestions);
@@ -326,7 +342,7 @@ export default function NewPlanPage() {
 
   const handleBackToConfig = useCallback(() => {
     setGenerationError(null);
-    setStep(transcriptData ? "choice" : "config");
+    setStep(transcriptData ? "choice" : "upload");
   }, [transcriptData]);
 
   const handleRetryAutoGeneration = useCallback(() => {
@@ -625,7 +641,7 @@ export default function NewPlanPage() {
           <PlanConfig
             transcriptData={transcriptData}
             onConfigured={handleConfigured}
-            onBack={handleBackToUpload}
+            onBack={handleBackToConfig}
           />
         )}
 
@@ -765,6 +781,7 @@ export default function NewPlanPage() {
         />
 
         <MajorSelectionFallback
+          key={`${detectedMajor ?? "none"}-${majorSuggestions.join("|")}-${showMajorSelection ? "open" : "closed"}`}
           open={showMajorSelection}
           suggestions={majorSuggestions}
           initialValue={detectedMajor}
