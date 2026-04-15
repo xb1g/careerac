@@ -1,6 +1,51 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
 
+interface ComparisonTargetPayload {
+  institution_id: string;
+}
+
+async function resolveMajorId(supabase: Awaited<ReturnType<typeof createClient>>, targetMajor: string | undefined): Promise<string | null> {
+  if (!targetMajor) return null;
+
+  const { data } = await supabase
+    .from("majors")
+    .select("id")
+    .ilike("name", targetMajor)
+    .limit(1)
+    .maybeSingle() as { data: { id: string } | null };
+
+  return (data as { id: string } | null)?.id ?? null;
+}
+
+async function syncUserTargets(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  userId: string,
+  majorId: string | null,
+  targetInstitutionId: string | null,
+  comparisonTargets: ComparisonTargetPayload[],
+) {
+  const uniqueTargets = Array.from(
+    new Set([
+      ...(targetInstitutionId ? [targetInstitutionId] : []),
+      ...comparisonTargets.map((target) => target.institution_id).filter(Boolean),
+    ]),
+  );
+
+  await supabase.from("user_targets").delete().eq("user_id", userId);
+
+  if (uniqueTargets.length === 0) return;
+
+  await supabase.from("user_targets").insert(
+    uniqueTargets.map((institutionId, index) => ({
+      user_id: userId,
+      institution_id: institutionId,
+      major_id: majorId,
+      priority_order: index + 1,
+    })) as never,
+  );
+}
+
 interface RouteParams {
   params: Promise<{ id: string }>;
 }
@@ -52,15 +97,18 @@ export async function PUT(req: NextRequest, { params }: RouteParams) {
     }
 
     const body = await req.json();
-    const { plan_data, chat_history, title, target_major, status } = body;
+    const { plan_data, chat_history, title, target_major, status, target_institution_id, comparison_targets } = body;
 
     // Verify the plan belongs to this user
-    const { error: fetchError } = await supabase
+    const { data: existingPlan, error: fetchError } = await supabase
       .from("transfer_plans")
-      .select("id")
+      .select("id, target_major, target_institution_id")
       .eq("id", id)
       .eq("user_id", user.id)
-      .single();
+      .single() as {
+        data: { id: string; target_major: string; target_institution_id: string | null } | null;
+        error: { code?: string } | null;
+      };
 
     if (fetchError) {
       if (fetchError.code === "PGRST116") {
@@ -77,6 +125,8 @@ export async function PUT(req: NextRequest, { params }: RouteParams) {
     if (title !== undefined) updateData.title = title;
     if (target_major !== undefined) updateData.target_major = target_major;
     if (status !== undefined) updateData.status = status;
+    if (target_institution_id !== undefined) updateData.target_institution_id = target_institution_id;
+    if (comparison_targets !== undefined) updateData.comparison_targets = comparison_targets;
 
     const { data, error } = await supabase
       .from("transfer_plans")
@@ -89,6 +139,17 @@ export async function PUT(req: NextRequest, { params }: RouteParams) {
     if (error) {
       console.error("Error updating plan:", error);
       return NextResponse.json({ error: "Failed to update plan" }, { status: 500 });
+    }
+
+    if (comparison_targets !== undefined || target_institution_id !== undefined || target_major !== undefined) {
+      const majorId = await resolveMajorId(supabase, target_major ?? existingPlan?.target_major);
+      await syncUserTargets(
+        supabase,
+        user.id,
+        majorId,
+        target_institution_id ?? existingPlan?.target_institution_id ?? null,
+        Array.isArray(comparison_targets) ? comparison_targets : [],
+      );
     }
 
     return NextResponse.json(data);

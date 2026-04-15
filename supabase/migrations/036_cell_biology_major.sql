@@ -7,31 +7,31 @@
 -- MAJOR DEFINITION
 -- ============================================================
 insert into majors (id, name, category, description, degree_type, total_units_required, participating_uc_campuses) values
-  ('m0000000-0000-0000-0000-000000000036', 'Cell Biology', 'Biological Sciences', 'Study of cell structure, function, and processes. Foundation for molecular biology, genetics, and biomedical research. Legacy pathway - being consolidated into Biological Sciences for fall 2027.', 'BS', 120, array['UCB', 'UCD', 'UCI', 'UCLA', 'UCM', 'UCR', 'UCSD', 'UCSB', 'UCSC'])
+  ('10000000-0000-0000-0000-000000000036', 'Cell Biology', 'Biological Sciences', 'Study of cell structure, function, and processes. Foundation for molecular biology, genetics, and biomedical research. Legacy pathway - being consolidated into Biological Sciences for fall 2027.', 'BS', 120, array['UCB', 'UCD', 'UCI', 'UCLA', 'UCM', 'UCR', 'UCSD', 'UCSB', 'UCSC'])
 on conflict (id) do nothing;
 
 -- ============================================================
 -- COURSES - Cell Biology (Santa Monica College)
 -- ============================================================
 insert into courses (id, institution_id, code, title, units, description) values
-  ('t0000000-0000-0000-0000-000000000001', 'a0000000-0000-0000-0000-000000000001', 'MATH 28', 'Calculus I', 5, 'Limits, derivatives, and applications'),
-  ('t0000000-0000-0000-0000-000000000002', 'a0000000-0000-0000-0000-000000000001', 'MATH 29', 'Calculus II', 5, 'Integration, techniques, and applications'),
-  ('t0000000-0000-0000-0000-000000000003', 'a0000000-0000-0000-0000-000000000001', 'MATH 54', 'Statistics', 4, 'Descriptive and inferential statistics'),
-  ('t0000000-0000-0000-0000-000000000004', 'a0000000-0000-0000-0000-000000000001', 'CHEM 11', 'General Chemistry I', 5, 'Introductory chemical principles with laboratory'),
-  ('t0000000-0000-0000-0000-000000000005', 'a0000000-0000-0000-0000-000000000001', 'CHEM 12', 'General Chemistry II', 5, 'Chemical equilibrium, thermodynamics, and kinetics'),
-  ('t0000000-0000-0000-0000-000000000006', 'a0000000-0000-0000-0000-000000000001', 'CHEM 21', 'Organic Chemistry I', 5, 'Structure, bonding, and reactions of organic compounds'),
-  ('t0000000-0000-0000-0000-000000000007', 'a0000000-0000-0000-0000-000000000001', 'CHEM 22', 'Organic Chemistry II', 5, 'Reaction mechanisms and spectroscopy'),
-  ('t0000000-0000-0000-0000-000000000008', 'a0000000-0000-0000-0000-000000000001', 'BIOL 21', 'Cell Biology and Evolution', 5, 'Cell structure, genetics, and evolutionary biology'),
-  ('t0000000-0000-0000-0000-000000000009', 'a0000000-0000-0000-0000-000000000001', 'BIOL 22', 'Genetics and Molecular Biology', 5, 'Molecular genetics, DNA replication, and gene expression'),
-  ('t0000000-0000-0000-0000-00000000000a', 'a0000000-0000-0000-0000-000000000001', 'BIOL 23', 'Organismal Biology', 5, 'Physiology, anatomy, and ecology'),
-  ('t0000000-0000-0000-0000-00000000000b', 'a0000000-0000-0000-0000-000000000001', 'PHYS 6', 'General Physics I', 4, 'Mechanics and thermodynamics'),
-  ('t0000000-0000-0000-0000-00000000000c', 'a0000000-0000-0000-0000-000000000001', 'PHYS 7', 'General Physics II', 4, 'Electricity, magnetism, and optics');
+  ('70000000-0000-0000-0000-000000000001', 'a0000000-0000-0000-0000-000000000001', 'MATH 28', 'Calculus I', 5, 'Limits, derivatives, and applications'),
+  ('70000000-0000-0000-0000-000000000002', 'a0000000-0000-0000-0000-000000000001', 'MATH 29', 'Calculus II', 5, 'Integration, techniques, and applications'),
+  ('70000000-0000-0000-0000-000000000003', 'a0000000-0000-0000-0000-000000000001', 'MATH 54', 'Statistics', 4, 'Descriptive and inferential statistics'),
+  ('70000000-0000-0000-0000-000000000004', 'a0000000-0000-0000-0000-000000000001', 'CHEM 11', 'General Chemistry I', 5, 'Introductory chemical principles with laboratory'),
+  ('70000000-0000-0000-0000-000000000005', 'a0000000-0000-0000-0000-000000000001', 'CHEM 12', 'General Chemistry II', 5, 'Chemical equilibrium, thermodynamics, and kinetics'),
+  ('70000000-0000-0000-0000-000000000006', 'a0000000-0000-0000-0000-000000000001', 'CHEM 21', 'Organic Chemistry I', 5, 'Structure, bonding, and reactions of organic compounds'),
+  ('70000000-0000-0000-0000-000000000007', 'a0000000-0000-0000-0000-000000000001', 'CHEM 22', 'Organic Chemistry II', 5, 'Reaction mechanisms and spectroscopy'),
+  ('70000000-0000-0000-0000-000000000008', 'a0000000-0000-0000-0000-000000000001', 'BIOL 21', 'Cell Biology and Evolution', 5, 'Cell structure, genetics, and evolutionary biology'),
+  ('70000000-0000-0000-0000-000000000009', 'a0000000-0000-0000-0000-000000000001', 'BIOL 22', 'Genetics and Molecular Biology', 5, 'Molecular genetics, DNA replication, and gene expression'),
+  ('70000000-0000-0000-0000-00000000000a', 'a0000000-0000-0000-0000-000000000001', 'BIOL 23', 'Organismal Biology', 5, 'Physiology, anatomy, and ecology'),
+  ('70000000-0000-0000-0000-00000000000b', 'a0000000-0000-0000-0000-000000000001', 'PHYS 6', 'General Physics I', 4, 'Mechanics and thermodynamics'),
+  ('70000000-0000-0000-0000-00000000000c', 'a0000000-0000-0000-0000-000000000001', 'PHYS 7', 'General Physics II', 4, 'Electricity, magnetism, and optics');
 
 -- ============================================================
 -- TRANSFER PATHWAY REQUIREMENTS
 -- ============================================================
 insert into transfer_pathways (id, major_id, institution_id, requirements) values
-  ('tp-cellbio-001', 'm0000000-0000-0000-0000-000000000036', 'a0000000-0000-0000-0000-000000000001', '
+  ('20000000-0000-0000-0000-000000000036', '10000000-0000-0000-0000-000000000036', 'a0000000-0000-0000-0000-000000000001', '
 ## UC Cell Biology Transfer Requirements (Legacy Pathway)
 
 ### IMPORTANT NOTE

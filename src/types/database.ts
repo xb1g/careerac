@@ -38,6 +38,38 @@ export interface Database {
           created_at?: string
         }
       }
+      majors: {
+        Row: {
+          id: string
+          name: string
+          category: string | null
+          description: string | null
+          degree_type: string | null
+          total_units_required: number | null
+          participating_uc_campuses: string[] | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          name: string
+          category?: string | null
+          description?: string | null
+          degree_type?: string | null
+          total_units_required?: number | null
+          participating_uc_campuses?: string[] | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          name?: string
+          category?: string | null
+          description?: string | null
+          degree_type?: string | null
+          total_units_required?: number | null
+          participating_uc_campuses?: string[] | null
+          created_at?: string
+        }
+      }
       courses: {
         Row: {
           id: string
@@ -64,6 +96,29 @@ export interface Database {
           title?: string
           units?: number
           description?: string | null
+          created_at?: string
+        }
+      }
+      transfer_pathways: {
+        Row: {
+          id: string
+          major_id: string
+          institution_id: string
+          requirements: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          major_id: string
+          institution_id: string
+          requirements?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          major_id?: string
+          institution_id?: string
+          requirements?: string | null
           created_at?: string
         }
       }
@@ -162,6 +217,7 @@ export interface Database {
           max_credits_per_semester: number | null
           transcript_id: string | null
           has_target_school: boolean
+          comparison_targets: Json | null
           created_at: string
           updated_at: string
         }
@@ -178,6 +234,7 @@ export interface Database {
           max_credits_per_semester?: number | null
           transcript_id?: string | null
           has_target_school?: boolean
+          comparison_targets?: Json | null
           created_at?: string
           updated_at?: string
         }
@@ -194,8 +251,35 @@ export interface Database {
           max_credits_per_semester?: number | null
           transcript_id?: string | null
           has_target_school?: boolean
+          comparison_targets?: Json | null
           created_at?: string
           updated_at?: string
+        }
+      }
+      user_targets: {
+        Row: {
+          id: string
+          user_id: string
+          institution_id: string
+          major_id: string | null
+          priority_order: number
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          institution_id: string
+          major_id?: string | null
+          priority_order?: number
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          institution_id?: string
+          major_id?: string | null
+          priority_order?: number
+          created_at?: string
         }
       }
       plan_courses: {

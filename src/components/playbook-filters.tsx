@@ -1,6 +1,6 @@
 "use client";
 
-import { useSearchParams, usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 interface FilterOptions {
   ccs: { id: string; name: string; abbreviation: string | null }[];
@@ -15,11 +15,12 @@ interface PlaybookFiltersProps {
 
 export function PlaybookFilters({ options, currentFilters }: PlaybookFiltersProps) {
   const searchParams = useSearchParams();
-  const pathname = usePathname();
+  const pathname = usePathname() ?? "";
   const router = useRouter();
+  const searchParamsString = searchParams?.toString() ?? "";
 
   const handleFilterChange = (key: string, value: string) => {
-    const params = new URLSearchParams(searchParams.toString());
+    const params = new URLSearchParams(searchParamsString);
     if (value) {
       params.set(key, value);
     } else {
@@ -30,15 +31,20 @@ export function PlaybookFilters({ options, currentFilters }: PlaybookFiltersProp
 
   const hasActiveFilters = currentFilters.cc || currentFilters.target || currentFilters.major;
 
+  const clearFilters = () => {
+    const params = new URLSearchParams(searchParamsString);
+    params.delete("cc");
+    params.delete("target");
+    params.delete("major");
+    const queryString = params.toString();
+    router.push(queryString ? `${pathname}?${queryString}` : pathname);
+  };
+
   return (
-    <div className="rounded-lg border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 p-4" data-testid="playbook-filters">
-      <div className="flex flex-col sm:flex-row gap-4">
-        {/* CC Filter */}
+    <div className="rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-700 dark:bg-zinc-900" data-testid="playbook-filters">
+      <div className="flex flex-col gap-4 sm:flex-row">
         <div className="flex-1">
-          <label
-            htmlFor="filter-cc"
-            className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1"
-          >
+          <label htmlFor="filter-cc" className="mb-1 block text-xs font-medium text-zinc-500 dark:text-zinc-400">
             Community College
           </label>
           <select
@@ -46,7 +52,7 @@ export function PlaybookFilters({ options, currentFilters }: PlaybookFiltersProp
             data-testid="filter-cc"
             value={currentFilters.cc}
             onChange={(e) => handleFilterChange("cc", e.target.value)}
-            className="w-full rounded-md border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 px-3 py-2 text-sm text-zinc-900 dark:text-white focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className="w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800 dark:text-white"
           >
             <option value="">All CCs</option>
             {options.ccs.map((cc) => (
@@ -57,12 +63,8 @@ export function PlaybookFilters({ options, currentFilters }: PlaybookFiltersProp
           </select>
         </div>
 
-        {/* Target School Filter */}
         <div className="flex-1">
-          <label
-            htmlFor="filter-target"
-            className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1"
-          >
+          <label htmlFor="filter-target" className="mb-1 block text-xs font-medium text-zinc-500 dark:text-zinc-400">
             Target School
           </label>
           <select
@@ -70,7 +72,7 @@ export function PlaybookFilters({ options, currentFilters }: PlaybookFiltersProp
             data-testid="filter-target"
             value={currentFilters.target}
             onChange={(e) => handleFilterChange("target", e.target.value)}
-            className="w-full rounded-md border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 px-3 py-2 text-sm text-zinc-900 dark:text-white focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className="w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800 dark:text-white"
           >
             <option value="">All Schools</option>
             {options.targets.map((target) => (
@@ -81,12 +83,8 @@ export function PlaybookFilters({ options, currentFilters }: PlaybookFiltersProp
           </select>
         </div>
 
-        {/* Major Filter */}
         <div className="flex-1">
-          <label
-            htmlFor="filter-major"
-            className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1"
-          >
+          <label htmlFor="filter-major" className="mb-1 block text-xs font-medium text-zinc-500 dark:text-zinc-400">
             Major
           </label>
           <select
@@ -94,7 +92,7 @@ export function PlaybookFilters({ options, currentFilters }: PlaybookFiltersProp
             data-testid="filter-major"
             value={currentFilters.major}
             onChange={(e) => handleFilterChange("major", e.target.value)}
-            className="w-full rounded-md border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 px-3 py-2 text-sm text-zinc-900 dark:text-white focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className="w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800 dark:text-white"
           >
             <option value="">All Majors</option>
             {options.majors.map((major) => (
@@ -105,13 +103,12 @@ export function PlaybookFilters({ options, currentFilters }: PlaybookFiltersProp
           </select>
         </div>
 
-        {/* Clear Filters */}
         {hasActiveFilters && (
           <div className="flex items-end">
             <button
-              onClick={() => router.push(pathname)}
+              onClick={clearFilters}
               data-testid="clear-filters"
-              className="whitespace-nowrap rounded-md border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 px-3 py-2 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-700 transition-colors"
+              className="whitespace-nowrap rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-50 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700"
             >
               Clear all
             </button>

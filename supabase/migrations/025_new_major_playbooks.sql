@@ -1,5 +1,15 @@
 -- Migration 025: Seed transfer playbooks for newly added STEM majors
 
+insert into institutions (id, name, type, state, city, abbreviation) values
+  ('b0000000-0000-0000-0000-000000000008', 'University of California, Santa Barbara', 'university', 'CA', 'Santa Barbara', 'UCSB'),
+  ('b0000000-0000-0000-0000-000000000009', 'University of California, Irvine', 'university', 'CA', 'Irvine', 'UCI')
+on conflict (id) do update set
+  name = excluded.name,
+  type = excluded.type,
+  state = excluded.state,
+  city = excluded.city,
+  abbreviation = excluded.abbreviation;
+
 DO $$
 DECLARE
   test_user_id uuid;
@@ -14,8 +24,8 @@ DECLARE
   ucla_id uuid := 'b0000000-0000-0000-0000-000000000001';
   uc_berkeley_id uuid := 'b0000000-0000-0000-0000-000000000004';
   uc_davis_id uuid := 'b0000000-0000-0000-0000-000000000007';
-  uc_santa_barbara_id uuid := 'b0000000-0000-0000-0000-000000000006';
-  uc_irvine_id uuid := 'b0000000-0000-0000-0000-000000000006';
+  uc_santa_barbara_id uuid := 'b0000000-0000-0000-0000-000000000008';
+  uc_irvine_id uuid := 'b0000000-0000-0000-0000-000000000009';
 BEGIN
   SELECT id INTO test_user_id
   FROM auth.users

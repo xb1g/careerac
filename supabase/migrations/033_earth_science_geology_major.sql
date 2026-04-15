@@ -6,32 +6,32 @@
 -- MAJOR DEFINITION
 -- ============================================================
 insert into majors (id, name, category, description, degree_type, total_units_required, participating_uc_campuses) values
-  ('m0000000-0000-0000-0000-000000000033', 'Earth Science/Geology', 'Physical Sciences', 'Study of Earth systems including rocks, minerals, plate tectonics, natural resources, and environmental geology. Fieldwork intensive.', 'BS', 120, array['UCB', 'UCD', 'UCLA', 'UCM', 'UCR', 'UCSD', 'UCSB', 'UCSC'])
+  ('10000000-0000-0000-0000-000000000033', 'Earth Science/Geology', 'Physical Sciences', 'Study of Earth systems including rocks, minerals, plate tectonics, natural resources, and environmental geology. Fieldwork intensive.', 'BS', 120, array['UCB', 'UCD', 'UCLA', 'UCM', 'UCR', 'UCSD', 'UCSB', 'UCSC'])
 on conflict (id) do nothing;
 
 -- ============================================================
 -- COURSES - Earth Science/Geology (Santa Monica College)
 -- ============================================================
 insert into courses (id, institution_id, code, title, units, description) values
-  ('q0000000-0000-0000-0000-000000000001', 'a0000000-0000-0000-0000-000000000001', 'MATH 28', 'Calculus I', 5, 'Limits, derivatives, and applications'),
-  ('q0000000-0000-0000-0000-000000000002', 'a0000000-0000-0000-0000-000000000001', 'MATH 29', 'Calculus II', 5, 'Integration, techniques, and applications'),
-  ('q0000000-0000-0000-0000-000000000003', 'a0000000-0000-0000-0000-000000000001', 'PHYS 21', 'Physics for Scientists and Engineers I', 5, 'Mechanics and motion with laboratory'),
-  ('q0000000-0000-0000-0000-000000000004', 'a0000000-0000-0000-0000-000000000001', 'PHYS 22', 'Physics for Scientists and Engineers II', 5, 'Electricity and magnetism with laboratory'),
-  ('q0000000-0000-0000-0000-000000000005', 'a0000000-0000-0000-0000-000000000001', 'CHEM 11', 'General Chemistry I', 5, 'Introductory chemical principles with laboratory'),
-  ('q0000000-0000-0000-0000-000000000006', 'a0000000-0000-0000-0000-000000000001', 'CHEM 12', 'General Chemistry II', 5, 'Chemical equilibrium, thermodynamics, and kinetics'),
-  ('q0000000-0000-0000-0000-000000000007', 'a0000000-0000-0000-0000-000000000001', 'GEOL 1', 'Physical Geology', 3, 'Earth materials, structures, and processes'),
-  ('q0000000-0000-0000-0000-000000000008', 'a0000000-0000-0000-0000-000000000001', 'GEOL 2', 'Historical Geology', 3, 'Earth history, evolution, and geologic time scale'),
-  ('q0000000-0000-0000-0000-000000000009', 'a0000000-0000-0000-0000-000000000001', 'GEOL 3', 'Mineralogy', 3, 'Crystallography, mineral identification, and classification'),
-  ('q0000000-0000-0000-0000-00000000000a', 'a0000000-0000-0000-0000-000000000001', 'GEOL 4', 'Petrology', 3, 'Igneous, sedimentary, and metamorphic rocks'),
-  ('q0000000-0000-0000-0000-00000000000b', 'a0000000-0000-0000-0000-000000000001', 'GEOG 1', 'Physical Geography', 3, 'Landforms, climate, and ecosystems'),
-  ('q0000000-0000-0000-0000-00000000000c', 'a0000000-0000-0000-0000-000000000001', 'BIO 21', 'Environmental Science', 3, 'Ecology, conservation, and environmental issues'),
-  ('q0000000-0000-0000-0000-00000000000d', 'a0000000-0000-0000-0000-000000000001', 'MATH 54', 'Statistics', 4, 'Descriptive and inferential statistics');
+  ('40000000-0000-0000-0000-000000000001', 'a0000000-0000-0000-0000-000000000001', 'MATH 28', 'Calculus I', 5, 'Limits, derivatives, and applications'),
+  ('40000000-0000-0000-0000-000000000002', 'a0000000-0000-0000-0000-000000000001', 'MATH 29', 'Calculus II', 5, 'Integration, techniques, and applications'),
+  ('40000000-0000-0000-0000-000000000003', 'a0000000-0000-0000-0000-000000000001', 'PHYS 21', 'Physics for Scientists and Engineers I', 5, 'Mechanics and motion with laboratory'),
+  ('40000000-0000-0000-0000-000000000004', 'a0000000-0000-0000-0000-000000000001', 'PHYS 22', 'Physics for Scientists and Engineers II', 5, 'Electricity and magnetism with laboratory'),
+  ('40000000-0000-0000-0000-000000000005', 'a0000000-0000-0000-0000-000000000001', 'CHEM 11', 'General Chemistry I', 5, 'Introductory chemical principles with laboratory'),
+  ('40000000-0000-0000-0000-000000000006', 'a0000000-0000-0000-0000-000000000001', 'CHEM 12', 'General Chemistry II', 5, 'Chemical equilibrium, thermodynamics, and kinetics'),
+  ('40000000-0000-0000-0000-000000000007', 'a0000000-0000-0000-0000-000000000001', 'GEOL 1', 'Physical Geology', 3, 'Earth materials, structures, and processes'),
+  ('40000000-0000-0000-0000-000000000008', 'a0000000-0000-0000-0000-000000000001', 'GEOL 2', 'Historical Geology', 3, 'Earth history, evolution, and geologic time scale'),
+  ('40000000-0000-0000-0000-000000000009', 'a0000000-0000-0000-0000-000000000001', 'GEOL 3', 'Mineralogy', 3, 'Crystallography, mineral identification, and classification'),
+  ('40000000-0000-0000-0000-00000000000a', 'a0000000-0000-0000-0000-000000000001', 'GEOL 4', 'Petrology', 3, 'Igneous, sedimentary, and metamorphic rocks'),
+  ('40000000-0000-0000-0000-00000000000b', 'a0000000-0000-0000-0000-000000000001', 'GEOG 1', 'Physical Geography', 3, 'Landforms, climate, and ecosystems'),
+  ('40000000-0000-0000-0000-00000000000c', 'a0000000-0000-0000-0000-000000000001', 'BIO 21', 'Environmental Science', 3, 'Ecology, conservation, and environmental issues'),
+  ('40000000-0000-0000-0000-00000000000d', 'a0000000-0000-0000-0000-000000000001', 'MATH 54', 'Statistics', 4, 'Descriptive and inferential statistics');
 
 -- ============================================================
 -- TRANSFER PATHWAY REQUIREMENTS
 -- ============================================================
 insert into transfer_pathways (id, major_id, institution_id, requirements) values
-  ('tp-geology-001', 'm0000000-0000-0000-0000-000000000033', 'a0000000-0000-0000-0000-000000000001', '
+  ('20000000-0000-0000-0000-000000000033', '10000000-0000-0000-0000-000000000033', 'a0000000-0000-0000-0000-000000000001', '
 ## UC Earth Science/Geology Transfer Requirements
 
 ### Minimum GPA Requirements

@@ -50,7 +50,7 @@ describe("PlaybookCard", () => {
   it("shows verified badge for verified playbooks", () => {
     render(<PlaybookCard playbook={verifiedPlaybook} />);
     expect(screen.getByTestId("verified-badge")).toBeInTheDocument();
-    expect(screen.getByTestId("verified-badge")).toHaveTextContent("Verified");
+    expect(screen.getByTestId("verified-badge")).toHaveTextContent("Verified Transfer Story");
   });
 
   it("does not show verified badge for unverified playbooks", () => {
@@ -58,15 +58,15 @@ describe("PlaybookCard", () => {
     expect(screen.queryByTestId("verified-badge")).not.toBeInTheDocument();
   });
 
-  it("shows inspiration only badge for unverified playbooks", () => {
+  it("shows community badge for unverified playbooks", () => {
     render(<PlaybookCard playbook={unverifiedPlaybook} />);
-    expect(screen.getByTestId("inspiration-badge")).toBeInTheDocument();
-    expect(screen.getByTestId("inspiration-badge")).toHaveTextContent("Inspiration only");
+    expect(screen.getByTestId("community-badge")).toBeInTheDocument();
+    expect(screen.getByTestId("community-badge")).toHaveTextContent("Community Submission");
   });
 
-  it("does not show inspiration badge for verified playbooks", () => {
+  it("does not show community badge for verified playbooks", () => {
     render(<PlaybookCard playbook={verifiedPlaybook} />);
-    expect(screen.queryByTestId("inspiration-badge")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("community-badge")).not.toBeInTheDocument();
   });
 
   it("renders as a link to playbook detail", () => {

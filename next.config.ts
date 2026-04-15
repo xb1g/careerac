@@ -1,7 +1,6 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  outputFileTracingRoot: process.cwd(),
   // Server external packages for pdfjs-dist and its canvas dependency
   serverExternalPackages: ["@napi-rs/canvas", "pdfjs-dist"],
 };

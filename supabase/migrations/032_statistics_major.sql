@@ -6,28 +6,28 @@
 -- MAJOR DEFINITION
 -- ============================================================
 insert into majors (id, name, category, description, degree_type, total_units_required, participating_uc_campuses) values
-  ('m0000000-0000-0000-0000-000000000032', 'Statistics', 'Mathematics', 'Data analysis, probability theory, statistical inference, and computational methods. Foundation for data science and quantitative research.', 'BS', 120, array['UCB', 'UCD', 'UCI', 'UCLA', 'UCR', 'UCSD', 'UCSB'])
+  ('10000000-0000-0000-0000-000000000032', 'Statistics', 'Mathematics', 'Data analysis, probability theory, statistical inference, and computational methods. Foundation for data science and quantitative research.', 'BS', 120, array['UCB', 'UCD', 'UCI', 'UCLA', 'UCR', 'UCSD', 'UCSB'])
 on conflict (id) do nothing;
 
 -- ============================================================
 -- COURSES - Statistics (Santa Monica College)
 -- ============================================================
 insert into courses (id, institution_id, code, title, units, description) values
-  ('p0000000-0000-0000-0000-000000000001', 'a0000000-0000-0000-0000-000000000001', 'MATH 28', 'Calculus I', 5, 'Limits, derivatives, and applications'),
-  ('p0000000-0000-0000-0000-000000000002', 'a0000000-0000-0000-0000-000000000001', 'MATH 29', 'Calculus II', 5, 'Integration, techniques, and applications'),
-  ('p0000000-0000-0000-0000-000000000003', 'a0000000-0000-0000-0000-000000000001', 'MATH 32', 'Multivariable Calculus', 5, 'Vector calculus and partial derivatives'),
-  ('p0000000-0000-0000-0000-000000000004', 'a0000000-0000-0000-0000-000000000001', 'MATH 33', 'Linear Algebra', 3, 'Matrices, vector spaces, and linear transformations'),
-  ('p0000000-0000-0000-0000-000000000005', 'a0000000-0000-0000-0000-000000000001', 'MATH 54', 'Statistics', 4, 'Descriptive and inferential statistics'),
-  ('p0000000-0000-0000-0000-000000000006', 'a0000000-0000-0000-0000-000000000001', 'CS 55', 'Java Programming', 3, 'Object-oriented programming fundamentals'),
-  ('p0000000-0000-0000-0000-000000000007', 'a0000000-0000-0000-0000-000000000001', 'CS 57', 'Python Programming', 3, 'Python for data analysis'),
-  ('p0000000-0000-0000-0000-000000000008', 'a0000000-0000-0000-0000-000000000001', 'MATH 11', 'Discrete Mathematics', 3, 'Logic, sets, combinatorics, and graph theory'),
-  ('p0000000-0000-0000-0000-000000000009', 'a0000000-0000-0000-0000-000000000001', 'ECON 1', 'Principles of Microeconomics', 3, 'Supply, demand, market structures, and consumer theory');
+  ('30000000-0000-0000-0000-000000000001', 'a0000000-0000-0000-0000-000000000001', 'MATH 28', 'Calculus I', 5, 'Limits, derivatives, and applications'),
+  ('30000000-0000-0000-0000-000000000002', 'a0000000-0000-0000-0000-000000000001', 'MATH 29', 'Calculus II', 5, 'Integration, techniques, and applications'),
+  ('30000000-0000-0000-0000-000000000003', 'a0000000-0000-0000-0000-000000000001', 'MATH 32', 'Multivariable Calculus', 5, 'Vector calculus and partial derivatives'),
+  ('30000000-0000-0000-0000-000000000004', 'a0000000-0000-0000-0000-000000000001', 'MATH 33', 'Linear Algebra', 3, 'Matrices, vector spaces, and linear transformations'),
+  ('30000000-0000-0000-0000-000000000005', 'a0000000-0000-0000-0000-000000000001', 'MATH 54', 'Statistics', 4, 'Descriptive and inferential statistics'),
+  ('30000000-0000-0000-0000-000000000006', 'a0000000-0000-0000-0000-000000000001', 'CS 55', 'Java Programming', 3, 'Object-oriented programming fundamentals'),
+  ('30000000-0000-0000-0000-000000000007', 'a0000000-0000-0000-0000-000000000001', 'CS 57', 'Python Programming', 3, 'Python for data analysis'),
+  ('30000000-0000-0000-0000-000000000008', 'a0000000-0000-0000-0000-000000000001', 'MATH 11', 'Discrete Mathematics', 3, 'Logic, sets, combinatorics, and graph theory'),
+  ('30000000-0000-0000-0000-000000000009', 'a0000000-0000-0000-0000-000000000001', 'ECON 1', 'Principles of Microeconomics', 3, 'Supply, demand, market structures, and consumer theory');
 
 -- ============================================================
 -- TRANSFER PATHWAY REQUIREMENTS
 -- ============================================================
 insert into transfer_pathways (id, major_id, institution_id, requirements) values
-  ('tp-stat-001', 'm0000000-0000-0000-0000-000000000032', 'a0000000-0000-0000-0000-000000000001', '
+  ('20000000-0000-0000-0000-000000000032', '10000000-0000-0000-0000-000000000032', 'a0000000-0000-0000-0000-000000000001', '
 ## UC Statistics Transfer Requirements
 
 ### Minimum GPA Requirements

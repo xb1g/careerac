@@ -1,6 +1,7 @@
 import { createClient } from "@/utils/supabase/server";
 import { EmptyState } from "./empty-state";
 import Link from "next/link";
+import { TransferCockpit } from "@/components/transfer-cockpit";
 
 interface PlanCard {
   id: string;
@@ -89,31 +90,45 @@ export default async function DashboardPage() {
               Dashboard
             </h1>
             <p className="mt-2 text-[15px] text-gray-600 dark:text-gray-400 font-medium">
-              Manage your transfer plans and explore community playbooks.
+              Your transfer readiness overview, plus every plan you&apos;re tracking.
             </p>
           </div>
-          {plans.length > 0 && (
-            <Link
-              href="/plan/new"
-              className="inline-flex items-center justify-center rounded-full bg-blue-600 px-6 py-2.5 text-[14px] font-bold text-white hover:bg-blue-700 hover:shadow-lg hover:shadow-blue-600/20 transition-all duration-300"
-            >
-              <svg className="w-4 h-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-              </svg>
-              New Plan
-            </Link>
-          )}
+          <Link
+            href="/plan/new"
+            className="inline-flex items-center justify-center rounded-full bg-blue-600 px-6 py-2.5 text-[14px] font-bold text-white hover:bg-blue-700 hover:shadow-lg hover:shadow-blue-600/20 transition-all duration-300"
+          >
+            <svg className="w-4 h-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+            </svg>
+            New Plan
+          </Link>
         </div>
 
-        {plans.length === 0 ? (
-          <EmptyState />
-        ) : (
-          <div className="grid gap-6 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3">
-            {plans.map((plan) => (
-              <PlanCard key={plan.id} plan={plan} />
-            ))}
+        <TransferCockpit hasPlans={plans.length > 0} />
+
+        <div className="mt-10">
+          <div className="mb-6 flex items-center justify-between gap-4">
+            <div>
+              <h2 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Your plans</h2>
+              <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">Keep your saved transfer plans close by for deeper edits and recovery workflows.</p>
+            </div>
+            {plans.length > 0 ? (
+              <span className="rounded-full bg-white/80 px-3 py-1 text-xs font-semibold text-gray-600 shadow-sm ring-1 ring-gray-200/70 dark:bg-zinc-900/70 dark:text-zinc-300 dark:ring-zinc-800/80">
+                {plans.length} total
+              </span>
+            ) : null}
           </div>
-        )}
+
+          {plans.length === 0 ? (
+            <EmptyState />
+          ) : (
+            <div className="grid gap-6 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3">
+              {plans.map((plan) => (
+                <PlanCard key={plan.id} plan={plan} />
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

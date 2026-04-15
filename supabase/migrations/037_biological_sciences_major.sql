@@ -7,32 +7,32 @@
 -- MAJOR DEFINITION
 -- ============================================================
 insert into majors (id, name, category, description, degree_type, total_units_required, participating_uc_campuses) values
-  ('m0000000-0000-0000-0000-000000000037', 'Biological Sciences', 'Biological Sciences', 'NEW consolidated pathway for fall 2027. Integrates Biology, Biochemistry, Cell Biology, and Molecular Biology into a unified curriculum. Flexible foundation for all life science careers.', 'BS', 120, array['UCB', 'UCD', 'UCI', 'UCLA', 'UCM', 'UCR', 'UCSD', 'UCSB', 'UCSC'])
+  ('10000000-0000-0000-0000-000000000037', 'Biological Sciences', 'Biological Sciences', 'NEW consolidated pathway for fall 2027. Integrates Biology, Biochemistry, Cell Biology, and Molecular Biology into a unified curriculum. Flexible foundation for all life science careers.', 'BS', 120, array['UCB', 'UCD', 'UCI', 'UCLA', 'UCM', 'UCR', 'UCSD', 'UCSB', 'UCSC'])
 on conflict (id) do nothing;
 
 -- ============================================================
 -- COURSES - Biological Sciences (Santa Monica College)
 -- ============================================================
 insert into courses (id, institution_id, code, title, units, description) values
-  ('u0000000-0000-0000-0000-000000000001', 'a0000000-0000-0000-0000-000000000001', 'MATH 28', 'Calculus I', 5, 'Limits, derivatives, and applications'),
-  ('u0000000-0000-0000-0000-000000000002', 'a0000000-0000-0000-0000-000000000001', 'MATH 29', 'Calculus II', 5, 'Integration, techniques, and applications'),
-  ('u0000000-0000-0000-0000-000000000003', 'a0000000-0000-0000-0000-000000000001', 'MATH 54', 'Statistics', 4, 'Descriptive and inferential statistics for biology'),
-  ('u0000000-0000-0000-0000-000000000004', 'a0000000-0000-0000-0000-000000000001', 'CHEM 11', 'General Chemistry I', 5, 'Introductory chemical principles with laboratory'),
-  ('u0000000-0000-0000-0000-000000000005', 'a0000000-0000-0000-0000-000000000001', 'CHEM 12', 'General Chemistry II', 5, 'Chemical equilibrium, thermodynamics, and kinetics'),
-  ('u0000000-0000-0000-0000-000000000006', 'a0000000-0000-0000-0000-000000000001', 'CHEM 21', 'Organic Chemistry I', 5, 'Structure, bonding, and reactions of organic compounds'),
-  ('u0000000-0000-0000-0000-000000000007', 'a0000000-0000-0000-0000-000000000001', 'CHEM 22', 'Organic Chemistry II', 5, 'Reaction mechanisms and spectroscopy'),
-  ('u0000000-0000-0000-0000-000000000008', 'a0000000-0000-0000-0000-000000000001', 'BIOL 21', 'Foundations of Biology I: Cells, Genetics, Evolution', 5, 'Cell structure, genetics, and evolutionary biology'),
-  ('u0000000-0000-0000-0000-000000000009', 'a0000000-0000-0000-0000-000000000001', 'BIOL 22', 'Foundations of Biology II: Molecular Biology', 5, 'DNA, RNA, proteins, gene expression and regulation'),
-  ('u0000000-0000-0000-0000-00000000000a', 'a0000000-0000-0000-0000-000000000001', 'BIOL 23', 'Foundations of Biology III: Organismal Biology', 5, 'Physiology, anatomy, ecology, and biodiversity'),
-  ('u0000000-0000-0000-0000-00000000000b', 'a0000000-0000-0000-0000-000000000001', 'PHYS 6', 'General Physics I', 4, 'Mechanics and thermodynamics'),
-  ('u0000000-0000-0000-0000-00000000000c', 'a0000000-0000-0000-0000-000000000001', 'PHYS 7', 'General Physics II', 4, 'Electricity, magnetism, and optics'),
-  ('u0000000-0000-0000-0000-00000000000d', 'a0000000-0000-0000-0000-000000000001', 'BIOL 24', 'Biochemistry', 5, 'Biomolecules, metabolism, and molecular biology');
+  ('80000000-0000-0000-0000-000000000001', 'a0000000-0000-0000-0000-000000000001', 'MATH 28', 'Calculus I', 5, 'Limits, derivatives, and applications'),
+  ('80000000-0000-0000-0000-000000000002', 'a0000000-0000-0000-0000-000000000001', 'MATH 29', 'Calculus II', 5, 'Integration, techniques, and applications'),
+  ('80000000-0000-0000-0000-000000000003', 'a0000000-0000-0000-0000-000000000001', 'MATH 54', 'Statistics', 4, 'Descriptive and inferential statistics for biology'),
+  ('80000000-0000-0000-0000-000000000004', 'a0000000-0000-0000-0000-000000000001', 'CHEM 11', 'General Chemistry I', 5, 'Introductory chemical principles with laboratory'),
+  ('80000000-0000-0000-0000-000000000005', 'a0000000-0000-0000-0000-000000000001', 'CHEM 12', 'General Chemistry II', 5, 'Chemical equilibrium, thermodynamics, and kinetics'),
+  ('80000000-0000-0000-0000-000000000006', 'a0000000-0000-0000-0000-000000000001', 'CHEM 21', 'Organic Chemistry I', 5, 'Structure, bonding, and reactions of organic compounds'),
+  ('80000000-0000-0000-0000-000000000007', 'a0000000-0000-0000-0000-000000000001', 'CHEM 22', 'Organic Chemistry II', 5, 'Reaction mechanisms and spectroscopy'),
+  ('80000000-0000-0000-0000-000000000008', 'a0000000-0000-0000-0000-000000000001', 'BIOL 21', 'Foundations of Biology I: Cells, Genetics, Evolution', 5, 'Cell structure, genetics, and evolutionary biology'),
+  ('80000000-0000-0000-0000-000000000009', 'a0000000-0000-0000-0000-000000000001', 'BIOL 22', 'Foundations of Biology II: Molecular Biology', 5, 'DNA, RNA, proteins, gene expression and regulation'),
+  ('80000000-0000-0000-0000-00000000000a', 'a0000000-0000-0000-0000-000000000001', 'BIOL 23', 'Foundations of Biology III: Organismal Biology', 5, 'Physiology, anatomy, ecology, and biodiversity'),
+  ('80000000-0000-0000-0000-00000000000b', 'a0000000-0000-0000-0000-000000000001', 'PHYS 6', 'General Physics I', 4, 'Mechanics and thermodynamics'),
+  ('80000000-0000-0000-0000-00000000000c', 'a0000000-0000-0000-0000-000000000001', 'PHYS 7', 'General Physics II', 4, 'Electricity, magnetism, and optics'),
+  ('80000000-0000-0000-0000-00000000000d', 'a0000000-0000-0000-0000-000000000001', 'BIOL 24', 'Biochemistry', 5, 'Biomolecules, metabolism, and molecular biology');
 
 -- ============================================================
 -- TRANSFER PATHWAY REQUIREMENTS
 -- ============================================================
 insert into transfer_pathways (id, major_id, institution_id, requirements) values
-  ('tp-biosci-001', 'm0000000-0000-0000-0000-000000000037', 'a0000000-0000-0000-0000-000000000001', '
+  ('20000000-0000-0000-0000-000000000037', '10000000-0000-0000-0000-000000000037', 'a0000000-0000-0000-0000-000000000001', '
 ## UC Biological Sciences Transfer Requirements (NEW for Fall 2027)
 
 ### IMPORTANT: NEW Consolidated Pathway

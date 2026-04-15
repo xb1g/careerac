@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from "react";
 import CourseForm, { type CourseFormData } from "./course-form";
+import { notifyCockpitRefresh } from "@/lib/cockpit-events";
 
 type UserCourse = {
   id: string;
@@ -52,6 +53,7 @@ export default function CoursesClient({ initialCourses }: CoursesClientProps) {
     if (res.ok) {
       await refreshCourses();
       setShowAdd(false);
+      notifyCockpitRefresh();
     }
     setLoading(false);
   };
@@ -66,6 +68,7 @@ export default function CoursesClient({ initialCourses }: CoursesClientProps) {
     if (res.ok) {
       await refreshCourses();
       setEditingId(null);
+      notifyCockpitRefresh();
     }
     setLoading(false);
   };
@@ -75,6 +78,7 @@ export default function CoursesClient({ initialCourses }: CoursesClientProps) {
     setLoading(true);
     await fetch(`/api/user-courses/${id}`, { method: "DELETE" });
     await refreshCourses();
+    notifyCockpitRefresh();
     setLoading(false);
   };
 

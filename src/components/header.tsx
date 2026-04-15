@@ -17,7 +17,9 @@ const navLinks = [
   { href: "/settings", label: "My Courses" },
 ];
 
-function isActive(href: string, pathname: string): boolean {
+function isActive(href: string, pathname: string | null): boolean {
+  if (!pathname) return false;
+
   if (href === "/dashboard") {
     return pathname === "/dashboard";
   }
@@ -35,7 +37,7 @@ function isActive(href: string, pathname: string): boolean {
 }
 
 export default function Header({ userEmail }: HeaderProps) {
-  const pathname = usePathname();
+  const pathname = usePathname() ?? "";
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (

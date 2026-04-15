@@ -15,15 +15,16 @@ interface PlaybookCardProps {
 }
 
 export function PlaybookCard({ playbook }: PlaybookCardProps) {
-  const isVerified =
-    playbook.verification_status === "verified" &&
-    playbook.outcome === "transferred";
+  const isVerified = playbook.verification_status === "verified";
+  const cardClasses = isVerified
+    ? "border-emerald-200/80 bg-white hover:border-emerald-300 dark:border-emerald-900/60 dark:bg-zinc-900 dark:hover:border-emerald-700"
+    : "border-amber-200/80 bg-amber-50/60 hover:border-amber-300 dark:border-amber-900/60 dark:bg-amber-950/10 dark:hover:border-amber-700";
 
   return (
     <Link
       href={`/playbooks/${playbook.id}`}
       data-testid="playbook-card"
-      className="group rounded-lg border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 p-5 hover:border-blue-300 dark:hover:border-blue-700 hover:shadow-sm transition-all"
+      className={`group rounded-lg border p-5 hover:shadow-sm transition-all ${cardClasses}`}
     >
       <div className="flex items-start justify-between gap-3">
         <div className="flex-1 min-w-0">
@@ -61,17 +62,17 @@ export function PlaybookCard({ playbook }: PlaybookCardProps) {
               <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-              Verified
+              Verified Transfer Story
             </span>
           ) : (
             <span
               className="inline-flex items-center gap-1 rounded-full bg-amber-50 dark:bg-amber-900/30 px-2.5 py-1 text-xs font-medium text-amber-700 dark:text-amber-400 ring-1 ring-inset ring-amber-600/20"
-              data-testid="inspiration-badge"
+              data-testid="community-badge"
             >
               <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 001.5-.189m-1.5.189a6.01 6.01 0 01-1.5-.189m3.75 7.478a12.06 12.06 0 01-4.5 0m3.75 2.383a14.406 14.406 0 01-3 0M14.25 18v-.192c0-.983.658-1.823 1.508-2.316a7.5 7.5 0 10-7.517 0c.85.493 1.509 1.333 1.509 2.316V18" />
               </svg>
-              Inspiration only
+              Community Submission
             </span>
           )}
         </div>

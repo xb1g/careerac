@@ -3,9 +3,11 @@
 import { useState, useCallback, useRef } from "react";
 import { UIMessage } from "@ai-sdk/react";
 import Chat, { RecoveryContext } from "@/components/chat";
+import ComparisonDashboard from "@/components/comparison-dashboard";
 import { RecoveryAlternative } from "@/components/recovery-message";
 import SemesterPlan from "@/components/semester-plan";
 import CourseStatusMenu from "@/components/course-status-menu";
+import { notifyCockpitRefresh } from "@/lib/cockpit-events";
 import TranscriptEditor from "@/components/transcript-editor";
 import { ParsedPlan, TransferPlan, PlanCourse, CourseStatus } from "@/types/plan";
 import { TranscriptData } from "@/types/transcript";
@@ -237,6 +239,7 @@ export default function PlanDetailClient({ plan, transcript }: PlanDetailClientP
         setCurrentPlan(currentPlan);
       } else {
         const result = await response.json();
+        notifyCockpitRefresh();
 
         // Trigger recovery if this is a failure/cancellation/waitlist
         if (result.triggerRecovery && updatedPlan && !("isNoData" in updatedPlan)) {
@@ -332,6 +335,8 @@ export default function PlanDetailClient({ plan, transcript }: PlanDetailClientP
           )}
         </div>
       )}
+
+      <ComparisonDashboard planId={plan.id} />
 
       {/* Split layout: chat panel (left) + plan display (right) */}
       <div className="flex flex-1 overflow-hidden bg-[#FAFAFA] dark:bg-zinc-950">

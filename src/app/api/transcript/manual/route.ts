@@ -31,11 +31,13 @@ export async function POST(req: Request) {
       updated_at: new Date().toISOString(),
     };
 
-    const { data: transcript, error } = await supabase
+    const transcriptResult = (await supabase
       .from("transcripts")
       .insert(insertPayload as never)
       .select("id")
-      .single();
+      .single()) as { data: { id: string } | null; error: { message?: string } | null };
+    const transcript = transcriptResult.data;
+    const error = transcriptResult.error;
 
     if (error || !transcript) {
       console.error("Manual transcript insert error:", error);
@@ -43,7 +45,7 @@ export async function POST(req: Request) {
     }
 
     return Response.json({
-      id: transcript.id,
+      id: (transcript as { id: string }).id,
       institution: institution ?? null,
       parsedData: parsed_data,
       parseStatus: parse_status ?? "completed",
