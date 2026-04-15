@@ -3,10 +3,27 @@ import { parseTranscriptText } from "@/utils/transcript-parser";
 import { parseTranscriptWithAI } from "@/utils/transcript-ai-parser";
 import type { Database } from "@/types/database";
 
+// Polyfill browser globals for pdfjs-dist in Node.js environment
+// @napi-rs/canvas provides DOMMatrix, Path2D, ImageData that pdfjs-dist requires
+import { DOMMatrix, Path2D, ImageData } from "@napi-rs/canvas";
+if (typeof globalThis.DOMMatrix === "undefined") {
+  (globalThis as unknown as { DOMMatrix: typeof DOMMatrix }).DOMMatrix = DOMMatrix;
+}
+if (typeof globalThis.Path2D === "undefined") {
+  (globalThis as unknown as { Path2D: typeof Path2D }).Path2D = Path2D;
+}
+if (typeof globalThis.ImageData === "undefined") {
+  (globalThis as unknown as { ImageData: typeof ImageData }).ImageData = ImageData;
+}
+
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 export const runtime = "nodejs";
 
 async function extractTextFromPdf(buffer: Buffer): Promise<string> {
+  // Import worker first to ensure it's available in the bundle
+  // This fixes "Cannot find module pdf.worker.mjs" error in serverless environments
+  await import("pdfjs-dist/legacy/build/pdf.worker.mjs");
+  
   // Use the legacy build in Node.js to avoid browser-only globals.
   // The specifier is held in a variable + `/* @vite-ignore */` so Vite's
   // import-analysis plugin (used by Vitest) does not try to statically
