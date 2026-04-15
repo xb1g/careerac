@@ -93,6 +93,7 @@ export default function PlanConfig({ transcriptData, onConfigured, onBack }: Pla
           onChange={(e) => { setMajor(e.target.value); setErrors({}); }}
           placeholder="e.g., Computer Science"
           className="w-full max-w-md rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2.5 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
+          /* eslint-disable-next-line jsx-a11y/no-autofocus */
           autoFocus
         />
         {errors.major && <p className="text-sm text-red-600 dark:text-red-400">{errors.major}</p>}
@@ -151,6 +152,7 @@ export default function PlanConfig({ transcriptData, onConfigured, onBack }: Pla
           Do you have a target school?
         </legend>
         <div className="flex flex-col gap-3">
+          {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
           <label className="flex items-start gap-3 cursor-pointer">
             <input
               type="radio"
