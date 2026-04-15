@@ -20,6 +20,10 @@ const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 export const runtime = "nodejs";
 
 async function extractTextFromPdf(buffer: Buffer): Promise<string> {
+  // Import worker first to ensure it's available in the bundle
+  // This fixes "Cannot find module pdf.worker.mjs" error in serverless environments
+  await import("pdfjs-dist/legacy/build/pdf.worker.mjs");
+  
   // Use the legacy build in Node.js to avoid browser-only globals.
   // The specifier is held in a variable + `/* @vite-ignore */` so Vite's
   // import-analysis plugin (used by Vitest) does not try to statically
