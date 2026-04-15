@@ -4,7 +4,7 @@ import { useChat, UIMessage } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { ParsedPlan } from "@/types/plan";
-import { parsePlanFromAIResponse } from "@/utils/plan-parser";
+import { parsePlanFromAIResponse, stripPlanJsonFromText } from "@/utils/plan-parser";
 import RecoveryMessage, { RecoveryAlternative } from "./recovery-message";
 import type { TranscriptData } from "@/types/transcript";
 
@@ -294,10 +294,13 @@ export default function Chat({
               >
                 {message.parts.map((part, i) => {
                   if (part.type === "text") {
-                    const text = (part as { text: string }).text;
+                    const rawText = (part as { text: string }).text;
+                    const displayText =
+                      message.role === "assistant" ? stripPlanJsonFromText(rawText) : rawText;
+                    if (!displayText) return null;
                     return (
                       <div key={`${message.id}-${i}`} className="whitespace-pre-wrap text-[15px] leading-relaxed">
-                        {text}
+                        {displayText}
                       </div>
                     );
                   }
