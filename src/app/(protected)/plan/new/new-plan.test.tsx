@@ -29,8 +29,8 @@ describe("NewPlanPage", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Skip This Step" }));
 
-    expect(screen.getByText("What do you want to study?")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Generate Plan Now" })).toBeInTheDocument();
+    expect(screen.getByText("Plan Settings")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Generate Plan" })).toBeInTheDocument();
   });
 
   it("shows the chat step after configuration", () => {
@@ -38,7 +38,7 @@ describe("NewPlanPage", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Skip This Step" }));
     fireEvent.change(screen.getByLabelText("Intended Major"), { target: { value: "Computer Science" } });
-    fireEvent.click(screen.getByRole("button", { name: "Generate Plan Now" }));
+    fireEvent.click(screen.getByRole("button", { name: "Generate Plan" }));
 
     expect(screen.getByTestId("chat-component")).toBeInTheDocument();
     expect(screen.getByText("Your plan will appear here")).toBeInTheDocument();
