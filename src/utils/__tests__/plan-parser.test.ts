@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { parsePlanFromAIResponse, generateSystemPrompt } from "@/utils/plan-parser";
+import { parsePlanFromAIResponse } from "@/utils/plan-parser";
+import { buildSystemPrompt } from "@/lib/prompt-builder";
 
 describe("plan-parser", () => {
   describe("parsePlanFromAIResponse", () => {
@@ -220,10 +221,17 @@ Let me know if you have any questions!`;
     });
   });
 
-  describe("generateSystemPrompt", () => {
+  describe("buildSystemPrompt", () => {
+    const defaults = {
+      articulationContext: "",
+      prerequisiteData: "",
+      playbookContext: "",
+    };
+
     it("includes articulation data when provided", () => {
-      const prompt = generateSystemPrompt({
-        articulationData: "SMC CS 1 -> UCLA CS 31",
+      const prompt = buildSystemPrompt({
+        ...defaults,
+        articulationContext: "SMC CS 1 -> UCLA CS 31",
       });
 
       expect(prompt).toContain("AVAILABLE ARTICULATION DATA");
@@ -231,43 +239,36 @@ Let me know if you have any questions!`;
     });
 
     it("includes prerequisite info when provided", () => {
-      const prompt = generateSystemPrompt({
-        prerequisiteInfo: "CS 2 requires CS 1",
+      const prompt = buildSystemPrompt({
+        ...defaults,
+        prerequisiteData: "CS 2 requires CS 1",
       });
 
       expect(prompt).toContain("PREREQUISITE RELATIONSHIPS");
       expect(prompt).toContain("CS 2 requires CS 1");
     });
 
-    it("includes playbook insights when provided", () => {
-      const prompt = generateSystemPrompt({
-        playbookInsights: "Students typically take CS 1 first",
+    it("includes playbook context when provided", () => {
+      const prompt = buildSystemPrompt({
+        ...defaults,
+        playbookContext: "## VERIFIED PLAYBOOK INSIGHTS\nStudents typically take CS 1 first",
       });
 
       expect(prompt).toContain("VERIFIED PLAYBOOK INSIGHTS");
       expect(prompt).toContain("Students typically take CS 1 first");
     });
 
-    it("includes existing plan when provided", () => {
-      const prompt = generateSystemPrompt({
-        existingPlan: "Current plan: Semester 1 has CS 1",
-      });
-
-      expect(prompt).toContain("CURRENT PLAN");
-      expect(prompt).toContain("Current plan: Semester 1 has CS 1");
-    });
-
     it("includes all guardrails", () => {
-      const prompt = generateSystemPrompt({});
+      const prompt = buildSystemPrompt(defaults);
 
-      expect(prompt).toContain("STAY ON TOPIC");
-      expect(prompt).toContain("DON'T FABRICATE");
-      expect(prompt).toContain("ADMIT WHEN NO DATA");
-      expect(prompt).toContain("PREREQUISITE ORDERING");
+      expect(prompt).toContain("Stay on topic");
+      expect(prompt).toContain("Don't fabricate");
+      expect(prompt).toContain("Admit when no data");
+      expect(prompt).toContain("Prerequisite ordering");
     });
 
     it("includes output format instructions", () => {
-      const prompt = generateSystemPrompt({});
+      const prompt = buildSystemPrompt(defaults);
 
       expect(prompt).toContain("OUTPUT FORMAT");
       expect(prompt).toContain("ccName");
