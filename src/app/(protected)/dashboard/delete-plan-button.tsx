@@ -24,7 +24,7 @@ export function DeletePlanButton({ planId }: { planId: string }) {
     <button
       onClick={handleDelete}
       disabled={isDeleting}
-      className="p-1.5 rounded-full text-zinc-400 hover:text-red-600 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all duration-300 pointer-events-auto"
+      className="p-1.5 rounded-full text-zinc-400 hover:text-red-600 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all duration-300 pointer-events-auto cursor-pointer"
       title="Delete plan"
     >
       {isDeleting ? (
