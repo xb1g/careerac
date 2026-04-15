@@ -1,6 +1,24 @@
 import type { ParsedPlan, TransferPlan, NoDataResponse, PlanCourse, PlanSemester, MultiUniversityPlan, UniversityFit } from "@/types/plan";
 
 /**
+ * Removes fenced JSON code blocks from a chat response so students only see
+ * the human-readable prose. Handles partial/streaming text where the closing
+ * ``` hasn't arrived yet by hiding everything from the opening fence onward.
+ */
+export function stripPlanJsonFromText(text: string): string {
+  if (!text) return text;
+
+  let stripped = text.replace(/```(?:json)?\s*\n?[\s\S]*?\n?\s*```/g, "");
+
+  const openFence = stripped.indexOf("```");
+  if (openFence !== -1) {
+    stripped = stripped.slice(0, openFence);
+  }
+
+  return stripped.replace(/\n{3,}/g, "\n\n").trim();
+}
+
+/**
  * Extracts and parses a structured transfer plan from AI response text.
  * The AI is expected to output a JSON block with the plan data.
  */

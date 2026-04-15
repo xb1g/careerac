@@ -131,7 +131,7 @@ function UniversityCard({
   return (
     <button
       onClick={onClick}
-      className={`w-full text-left rounded-xl border p-4 transition-all ${
+      className={`w-full text-left rounded-xl border p-4 transition-all cursor-pointer ${
         isSelected
           ? "border-blue-500 bg-blue-50/50 dark:bg-blue-900/10 ring-1 ring-blue-500/30"
           : "border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 bg-white dark:bg-zinc-900"

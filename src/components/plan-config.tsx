@@ -124,7 +124,7 @@ export default function PlanConfig({ transcriptData, onConfigured, onBack }: Pla
           <button
             type="button"
             onClick={() => setIsCustom(true)}
-            className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
+            className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors cursor-pointer ${
               isCustom
                 ? "bg-blue-600 text-white"
                 : "border border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800"
@@ -199,21 +199,21 @@ export default function PlanConfig({ transcriptData, onConfigured, onBack }: Pla
       <div className="flex flex-col sm:flex-row gap-3 pt-4">
         <button
           type="submit"
-          className="rounded-lg bg-blue-600 text-white px-6 py-2.5 text-sm font-medium hover:bg-blue-700 transition-colors"
+          className="rounded-lg bg-blue-600 text-white px-6 py-2.5 text-sm font-medium hover:bg-blue-700 transition-colors cursor-pointer"
         >
           Generate Plan
         </button>
         <button
           type="button"
           onClick={handleSkip}
-          className="rounded-lg border border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 px-6 py-2.5 text-sm font-medium hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors"
+          className="rounded-lg border border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 px-6 py-2.5 text-sm font-medium hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
         >
           Skip → Use Defaults
         </button>
         <button
           type="button"
           onClick={onBack}
-          className="rounded-lg text-zinc-500 dark:text-zinc-400 px-4 py-2.5 text-sm hover:text-zinc-700 dark:hover:text-zinc-300 transition-colors"
+          className="rounded-lg text-zinc-500 dark:text-zinc-400 px-4 py-2.5 text-sm hover:text-zinc-700 dark:hover:text-zinc-300 transition-colors cursor-pointer"
         >
           Back
         </button>

@@ -268,7 +268,7 @@ export default function TranscriptUpload({ onTranscriptParsed, onSkip }: Transcr
                     <td className="px-3 py-2">
                       <button
                         onClick={() => setManualCourses((prev) => prev.filter((_, idx) => idx !== i))}
-                        className="text-red-500 hover:text-red-700 text-xs"
+                        className="inline-block rounded-full px-2 py-0.5 text-xs font-medium bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300 hover:bg-red-200 dark:hover:bg-red-900/50 cursor-pointer transition-colors"
                       >
                         Remove
                       </button>
@@ -292,7 +292,7 @@ export default function TranscriptUpload({ onTranscriptParsed, onSkip }: Transcr
           </button>
           <button
             onClick={onSkip}
-            className="rounded-lg border border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 px-6 py-2.5 text-sm font-medium hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors"
+            className="rounded-lg border border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 px-6 py-2.5 text-sm font-medium hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
           >
             Skip
           </button>
@@ -367,7 +367,7 @@ export default function TranscriptUpload({ onTranscriptParsed, onSkip }: Transcr
                   <td className="px-3 py-2">
                     <button
                       onClick={() => handleRemoveCourse(i)}
-                      className="text-red-500 hover:text-red-700 text-xs"
+                      className="inline-block rounded-full px-2 py-0.5 text-xs font-medium bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300 hover:bg-red-200 dark:hover:bg-red-900/50 cursor-pointer transition-colors"
                       aria-label={`Remove ${course.code}`}
                     >
                       Remove
@@ -382,13 +382,13 @@ export default function TranscriptUpload({ onTranscriptParsed, onSkip }: Transcr
         <div className="flex gap-3">
           <button
             onClick={handleConfirm}
-            className="rounded-lg bg-blue-600 text-white px-6 py-2.5 text-sm font-medium hover:bg-blue-700 transition-colors"
+            className="rounded-lg bg-blue-600 text-white px-6 py-2.5 text-sm font-medium hover:bg-blue-700 transition-colors cursor-pointer"
           >
             Looks Good, Continue
           </button>
           <button
             onClick={() => { setParsedData(null); setTranscriptId(null); }}
-            className="rounded-lg border border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 px-6 py-2.5 text-sm font-medium hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors"
+            className="rounded-lg border border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 px-6 py-2.5 text-sm font-medium hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
           >
             Upload Different File
           </button>
