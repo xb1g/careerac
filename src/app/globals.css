@@ -3,6 +3,7 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  color-scheme: light;
 }
 
 @theme inline {
@@ -12,12 +13,13 @@
   --font-mono: var(--font-funnel-display);
 }
 
-/* Explicitly set dark mode to use .dark class instead of system preference */
+/* Use next-themes .dark class for dark mode */
 @custom-variant dark (&:where(.dark, .dark *));
 
 .dark {
   --background: #0a0a0a;
   --foreground: #ededed;
+  color-scheme: dark;
 }
 
 body {

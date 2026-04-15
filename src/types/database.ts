@@ -130,18 +130,21 @@ export interface Database {
           id: string
           email: string
           full_name: string | null
+          is_admin: boolean
           created_at: string
         }
         Insert: {
           id: string
           email: string
           full_name?: string | null
+          is_admin?: boolean
           created_at?: string
         }
         Update: {
           id?: string
           email?: string
           full_name?: string | null
+          is_admin?: boolean
           created_at?: string
         }
       }
@@ -265,7 +268,7 @@ export interface Database {
           parsed_data: Json | null
           parse_status: "pending" | "parsing" | "completed" | "failed"
           parse_error: string | null
-          parse_method: "ai" | "regex" | null
+           parse_method: "ai" | "regex" | "manual" | null
           created_at: string
           updated_at: string
         }
@@ -277,7 +280,7 @@ export interface Database {
           parsed_data?: Json | null
           parse_status?: "pending" | "parsing" | "completed" | "failed"
           parse_error?: string | null
-          parse_method?: "ai" | "regex" | null
+           parse_method?: "ai" | "regex" | "manual" | null
           created_at?: string
           updated_at?: string
         }
@@ -289,7 +292,7 @@ export interface Database {
           parsed_data?: Json | null
           parse_status?: "pending" | "parsing" | "completed" | "failed"
           parse_error?: string | null
-          parse_method?: "ai" | "regex" | null
+           parse_method?: "ai" | "regex" | "manual" | null
           created_at?: string
           updated_at?: string
         }

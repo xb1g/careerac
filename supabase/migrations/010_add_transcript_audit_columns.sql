@@ -1,6 +1,6 @@
 -- Add transcript parsing metadata columns used by API routes
 ALTER TABLE transcripts
-  ADD COLUMN IF NOT EXISTS parse_method TEXT DEFAULT 'regex' CHECK (parse_method IN ('ai', 'regex')),
+ADD COLUMN IF NOT EXISTS parse_method TEXT DEFAULT 'regex' CHECK (parse_method IN ('ai', 'regex', 'manual')),
   ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ DEFAULT NOW();
 
 -- Backfill updated_at for existing rows

@@ -10,6 +10,7 @@ interface TranscriptUploadProps {
 
 export default function TranscriptUpload({ onTranscriptParsed, onSkip }: TranscriptUploadProps) {
   const [isUploading, setIsUploading] = useState(false);
+  const [isSavingManual, setIsSavingManual] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [parsedData, setParsedData] = useState<TranscriptData | null>(null);
   const [transcriptId, setTranscriptId] = useState<string | null>(null);
@@ -127,15 +128,45 @@ export default function TranscriptUpload({ onTranscriptParsed, onSkip }: Transcr
   };
 
   const handleConfirmManual = () => {
-    if (manualCourses.length === 0) return;
+    if (manualCourses.length === 0 || isSavingManual) return;
+
     const data: TranscriptData = {
       institution: manualInstitution || "Unknown Institution",
       courses: manualCourses,
       totalUnitsCompleted: manualCourses.filter((c) => c.status === "completed").reduce((s, c) => s + c.units, 0),
       totalUnitsInProgress: manualCourses.filter((c) => c.status === "in_progress").reduce((s, c) => s + c.units, 0),
     };
-    // For manual entry, pass empty string as transcript ID since there's no file
-    onTranscriptParsed(data, "");
+
+    void (async () => {
+      setIsSavingManual(true);
+      setError(null);
+
+      try {
+        const response = await fetch("/api/transcript/manual", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            parsed_data: data,
+            parse_status: "completed",
+            parse_method: "manual",
+            file_name: "Manual transcript entry",
+            institution: data.institution,
+          }),
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+          throw new Error(result.error || "Failed to save manual transcript.");
+        }
+
+        onTranscriptParsed(data, result.id);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Failed to save manual transcript.");
+      } finally {
+        setIsSavingManual(false);
+      }
+    })();
   };
 
   if (showManualEntry || (!parsedData && showManualEntry)) {
@@ -252,10 +283,12 @@ export default function TranscriptUpload({ onTranscriptParsed, onSkip }: Transcr
         <div className="flex gap-3">
           <button
             onClick={handleConfirmManual}
-            disabled={manualCourses.length === 0}
+            disabled={manualCourses.length === 0 || isSavingManual}
             className="rounded-lg bg-blue-600 text-white px-6 py-2.5 text-sm font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
-            Continue with {manualCourses.length} course{manualCourses.length !== 1 ? "s" : ""}
+            {isSavingManual
+              ? "Saving..."
+              : `Continue with ${manualCourses.length} course${manualCourses.length !== 1 ? "s" : ""}`}
           </button>
           <button
             onClick={onSkip}
