@@ -3,15 +3,48 @@
 import { useState, useMemo, useRef, useEffect, useCallback } from "react";
 
 interface MajorOption {
-  id: string;
   name: string;
-  category: string | null;
+  category: string;
 }
+
+const DEFAULT_MAJORS: MajorOption[] = [
+  { name: "Computer Science", category: "STEM" },
+  { name: "Software Engineering", category: "STEM" },
+  { name: "Data Science", category: "STEM" },
+  { name: "Mathematics", category: "STEM" },
+  { name: "Statistics", category: "STEM" },
+  { name: "Physics", category: "STEM" },
+  { name: "Chemistry", category: "STEM" },
+  { name: "Environmental Science", category: "STEM" },
+  { name: "Earth Science/Geology", category: "STEM" },
+  { name: "Biology", category: "Biological Sciences" },
+  { name: "Biochemistry", category: "Biological Sciences" },
+  { name: "Molecular Biology", category: "Biological Sciences" },
+  { name: "Cell Biology", category: "Biological Sciences" },
+  { name: "Biological Sciences", category: "Biological Sciences" },
+  { name: "Aerospace Engineering", category: "Engineering" },
+  { name: "Bioengineering", category: "Engineering" },
+  { name: "Chemical Engineering", category: "Engineering" },
+  { name: "Civil Engineering", category: "Engineering" },
+  { name: "Electrical Engineering", category: "Engineering" },
+  { name: "Mechanical Engineering", category: "Engineering" },
+  { name: "Environmental Engineering", category: "Engineering" },
+  { name: "Materials Science", category: "Engineering" },
+  { name: "Business Administration", category: "Business" },
+  { name: "Economics", category: "Social Sciences" },
+  { name: "Psychology", category: "Social Sciences" },
+  { name: "Political Science", category: "Social Sciences" },
+  { name: "Sociology", category: "Social Sciences" },
+  { name: "Communications", category: "Social Sciences" },
+  { name: "English", category: "Humanities" },
+  { name: "History", category: "Humanities" },
+  { name: "Nursing", category: "Health Sciences" },
+  { name: "Art", category: "Arts" },
+];
 
 interface MajorAutocompleteProps {
   value: string;
   onChange: (value: string) => void;
-  majors: MajorOption[];
   placeholder?: string;
   id?: string;
   autoFocus?: boolean;
@@ -20,7 +53,6 @@ interface MajorAutocompleteProps {
 export function MajorAutocomplete({
   value,
   onChange,
-  majors,
   placeholder,
   id,
   autoFocus,
@@ -34,8 +66,8 @@ export function MajorAutocomplete({
   const filtered = useMemo(() => {
     if (!value.trim()) return [];
     const q = value.toLowerCase();
-    return majors.filter((m) => m.name.toLowerCase().includes(q)).slice(0, 8);
-  }, [value, majors]);
+    return DEFAULT_MAJORS.filter((m) => m.name.toLowerCase().includes(q)).slice(0, 8);
+  }, [value]);
 
   // Group filtered results by category
   const grouped = useMemo(() => {
@@ -180,7 +212,7 @@ export function MajorAutocomplete({
                   const idx = itemIndex++;
                   return (
                     <li
-                      key={opt.id}
+                      key={opt.name}
                       id={`${listboxId}-opt-${idx}`}
                       role="option"
                       data-index={idx}

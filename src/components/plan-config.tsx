@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import type { TranscriptData } from "@/types/transcript";
 import { MajorAutocomplete } from "./major-autocomplete";
 
@@ -27,18 +27,6 @@ export default function PlanConfig({ transcriptData, onConfigured, onBack }: Pla
   const [hasTargetSchool, setHasTargetSchool] = useState(false);
   const [targetSchool, setTargetSchool] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [majorOptions, setMajorOptions] = useState<
-    { id: string; name: string; category: string | null }[]
-  >([]);
-
-  useEffect(() => {
-    fetch("/api/majors")
-      .then((res) => res.json())
-      .then((data) => {
-        if (Array.isArray(data)) setMajorOptions(data);
-      })
-      .catch((err) => console.error("Failed to fetch majors:", err));
-  }, []);
 
   const effectiveCredits = isCustom ? parseInt(customCredits) || 0 : maxCredits;
 
@@ -103,7 +91,6 @@ export default function PlanConfig({ transcriptData, onConfigured, onBack }: Pla
           id="major-input"
           value={major}
           onChange={(v) => { setMajor(v); setErrors({}); }}
-          majors={majorOptions}
           placeholder="e.g., Computer Science"
           autoFocus
         />
