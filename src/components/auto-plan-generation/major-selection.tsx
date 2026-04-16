@@ -91,21 +91,21 @@ export function MajorSelectionFallback({
           </div>
 
           <div className="flex flex-col gap-3">
-            <Button 
+            <Button
               onClick={handleContinue}
-              variant="default" 
+              variant="default"
               className="w-full py-5 text-base"
               disabled={!selectedMajor || selectedMajor === "other"}
             >
               Continue with Auto-Generation
             </Button>
             {(onSwitchToCustomize ?? onCancel) && (
-              <Button 
-                onClick={onSwitchToCustomize ?? onCancel} 
-                variant="outline" 
+              <Button
+                onClick={onSwitchToCustomize ?? onCancel}
+                variant="outline"
                 className="w-full py-5 text-base"
               >
-                Switch to Customize
+                {onSwitchToCustomize ? "Switch to Customize" : "Back"}
               </Button>
             )}
           </div>

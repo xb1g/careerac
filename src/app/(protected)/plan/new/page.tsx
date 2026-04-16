@@ -646,12 +646,29 @@ export default function NewPlanPage() {
         )}
 
         {step === "choice" && transcriptData && (
-          <GenerationChoiceScreen
-            transcriptData={transcriptData}
-            onCustomize={handleOpenCustomizeSettings}
-            onAutoGenerate={() => void handleAutoGenerateClick()}
-            onBack={handleBackToUpload}
-          />
+          showMajorSelection ? (
+            <MajorSelectionFallback
+              key={`${detectedMajor ?? "none"}-${majorSuggestions.join("|")}`}
+              open={true}
+              suggestions={majorSuggestions}
+              initialValue={detectedMajor}
+              onConfirm={(major) => {
+                if (!major) return;
+                void startAutoGeneration(major);
+              }}
+              onCancel={() => {
+                setShowMajorSelection(false);
+                setGenerationError(null);
+              }}
+            />
+          ) : (
+            <GenerationChoiceScreen
+              transcriptData={transcriptData}
+              onCustomize={handleOpenCustomizeSettings}
+              onAutoGenerate={() => void handleAutoGenerateClick()}
+              onBack={handleBackToUpload}
+            />
+          )
         )}
 
         {step === "auto-generating" && (
@@ -780,20 +797,22 @@ export default function NewPlanPage() {
           }}
         />
 
-        <MajorSelectionFallback
-          key={`${detectedMajor ?? "none"}-${majorSuggestions.join("|")}-${showMajorSelection ? "open" : "closed"}`}
-          open={showMajorSelection}
-          suggestions={majorSuggestions}
-          initialValue={detectedMajor}
-          onConfirm={(major) => {
-            if (!major) return;
-            void startAutoGeneration(major);
-          }}
-          onCancel={() => {
-            setShowMajorSelection(false);
-            setGenerationError(null);
-          }}
-        />
+        {step !== "choice" && (
+          <MajorSelectionFallback
+            key={`${detectedMajor ?? "none"}-${majorSuggestions.join("|")}-${showMajorSelection ? "open" : "closed"}`}
+            open={showMajorSelection}
+            suggestions={majorSuggestions}
+            initialValue={detectedMajor}
+            onConfirm={(major) => {
+              if (!major) return;
+              void startAutoGeneration(major);
+            }}
+            onCancel={() => {
+              setShowMajorSelection(false);
+              setGenerationError(null);
+            }}
+          />
+        )}
       </div>
     </div>
   );
