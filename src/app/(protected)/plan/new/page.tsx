@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Chat from "@/components/chat";
 import SemesterPlan from "@/components/semester-plan";
 import TranscriptUpload from "@/components/transcript-upload";
+import SavedCoursesSource from "@/components/saved-courses-source";
 import PlanConfig, { type PlanConfiguration } from "@/components/plan-config";
 import {
   AutoGenerationError,
@@ -228,6 +229,15 @@ export default function NewPlanPage() {
   const handleTranscriptParsed = useCallback((data: TranscriptData, id: string) => {
     setTranscriptData(data);
     setTranscriptId(id || null);
+    setDetectedMajor(null);
+    setDetectionConfidence(0);
+    setGenerationError(null);
+    setStep("choice");
+  }, []);
+
+  const handleUseSavedCourses = useCallback((data: TranscriptData) => {
+    setTranscriptData(data);
+    setTranscriptId(null);
     setDetectedMajor(null);
     setDetectionConfidence(0);
     setGenerationError(null);
@@ -631,10 +641,13 @@ export default function NewPlanPage() {
         </div>
 
         {step === "upload" && (
-          <TranscriptUpload
-            onTranscriptParsed={handleTranscriptParsed}
-            onSkip={handleSkipTranscript}
-          />
+          <>
+            <SavedCoursesSource onUseSavedCourses={handleUseSavedCourses} />
+            <TranscriptUpload
+              onTranscriptParsed={handleTranscriptParsed}
+              onSkip={handleSkipTranscript}
+            />
+          </>
         )}
 
         {step === "config" && (
