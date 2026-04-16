@@ -10,6 +10,9 @@ import type { MultiUniversityPlan, ParsedPlan, TransferPlan } from "@/types/plan
 import type { TranscriptData } from "@/types/transcript";
 import { createClient } from "@/utils/supabase/server";
 
+export const runtime = "nodejs";
+export const maxDuration = 60;
+
 type GenerateAutoErrorCode =
   | "UNAUTHORIZED"
   | "INVALID_INPUT"
@@ -127,10 +130,14 @@ function buildPlanTitle(plan: TransferPlan | MultiUniversityPlan): string {
 }
 
 function isMiniMaxError(error: unknown): boolean {
-  return (
-    error instanceof MiniMaxApiError ||
-    (error instanceof Error && error.message.includes("MiniMax API error"))
-  );
+  if (error instanceof MiniMaxApiError) return true;
+  if (error instanceof Error) {
+    return (
+      error.message.includes("MiniMax API error") ||
+      error.name === "AbortError"
+    );
+  }
+  return false;
 }
 
 export async function POST(req: Request) {
@@ -213,6 +220,7 @@ export async function POST(req: Request) {
     );
 
     let generated;
+    const generateStartedAt = Date.now();
     try {
       generated = await PlanGenerationPipeline.generate(
         {
@@ -237,7 +245,13 @@ export async function POST(req: Request) {
           hasTargetSchool,
         },
       );
+      console.log("auto-plan generate ms", Date.now() - generateStartedAt);
     } catch (error) {
+      console.log(
+        "auto-plan generate failed ms",
+        Date.now() - generateStartedAt,
+        error instanceof Error ? error.name : typeof error,
+      );
       if (isMiniMaxError(error)) {
         return errorResponse(
           502,

@@ -58,22 +58,33 @@ function buildMiniMaxRequestBody(
   };
 }
 
+const MINIMAX_TIMEOUT_MS = 50_000;
+
 async function callMiniMax(
   systemPrompt: string,
   messages: AnthropicMessage[],
   stream: boolean,
 ): Promise<Response> {
-  const minimaxResponse = await fetch(
-    "https://api.minimax.io/anthropic/v1/messages",
-    {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${getMiniMaxToken()}`,
-        "Content-Type": "application/json",
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), MINIMAX_TIMEOUT_MS);
+
+  let minimaxResponse: Response;
+  try {
+    minimaxResponse = await fetch(
+      "https://api.minimax.io/anthropic/v1/messages",
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${getMiniMaxToken()}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(buildMiniMaxRequestBody(systemPrompt, messages, stream)),
+        signal: controller.signal,
       },
-      body: JSON.stringify(buildMiniMaxRequestBody(systemPrompt, messages, stream)),
-    },
-  );
+    );
+  } finally {
+    clearTimeout(timeout);
+  }
 
   if (!minimaxResponse.ok) {
     const errorText = await minimaxResponse.text();
