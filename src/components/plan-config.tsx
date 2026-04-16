@@ -93,7 +93,6 @@ export default function PlanConfig({ transcriptData, onConfigured, onBack }: Pla
           value={major}
           onChange={(v) => { setMajor(v); setErrors({}); }}
           placeholder="e.g., Computer Science"
-          autoFocus
         />
         {errors.major && <p className="text-sm text-red-600 dark:text-red-400">{errors.major}</p>}
       </div>
