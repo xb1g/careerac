@@ -1,4 +1,5 @@
 import { createClient } from "@/utils/supabase/server";
+import { syncTranscriptToUserCourses } from "@/utils/sync-transcript-courses";
 import type { Database } from "@/types/database";
 
 export async function POST(req: Request) {
@@ -42,6 +43,19 @@ export async function POST(req: Request) {
     if (error || !transcript) {
       console.error("Manual transcript insert error:", error);
       return Response.json({ error: "Failed to save manual transcript" }, { status: 500 });
+    }
+
+    // After transcript is saved, sync courses to user_courses (best-effort)
+    const courses = parsed_data?.courses ?? [];
+    if (courses.length > 0) {
+      try {
+        const syncResult = await syncTranscriptToUserCourses(supabase, user.id, courses);
+        if (syncResult.errors.length > 0) {
+          console.warn("Manual transcript sync partial errors:", syncResult.errors);
+        }
+      } catch (syncErr) {
+        console.error("Manual transcript sync failed (non-blocking):", syncErr);
+      }
     }
 
     return Response.json({

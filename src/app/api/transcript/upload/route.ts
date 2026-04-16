@@ -1,6 +1,7 @@
 import { createClient } from "@/utils/supabase/server";
 import { parseTranscriptText } from "@/utils/transcript-parser";
 import { parseTranscriptWithAI } from "@/utils/transcript-ai-parser";
+import { syncTranscriptToUserCourses } from "@/utils/sync-transcript-courses";
 import type { Database } from "@/types/database";
 
 // Polyfill browser globals for pdfjs-dist in Node.js environment
@@ -175,6 +176,18 @@ export async function POST(req: Request) {
       }
 
       return Response.json({ error: "Failed to save transcript record" }, { status: 500 });
+    }
+
+    // After transcript is saved to DB, sync courses to user_courses (best-effort)
+    if (parsedData && parsedData.courses.length > 0) {
+      try {
+        const syncResult = await syncTranscriptToUserCourses(supabase, user.id, parsedData.courses);
+        if (syncResult.errors.length > 0) {
+          console.warn("Transcript course sync partial errors:", syncResult.errors);
+        }
+      } catch (syncErr) {
+        console.error("Transcript course sync failed (non-blocking):", syncErr);
+      }
     }
 
     return Response.json({
