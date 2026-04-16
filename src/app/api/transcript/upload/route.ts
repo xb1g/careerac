@@ -179,9 +179,11 @@ export async function POST(req: Request) {
     }
 
     // After transcript is saved to DB, sync courses to user_courses (best-effort)
+    let sync: { created: number; updated: number } | null = null;
     if (parsedData && parsedData.courses.length > 0) {
       try {
         const syncResult = await syncTranscriptToUserCourses(supabase, user.id, parsedData.courses);
+        sync = { created: syncResult.created, updated: syncResult.updated };
         if (syncResult.errors.length > 0) {
           console.warn("Transcript course sync partial errors:", syncResult.errors);
         }
@@ -196,6 +198,7 @@ export async function POST(req: Request) {
       parseStatus,
       parseError,
       parseMethod,
+      sync,
     });
   } catch (error) {
     console.error("Transcript upload error:", error);

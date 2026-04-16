@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import CourseForm, { type CourseFormData } from "./course-form";
 import { notifyCockpitRefresh } from "@/lib/cockpit-events";
 
@@ -37,11 +37,73 @@ export default function CoursesClient({ initialCourses }: CoursesClientProps) {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [filter, setFilter] = useState<"all" | "completed" | "in_progress" | "planned">("all");
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const [uploadSummary, setUploadSummary] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const refreshCourses = useCallback(async () => {
     const res = await fetch("/api/user-courses");
     if (res.ok) setCourses(await res.json());
   }, []);
+
+  const uploadTranscript = useCallback(async (file: File) => {
+    setUploadError(null);
+    setUploadSummary(null);
+
+    if (!file.type.includes("pdf")) {
+      setUploadError("Please upload a PDF file.");
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      setUploadError("File must be under 5MB.");
+      return;
+    }
+
+    setUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      const res = await fetch("/api/transcript/upload", { method: "POST", body: formData });
+      const data = await res.json();
+
+      if (!res.ok) {
+        setUploadError(data.error || "Upload failed.");
+        return;
+      }
+      if (data.parseStatus === "failed") {
+        setUploadError(data.parseError || "Could not parse transcript.");
+        return;
+      }
+
+      await refreshCourses();
+      notifyCockpitRefresh();
+
+      const created = data.sync?.created ?? 0;
+      const updated = data.sync?.updated ?? 0;
+      setUploadSummary(
+        created + updated === 0
+          ? "Transcript processed, but no new courses were added."
+          : `${created} added, ${updated} updated from your transcript.`,
+      );
+    } catch {
+      setUploadError("Failed to upload. Please try again.");
+    } finally {
+      setUploading(false);
+    }
+  }, [refreshCourses]);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) void uploadTranscript(file);
+    e.target.value = "";
+  };
+
+  const handleUploadClick = () => {
+    setUploadError(null);
+    setUploadSummary(null);
+    fileInputRef.current?.click();
+  };
 
   const handleAdd = async (data: CourseFormData) => {
     setLoading(true);
@@ -123,14 +185,64 @@ export default function CoursesClient({ initialCourses }: CoursesClientProps) {
             </button>
           ))}
         </div>
-        <button
-          onClick={() => { setShowAdd(true); setEditingId(null); }}
-          className="cursor-pointer px-4 py-2 text-sm font-medium text-white bg-zinc-900 dark:bg-white dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-zinc-100 rounded-xl transition-all duration-200 flex items-center gap-2 shadow-sm"
-        >
-          <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" /></svg>
-          Add Course
-        </button>
+        <div className="flex gap-2">
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".pdf"
+            onChange={handleFileChange}
+            className="hidden"
+          />
+          <button
+            onClick={handleUploadClick}
+            disabled={uploading}
+            className="cursor-pointer px-4 py-2 text-sm font-medium text-zinc-700 dark:text-zinc-200 bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-800 rounded-xl transition-all duration-200 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {uploading ? (
+              <>
+                <div className="w-3.5 h-3.5 border-2 border-zinc-400 border-t-transparent rounded-full animate-spin" />
+                Uploading...
+              </>
+            ) : (
+              <>
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" /></svg>
+                Upload Transcript
+              </>
+            )}
+          </button>
+          <button
+            onClick={() => { setShowAdd(true); setEditingId(null); }}
+            className="cursor-pointer px-4 py-2 text-sm font-medium text-white bg-zinc-900 dark:bg-white dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-zinc-100 rounded-xl transition-all duration-200 flex items-center gap-2 shadow-sm"
+          >
+            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" /></svg>
+            Add Course
+          </button>
+        </div>
       </div>
+
+      {uploadError && (
+        <div className="rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 px-4 py-2.5 text-sm text-red-800 dark:text-red-200 flex items-center justify-between">
+          <span>{uploadError}</span>
+          <button
+            onClick={() => setUploadError(null)}
+            className="text-red-700 dark:text-red-300 hover:text-red-900 dark:hover:text-red-100 cursor-pointer text-xs font-medium"
+          >
+            Dismiss
+          </button>
+        </div>
+      )}
+
+      {uploadSummary && (
+        <div className="rounded-xl bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 px-4 py-2.5 text-sm text-green-800 dark:text-green-200 flex items-center justify-between">
+          <span>{uploadSummary}</span>
+          <button
+            onClick={() => setUploadSummary(null)}
+            className="text-green-700 dark:text-green-300 hover:text-green-900 dark:hover:text-green-100 cursor-pointer text-xs font-medium"
+          >
+            Dismiss
+          </button>
+        </div>
+      )}
 
       {/* Add form */}
       {showAdd && (
