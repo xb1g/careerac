@@ -3,6 +3,7 @@
 import { useState } from "react";
 import type { TranscriptData } from "@/types/transcript";
 import { MajorAutocomplete } from "./major-autocomplete";
+import { SchoolAutocomplete } from "./school-autocomplete";
 
 export interface PlanConfiguration {
   maxCreditsPerSemester: number;
@@ -179,12 +180,10 @@ export default function PlanConfig({ transcriptData, onConfigured, onBack }: Pla
               <span className="text-sm font-medium text-zinc-900 dark:text-white">Yes, I have a target school</span>
               {hasTargetSchool && (
                 <div className="mt-2">
-                  <input
-                    type="text"
+                  <SchoolAutocomplete
                     value={targetSchool}
-                    onChange={(e) => setTargetSchool(e.target.value)}
+                    onChange={setTargetSchool}
                     placeholder="e.g., UCLA, UC Berkeley, San Jose State"
-                    className="w-full max-w-md rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
                   />
                   {errors.targetSchool && <p className="text-sm text-red-600 dark:text-red-400 mt-1">{errors.targetSchool}</p>}
                 </div>
