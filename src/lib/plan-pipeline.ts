@@ -143,6 +143,7 @@ export class PlanGenerationPipeline {
 
     const systemPrompt = buildSystemPrompt({
       articulationContext: articulationResult.context,
+      availableMajors: articulationResult.availableMajors,
       prerequisiteData,
       playbookContext,
       transcriptData,

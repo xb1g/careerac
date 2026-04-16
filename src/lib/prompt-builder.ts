@@ -10,6 +10,7 @@ import { PLAN_JSON_SCHEMA, NO_DATA_JSON_SCHEMA } from "@/lib/plan-pipeline";
 
 export interface PromptInputs {
   articulationContext: string;
+  availableMajors?: string[];
   prerequisiteData: string;
   playbookContext: string;
   transcriptData?: TranscriptData;
@@ -26,6 +27,7 @@ export interface PromptInputs {
 export function buildSystemPrompt(inputs: PromptInputs): string {
   const {
     articulationContext,
+    availableMajors = [],
     prerequisiteData,
     playbookContext,
     transcriptData,
@@ -104,11 +106,14 @@ ${noDataExample}
 \`\`\`
 4. **Prerequisite ordering**: NEVER schedule a course before its prerequisites. If CS 2 requires CS 1, then CS 1 must appear in an earlier semester than CS 2.
 5. **Include all fields**: Every course must have code, title, and units. Include transfer equivalency when available.
+6. **Be precise about supported majors**: If a student asks for a major that is not in the articulation matches above, do NOT claim CareerAC only supports a narrower set unless that limitation is explicitly stated in the available major list below.
 
 ## AVAILABLE ARTICULATION DATA
 The following are the articulation agreements in our database. Use ONLY these courses when generating plans:
 
 ${articulationContext}
+
+${buildAvailableMajorsSection(availableMajors)}
 
 ## PREREQUISITE RELATIONSHIPS
 ${prerequisiteData || "No prerequisite data is currently available. Use your knowledge of typical course sequences."}
@@ -168,6 +173,19 @@ ${inProgressList || "None"}
 Total completed units: ${transcriptData.totalUnitsCompleted}${transcriptData.gpa !== undefined ? ` | GPA: ${transcriptData.gpa}` : ""}
 
 IMPORTANT: Do NOT include any completed courses in the generated plan. Only schedule remaining required courses that the student still needs to take. In-progress courses should only be included if they might need to be retaken.`;
+}
+
+function buildAvailableMajorsSection(availableMajors: string[]): string {
+  if (availableMajors.length === 0) {
+    return "";
+  }
+
+  // Make the supported-major catalog explicit so the model does not treat the
+  // current articulation slice as the full product catalog.
+  return `## AVAILABLE MAJORS IN CAREERAC
+${availableMajors.join(", ")}
+
+If a student asks for a major that is not in the articulation matches above, tell them you do not yet have specific articulation data for that major. Then reference this available major list accurately and offer general transfer guidance when helpful.`;
 }
 
 function buildMaxCreditsSection(maxCreditsPerSemester: number): string {

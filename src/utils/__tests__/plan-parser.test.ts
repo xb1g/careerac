@@ -224,6 +224,7 @@ Let me know if you have any questions!`;
   describe("buildSystemPrompt", () => {
     const defaults = {
       articulationContext: "",
+      availableMajors: [] as string[],
       prerequisiteData: "",
       playbookContext: "",
     };
@@ -246,6 +247,25 @@ Let me know if you have any questions!`;
 
       expect(prompt).toContain("PREREQUISITE RELATIONSHIPS");
       expect(prompt).toContain("CS 2 requires CS 1");
+    });
+
+    it("includes available majors guidance for unsupported-major requests", () => {
+      const prompt = buildSystemPrompt({
+        ...defaults,
+        availableMajors: [
+          "Biology",
+          "Business Administration",
+          "Computer Science",
+        ],
+      });
+
+      expect(prompt).toContain("AVAILABLE MAJORS IN CAREERAC");
+      expect(prompt).toContain(
+        "Biology, Business Administration, Computer Science",
+      );
+      expect(prompt).toContain(
+        "If a student asks for a major that is not in the articulation matches above",
+      );
     });
 
     it("includes playbook context when provided", () => {

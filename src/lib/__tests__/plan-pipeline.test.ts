@@ -52,7 +52,10 @@ describe("PlanGenerationPipeline.generate", () => {
   beforeEach(() => {
     vi.clearAllMocks();
 
-    mockGetArticulationContext.mockResolvedValue({ context: "articulation" });
+    mockGetArticulationContext.mockResolvedValue({
+      context: "articulation",
+      availableMajors: ["Biology", "Computer Science"],
+    });
     mockGetPrerequisiteContext.mockResolvedValue("prerequisites");
     mockGetVerifiedPlaybooksContext.mockResolvedValue("playbooks");
     mockBuildRecoveryContext.mockResolvedValue("recovery");
@@ -121,6 +124,7 @@ describe("PlanGenerationPipeline.generate", () => {
     expect(mockBuildSystemPrompt).toHaveBeenCalledWith(
       expect.objectContaining({
         articulationContext: "articulation",
+        availableMajors: ["Biology", "Computer Science"],
         prerequisiteData: "prerequisites",
         playbookContext: "playbooks",
         maxCreditsPerSemester: 12,

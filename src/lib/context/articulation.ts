@@ -11,12 +11,14 @@ type ArticulationRow =
   Database["public"]["Tables"]["articulation_agreements"]["Row"];
 type CourseRow = Database["public"]["Tables"]["courses"]["Row"];
 type InstitutionRow = Database["public"]["Tables"]["institutions"]["Row"];
+type MajorRow = Database["public"]["Tables"]["majors"]["Row"];
 type PrerequisiteRow = Database["public"]["Tables"]["prerequisites"]["Row"];
 
 export interface ArticulationContextResult {
   context: string;
   exactMatchCount: number;
   institutionMatchCount: number;
+  availableMajors: string[];
 }
 
 // ---------------------------------------------------------------------------
@@ -67,6 +69,24 @@ function isMajorMatch(
   return overlap >= requiredOverlap && overlap > 0;
 }
 
+function normalizeAvailableMajors(
+  majors: Array<Pick<MajorRow, "name">> | null | undefined,
+): string[] {
+  return Array.from(
+    new Set(
+      (majors || [])
+        .map((major) => major.name?.trim())
+        .filter((name): name is string => Boolean(name)),
+    ),
+  ).sort((left, right) => left.localeCompare(right));
+}
+
+function buildAvailableMajorsLine(availableMajors: string[]): string {
+  return availableMajors.length > 0
+    ? `Available majors in CareerAC: ${availableMajors.join(", ")}`
+    : "Available majors in CareerAC: unavailable right now.";
+}
+
 // ---------------------------------------------------------------------------
 // Public functions
 // ---------------------------------------------------------------------------
@@ -99,15 +119,28 @@ export async function getArticulationContext(
       );
     }
 
-    const { data: scopedAgreements, error } =
-      await query.returns<ArticulationRow[]>();
+    // Keep the full major catalog separate from the scoped articulation slice so
+    // the AI does not incorrectly infer that only the currently matched majors exist.
+    const [{ data: scopedAgreements, error }, { data: majorRows }] =
+      await Promise.all([
+        query.returns<ArticulationRow[]>(),
+        supabase
+          .from("majors")
+          .select("name")
+          .order("name", { ascending: true })
+          .returns<Pick<MajorRow, "name">[]>(),
+      ]);
+
+    const availableMajors = normalizeAvailableMajors(majorRows);
+    const availableMajorsLine = buildAvailableMajorsLine(availableMajors);
 
     if (error || !scopedAgreements) {
       console.error("Error fetching articulation data:", error);
       return {
-        context: "Articulation data is currently unavailable.",
+        context: `Articulation data is currently unavailable.\n${availableMajorsLine}`,
         exactMatchCount: 0,
         institutionMatchCount: 0,
+        availableMajors,
       };
     }
 
@@ -213,18 +246,21 @@ export async function getArticulationContext(
     const contextPrefix = [
       `Exact path major matches: ${exactMatchCount}`,
       `Institution-scoped matches: ${institutionMatchCount}`,
+      availableMajorsLine,
     ].join("\n");
 
     return {
       context: `${contextPrefix}\n\n${formatted || "No articulation agreements found for the current filters."}`,
       exactMatchCount,
       institutionMatchCount,
+      availableMajors,
     };
   } catch {
     return {
       context: "Articulation data is currently unavailable.",
       exactMatchCount: 0,
       institutionMatchCount: 0,
+      availableMajors: [],
     };
   }
 }
