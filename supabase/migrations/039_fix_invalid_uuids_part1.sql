@@ -10,37 +10,37 @@
 -- ============================================================
 do $$
 declare
-  smc_chem11 uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000001' and code = 'CHEM 11'), gen_random_uuid());
-  smc_chem12 uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000001' and code = 'CHEM 12'), gen_random_uuid());
-  smc_chem13 uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000001' and code = 'CHEM 13'), gen_random_uuid());
-  smc_chem21 uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000001' and code = 'CHEM 21'), gen_random_uuid());
-  smc_chem22 uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000001' and code = 'CHEM 22'), gen_random_uuid());
-  smc_chem23 uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000001' and code = 'CHEM 23'), gen_random_uuid());
-  smc_phys21 uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000001' and code = 'PHYS 21'), gen_random_uuid());
-  smc_phys22 uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000001' and code = 'PHYS 22'), gen_random_uuid());
-  smc_phys23 uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000001' and code = 'PHYS 23'), gen_random_uuid());
-  smc_math28 uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000001' and code = 'MATH 28'), gen_random_uuid());
-  smc_math29 uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000001' and code = 'MATH 29'), gen_random_uuid());
-  smc_math30 uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000001' and code = 'MATH 30'), gen_random_uuid());
-  smc_math32 uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000001' and code = 'MATH 32'), gen_random_uuid());
-  smc_math33 uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000001' and code = 'MATH 33'), gen_random_uuid());
-  smc_math34 uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000001' and code = 'MATH 34'), gen_random_uuid());
+  smc_chem11 uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000001' and code = 'CHEM 11'), gen_random_uuid()) on conflict do nothing;
+  smc_chem12 uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000001' and code = 'CHEM 12'), gen_random_uuid()) on conflict do nothing;
+  smc_chem13 uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000001' and code = 'CHEM 13'), gen_random_uuid()) on conflict do nothing;
+  smc_chem21 uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000001' and code = 'CHEM 21'), gen_random_uuid()) on conflict do nothing;
+  smc_chem22 uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000001' and code = 'CHEM 22'), gen_random_uuid()) on conflict do nothing;
+  smc_chem23 uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000001' and code = 'CHEM 23'), gen_random_uuid()) on conflict do nothing;
+  smc_phys21 uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000001' and code = 'PHYS 21'), gen_random_uuid()) on conflict do nothing;
+  smc_phys22 uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000001' and code = 'PHYS 22'), gen_random_uuid()) on conflict do nothing;
+  smc_phys23 uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000001' and code = 'PHYS 23'), gen_random_uuid()) on conflict do nothing;
+  smc_math28 uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000001' and code = 'MATH 28'), gen_random_uuid()) on conflict do nothing;
+  smc_math29 uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000001' and code = 'MATH 29'), gen_random_uuid()) on conflict do nothing;
+  smc_math30 uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000001' and code = 'MATH 30'), gen_random_uuid()) on conflict do nothing;
+  smc_math32 uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000001' and code = 'MATH 32'), gen_random_uuid()) on conflict do nothing;
+  smc_math33 uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000001' and code = 'MATH 33'), gen_random_uuid()) on conflict do nothing;
+  smc_math34 uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000001' and code = 'MATH 34'), gen_random_uuid()) on conflict do nothing;
 
-  ucla_chem20a uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000001' and code = 'CHEM 20A'), gen_random_uuid());
-  ucla_chem20b uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000001' and code = 'CHEM 20B'), gen_random_uuid());
-  ucla_chem20c uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000001' and code = 'CHEM 20C'), gen_random_uuid());
-  ucla_chem30a uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000001' and code = 'CHEM 30A'), gen_random_uuid());
-  ucla_chem30b uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000001' and code = 'CHEM 30B'), gen_random_uuid());
-  ucla_chem30c uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000001' and code = 'CHEM 30C'), gen_random_uuid());
-  ucla_phys1a uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000001' and code = 'PHYSICS 1A'), gen_random_uuid());
-  ucla_phys1b uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000001' and code = 'PHYSICS 1B'), gen_random_uuid());
-  ucla_phys1c uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000001' and code = 'PHYSICS 1C'), gen_random_uuid());
-  ucla_math31a uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000001' and code = 'MATH 31A'), gen_random_uuid());
-  ucla_math31b uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000001' and code = 'MATH 31B'), gen_random_uuid());
-  ucla_math31c uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000001' and code = 'MATH 31C'), gen_random_uuid());
-  ucla_math32a uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000001' and code = 'MATH 32A'), gen_random_uuid());
-  ucla_math33a uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000001' and code = 'MATH 33A'), gen_random_uuid());
-  ucla_math33b uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000001' and code = 'MATH 33B'), gen_random_uuid());
+  ucla_chem20a uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000001' and code = 'CHEM 20A'), gen_random_uuid()) on conflict do nothing;
+  ucla_chem20b uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000001' and code = 'CHEM 20B'), gen_random_uuid()) on conflict do nothing;
+  ucla_chem20c uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000001' and code = 'CHEM 20C'), gen_random_uuid()) on conflict do nothing;
+  ucla_chem30a uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000001' and code = 'CHEM 30A'), gen_random_uuid()) on conflict do nothing;
+  ucla_chem30b uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000001' and code = 'CHEM 30B'), gen_random_uuid()) on conflict do nothing;
+  ucla_chem30c uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000001' and code = 'CHEM 30C'), gen_random_uuid()) on conflict do nothing;
+  ucla_phys1a uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000001' and code = 'PHYSICS 1A'), gen_random_uuid()) on conflict do nothing;
+  ucla_phys1b uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000001' and code = 'PHYSICS 1B'), gen_random_uuid()) on conflict do nothing;
+  ucla_phys1c uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000001' and code = 'PHYSICS 1C'), gen_random_uuid()) on conflict do nothing;
+  ucla_math31a uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000001' and code = 'MATH 31A'), gen_random_uuid()) on conflict do nothing;
+  ucla_math31b uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000001' and code = 'MATH 31B'), gen_random_uuid()) on conflict do nothing;
+  ucla_math31c uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000001' and code = 'MATH 31C'), gen_random_uuid()) on conflict do nothing;
+  ucla_math32a uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000001' and code = 'MATH 32A'), gen_random_uuid()) on conflict do nothing;
+  ucla_math33a uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000001' and code = 'MATH 33A'), gen_random_uuid()) on conflict do nothing;
+  ucla_math33b uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000001' and code = 'MATH 33B'), gen_random_uuid()) on conflict do nothing;
 begin
   insert into courses (id, institution_id, code, title, units, description) values
     (smc_chem11, 'a0000000-0000-0000-0000-000000000001', 'CHEM 11', 'General Chemistry I', 5, 'Introductory chemical principles with laboratory'),
@@ -104,13 +104,13 @@ begin
     (smc_math30, ucla_math31c, 'a0000000-0000-0000-0000-000000000001', 'b0000000-0000-0000-0000-000000000001', 'Chemistry', 2024),
     (smc_math32, ucla_math31c, 'a0000000-0000-0000-0000-000000000001', 'b0000000-0000-0000-0000-000000000001', 'Chemistry', 2024),
     (smc_math33, ucla_math32a, 'a0000000-0000-0000-0000-000000000001', 'b0000000-0000-0000-0000-000000000001', 'Chemistry', 2024),
-    (smc_math34, ucla_math33a, 'a0000000-0000-0000-0000-000000000001', 'b0000000-0000-0000-0000-000000000001', 'Chemistry', 2024);
+    (smc_math34, ucla_math33a, 'a0000000-0000-0000-0000-000000000001', 'b0000000-0000-0000-0000-000000000001', 'Chemistry', 2024) on conflict do nothing;
 
   delete from prerequisites
   where course_id in (smc_chem12, smc_chem13, smc_chem21, smc_chem22, smc_chem23, smc_phys21, smc_phys22, smc_phys23, smc_math28, smc_math29, smc_math30, smc_math32, smc_math33, smc_math34,
                       ucla_chem20b, ucla_chem20c, ucla_chem30a, ucla_chem30b, ucla_chem30c, ucla_phys1a, ucla_phys1b, ucla_phys1c, ucla_math31b, ucla_math31c, ucla_math32a, ucla_math33a, ucla_math33b)
      or prerequisite_course_id in (smc_chem11, smc_chem12, smc_chem13, smc_chem21, smc_chem22, smc_chem23, smc_phys21, smc_phys22, smc_phys23, smc_math28, smc_math29, smc_math30, smc_math32, smc_math33, smc_math34,
-                                  ucla_chem20a, ucla_chem20b, ucla_chem20c, ucla_chem30a, ucla_chem30b, ucla_chem30c, ucla_phys1a, ucla_phys1b, ucla_phys1c, ucla_math31a, ucla_math31b, ucla_math31c, ucla_math32a, ucla_math33a, ucla_math33b);
+                                  ucla_chem20a, ucla_chem20b, ucla_chem20c, ucla_chem30a, ucla_chem30b, ucla_chem30c, ucla_phys1a, ucla_phys1b, ucla_phys1c, ucla_math31a, ucla_math31b, ucla_math31c, ucla_math32a, ucla_math33a, ucla_math33b) on conflict do nothing;
 
   insert into prerequisites (course_id, prerequisite_course_id) values
     (smc_chem12, smc_chem11),
@@ -142,7 +142,7 @@ begin
     (ucla_math31c, ucla_math31b),
     (ucla_math32a, ucla_math31c),
     (ucla_math33a, ucla_math31c),
-    (ucla_math33b, ucla_math33a);
+    (ucla_math33b, ucla_math33a) on conflict do nothing;
 end $$;
 
 -- ============================================================
@@ -150,24 +150,24 @@ end $$;
 -- ============================================================
 do $$
 declare
-  deanza_math1a uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000002' and code = 'MATH 1A'), gen_random_uuid());
-  deanza_math1b uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000002' and code = 'MATH 1B'), gen_random_uuid());
-  deanza_math1c uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000002' and code = 'MATH 1C'), gen_random_uuid());
-  deanza_math22 uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000002' and code = 'MATH 22'), gen_random_uuid());
-  deanza_math23 uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000002' and code = 'MATH 23'), gen_random_uuid());
-  deanza_phys4a uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000002' and code = 'PHYS 4A'), gen_random_uuid());
-  deanza_phys4b uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000002' and code = 'PHYS 4B'), gen_random_uuid());
-  deanza_phys4c uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000002' and code = 'PHYS 4C'), gen_random_uuid());
-  deanza_phys4d uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000002' and code = 'PHYS 4D'), gen_random_uuid());
+  deanza_math1a uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000002' and code = 'MATH 1A'), gen_random_uuid()) on conflict do nothing;
+  deanza_math1b uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000002' and code = 'MATH 1B'), gen_random_uuid()) on conflict do nothing;
+  deanza_math1c uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000002' and code = 'MATH 1C'), gen_random_uuid()) on conflict do nothing;
+  deanza_math22 uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000002' and code = 'MATH 22'), gen_random_uuid()) on conflict do nothing;
+  deanza_math23 uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000002' and code = 'MATH 23'), gen_random_uuid()) on conflict do nothing;
+  deanza_phys4a uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000002' and code = 'PHYS 4A'), gen_random_uuid()) on conflict do nothing;
+  deanza_phys4b uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000002' and code = 'PHYS 4B'), gen_random_uuid()) on conflict do nothing;
+  deanza_phys4c uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000002' and code = 'PHYS 4C'), gen_random_uuid()) on conflict do nothing;
+  deanza_phys4d uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000002' and code = 'PHYS 4D'), gen_random_uuid()) on conflict do nothing;
 
-  berkeley_math1a uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000004' and code = 'MATH 1A'), gen_random_uuid());
-  berkeley_math1b uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000004' and code = 'MATH 1B'), gen_random_uuid());
-  berkeley_math53 uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000004' and code = 'MATH 53'), gen_random_uuid());
-  berkeley_math54 uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000004' and code = 'MATH 54'), gen_random_uuid());
-  berkeley_phys7a uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000004' and code = 'PHYSICS 7A'), gen_random_uuid());
-  berkeley_phys7b uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000004' and code = 'PHYSICS 7B'), gen_random_uuid());
-  berkeley_phys7c uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000004' and code = 'PHYSICS 7C'), gen_random_uuid());
-  berkeley_phys89 uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000004' and code = 'PHYSICS 89'), gen_random_uuid());
+  berkeley_math1a uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000004' and code = 'MATH 1A'), gen_random_uuid()) on conflict do nothing;
+  berkeley_math1b uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000004' and code = 'MATH 1B'), gen_random_uuid()) on conflict do nothing;
+  berkeley_math53 uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000004' and code = 'MATH 53'), gen_random_uuid()) on conflict do nothing;
+  berkeley_math54 uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000004' and code = 'MATH 54'), gen_random_uuid()) on conflict do nothing;
+  berkeley_phys7a uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000004' and code = 'PHYSICS 7A'), gen_random_uuid()) on conflict do nothing;
+  berkeley_phys7b uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000004' and code = 'PHYSICS 7B'), gen_random_uuid()) on conflict do nothing;
+  berkeley_phys7c uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000004' and code = 'PHYSICS 7C'), gen_random_uuid()) on conflict do nothing;
+  berkeley_phys89 uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000004' and code = 'PHYSICS 89'), gen_random_uuid()) on conflict do nothing;
 begin
   insert into courses (id, institution_id, code, title, units, description) values
     (deanza_math1a, 'a0000000-0000-0000-0000-000000000002', 'MATH 1A', 'Calculus I', 5, 'Differential and integral calculus of one variable'),
@@ -212,13 +212,13 @@ begin
     (deanza_phys4a, berkeley_phys7a, 'a0000000-0000-0000-0000-000000000002', 'b0000000-0000-0000-0000-000000000004', 'Physics', 2024),
     (deanza_phys4b, berkeley_phys7b, 'a0000000-0000-0000-0000-000000000002', 'b0000000-0000-0000-0000-000000000004', 'Physics', 2024),
     (deanza_phys4c, berkeley_phys7c, 'a0000000-0000-0000-0000-000000000002', 'b0000000-0000-0000-0000-000000000004', 'Physics', 2024),
-    (deanza_phys4d, berkeley_phys89, 'a0000000-0000-0000-0000-000000000002', 'b0000000-0000-0000-0000-000000000004', 'Physics', 2024);
+    (deanza_phys4d, berkeley_phys89, 'a0000000-0000-0000-0000-000000000002', 'b0000000-0000-0000-0000-000000000004', 'Physics', 2024) on conflict do nothing;
 
   delete from prerequisites
   where course_id in (deanza_math1a, deanza_math1b, deanza_math1c, deanza_math22, deanza_math23, deanza_phys4a, deanza_phys4b, deanza_phys4c, deanza_phys4d,
                       berkeley_math1a, berkeley_math1b, berkeley_math53, berkeley_math54, berkeley_phys7a, berkeley_phys7b, berkeley_phys7c, berkeley_phys89)
      or prerequisite_course_id in (deanza_math1a, deanza_math1b, deanza_math1c, deanza_math22, deanza_math23, deanza_phys4a, deanza_phys4b, deanza_phys4c, deanza_phys4d,
-                                  berkeley_math1a, berkeley_math1b, berkeley_math53, berkeley_math54, berkeley_phys7a, berkeley_phys7b, berkeley_phys7c, berkeley_phys89);
+                                  berkeley_math1a, berkeley_math1b, berkeley_math53, berkeley_math54, berkeley_phys7a, berkeley_phys7b, berkeley_phys7c, berkeley_phys89) on conflict do nothing;
 
   insert into prerequisites (course_id, prerequisite_course_id) values
     (deanza_math1b, deanza_math1a),
@@ -241,7 +241,7 @@ begin
     (berkeley_phys7c, berkeley_phys7b),
     (berkeley_phys7c, berkeley_math53),
     (berkeley_phys89, berkeley_phys7c),
-    (berkeley_phys89, berkeley_math54);
+    (berkeley_phys89, berkeley_math54) on conflict do nothing;
 end $$;
 
 -- ============================================================
@@ -249,17 +249,17 @@ end $$;
 -- ============================================================
 do $$
 declare
-  foothill_math1a uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000004' and code = 'MATH 1A'), gen_random_uuid());
-  foothill_math1b uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000004' and code = 'MATH 1B'), gen_random_uuid());
-  foothill_math1c uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000004' and code = 'MATH 1C'), gen_random_uuid());
-  foothill_math2a uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000004' and code = 'MATH 2A'), gen_random_uuid());
-  foothill_math2b uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000004' and code = 'MATH 2B'), gen_random_uuid());
+  foothill_math1a uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000004' and code = 'MATH 1A'), gen_random_uuid()) on conflict do nothing;
+  foothill_math1b uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000004' and code = 'MATH 1B'), gen_random_uuid()) on conflict do nothing;
+  foothill_math1c uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000004' and code = 'MATH 1C'), gen_random_uuid()) on conflict do nothing;
+  foothill_math2a uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000004' and code = 'MATH 2A'), gen_random_uuid()) on conflict do nothing;
+  foothill_math2b uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000004' and code = 'MATH 2B'), gen_random_uuid()) on conflict do nothing;
 
-  davis_math21a uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000007' and code = 'MAT 21A'), gen_random_uuid());
-  davis_math21b uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000007' and code = 'MAT 21B'), gen_random_uuid());
-  davis_math21c uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000007' and code = 'MAT 21C'), gen_random_uuid());
-  davis_math22a uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000007' and code = 'MAT 22A'), gen_random_uuid());
-  davis_math22b uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000007' and code = 'MAT 22B'), gen_random_uuid());
+  davis_math21a uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000007' and code = 'MAT 21A'), gen_random_uuid()) on conflict do nothing;
+  davis_math21b uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000007' and code = 'MAT 21B'), gen_random_uuid()) on conflict do nothing;
+  davis_math21c uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000007' and code = 'MAT 21C'), gen_random_uuid()) on conflict do nothing;
+  davis_math22a uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000007' and code = 'MAT 22A'), gen_random_uuid()) on conflict do nothing;
+  davis_math22b uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000007' and code = 'MAT 22B'), gen_random_uuid()) on conflict do nothing;
 begin
   insert into courses (id, institution_id, code, title, units, description) values
     (foothill_math1a, 'a0000000-0000-0000-0000-000000000004', 'MATH 1A', 'Single Variable Calculus I', 5, 'Limits, derivatives, and applications of differential calculus'),
@@ -293,11 +293,11 @@ begin
     (foothill_math1b, davis_math21b, 'a0000000-0000-0000-0000-000000000004', 'b0000000-0000-0000-0000-000000000007', 'Mathematics', 2024),
     (foothill_math1c, davis_math21c, 'a0000000-0000-0000-0000-000000000004', 'b0000000-0000-0000-0000-000000000007', 'Mathematics', 2024),
     (foothill_math2a, davis_math22a, 'a0000000-0000-0000-0000-000000000004', 'b0000000-0000-0000-0000-000000000007', 'Mathematics', 2024),
-    (foothill_math2b, davis_math22b, 'a0000000-0000-0000-0000-000000000004', 'b0000000-0000-0000-0000-000000000007', 'Mathematics', 2024);
+    (foothill_math2b, davis_math22b, 'a0000000-0000-0000-0000-000000000004', 'b0000000-0000-0000-0000-000000000007', 'Mathematics', 2024) on conflict do nothing;
 
   delete from prerequisites
   where course_id in (foothill_math1a, foothill_math1b, foothill_math1c, foothill_math2a, foothill_math2b, davis_math21a, davis_math21b, davis_math21c, davis_math22a, davis_math22b)
-     or prerequisite_course_id in (foothill_math1a, foothill_math1b, foothill_math1c, foothill_math2a, foothill_math2b, davis_math21a, davis_math21b, davis_math21c, davis_math22a, davis_math22b);
+     or prerequisite_course_id in (foothill_math1a, foothill_math1b, foothill_math1c, foothill_math2a, foothill_math2b, davis_math21a, davis_math21b, davis_math21c, davis_math22a, davis_math22b) on conflict do nothing;
 
   insert into prerequisites (course_id, prerequisite_course_id) values
     (foothill_math1b, foothill_math1a),
@@ -309,7 +309,7 @@ begin
     (davis_math21c, davis_math21b),
     (davis_math22a, davis_math21b),
     (davis_math22b, davis_math21c),
-    (davis_math22b, davis_math22a);
+    (davis_math22b, davis_math22a) on conflict do nothing;
 end $$;
 
 -- ============================================================
@@ -317,21 +317,21 @@ end $$;
 -- ============================================================
 do $$
 declare
-  pcc_data15 uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000003' and code = 'DATA 15'), gen_random_uuid());
-  pcc_math5a uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000003' and code = 'MATH 5A'), gen_random_uuid());
-  pcc_math5b uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000003' and code = 'MATH 5B'), gen_random_uuid());
-  pcc_math5c uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000003' and code = 'MATH 5C'), gen_random_uuid());
-  pcc_math3 uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000003' and code = 'MATH 3'), gen_random_uuid());
-  pcc_cis10 uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000003' and code = 'CIS 10'), gen_random_uuid());
-  pcc_cis11 uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000003' and code = 'CIS 11'), gen_random_uuid());
+  pcc_data15 uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000003' and code = 'DATA 15'), gen_random_uuid()) on conflict do nothing;
+  pcc_math5a uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000003' and code = 'MATH 5A'), gen_random_uuid()) on conflict do nothing;
+  pcc_math5b uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000003' and code = 'MATH 5B'), gen_random_uuid()) on conflict do nothing;
+  pcc_math5c uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000003' and code = 'MATH 5C'), gen_random_uuid()) on conflict do nothing;
+  pcc_math3 uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000003' and code = 'MATH 3'), gen_random_uuid()) on conflict do nothing;
+  pcc_cis10 uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000003' and code = 'CIS 10'), gen_random_uuid()) on conflict do nothing;
+  pcc_cis11 uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000003' and code = 'CIS 11'), gen_random_uuid()) on conflict do nothing;
 
-  berkeley_data8 uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000004' and code = 'DATA C8'), gen_random_uuid());
-  berkeley_math1a_ds uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000004' and code = 'MATH 1A'), gen_random_uuid());
-  berkeley_math1b_ds uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000004' and code = 'MATH 1B'), gen_random_uuid());
-  berkeley_math53_ds uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000004' and code = 'MATH 53'), gen_random_uuid());
-  berkeley_math54_ds uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000004' and code = 'MATH 54'), gen_random_uuid());
-  berkeley_cs61a uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000004' and code = 'COMPSCI 61A'), gen_random_uuid());
-  berkeley_cs61b uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000004' and code = 'COMPSCI 61B'), gen_random_uuid());
+  berkeley_data8 uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000004' and code = 'DATA C8'), gen_random_uuid()) on conflict do nothing;
+  berkeley_math1a_ds uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000004' and code = 'MATH 1A'), gen_random_uuid()) on conflict do nothing;
+  berkeley_math1b_ds uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000004' and code = 'MATH 1B'), gen_random_uuid()) on conflict do nothing;
+  berkeley_math53_ds uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000004' and code = 'MATH 53'), gen_random_uuid()) on conflict do nothing;
+  berkeley_math54_ds uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000004' and code = 'MATH 54'), gen_random_uuid()) on conflict do nothing;
+  berkeley_cs61a uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000004' and code = 'COMPSCI 61A'), gen_random_uuid()) on conflict do nothing;
+  berkeley_cs61b uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000004' and code = 'COMPSCI 61B'), gen_random_uuid()) on conflict do nothing;
 begin
   insert into courses (id, institution_id, code, title, units, description) values
     (pcc_data15, 'a0000000-0000-0000-0000-000000000003', 'DATA 15', 'Introduction to Data Science and Statistics', 4, 'Foundations of data analysis, statistics, and computational thinking'),
@@ -371,11 +371,11 @@ begin
     (pcc_math5c, berkeley_math53_ds, 'a0000000-0000-0000-0000-000000000003', 'b0000000-0000-0000-0000-000000000004', 'Data Science', 2024),
     (pcc_math3, berkeley_math54_ds, 'a0000000-0000-0000-0000-000000000003', 'b0000000-0000-0000-0000-000000000004', 'Data Science', 2024),
     (pcc_cis10, berkeley_cs61a, 'a0000000-0000-0000-0000-000000000003', 'b0000000-0000-0000-0000-000000000004', 'Data Science', 2024),
-    (pcc_cis11, berkeley_cs61b, 'a0000000-0000-0000-0000-000000000003', 'b0000000-0000-0000-0000-000000000004', 'Data Science', 2024);
+    (pcc_cis11, berkeley_cs61b, 'a0000000-0000-0000-0000-000000000003', 'b0000000-0000-0000-0000-000000000004', 'Data Science', 2024) on conflict do nothing;
 
   delete from prerequisites
   where course_id in (pcc_data15, pcc_math5a, pcc_math5b, pcc_math5c, pcc_math3, pcc_cis10, pcc_cis11, berkeley_data8, berkeley_math1a_ds, berkeley_math1b_ds, berkeley_math53_ds, berkeley_math54_ds, berkeley_cs61a, berkeley_cs61b)
-     or prerequisite_course_id in (pcc_data15, pcc_math5a, pcc_math5b, pcc_math5c, pcc_math3, pcc_cis10, pcc_cis11, berkeley_data8, berkeley_math1a_ds, berkeley_math1b_ds, berkeley_math53_ds, berkeley_math54_ds, berkeley_cs61a, berkeley_cs61b);
+     or prerequisite_course_id in (pcc_data15, pcc_math5a, pcc_math5b, pcc_math5c, pcc_math3, pcc_cis10, pcc_cis11, berkeley_data8, berkeley_math1a_ds, berkeley_math1b_ds, berkeley_math53_ds, berkeley_math54_ds, berkeley_cs61a, berkeley_cs61b) on conflict do nothing;
 
   insert into prerequisites (course_id, prerequisite_course_id) values
     (pcc_math5b, pcc_math5a),
@@ -384,7 +384,7 @@ begin
     (berkeley_math1b_ds, berkeley_math1a_ds),
     (berkeley_math53_ds, berkeley_math1b_ds),
     (berkeley_math54_ds, berkeley_math1b_ds),
-    (berkeley_cs61b, berkeley_cs61a);
+    (berkeley_cs61b, berkeley_cs61a) on conflict do nothing;
 end $$;
 
 -- ============================================================
@@ -392,29 +392,29 @@ end $$;
 -- ============================================================
 do $$
 declare
-  lbcc_math1a uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000006' and code = 'MATH 1A'), gen_random_uuid());
-  lbcc_math1b uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000006' and code = 'MATH 1B'), gen_random_uuid());
-  lbcc_phys2a uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000006' and code = 'PHYS 2A'), gen_random_uuid());
-  lbcc_phys2b uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000006' and code = 'PHYS 2B'), gen_random_uuid());
-  lbcc_bio1 uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000006' and code = 'BIO 1'), gen_random_uuid());
-  lbcc_bio2 uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000006' and code = 'BIO 2'), gen_random_uuid());
-  lbcc_chem1a uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000006' and code = 'CHEM 1A'), gen_random_uuid());
-  lbcc_chem1b uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000006' and code = 'CHEM 1B'), gen_random_uuid());
-  lbcc_chem2a uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000006' and code = 'CHEM 2A'), gen_random_uuid());
-  lbcc_stat1 uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000006' and code = 'STAT 1'), gen_random_uuid());
-  lbcc_econ1 uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000006' and code = 'ECON 1'), gen_random_uuid());
+  lbcc_math1a uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000006' and code = 'MATH 1A'), gen_random_uuid()) on conflict do nothing;
+  lbcc_math1b uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000006' and code = 'MATH 1B'), gen_random_uuid()) on conflict do nothing;
+  lbcc_phys2a uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000006' and code = 'PHYS 2A'), gen_random_uuid()) on conflict do nothing;
+  lbcc_phys2b uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000006' and code = 'PHYS 2B'), gen_random_uuid()) on conflict do nothing;
+  lbcc_bio1 uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000006' and code = 'BIO 1'), gen_random_uuid()) on conflict do nothing;
+  lbcc_bio2 uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000006' and code = 'BIO 2'), gen_random_uuid()) on conflict do nothing;
+  lbcc_chem1a uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000006' and code = 'CHEM 1A'), gen_random_uuid()) on conflict do nothing;
+  lbcc_chem1b uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000006' and code = 'CHEM 1B'), gen_random_uuid()) on conflict do nothing;
+  lbcc_chem2a uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000006' and code = 'CHEM 2A'), gen_random_uuid()) on conflict do nothing;
+  lbcc_stat1 uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000006' and code = 'STAT 1'), gen_random_uuid()) on conflict do nothing;
+  lbcc_econ1 uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000006' and code = 'ECON 1'), gen_random_uuid()) on conflict do nothing;
 
-  ucsb_math3a uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'MATH 3A'), gen_random_uuid());
-  ucsb_math3b uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'MATH 3B'), gen_random_uuid());
-  ucsb_phys6a uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'PHYS 6A'), gen_random_uuid());
-  ucsb_phys6b uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'PHYS 6B'), gen_random_uuid());
-  ucsb_biol1a uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'BIOL 1A'), gen_random_uuid());
-  ucsb_biol1b uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'BIOL 1B'), gen_random_uuid());
-  ucsb_chem1a uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'CHEM 1A'), gen_random_uuid());
-  ucsb_chem1b uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'CHEM 1B'), gen_random_uuid());
-  ucsb_chem109a uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'CHEM 109A'), gen_random_uuid());
-  ucsb_pstat5a uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'PSTAT 5A'), gen_random_uuid());
-  ucsb_econ1 uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'ECON 1'), gen_random_uuid());
+  ucsb_math3a uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'MATH 3A'), gen_random_uuid()) on conflict do nothing;
+  ucsb_math3b uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'MATH 3B'), gen_random_uuid()) on conflict do nothing;
+  ucsb_phys6a uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'PHYS 6A'), gen_random_uuid()) on conflict do nothing;
+  ucsb_phys6b uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'PHYS 6B'), gen_random_uuid()) on conflict do nothing;
+  ucsb_biol1a uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'BIOL 1A'), gen_random_uuid()) on conflict do nothing;
+  ucsb_biol1b uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'BIOL 1B'), gen_random_uuid()) on conflict do nothing;
+  ucsb_chem1a uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'CHEM 1A'), gen_random_uuid()) on conflict do nothing;
+  ucsb_chem1b uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'CHEM 1B'), gen_random_uuid()) on conflict do nothing;
+  ucsb_chem109a uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'CHEM 109A'), gen_random_uuid()) on conflict do nothing;
+  ucsb_pstat5a uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'PSTAT 5A'), gen_random_uuid()) on conflict do nothing;
+  ucsb_econ1 uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'ECON 1'), gen_random_uuid()) on conflict do nothing;
 begin
   insert into courses (id, institution_id, code, title, units, description) values
     (lbcc_math1a, 'a0000000-0000-0000-0000-000000000006', 'MATH 1A', 'Calculus I', 5, 'Differential calculus for STEM majors'),
@@ -454,7 +454,7 @@ begin
   where course_id in (lbcc_math1a, lbcc_math1b, lbcc_phys2a, lbcc_phys2b, lbcc_bio1, lbcc_bio2, lbcc_chem1a, lbcc_chem1b, lbcc_chem2a, lbcc_stat1, lbcc_econ1,
                       ucsb_math3a, ucsb_math3b, ucsb_phys6a, ucsb_phys6b, ucsb_biol1a, ucsb_biol1b, ucsb_chem1a, ucsb_chem1b, ucsb_chem109a, ucsb_pstat5a, ucsb_econ1)
      or prerequisite_course_id in (lbcc_math1a, lbcc_math1b, lbcc_phys2a, lbcc_phys2b, lbcc_bio1, lbcc_bio2, lbcc_chem1a, lbcc_chem1b, lbcc_chem2a, lbcc_stat1, lbcc_econ1,
-                                  ucsb_math3a, ucsb_math3b, ucsb_phys6a, ucsb_phys6b, ucsb_biol1a, ucsb_biol1b, ucsb_chem1a, ucsb_chem1b, ucsb_chem109a, ucsb_pstat5a, ucsb_econ1);
+                                  ucsb_math3a, ucsb_math3b, ucsb_phys6a, ucsb_phys6b, ucsb_biol1a, ucsb_biol1b, ucsb_chem1a, ucsb_chem1b, ucsb_chem109a, ucsb_pstat5a, ucsb_econ1) on conflict do nothing;
 
   insert into prerequisites (course_id, prerequisite_course_id) values
     (lbcc_math1b, lbcc_math1a),
@@ -469,7 +469,7 @@ begin
     (ucsb_phys6b, ucsb_phys6a),
     (ucsb_biol1b, ucsb_biol1a),
     (ucsb_chem1b, ucsb_chem1a),
-    (ucsb_chem109a, ucsb_chem1b);
+    (ucsb_chem109a, ucsb_chem1b) on conflict do nothing;
 end $$;
 
 -- ============================================================
@@ -477,23 +477,23 @@ end $$;
 -- ============================================================
 do $$
 declare
-  pierce_biol3 uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000007' and code = 'BIOL 3'), gen_random_uuid());
-  pierce_biol4 uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000007' and code = 'BIOL 4'), gen_random_uuid());
-  pierce_chem101 uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000007' and code = 'CHEM 101'), gen_random_uuid());
-  pierce_chem102 uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000007' and code = 'CHEM 102'), gen_random_uuid());
-  pierce_math261 uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000007' and code = 'MATH 261'), gen_random_uuid());
-  pierce_math262 uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000007' and code = 'MATH 262'), gen_random_uuid());
-  pierce_chem211 uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000007' and code = 'CHEM 211'), gen_random_uuid());
-  pierce_chem212 uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000007' and code = 'CHEM 212'), gen_random_uuid());
+  pierce_biol3 uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000007' and code = 'BIOL 3'), gen_random_uuid()) on conflict do nothing;
+  pierce_biol4 uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000007' and code = 'BIOL 4'), gen_random_uuid()) on conflict do nothing;
+  pierce_chem101 uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000007' and code = 'CHEM 101'), gen_random_uuid()) on conflict do nothing;
+  pierce_chem102 uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000007' and code = 'CHEM 102'), gen_random_uuid()) on conflict do nothing;
+  pierce_math261 uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000007' and code = 'MATH 261'), gen_random_uuid()) on conflict do nothing;
+  pierce_math262 uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000007' and code = 'MATH 262'), gen_random_uuid()) on conflict do nothing;
+  pierce_chem211 uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000007' and code = 'CHEM 211'), gen_random_uuid()) on conflict do nothing;
+  pierce_chem212 uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000007' and code = 'CHEM 212'), gen_random_uuid()) on conflict do nothing;
 
-  ucsb_biol1a_bc uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'BIOL 1A'), gen_random_uuid());
-  ucsb_biol1b_bc uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'BIOL 1B'), gen_random_uuid());
-  ucsb_chem1a_bc uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'CHEM 1A'), gen_random_uuid());
-  ucsb_chem1b_bc uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'CHEM 1B'), gen_random_uuid());
-  ucsb_math3a_bc uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'MATH 3A'), gen_random_uuid());
-  ucsb_math3b_bc uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'MATH 3B'), gen_random_uuid());
-  ucsb_chem109a_bc uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'CHEM 109A'), gen_random_uuid());
-  ucsb_chem109b_bc uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'CHEM 109B'), gen_random_uuid());
+  ucsb_biol1a_bc uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'BIOL 1A'), gen_random_uuid()) on conflict do nothing;
+  ucsb_biol1b_bc uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'BIOL 1B'), gen_random_uuid()) on conflict do nothing;
+  ucsb_chem1a_bc uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'CHEM 1A'), gen_random_uuid()) on conflict do nothing;
+  ucsb_chem1b_bc uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'CHEM 1B'), gen_random_uuid()) on conflict do nothing;
+  ucsb_math3a_bc uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'MATH 3A'), gen_random_uuid()) on conflict do nothing;
+  ucsb_math3b_bc uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'MATH 3B'), gen_random_uuid()) on conflict do nothing;
+  ucsb_chem109a_bc uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'CHEM 109A'), gen_random_uuid()) on conflict do nothing;
+  ucsb_chem109b_bc uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'CHEM 109B'), gen_random_uuid()) on conflict do nothing;
 begin
   insert into courses (id, institution_id, code, title, units, description) values
     (pierce_biol3, 'a0000000-0000-0000-0000-000000000007', 'BIOL 3', 'General Biology I', 4, 'Cell biology, genetics, evolution, and laboratory work'),
@@ -536,13 +536,13 @@ begin
     (pierce_math261, ucsb_math3a_bc, 'a0000000-0000-0000-0000-000000000007', 'b0000000-0000-0000-0000-000000000006', 'Biochemistry', 2024),
     (pierce_math262, ucsb_math3b_bc, 'a0000000-0000-0000-0000-000000000007', 'b0000000-0000-0000-0000-000000000006', 'Biochemistry', 2024),
     (pierce_chem211, ucsb_chem109a_bc, 'a0000000-0000-0000-0000-000000000007', 'b0000000-0000-0000-0000-000000000006', 'Biochemistry', 2024),
-    (pierce_chem212, ucsb_chem109b_bc, 'a0000000-0000-0000-0000-000000000007', 'b0000000-0000-0000-0000-000000000006', 'Biochemistry', 2024);
+    (pierce_chem212, ucsb_chem109b_bc, 'a0000000-0000-0000-0000-000000000007', 'b0000000-0000-0000-0000-000000000006', 'Biochemistry', 2024) on conflict do nothing;
 
   delete from prerequisites
   where course_id in (pierce_biol3, pierce_biol4, pierce_chem101, pierce_chem102, pierce_math261, pierce_math262, pierce_chem211, pierce_chem212,
                       ucsb_biol1a_bc, ucsb_biol1b_bc, ucsb_chem1a_bc, ucsb_chem1b_bc, ucsb_math3a_bc, ucsb_math3b_bc, ucsb_chem109a_bc, ucsb_chem109b_bc)
      or prerequisite_course_id in (pierce_biol3, pierce_biol4, pierce_chem101, pierce_chem102, pierce_math261, pierce_math262, pierce_chem211, pierce_chem212,
-                                  ucsb_biol1a_bc, ucsb_biol1b_bc, ucsb_chem1a_bc, ucsb_chem1b_bc, ucsb_math3a_bc, ucsb_math3b_bc, ucsb_chem109a_bc, ucsb_chem109b_bc);
+                                  ucsb_biol1a_bc, ucsb_biol1b_bc, ucsb_chem1a_bc, ucsb_chem1b_bc, ucsb_math3a_bc, ucsb_math3b_bc, ucsb_chem109a_bc, ucsb_chem109b_bc) on conflict do nothing;
 
   insert into prerequisites (course_id, prerequisite_course_id) values
     (pierce_biol4, pierce_biol3),
@@ -554,7 +554,7 @@ begin
     (ucsb_chem1b_bc, ucsb_chem1a_bc),
     (ucsb_math3b_bc, ucsb_math3a_bc),
     (ucsb_chem109a_bc, ucsb_chem1b_bc),
-    (ucsb_chem109b_bc, ucsb_chem109a_bc);
+    (ucsb_chem109b_bc, ucsb_chem109a_bc) on conflict do nothing;
 end $$;
 
 -- ============================================================
@@ -562,29 +562,29 @@ end $$;
 -- ============================================================
 do $$
 declare
-  smc_bio1a uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000001' and code = 'BIO 1A'), gen_random_uuid());
-  smc_bio1b uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000001' and code = 'BIO 1B'), gen_random_uuid());
-  smc_bio1c uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000001' and code = 'BIO 1C'), gen_random_uuid());
-  smc_chem11_mb uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000001' and code = 'CHEM 11'), gen_random_uuid());
-  smc_chem12_mb uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000001' and code = 'CHEM 12'), gen_random_uuid());
-  smc_chem13_mb uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000001' and code = 'CHEM 13'), gen_random_uuid());
-  smc_math28_mb uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000001' and code = 'MATH 28'), gen_random_uuid());
-  smc_math29_mb uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000001' and code = 'MATH 29'), gen_random_uuid());
-  smc_chem21_mb uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000001' and code = 'CHEM 21'), gen_random_uuid());
-  smc_chem22_mb uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000001' and code = 'CHEM 22'), gen_random_uuid());
-  smc_chem23_mb uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000001' and code = 'CHEM 23'), gen_random_uuid());
+  smc_bio1a uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000001' and code = 'BIO 1A'), gen_random_uuid()) on conflict do nothing;
+  smc_bio1b uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000001' and code = 'BIO 1B'), gen_random_uuid()) on conflict do nothing;
+  smc_bio1c uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000001' and code = 'BIO 1C'), gen_random_uuid()) on conflict do nothing;
+  smc_chem11_mb uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000001' and code = 'CHEM 11'), gen_random_uuid()) on conflict do nothing;
+  smc_chem12_mb uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000001' and code = 'CHEM 12'), gen_random_uuid()) on conflict do nothing;
+  smc_chem13_mb uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000001' and code = 'CHEM 13'), gen_random_uuid()) on conflict do nothing;
+  smc_math28_mb uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000001' and code = 'MATH 28'), gen_random_uuid()) on conflict do nothing;
+  smc_math29_mb uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000001' and code = 'MATH 29'), gen_random_uuid()) on conflict do nothing;
+  smc_chem21_mb uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000001' and code = 'CHEM 21'), gen_random_uuid()) on conflict do nothing;
+  smc_chem22_mb uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000001' and code = 'CHEM 22'), gen_random_uuid()) on conflict do nothing;
+  smc_chem23_mb uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000001' and code = 'CHEM 23'), gen_random_uuid()) on conflict do nothing;
 
-  uci_bio93 uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'BIO SCI 93'), gen_random_uuid());
-  uci_bio94 uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'BIO SCI 94'), gen_random_uuid());
-  uci_bio95 uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'BIO SCI 95'), gen_random_uuid());
-  uci_chem1a uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'CHEM 1A'), gen_random_uuid());
-  uci_chem1b uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'CHEM 1B'), gen_random_uuid());
-  uci_chem1c uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'CHEM 1C'), gen_random_uuid());
-  uci_math2a uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'MATH 2A'), gen_random_uuid());
-  uci_math2b uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'MATH 2B'), gen_random_uuid());
-  uci_chem51a uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'CHEM 51A'), gen_random_uuid());
-  uci_chem51b uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'CHEM 51B'), gen_random_uuid());
-  uci_chem51c uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'CHEM 51C'), gen_random_uuid());
+  uci_bio93 uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'BIO SCI 93'), gen_random_uuid()) on conflict do nothing;
+  uci_bio94 uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'BIO SCI 94'), gen_random_uuid()) on conflict do nothing;
+  uci_bio95 uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'BIO SCI 95'), gen_random_uuid()) on conflict do nothing;
+  uci_chem1a uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'CHEM 1A'), gen_random_uuid()) on conflict do nothing;
+  uci_chem1b uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'CHEM 1B'), gen_random_uuid()) on conflict do nothing;
+  uci_chem1c uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'CHEM 1C'), gen_random_uuid()) on conflict do nothing;
+  uci_math2a uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'MATH 2A'), gen_random_uuid()) on conflict do nothing;
+  uci_math2b uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'MATH 2B'), gen_random_uuid()) on conflict do nothing;
+  uci_chem51a uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'CHEM 51A'), gen_random_uuid()) on conflict do nothing;
+  uci_chem51b uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'CHEM 51B'), gen_random_uuid()) on conflict do nothing;
+  uci_chem51c uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'CHEM 51C'), gen_random_uuid()) on conflict do nothing;
 begin
   insert into courses (id, institution_id, code, title, units, description) values
     (smc_bio1a, 'a0000000-0000-0000-0000-000000000001', 'BIO 1A', 'General Biology I with Lab', 4, 'Cell biology, molecular biology, genetics, and laboratory techniques'),
@@ -636,13 +636,13 @@ begin
     (smc_math29_mb, uci_math2b, 'a0000000-0000-0000-0000-000000000001', 'b0000000-0000-0000-0000-000000000006', 'Molecular Biology', 2024),
     (smc_chem21_mb, uci_chem51a, 'a0000000-0000-0000-0000-000000000001', 'b0000000-0000-0000-0000-000000000006', 'Molecular Biology', 2024),
     (smc_chem22_mb, uci_chem51b, 'a0000000-0000-0000-0000-000000000001', 'b0000000-0000-0000-0000-000000000006', 'Molecular Biology', 2024),
-    (smc_chem23_mb, uci_chem51c, 'a0000000-0000-0000-0000-000000000001', 'b0000000-0000-0000-0000-000000000006', 'Molecular Biology', 2024);
+    (smc_chem23_mb, uci_chem51c, 'a0000000-0000-0000-0000-000000000001', 'b0000000-0000-0000-0000-000000000006', 'Molecular Biology', 2024) on conflict do nothing;
 
   delete from prerequisites
   where course_id in (smc_bio1a, smc_bio1b, smc_bio1c, smc_chem11_mb, smc_chem12_mb, smc_chem13_mb, smc_math28_mb, smc_math29_mb, smc_chem21_mb, smc_chem22_mb, smc_chem23_mb,
                       uci_bio93, uci_bio94, uci_bio95, uci_chem1a, uci_chem1b, uci_chem1c, uci_math2a, uci_math2b, uci_chem51a, uci_chem51b, uci_chem51c)
      or prerequisite_course_id in (smc_bio1a, smc_bio1b, smc_bio1c, smc_chem11_mb, smc_chem12_mb, smc_chem13_mb, smc_math28_mb, smc_math29_mb, smc_chem21_mb, smc_chem22_mb, smc_chem23_mb,
-                                  uci_bio93, uci_bio94, uci_bio95, uci_chem1a, uci_chem1b, uci_chem1c, uci_math2a, uci_math2b, uci_chem51a, uci_chem51b, uci_chem51c);
+                                  uci_bio93, uci_bio94, uci_bio95, uci_chem1a, uci_chem1b, uci_chem1c, uci_math2a, uci_math2b, uci_chem51a, uci_chem51b, uci_chem51c) on conflict do nothing;
 
   insert into prerequisites (course_id, prerequisite_course_id) values
     (smc_bio1b, smc_bio1a),
@@ -658,7 +658,7 @@ begin
     (uci_chem1c, uci_chem1b),
     (uci_math2b, uci_math2a),
     (uci_chem51b, uci_chem51a),
-    (uci_chem51c, uci_chem51b);
+    (uci_chem51c, uci_chem51b) on conflict do nothing;
 end $$;
 
 -- ============================================================
@@ -666,36 +666,36 @@ end $$;
 -- ============================================================
 do $$
 declare
-  deanza_math1a_ce uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000002' and code = 'MATH 1A'), gen_random_uuid());
-  deanza_math1b_ce uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000002' and code = 'MATH 1B'), gen_random_uuid());
-  deanza_math1c_ce uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000002' and code = 'MATH 1C'), gen_random_uuid());
-  deanza_math1d_ce uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000002' and code = 'MATH 1D'), gen_random_uuid());
-  deanza_math1e_ce uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000002' and code = 'MATH 1E'), gen_random_uuid());
-  deanza_math1f_ce uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000002' and code = 'MATH 1F'), gen_random_uuid());
-  deanza_phys4a_ce uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000002' and code = 'PHYS 4A'), gen_random_uuid());
-  deanza_phys4b_ce uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000002' and code = 'PHYS 4B'), gen_random_uuid());
-  deanza_phys4c_ce uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000002' and code = 'PHYS 4C'), gen_random_uuid());
-  deanza_chem1a_ce uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000002' and code = 'CHEM 1A'), gen_random_uuid());
-  deanza_chem1b_ce uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000002' and code = 'CHEM 1B'), gen_random_uuid());
-  deanza_chem1c_ce uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000002' and code = 'CHEM 1C'), gen_random_uuid());
-  deanza_chem12a_ce uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000002' and code = 'CHEM 12A'), gen_random_uuid());
-  deanza_chem12b_ce uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000002' and code = 'CHEM 12B'), gen_random_uuid());
-  deanza_chem12c_ce uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000002' and code = 'CHEM 12C'), gen_random_uuid());
-  deanza_engr14 uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000002' and code = 'ENGR 14'), gen_random_uuid());
+  deanza_math1a_ce uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000002' and code = 'MATH 1A'), gen_random_uuid()) on conflict do nothing;
+  deanza_math1b_ce uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000002' and code = 'MATH 1B'), gen_random_uuid()) on conflict do nothing;
+  deanza_math1c_ce uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000002' and code = 'MATH 1C'), gen_random_uuid()) on conflict do nothing;
+  deanza_math1d_ce uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000002' and code = 'MATH 1D'), gen_random_uuid()) on conflict do nothing;
+  deanza_math1e_ce uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000002' and code = 'MATH 1E'), gen_random_uuid()) on conflict do nothing;
+  deanza_math1f_ce uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000002' and code = 'MATH 1F'), gen_random_uuid()) on conflict do nothing;
+  deanza_phys4a_ce uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000002' and code = 'PHYS 4A'), gen_random_uuid()) on conflict do nothing;
+  deanza_phys4b_ce uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000002' and code = 'PHYS 4B'), gen_random_uuid()) on conflict do nothing;
+  deanza_phys4c_ce uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000002' and code = 'PHYS 4C'), gen_random_uuid()) on conflict do nothing;
+  deanza_chem1a_ce uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000002' and code = 'CHEM 1A'), gen_random_uuid()) on conflict do nothing;
+  deanza_chem1b_ce uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000002' and code = 'CHEM 1B'), gen_random_uuid()) on conflict do nothing;
+  deanza_chem1c_ce uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000002' and code = 'CHEM 1C'), gen_random_uuid()) on conflict do nothing;
+  deanza_chem12a_ce uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000002' and code = 'CHEM 12A'), gen_random_uuid()) on conflict do nothing;
+  deanza_chem12b_ce uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000002' and code = 'CHEM 12B'), gen_random_uuid()) on conflict do nothing;
+  deanza_chem12c_ce uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000002' and code = 'CHEM 12C'), gen_random_uuid()) on conflict do nothing;
+  deanza_engr14 uuid := coalesce((select id from courses where institution_id = 'a0000000-0000-0000-0000-000000000002' and code = 'ENGR 14'), gen_random_uuid()) on conflict do nothing;
 
-  ucsb_math3a_ce uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'MATH 3A'), gen_random_uuid());
-  ucsb_math3b_ce uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'MATH 3B'), gen_random_uuid());
-  ucsb_math3c_ce uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'MATH 3C'), gen_random_uuid());
-  ucsb_math4a_ce uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'MATH 4A'), gen_random_uuid());
-  ucsb_math6a_ce uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'MATH 6A'), gen_random_uuid());
-  ucsb_math4b_ce uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'MATH 4B'), gen_random_uuid());
-  ucsb_phys6a_ce uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'PHYS 6A'), gen_random_uuid());
-  ucsb_phys6b_ce uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'PHYS 6B'), gen_random_uuid());
-  ucsb_phys6c_ce uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'PHYS 6C'), gen_random_uuid());
-  ucsb_chem109a_ce uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'CHEM 109A'), gen_random_uuid());
-  ucsb_chem109b_ce uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'CHEM 109B'), gen_random_uuid());
-  ucsb_chem109c_ce uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'CHEM 109C'), gen_random_uuid());
-  ucsb_engr3 uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'ENGR 3'), gen_random_uuid());
+  ucsb_math3a_ce uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'MATH 3A'), gen_random_uuid()) on conflict do nothing;
+  ucsb_math3b_ce uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'MATH 3B'), gen_random_uuid()) on conflict do nothing;
+  ucsb_math3c_ce uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'MATH 3C'), gen_random_uuid()) on conflict do nothing;
+  ucsb_math4a_ce uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'MATH 4A'), gen_random_uuid()) on conflict do nothing;
+  ucsb_math6a_ce uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'MATH 6A'), gen_random_uuid()) on conflict do nothing;
+  ucsb_math4b_ce uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'MATH 4B'), gen_random_uuid()) on conflict do nothing;
+  ucsb_phys6a_ce uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'PHYS 6A'), gen_random_uuid()) on conflict do nothing;
+  ucsb_phys6b_ce uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'PHYS 6B'), gen_random_uuid()) on conflict do nothing;
+  ucsb_phys6c_ce uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'PHYS 6C'), gen_random_uuid()) on conflict do nothing;
+  ucsb_chem109a_ce uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'CHEM 109A'), gen_random_uuid()) on conflict do nothing;
+  ucsb_chem109b_ce uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'CHEM 109B'), gen_random_uuid()) on conflict do nothing;
+  ucsb_chem109c_ce uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'CHEM 109C'), gen_random_uuid()) on conflict do nothing;
+  ucsb_engr3 uuid := coalesce((select id from courses where institution_id = 'b0000000-0000-0000-0000-000000000006' and code = 'ENGR 3'), gen_random_uuid()) on conflict do nothing;
 begin
   insert into courses (id, institution_id, code, title, units, description) values
     (deanza_math1a_ce, 'a0000000-0000-0000-0000-000000000002', 'MATH 1A', 'Calculus I', 5, 'Limits, derivatives, and applications of single-variable calculus'),
@@ -759,13 +759,13 @@ begin
     (deanza_chem12a_ce, ucsb_chem109a_ce, 'a0000000-0000-0000-0000-000000000002', 'b0000000-0000-0000-0000-000000000006', 'Chemical Engineering', 2024),
     (deanza_chem12b_ce, ucsb_chem109b_ce, 'a0000000-0000-0000-0000-000000000002', 'b0000000-0000-0000-0000-000000000006', 'Chemical Engineering', 2024),
     (deanza_chem12c_ce, ucsb_chem109c_ce, 'a0000000-0000-0000-0000-000000000002', 'b0000000-0000-0000-0000-000000000006', 'Chemical Engineering', 2024),
-    (deanza_engr14, ucsb_engr3, 'a0000000-0000-0000-0000-000000000002', 'b0000000-0000-0000-0000-000000000006', 'Chemical Engineering', 2024);
+    (deanza_engr14, ucsb_engr3, 'a0000000-0000-0000-0000-000000000002', 'b0000000-0000-0000-0000-000000000006', 'Chemical Engineering', 2024) on conflict do nothing;
 
   delete from prerequisites
   where course_id in (deanza_math1a_ce, deanza_math1b_ce, deanza_math1c_ce, deanza_math1d_ce, deanza_math1e_ce, deanza_math1f_ce, deanza_phys4a_ce, deanza_phys4b_ce, deanza_phys4c_ce, deanza_chem1a_ce, deanza_chem1b_ce, deanza_chem1c_ce, deanza_chem12a_ce, deanza_chem12b_ce, deanza_chem12c_ce, deanza_engr14,
                       ucsb_math3a_ce, ucsb_math3b_ce, ucsb_math3c_ce, ucsb_math4a_ce, ucsb_math6a_ce, ucsb_math4b_ce, ucsb_phys6a_ce, ucsb_phys6b_ce, ucsb_phys6c_ce, ucsb_chem109a_ce, ucsb_chem109b_ce, ucsb_chem109c_ce, ucsb_engr3)
      or prerequisite_course_id in (deanza_math1a_ce, deanza_math1b_ce, deanza_math1c_ce, deanza_math1d_ce, deanza_math1e_ce, deanza_math1f_ce, deanza_phys4a_ce, deanza_phys4b_ce, deanza_phys4c_ce, deanza_chem1a_ce, deanza_chem1b_ce, deanza_chem1c_ce, deanza_chem12a_ce, deanza_chem12b_ce, deanza_chem12c_ce, deanza_engr14,
-                                  ucsb_math3a_ce, ucsb_math3b_ce, ucsb_math3c_ce, ucsb_math4a_ce, ucsb_math6a_ce, ucsb_math4b_ce, ucsb_phys6a_ce, ucsb_phys6b_ce, ucsb_phys6c_ce, ucsb_chem109a_ce, ucsb_chem109b_ce, ucsb_chem109c_ce, ucsb_engr3);
+                                  ucsb_math3a_ce, ucsb_math3b_ce, ucsb_math3c_ce, ucsb_math4a_ce, ucsb_math6a_ce, ucsb_math4b_ce, ucsb_phys6a_ce, ucsb_phys6b_ce, ucsb_phys6c_ce, ucsb_chem109a_ce, ucsb_chem109b_ce, ucsb_chem109c_ce, ucsb_engr3) on conflict do nothing;
 
   insert into prerequisites (course_id, prerequisite_course_id) values
     (deanza_math1b_ce, deanza_math1a_ce),
@@ -796,5 +796,5 @@ begin
     (ucsb_phys6c_ce, ucsb_math4a_ce),
     (ucsb_chem109b_ce, ucsb_chem109a_ce),
     (ucsb_chem109c_ce, ucsb_chem109b_ce),
-    (ucsb_engr3, ucsb_math3b_ce);
+    (ucsb_engr3, ucsb_math3b_ce) on conflict do nothing;
 end $$;

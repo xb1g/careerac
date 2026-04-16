@@ -111,7 +111,7 @@ BEGIN
         'Shadow a pharmacist or physician to keep the pre-med motivation real'
       )
     )
-  );
+  ) on conflict do nothing;
 
   -- 2) De Anza -> UC Berkeley Physics
   INSERT INTO playbooks (user_id, cc_institution_id, target_institution_id, target_major, transfer_year, outcome, verification_status, playbook_data)
@@ -178,7 +178,7 @@ BEGIN
         'Keep one lighter GE each term to protect focus on the math-heavy load'
       )
     )
-  );
+  ) on conflict do nothing;
 
   -- 3) Foothill -> UC Davis Mathematics
   INSERT INTO playbooks (user_id, cc_institution_id, target_institution_id, target_major, transfer_year, outcome, verification_status, playbook_data)
@@ -237,7 +237,7 @@ BEGIN
         'Keep the course load steady; math transfer is more about consistency than cramming'
       )
     )
-  );
+  ) on conflict do nothing;
 
   -- 4) PCC -> UC Berkeley Data Science
   INSERT INTO playbooks (user_id, cc_institution_id, target_institution_id, target_major, transfer_year, outcome, verification_status, playbook_data)
@@ -296,7 +296,7 @@ BEGIN
         'A startup internship can be more useful than a perfect GPA if you can explain the learning'
       )
     )
-  );
+  ) on conflict do nothing;
 
   -- 5) LBCC -> UC Santa Barbara Environmental Science (in progress)
   INSERT INTO playbooks (user_id, cc_institution_id, target_institution_id, target_major, transfer_year, outcome, verification_status, playbook_data)
@@ -355,7 +355,7 @@ BEGIN
         'Volunteer with local conservation groups so your story shows sustained commitment'
       )
     )
-  );
+  ) on conflict do nothing;
 
   -- 6) Pierce -> UC Santa Barbara Biochemistry
   INSERT INTO playbooks (user_id, cc_institution_id, target_institution_id, target_major, transfer_year, outcome, verification_status, playbook_data)
@@ -422,7 +422,7 @@ BEGIN
         'Keep your GPA steady; UCSB biochem is demanding but very research-friendly'
       )
     )
-  );
+  ) on conflict do nothing;
 
   -- 7) SMC -> UC Irvine Molecular Biology
   INSERT INTO playbooks (user_id, cc_institution_id, target_institution_id, target_major, transfer_year, outcome, verification_status, playbook_data)
@@ -481,7 +481,7 @@ BEGIN
         'Use summer sessions to keep the bio/chem sequence moving without overload'
       )
     )
-  );
+  ) on conflict do nothing;
 
   -- 8) De Anza -> UC Santa Barbara Chemical Engineering
   INSERT INTO playbooks (user_id, cc_institution_id, target_institution_id, target_major, transfer_year, outcome, verification_status, playbook_data)
@@ -549,7 +549,7 @@ BEGIN
         'Chemical engineering rewards consistency more than raw speed, so pace your weeks carefully'
       )
     )
-  );
+  ) on conflict do nothing;
 
   RAISE NOTICE 'Seeded 8 new major playbooks for user %', test_user_id;
 END $$;

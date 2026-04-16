@@ -13,7 +13,7 @@ alter table institutions
 
 alter table institutions
   add constraint institutions_type_check
-  check (type in ('cc', 'university', 'community_college'));
+  check (type in ('cc', 'university', 'community_college')) on conflict do nothing;
 
 insert into institutions (
   id,

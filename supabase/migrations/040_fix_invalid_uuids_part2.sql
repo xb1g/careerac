@@ -20,7 +20,7 @@ from (
 ) as v(name, category, description, degree_type, total_units_required, participating_uc_campuses)
 where not exists (
   select 1 from majors m where m.name = v.name
-);
+) on conflict do nothing;
 
 -- ============================================================
 -- COURSES
@@ -66,7 +66,7 @@ where not exists (
   select 1 from courses c
   where c.institution_id = i.id
     and c.code = v.code
-);
+) on conflict do nothing;
 
 -- ============================================================
 -- TRANSFER PATHWAYS
@@ -597,7 +597,7 @@ where not exists (
   select 1 from transfer_pathways tp
   where tp.major_id = m.id
     and tp.institution_id = i.id
-);
+) on conflict do nothing;
 
 -- NOTE: migrations 026-031 do not contain articulation_agreements or
 -- prerequisites rows, so no repair updates are needed for those tables here.

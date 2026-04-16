@@ -25,7 +25,7 @@ insert into courses (id, institution_id, code, title, units, description) values
   ('70000000-0000-0000-0000-000000000009', 'a0000000-0000-0000-0000-000000000001', 'BIOL 22', 'Genetics and Molecular Biology', 5, 'Molecular genetics, DNA replication, and gene expression'),
   ('70000000-0000-0000-0000-00000000000a', 'a0000000-0000-0000-0000-000000000001', 'BIOL 23', 'Organismal Biology', 5, 'Physiology, anatomy, and ecology'),
   ('70000000-0000-0000-0000-00000000000b', 'a0000000-0000-0000-0000-000000000001', 'PHYS 6', 'General Physics I', 4, 'Mechanics and thermodynamics'),
-  ('70000000-0000-0000-0000-00000000000c', 'a0000000-0000-0000-0000-000000000001', 'PHYS 7', 'General Physics II', 4, 'Electricity, magnetism, and optics');
+  ('70000000-0000-0000-0000-00000000000c', 'a0000000-0000-0000-0000-000000000001', 'PHYS 7', 'General Physics II', 4, 'Electricity, magnetism, and optics') on conflict do nothing;
 
 -- ============================================================
 -- TRANSFER PATHWAY REQUIREMENTS
@@ -118,4 +118,4 @@ This is a **legacy pathway** being consolidated into the new "Biological Science
 
 ### Transition to Biological Sciences
 For fall 2027 and beyond, Cell Biology will be part of the consolidated "Biological Sciences" pathway. Current students transferring before 2027 can still pursue this specific pathway.
-');
+') on conflict do nothing;

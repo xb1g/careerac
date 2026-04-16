@@ -30,7 +30,7 @@ insert into courses (id, institution_id, code, title, units, description) values
   ('g0000000-0000-0000-0000-0000000000ec', 'a0000000-0000-0000-0000-000000000002', 'CHEM 12A', 'Organic Chemistry I', 5, 'Structure, nomenclature, and reaction fundamentals with laboratory work'),
   ('g0000000-0000-0000-0000-0000000000ed', 'a0000000-0000-0000-0000-000000000002', 'CHEM 12B', 'Organic Chemistry II', 5, 'Reaction mechanisms, synthesis, and spectroscopy with laboratory work'),
   ('g0000000-0000-0000-0000-0000000000ee', 'a0000000-0000-0000-0000-000000000002', 'CHEM 12C', 'Organic Chemistry III', 5, 'Advanced synthesis, bioorganic chemistry, and analytical methods with laboratory work'),
-  ('g0000000-0000-0000-0000-0000000000ef', 'a0000000-0000-0000-0000-000000000002', 'ENGR 14', 'Introduction to MATLAB for Engineers', 4, 'Programming concepts, numerical computation, and engineering problem solving in MATLAB');
+  ('g0000000-0000-0000-0000-0000000000ef', 'a0000000-0000-0000-0000-000000000002', 'ENGR 14', 'Introduction to MATLAB for Engineers', 4, 'Programming concepts, numerical computation, and engineering problem solving in MATLAB') on conflict do nothing;
 
 -- ============================================================
 -- COURSES - Chemical Engineering Major (UC Santa Barbara)
@@ -52,7 +52,7 @@ insert into courses (id, institution_id, code, title, units, description) values
   ('h0000000-0000-0000-0000-0000000000ec', 'b0000000-0000-0000-0000-000000000006', 'CHEM 109A', 'Organic Chemistry I', 5, 'Structure, nomenclature, and reaction fundamentals with laboratory work'),
   ('h0000000-0000-0000-0000-0000000000ed', 'b0000000-0000-0000-0000-000000000006', 'CHEM 109B', 'Organic Chemistry II', 5, 'Reaction mechanisms, synthesis, and spectroscopy with laboratory work'),
   ('h0000000-0000-0000-0000-0000000000ee', 'b0000000-0000-0000-0000-000000000006', 'CHEM 109C', 'Organic Chemistry III', 5, 'Advanced synthesis, bioorganic chemistry, and analytical methods with laboratory work'),
-  ('h0000000-0000-0000-0000-0000000000ef', 'b0000000-0000-0000-0000-000000000006', 'ENGR 3', 'Introduction to MATLAB for Engineers', 4, 'Programming concepts, numerical computation, and engineering problem solving in MATLAB');
+  ('h0000000-0000-0000-0000-0000000000ef', 'b0000000-0000-0000-0000-000000000006', 'ENGR 3', 'Introduction to MATLAB for Engineers', 4, 'Programming concepts, numerical computation, and engineering problem solving in MATLAB') on conflict do nothing;
 
 -- ============================================================
 -- ARTICULATION AGREEMENTS - De Anza College to UC Santa Barbara
@@ -74,7 +74,7 @@ insert into articulation_agreements (cc_course_id, university_course_id, cc_inst
   ('g0000000-0000-0000-0000-0000000000ec', 'h0000000-0000-0000-0000-0000000000ec', 'a0000000-0000-0000-0000-000000000002', 'b0000000-0000-0000-0000-000000000006', 'Chemical Engineering', 2024),
   ('g0000000-0000-0000-0000-0000000000ed', 'h0000000-0000-0000-0000-0000000000ed', 'a0000000-0000-0000-0000-000000000002', 'b0000000-0000-0000-0000-000000000006', 'Chemical Engineering', 2024),
   ('g0000000-0000-0000-0000-0000000000ee', 'h0000000-0000-0000-0000-0000000000ee', 'a0000000-0000-0000-0000-000000000002', 'b0000000-0000-0000-0000-000000000006', 'Chemical Engineering', 2024),
-  ('g0000000-0000-0000-0000-0000000000ef', 'h0000000-0000-0000-0000-0000000000ef', 'a0000000-0000-0000-0000-000000000002', 'b0000000-0000-0000-0000-000000000006', 'Chemical Engineering', 2024);
+  ('g0000000-0000-0000-0000-0000000000ef', 'h0000000-0000-0000-0000-0000000000ef', 'a0000000-0000-0000-0000-000000000002', 'b0000000-0000-0000-0000-000000000006', 'Chemical Engineering', 2024) on conflict do nothing;
 
 -- ============================================================
 -- PREREQUISITES - De Anza College
@@ -95,7 +95,7 @@ insert into prerequisites (course_id, prerequisite_course_id) values
   ('g0000000-0000-0000-0000-0000000000eb', 'g0000000-0000-0000-0000-0000000000ea'),
   ('g0000000-0000-0000-0000-0000000000ec', 'g0000000-0000-0000-0000-0000000000ea'),
   ('g0000000-0000-0000-0000-0000000000ed', 'g0000000-0000-0000-0000-0000000000ec'),
-  ('g0000000-0000-0000-0000-0000000000ee', 'g0000000-0000-0000-0000-0000000000ed');
+  ('g0000000-0000-0000-0000-0000000000ee', 'g0000000-0000-0000-0000-0000000000ed') on conflict do nothing;
 
 -- ============================================================
 -- PREREQUISITES - UC Santa Barbara
@@ -116,4 +116,4 @@ insert into prerequisites (course_id, prerequisite_course_id) values
   ('h0000000-0000-0000-0000-0000000000eb', 'h0000000-0000-0000-0000-0000000000ea'),
   ('h0000000-0000-0000-0000-0000000000ec', 'h0000000-0000-0000-0000-0000000000ea'),
   ('h0000000-0000-0000-0000-0000000000ed', 'h0000000-0000-0000-0000-0000000000ec'),
-  ('h0000000-0000-0000-0000-0000000000ee', 'h0000000-0000-0000-0000-0000000000ed');
+  ('h0000000-0000-0000-0000-0000000000ee', 'h0000000-0000-0000-0000-0000000000ed') on conflict do nothing;

@@ -23,7 +23,7 @@ insert into courses (id, institution_id, code, title, units, description) values
   ('g0000000-0000-0000-0000-00000000000c', 'a0000000-0000-0000-0000-000000000001', 'MATH 30', 'Calculus III', 5, 'Sequences, series, and advanced integration'),
   ('g0000000-0000-0000-0000-00000000000d', 'a0000000-0000-0000-0000-000000000001', 'MATH 32', 'Multivariable Calculus', 5, 'Vector calculus and partial derivatives'),
   ('g0000000-0000-0000-0000-00000000000e', 'a0000000-0000-0000-0000-000000000001', 'MATH 33', 'Linear Algebra', 3, 'Matrices, vector spaces, and linear transformations'),
-  ('g0000000-0000-0000-0000-00000000000f', 'a0000000-0000-0000-0000-000000000001', 'MATH 34', 'Differential Equations', 3, 'First-order and linear differential equations');
+  ('g0000000-0000-0000-0000-00000000000f', 'a0000000-0000-0000-0000-000000000001', 'MATH 34', 'Differential Equations', 3, 'First-order and linear differential equations') on conflict do nothing;
 
 -- ============================================================
 -- COURSES - Chemistry Major (UCLA)
@@ -43,7 +43,7 @@ insert into courses (id, institution_id, code, title, units, description) values
   ('h0000000-0000-0000-0000-00000000000c', 'b0000000-0000-0000-0000-000000000001', 'MATH 31C', 'Multivariable Calculus', 4, 'Vectors, partial derivatives, and multiple integration'),
   ('h0000000-0000-0000-0000-00000000000d', 'b0000000-0000-0000-0000-000000000001', 'MATH 32A', 'Linear Algebra', 4, 'Matrices, vector spaces, and linear transformations'),
   ('h0000000-0000-0000-0000-00000000000e', 'b0000000-0000-0000-0000-000000000001', 'MATH 33A', 'Differential Equations', 4, 'Ordinary differential equations and applications'),
-  ('h0000000-0000-0000-0000-00000000000f', 'b0000000-0000-0000-0000-000000000001', 'MATH 33B', 'Differential Equations', 4, 'Systems, Laplace transforms, and advanced applications');
+  ('h0000000-0000-0000-0000-00000000000f', 'b0000000-0000-0000-0000-000000000001', 'MATH 33B', 'Differential Equations', 4, 'Systems, Laplace transforms, and advanced applications') on conflict do nothing;
 
 -- ============================================================
 -- ARTICULATION AGREEMENTS - Santa Monica College to UCLA
@@ -64,7 +64,7 @@ insert into articulation_agreements (cc_course_id, university_course_id, cc_inst
   ('g0000000-0000-0000-0000-00000000000c', 'h0000000-0000-0000-0000-00000000000c', 'a0000000-0000-0000-0000-000000000001', 'b0000000-0000-0000-0000-000000000001', 'Chemistry', 2024),
   ('g0000000-0000-0000-0000-00000000000d', 'h0000000-0000-0000-0000-00000000000d', 'a0000000-0000-0000-0000-000000000001', 'b0000000-0000-0000-0000-000000000001', 'Chemistry', 2024),
   ('g0000000-0000-0000-0000-00000000000e', 'h0000000-0000-0000-0000-00000000000e', 'a0000000-0000-0000-0000-000000000001', 'b0000000-0000-0000-0000-000000000001', 'Chemistry', 2024),
-  ('g0000000-0000-0000-0000-00000000000f', 'h0000000-0000-0000-0000-00000000000f', 'a0000000-0000-0000-0000-000000000001', 'b0000000-0000-0000-0000-000000000001', 'Chemistry', 2024);
+  ('g0000000-0000-0000-0000-00000000000f', 'h0000000-0000-0000-0000-00000000000f', 'a0000000-0000-0000-0000-000000000001', 'b0000000-0000-0000-0000-000000000001', 'Chemistry', 2024) on conflict do nothing;
 
 -- ============================================================
 -- PREREQUISITES
@@ -99,4 +99,4 @@ insert into prerequisites (course_id, prerequisite_course_id) values
   ('h0000000-0000-0000-0000-00000000000c', 'h0000000-0000-0000-0000-00000000000b'),
   ('h0000000-0000-0000-0000-00000000000d', 'h0000000-0000-0000-0000-00000000000c'),
   ('h0000000-0000-0000-0000-00000000000e', 'h0000000-0000-0000-0000-00000000000d'),
-  ('h0000000-0000-0000-0000-00000000000f', 'h0000000-0000-0000-0000-00000000000d');
+  ('h0000000-0000-0000-0000-00000000000f', 'h0000000-0000-0000-0000-00000000000d') on conflict do nothing;

@@ -27,7 +27,7 @@ insert into courses (id, institution_id, code, title, units, description) values
   ('n0000000-0000-0000-0000-00000000000c', 'a0000000-0000-0000-0000-000000000001', 'CS 55', 'Java Programming', 3, 'Object-oriented programming fundamentals'),
   ('n0000000-0000-0000-0000-00000000000d', 'a0000000-0000-0000-0000-000000000001', 'CS 56', 'C++ Programming', 3, 'Programming fundamentals in C++'),
   ('n0000000-0000-0000-0000-00000000000e', 'a0000000-0000-0000-0000-000000000001', 'ENGR 20', 'Introduction to Digital Systems', 3, 'Digital logic, Boolean algebra, and circuit design'),
-  ('n0000000-0000-0000-0000-00000000000f', 'a0000000-0000-0000-0000-000000000001', 'MATH 7', 'Discrete Mathematics', 3, 'Logic, sets, combinatorics, and graph theory');
+  ('n0000000-0000-0000-0000-00000000000f', 'a0000000-0000-0000-0000-000000000001', 'MATH 7', 'Discrete Mathematics', 3, 'Logic, sets, combinatorics, and graph theory') on conflict do nothing;
 
 -- ============================================================
 -- TRANSFER PATHWAY REQUIREMENTS
@@ -120,4 +120,4 @@ insert into transfer_pathways (id, major_id, institution_id, requirements) value
 - UCSB: 3.5-3.8
 - UCI: 3.5-3.8
 - UCD: 3.4-3.7
-');
+') on conflict do nothing;

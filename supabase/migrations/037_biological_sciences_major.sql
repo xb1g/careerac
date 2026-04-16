@@ -26,7 +26,7 @@ insert into courses (id, institution_id, code, title, units, description) values
   ('80000000-0000-0000-0000-00000000000a', 'a0000000-0000-0000-0000-000000000001', 'BIOL 23', 'Foundations of Biology III: Organismal Biology', 5, 'Physiology, anatomy, ecology, and biodiversity'),
   ('80000000-0000-0000-0000-00000000000b', 'a0000000-0000-0000-0000-000000000001', 'PHYS 6', 'General Physics I', 4, 'Mechanics and thermodynamics'),
   ('80000000-0000-0000-0000-00000000000c', 'a0000000-0000-0000-0000-000000000001', 'PHYS 7', 'General Physics II', 4, 'Electricity, magnetism, and optics'),
-  ('80000000-0000-0000-0000-00000000000d', 'a0000000-0000-0000-0000-000000000001', 'BIOL 24', 'Biochemistry', 5, 'Biomolecules, metabolism, and molecular biology');
+  ('80000000-0000-0000-0000-00000000000d', 'a0000000-0000-0000-0000-000000000001', 'BIOL 24', 'Biochemistry', 5, 'Biomolecules, metabolism, and molecular biology') on conflict do nothing;
 
 -- ============================================================
 -- TRANSFER PATHWAY REQUIREMENTS
@@ -140,4 +140,4 @@ Within Biological Sciences, students can specialize in:
 - Previous pathways (Biology, Biochem, Cell Bio, Molecular Bio) will be grandfathered
 - All four pathways lead to the same career outcomes
 - More flexibility to explore different concentrations before declaring
-');
+') on conflict do nothing;

@@ -22,7 +22,7 @@ insert into courses (id, institution_id, code, title, units, description) values
   ('l0000000-0000-0000-0000-000000000007', 'a0000000-0000-0000-0000-000000000001', 'BUS 5', 'Business Law', 3, 'Legal environment of business and contracts'),
   ('l0000000-0000-0000-0000-000000000008', 'a0000000-0000-0000-0000-000000000001', 'BUS 32', 'Business Communication', 3, 'Professional writing and presentation skills'),
   ('l0000000-0000-0000-0000-000000000009', 'a0000000-0000-0000-0000-000000000001', 'ENGL 2', 'Critical Analysis and Intermediate Composition', 3, 'Analytical writing and research'),
-  ('l0000000-0000-0000-0000-00000000000a', 'a0000000-0000-0000-0000-000000000001', 'ENGL 1', 'Reading and Composition 1', 3, 'College-level academic writing');
+  ('l0000000-0000-0000-0000-00000000000a', 'a0000000-0000-0000-0000-000000000001', 'ENGL 1', 'Reading and Composition 1', 3, 'College-level academic writing') on conflict do nothing;
 
 -- ============================================================
 -- TRANSFER PATHWAY REQUIREMENTS
@@ -103,4 +103,4 @@ insert into transfer_pathways (id, major_id, institution_id, requirements) value
 - **UC Berkeley Haas**: Apply to Haas in sophomore year; requires essays, resume, interviews
 - **UCLA**: Anderson School is graduate only; undergrad business is Economics-Business
 - **UC Irvine**: Merage School has strong entrepreneurship focus
-');
+') on conflict do nothing;

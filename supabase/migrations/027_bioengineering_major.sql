@@ -27,7 +27,7 @@ insert into courses (id, institution_id, code, title, units, description) values
   ('k0000000-0000-0000-0000-00000000000c', 'a0000000-0000-0000-0000-000000000001', 'BIOL 22', 'Genetics and Molecular Biology', 5, 'Molecular genetics, DNA replication, and gene expression'),
   ('k0000000-0000-0000-0000-00000000000d', 'a0000000-0000-0000-0000-000000000001', 'ENGR 12', 'Statics', 3, 'Force systems, equilibrium, and structural analysis'),
   ('k0000000-0000-0000-0000-00000000000e', 'a0000000-0000-0000-0000-000000000001', 'CS 55', 'Java Programming', 3, 'Object-oriented programming fundamentals'),
-  ('k0000000-0000-0000-0000-00000000000f', 'a0000000-0000-0000-0000-000000000001', 'PSYCH 1', 'General Psychology', 3, 'Introduction to psychological science');
+  ('k0000000-0000-0000-0000-00000000000f', 'a0000000-0000-0000-0000-000000000001', 'PSYCH 1', 'General Psychology', 3, 'Introduction to psychological science') on conflict do nothing;
 
 -- ============================================================
 -- TRANSFER PATHWAY REQUIREMENTS
@@ -114,4 +114,4 @@ insert into transfer_pathways (id, major_id, institution_id, requirements) value
 - UCSD: 3.6-3.9
 - UCD: 3.5-3.8
 - UCI: 3.5-3.8
-');
+') on conflict do nothing;

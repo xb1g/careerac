@@ -21,7 +21,7 @@ insert into courses (id, institution_id, code, title, units, description) values
   ('42100000-0000-0000-0000-000000000004', 'a0000000-0000-0000-0000-000000000001', 'ART 4', 'Color Theory', 3, 'Color systems, interaction, harmony, and applied studio exercises'),
   ('42100000-0000-0000-0000-000000000005', 'a0000000-0000-0000-0000-000000000001', 'ART 10', 'Art History Survey I', 3, 'Survey of global art from prehistory through the Renaissance'),
   ('42100000-0000-0000-0000-000000000006', 'a0000000-0000-0000-0000-000000000001', 'ART 11', 'Art History Survey II', 3, 'Survey of global art from the Renaissance to contemporary practice'),
-  ('42100000-0000-0000-0000-000000000007', 'a0000000-0000-0000-0000-000000000001', 'ART 20', 'Painting I', 3, 'Beginning painting with composition, color, and material techniques');
+  ('42100000-0000-0000-0000-000000000007', 'a0000000-0000-0000-0000-000000000001', 'ART 20', 'Painting I', 3, 'Beginning painting with composition, color, and material techniques') on conflict do nothing;
 
 -- ============================================================
 -- COURSES - Art / Studio Art (Pasadena City College)
@@ -34,7 +34,7 @@ insert into courses (id, institution_id, code, title, units, description) values
   ('42200000-0000-0000-0000-000000000004', 'a0000000-0000-0000-0000-000000000003', 'ART 4', 'Color Concepts', 3, 'Application of color relationships, interaction, and theory in studio projects'),
   ('42200000-0000-0000-0000-000000000005', 'a0000000-0000-0000-0000-000000000003', 'ART 10', 'History of Western Art I', 3, 'Ancient through medieval art history survey'),
   ('42200000-0000-0000-0000-000000000006', 'a0000000-0000-0000-0000-000000000003', 'ART 11', 'History of Western Art II', 3, 'Renaissance through contemporary art history survey'),
-  ('42200000-0000-0000-0000-000000000007', 'a0000000-0000-0000-0000-000000000003', 'ART 20', 'Painting I', 3, 'Introduction to painting media, color, surface, and pictorial structure');
+  ('42200000-0000-0000-0000-000000000007', 'a0000000-0000-0000-0000-000000000003', 'ART 20', 'Painting I', 3, 'Introduction to painting media, color, surface, and pictorial structure') on conflict do nothing;
 
 -- ============================================================
 -- COURSES - Art / Studio Art (Long Beach City College)
@@ -47,7 +47,7 @@ insert into courses (id, institution_id, code, title, units, description) values
   ('42300000-0000-0000-0000-000000000004', 'a0000000-0000-0000-0000-000000000006', 'ART 4', 'Color Theory', 3, 'Color systems and perceptual relationships for visual art practice'),
   ('42300000-0000-0000-0000-000000000005', 'a0000000-0000-0000-0000-000000000006', 'ART 10', 'Art History Survey I', 3, 'Survey of major artistic traditions from prehistory to the Renaissance'),
   ('42300000-0000-0000-0000-000000000006', 'a0000000-0000-0000-0000-000000000006', 'ART 11', 'Art History Survey II', 3, 'Survey of major artistic traditions from the Renaissance to the present'),
-  ('42300000-0000-0000-0000-000000000007', 'a0000000-0000-0000-0000-000000000006', 'ART 20', 'Painting I', 3, 'Beginning painting with acrylic or oil media, color, and composition');
+  ('42300000-0000-0000-0000-000000000007', 'a0000000-0000-0000-0000-000000000006', 'ART 20', 'Painting I', 3, 'Beginning painting with acrylic or oil media, color, and composition') on conflict do nothing;
 
 -- ============================================================
 -- COURSES - UCLA Art / Art History prep references
@@ -58,7 +58,7 @@ insert into courses (id, institution_id, code, title, units, description) values
   ('42400000-0000-0000-0000-000000000003', 'b0000000-0000-0000-0000-000000000001', 'ART 12', 'Three-Dimensional Design Fundamentals', 4, 'Foundational three-dimensional design and form studies'),
   ('42400000-0000-0000-0000-000000000004', 'b0000000-0000-0000-0000-000000000001', 'ART HIS 10A', 'Art History: Ancient to Renaissance', 5, 'Historical survey of major visual cultures from antiquity through the Renaissance'),
   ('42400000-0000-0000-0000-000000000005', 'b0000000-0000-0000-0000-000000000001', 'ART HIS 10B', 'Art History: Renaissance to Contemporary', 5, 'Historical survey of major visual cultures from the Renaissance to today'),
-  ('42400000-0000-0000-0000-000000000006', 'b0000000-0000-0000-0000-000000000001', 'ART 13', 'Color and Painting Foundations', 4, 'Studio practice in color application and introductory painting');
+  ('42400000-0000-0000-0000-000000000006', 'b0000000-0000-0000-0000-000000000001', 'ART 13', 'Color and Painting Foundations', 4, 'Studio practice in color application and introductory painting') on conflict do nothing;
 
 -- ============================================================
 -- COURSES - UC Berkeley Art Practice / History of Art prep references
@@ -69,7 +69,7 @@ insert into courses (id, institution_id, code, title, units, description) values
   ('42500000-0000-0000-0000-000000000003', 'b0000000-0000-0000-0000-000000000004', 'ART 14', 'Foundation Three-Dimensional Design', 4, 'Three-dimensional design processes, structure, and materials'),
   ('42500000-0000-0000-0000-000000000004', 'b0000000-0000-0000-0000-000000000004', 'HISTART 11', 'Introduction to Western Art I', 4, 'Survey of Western art from antiquity through the late medieval period'),
   ('42500000-0000-0000-0000-000000000005', 'b0000000-0000-0000-0000-000000000004', 'HISTART 12', 'Introduction to Western Art II', 4, 'Survey of Western art from the Renaissance through contemporary practice'),
-  ('42500000-0000-0000-0000-000000000006', 'b0000000-0000-0000-0000-000000000004', 'ART 23', 'Beginning Painting', 4, 'Foundational painting studio with color, surface, and image construction');
+  ('42500000-0000-0000-0000-000000000006', 'b0000000-0000-0000-0000-000000000004', 'ART 23', 'Beginning Painting', 4, 'Foundational painting studio with color, surface, and image construction') on conflict do nothing;
 
 -- ============================================================
 -- COURSES - UC Irvine Art / Art History prep references
@@ -80,7 +80,7 @@ insert into courses (id, institution_id, code, title, units, description) values
   ('42600000-0000-0000-0000-000000000003', 'b0000000-0000-0000-0000-000000000009', 'ART 22A', 'Three-Dimensional Form', 4, 'Studio foundations in material, space, structure, and 3D composition'),
   ('42600000-0000-0000-0000-000000000004', 'b0000000-0000-0000-0000-000000000009', 'ARTHIS 40A', 'History of Art I', 4, 'Survey of ancient through early modern art and visual culture'),
   ('42600000-0000-0000-0000-000000000005', 'b0000000-0000-0000-0000-000000000009', 'ARTHIS 40B', 'History of Art II', 4, 'Survey of modern and contemporary art and visual culture'),
-  ('42600000-0000-0000-0000-000000000006', 'b0000000-0000-0000-0000-000000000009', 'ART 30A', 'Painting Foundations', 4, 'Introductory painting with emphasis on composition, color, and studio process');
+  ('42600000-0000-0000-0000-000000000006', 'b0000000-0000-0000-0000-000000000009', 'ART 30A', 'Painting Foundations', 4, 'Introductory painting with emphasis on composition, color, and studio process') on conflict do nothing;
 
 -- ============================================================
 -- COURSES - UC Davis Art Studio / Art History prep references
@@ -91,7 +91,7 @@ insert into courses (id, institution_id, code, title, units, description) values
   ('42700000-0000-0000-0000-000000000003', 'b0000000-0000-0000-0000-000000000007', 'ART 003', 'Three-Dimensional Design', 4, 'Three-dimensional form, construction, and spatial investigation'),
   ('42700000-0000-0000-0000-000000000004', 'b0000000-0000-0000-0000-000000000007', 'AHI 001', 'Survey of Western Art I', 4, 'Art history survey from antiquity through the Renaissance'),
   ('42700000-0000-0000-0000-000000000005', 'b0000000-0000-0000-0000-000000000007', 'AHI 002', 'Survey of Western Art II', 4, 'Art history survey from the Renaissance to the present'),
-  ('42700000-0000-0000-0000-000000000006', 'b0000000-0000-0000-0000-000000000007', 'ART 020', 'Painting', 4, 'Foundational painting methods and pictorial problem-solving');
+  ('42700000-0000-0000-0000-000000000006', 'b0000000-0000-0000-0000-000000000007', 'ART 020', 'Painting', 4, 'Foundational painting methods and pictorial problem-solving') on conflict do nothing;
 
 -- ============================================================
 -- TRANSFER PATHWAY REQUIREMENTS
@@ -151,7 +151,7 @@ UC does not publish a single statewide Transfer Pathway page for Studio Art comp
 ### Competitive GPA Guidance
 - Minimum UC-transferable GPA: 3.0
 - More competitive studio-art applicants often present 3.3-3.7 plus a strong portfolio
-');
+') on conflict do nothing;
 
 -- ============================================================
 -- ARTICULATION AGREEMENTS - Santa Monica College to UCLA Art
@@ -162,7 +162,7 @@ insert into articulation_agreements (cc_course_id, university_course_id, cc_inst
   ('42100000-0000-0000-0000-000000000003', '42400000-0000-0000-0000-000000000003', 'a0000000-0000-0000-0000-000000000001', 'b0000000-0000-0000-0000-000000000001', 'Art', 2024),
   ('42100000-0000-0000-0000-000000000005', '42400000-0000-0000-0000-000000000004', 'a0000000-0000-0000-0000-000000000001', 'b0000000-0000-0000-0000-000000000001', 'Art', 2024),
   ('42100000-0000-0000-0000-000000000006', '42400000-0000-0000-0000-000000000005', 'a0000000-0000-0000-0000-000000000001', 'b0000000-0000-0000-0000-000000000001', 'Art', 2024),
-  ('42100000-0000-0000-0000-000000000007', '42400000-0000-0000-0000-000000000006', 'a0000000-0000-0000-0000-000000000001', 'b0000000-0000-0000-0000-000000000001', 'Art', 2024);
+  ('42100000-0000-0000-0000-000000000007', '42400000-0000-0000-0000-000000000006', 'a0000000-0000-0000-0000-000000000001', 'b0000000-0000-0000-0000-000000000001', 'Art', 2024) on conflict do nothing;
 
 -- ============================================================
 -- ARTICULATION AGREEMENTS - Pasadena City College to UC Berkeley Art
@@ -173,7 +173,7 @@ insert into articulation_agreements (cc_course_id, university_course_id, cc_inst
   ('42200000-0000-0000-0000-000000000003', '42500000-0000-0000-0000-000000000003', 'a0000000-0000-0000-0000-000000000003', 'b0000000-0000-0000-0000-000000000004', 'Art', 2024),
   ('42200000-0000-0000-0000-000000000005', '42500000-0000-0000-0000-000000000004', 'a0000000-0000-0000-0000-000000000003', 'b0000000-0000-0000-0000-000000000004', 'Art', 2024),
   ('42200000-0000-0000-0000-000000000006', '42500000-0000-0000-0000-000000000005', 'a0000000-0000-0000-0000-000000000003', 'b0000000-0000-0000-0000-000000000004', 'Art', 2024),
-  ('42200000-0000-0000-0000-000000000007', '42500000-0000-0000-0000-000000000006', 'a0000000-0000-0000-0000-000000000003', 'b0000000-0000-0000-0000-000000000004', 'Art', 2024);
+  ('42200000-0000-0000-0000-000000000007', '42500000-0000-0000-0000-000000000006', 'a0000000-0000-0000-0000-000000000003', 'b0000000-0000-0000-0000-000000000004', 'Art', 2024) on conflict do nothing;
 
 -- ============================================================
 -- ARTICULATION AGREEMENTS - Long Beach City College to UC Irvine Art
@@ -184,7 +184,7 @@ insert into articulation_agreements (cc_course_id, university_course_id, cc_inst
   ('42300000-0000-0000-0000-000000000003', '42600000-0000-0000-0000-000000000003', 'a0000000-0000-0000-0000-000000000006', 'b0000000-0000-0000-0000-000000000009', 'Art', 2024),
   ('42300000-0000-0000-0000-000000000005', '42600000-0000-0000-0000-000000000004', 'a0000000-0000-0000-0000-000000000006', 'b0000000-0000-0000-0000-000000000009', 'Art', 2024),
   ('42300000-0000-0000-0000-000000000006', '42600000-0000-0000-0000-000000000005', 'a0000000-0000-0000-0000-000000000006', 'b0000000-0000-0000-0000-000000000009', 'Art', 2024),
-  ('42300000-0000-0000-0000-000000000007', '42600000-0000-0000-0000-000000000006', 'a0000000-0000-0000-0000-000000000006', 'b0000000-0000-0000-0000-000000000009', 'Art', 2024);
+  ('42300000-0000-0000-0000-000000000007', '42600000-0000-0000-0000-000000000006', 'a0000000-0000-0000-0000-000000000006', 'b0000000-0000-0000-0000-000000000009', 'Art', 2024) on conflict do nothing;
 
 -- ============================================================
 -- ARTICULATION AGREEMENTS - Santa Monica College to UC Davis Art Studio
@@ -195,7 +195,7 @@ insert into articulation_agreements (cc_course_id, university_course_id, cc_inst
   ('42100000-0000-0000-0000-000000000003', '42700000-0000-0000-0000-000000000003', 'a0000000-0000-0000-0000-000000000001', 'b0000000-0000-0000-0000-000000000007', 'Art', 2024),
   ('42100000-0000-0000-0000-000000000005', '42700000-0000-0000-0000-000000000004', 'a0000000-0000-0000-0000-000000000001', 'b0000000-0000-0000-0000-000000000007', 'Art', 2024),
   ('42100000-0000-0000-0000-000000000006', '42700000-0000-0000-0000-000000000005', 'a0000000-0000-0000-0000-000000000001', 'b0000000-0000-0000-0000-000000000007', 'Art', 2024),
-  ('42100000-0000-0000-0000-000000000007', '42700000-0000-0000-0000-000000000006', 'a0000000-0000-0000-0000-000000000001', 'b0000000-0000-0000-0000-000000000007', 'Art', 2024);
+  ('42100000-0000-0000-0000-000000000007', '42700000-0000-0000-0000-000000000006', 'a0000000-0000-0000-0000-000000000001', 'b0000000-0000-0000-0000-000000000007', 'Art', 2024) on conflict do nothing;
 
 -- ============================================================
 -- PLAYBOOK - Realistic Art transfer story
@@ -278,5 +278,5 @@ BEGIN
         'Show range in the portfolio, but keep one clear visual direction so reviewers can see artistic growth'
       )
     )
-  );
+  ) on conflict do nothing;
 END $$;

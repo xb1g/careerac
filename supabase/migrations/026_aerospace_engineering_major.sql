@@ -27,7 +27,7 @@ insert into courses (id, institution_id, code, title, units, description) values
   ('i0000000-0000-0000-0000-00000000000c', 'a0000000-0000-0000-0000-000000000001', 'ENGR 14', 'Dynamics', 3, 'Kinematics and kinetics of particles and rigid bodies'),
   ('i0000000-0000-0000-0000-00000000000d', 'a0000000-0000-0000-0000-000000000001', 'ENGR 16', 'Circuits and Electronics', 3, 'Basic circuit analysis and digital electronics'),
   ('i0000000-0000-0000-0000-00000000000e', 'a0000000-0000-0000-0000-000000000001', 'CS 55', 'Java Programming', 3, 'Object-oriented programming fundamentals'),
-  ('i0000000-0000-0000-0000-00000000000f', 'a0000000-0000-0000-0000-000000000001', 'ENGR 10', 'Introduction to Engineering', 1, 'Overview of engineering disciplines and design process');
+  ('i0000000-0000-0000-0000-00000000000f', 'a0000000-0000-0000-0000-000000000001', 'ENGR 10', 'Introduction to Engineering', 1, 'Overview of engineering disciplines and design process') on conflict do nothing;
 
 -- ============================================================
 -- COURSES - Aerospace Engineering (UCLA)
@@ -46,7 +46,7 @@ insert into courses (id, institution_id, code, title, units, description) values
   ('j0000000-0000-0000-0000-00000000000b', 'b0000000-0000-0000-0000-000000000001', 'ENGR 83', 'Dynamics', 4, 'Kinematics and kinetics of particles and rigid bodies'),
   ('j0000000-0000-0000-0000-00000000000c', 'b0000000-0000-0000-0000-000000000001', 'ENGR 85A', 'Circuits and Signal Processing', 4, 'Circuit analysis and signal processing fundamentals'),
   ('j0000000-0000-0000-0000-00000000000d', 'b0000000-0000-0000-0000-000000000001', 'COM SCI 31', 'Introduction to Computer Science I', 4, 'Programming fundamentals and software development'),
-  ('j0000000-0000-0000-0000-00000000000e', 'b0000000-0000-0000-0000-000000000001', 'ENGR 1', 'Introduction to Engineering', 2, 'Overview of engineering disciplines and design process');
+  ('j0000000-0000-0000-0000-00000000000e', 'b0000000-0000-0000-0000-000000000001', 'ENGR 1', 'Introduction to Engineering', 2, 'Overview of engineering disciplines and design process') on conflict do nothing;
 
 -- ============================================================
 -- TRANSFER PATHWAY REQUIREMENTS
@@ -136,4 +136,4 @@ insert into transfer_pathways (id, major_id, institution_id, requirements) value
 - UCSD: 3.6-3.9
 - UCD: 3.5-3.8
 - UCI: 3.5-3.8
-');
+') on conflict do nothing;

@@ -12,7 +12,7 @@ create table if not exists majors (
   total_units_required integer,
   participating_uc_campuses text[],
   created_at timestamptz not null default now()
-);
+) on conflict do nothing;
 
 -- Transfer pathway requirements for a major at a specific institution
 create table if not exists transfer_pathways (
@@ -21,12 +21,12 @@ create table if not exists transfer_pathways (
   institution_id uuid not null references institutions(id) on delete cascade,
   requirements text,
   created_at timestamptz not null default now()
-);
+) on conflict do nothing;
 
 -- Indexes for common lookups
-create index if not exists idx_majors_name on majors(name);
-create index if not exists idx_transfer_pathways_major_id on transfer_pathways(major_id);
-create index if not exists idx_transfer_pathways_institution_id on transfer_pathways(institution_id);
+create index if not exists idx_majors_name on majors(name) on conflict do nothing;
+create index if not exists idx_transfer_pathways_major_id on transfer_pathways(major_id) on conflict do nothing;
+create index if not exists idx_transfer_pathways_institution_id on transfer_pathways(institution_id) on conflict do nothing;
 
 -- Table comments
 comment on table majors is 'Canonical major metadata used to organize transfer pathways and degree information.';

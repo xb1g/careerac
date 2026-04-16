@@ -98,7 +98,7 @@ BEGIN
         'UCLA Psych has amazing faculty - reach out during office hours'
       )
     )
-  );
+  ) on conflict do nothing;
 
   -- Playbook 6: De Anza -> UC Berkeley Economics (Verified, transferred)
   -- Student switched from business to econ, found passion in behavioral economics
@@ -167,7 +167,7 @@ BEGIN
         'Berkeley Haas is competitive but Econ at LS is excellent too'
       )
     )
-  );
+  ) on conflict do nothing;
 
   -- Playbook 7: PCC -> UCLA English (Verified, transferred)
   -- Non-traditional student, worked full-time, pursued creative writing passion
@@ -243,7 +243,7 @@ BEGIN
         'UCLA English has amazing creative writing workshops'
       )
     )
-  );
+  ) on conflict do nothing;
 
   -- Playbook 8: Foothill -> UC Davis Sociology (In Progress)
   -- First-generation student, planning to study social inequality and policy
@@ -304,7 +304,7 @@ BEGIN
         'UC Davis has great research opportunities in social policy'
       )
     )
-  );
+  ) on conflict do nothing;
 
   -- Playbook 9: BCC -> UC Berkeley History (Verified, transferred)
   -- Mature student returning to education, focused on Asian American history
@@ -372,7 +372,7 @@ BEGIN
         'Consider the Berkeley Public History program - amazing internships'
       )
     )
-  );
+  ) on conflict do nothing;
 
   -- Playbook 10: LBCC -> UC San Diego Political Science (Verified, transferred)
   -- Pre-law track, interned at city council
@@ -441,7 +441,7 @@ BEGIN
         'UCSD Political Science has great IR and American politics faculty'
       )
     )
-  );
+  ) on conflict do nothing;
 
   -- Playbook 11: Pierce -> UC Davis Biology (Verified, transferred)
   -- Pre-med track, overcame organic chemistry struggle
@@ -518,7 +518,7 @@ BEGIN
         'UC Davis has incredible pre-med advising - use it early and often'
       )
     )
-  );
+  ) on conflict do nothing;
 
   RAISE NOTICE 'Created 7 non-STEM playbooks for test user %', test_user_id;
 END $$;

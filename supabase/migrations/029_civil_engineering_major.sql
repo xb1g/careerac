@@ -27,7 +27,7 @@ insert into courses (id, institution_id, code, title, units, description) values
   ('m0000000-0000-0000-0000-00000000000c', 'a0000000-0000-0000-0000-000000000001', 'ENGR 16', 'Circuits and Electronics', 3, 'Basic circuit analysis and digital electronics'),
   ('m0000000-0000-0000-0000-00000000000d', 'a0000000-0000-0000-0000-000000000001', 'ENGR 18', 'Materials Science', 3, 'Structure and properties of engineering materials'),
   ('m0000000-0000-0000-0000-00000000000e', 'a0000000-0000-0000-0000-000000000001', 'CS 55', 'Java Programming', 3, 'Object-oriented programming fundamentals'),
-  ('m0000000-0000-0000-0000-00000000000f', 'a0000000-0000-0000-0000-000000000001', 'GEOL 1', 'Physical Geology', 3, 'Earth materials, structures, and processes');
+  ('m0000000-0000-0000-0000-00000000000f', 'a0000000-0000-0000-0000-000000000001', 'GEOL 1', 'Physical Geology', 3, 'Earth materials, structures, and processes') on conflict do nothing;
 
 -- ============================================================
 -- TRANSFER PATHWAY REQUIREMENTS
@@ -121,4 +121,4 @@ insert into transfer_pathways (id, major_id, institution_id, requirements) value
 - UCSD: 3.5-3.8
 - UCI: 3.4-3.7
 - UCD: 3.4-3.7
-');
+') on conflict do nothing;

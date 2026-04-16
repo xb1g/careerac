@@ -21,7 +21,7 @@ insert into courses (id, institution_id, code, title, units, description) values
   ('g0000000-0000-0000-0000-0000000000c7', 'a0000000-0000-0000-0000-000000000001', 'MATH 29', 'Calculus II for STEM Majors', 5, 'Integration, techniques of integration, and applications for science majors'),
   ('g0000000-0000-0000-0000-0000000000c8', 'a0000000-0000-0000-0000-000000000001', 'CHEM 21', 'Organic Chemistry I with Lab', 5, 'Structure, bonding, nomenclature, and reaction fundamentals with laboratory'),
   ('g0000000-0000-0000-0000-0000000000c9', 'a0000000-0000-0000-0000-000000000001', 'CHEM 22', 'Organic Chemistry II with Lab', 5, 'Reaction mechanisms, synthesis, and spectroscopy with laboratory'),
-  ('g0000000-0000-0000-0000-0000000000ca', 'a0000000-0000-0000-0000-000000000001', 'CHEM 23', 'Organic Chemistry III with Lab', 5, 'Advanced synthesis, bioorganic chemistry, and analytical methods with laboratory');
+  ('g0000000-0000-0000-0000-0000000000ca', 'a0000000-0000-0000-0000-000000000001', 'CHEM 23', 'Organic Chemistry III with Lab', 5, 'Advanced synthesis, bioorganic chemistry, and analytical methods with laboratory') on conflict do nothing;
 
 -- ============================================================
 -- COURSES - Molecular Biology Major (UC Irvine)
@@ -37,7 +37,7 @@ insert into courses (id, institution_id, code, title, units, description) values
   ('h0000000-0000-0000-0000-0000000000c7', 'b0000000-0000-0000-0000-000000000006', 'MATH 2B', 'Calculus for STEM Majors II', 5, 'Integration, techniques of integration, and applications for science majors'),
   ('h0000000-0000-0000-0000-0000000000c8', 'b0000000-0000-0000-0000-000000000006', 'CHEM 51A', 'Organic Chemistry I', 5, 'Structure, bonding, nomenclature, and reaction fundamentals'),
   ('h0000000-0000-0000-0000-0000000000c9', 'b0000000-0000-0000-0000-000000000006', 'CHEM 51B', 'Organic Chemistry II', 5, 'Reaction mechanisms, synthesis, and spectroscopy'),
-  ('h0000000-0000-0000-0000-0000000000ca', 'b0000000-0000-0000-0000-000000000006', 'CHEM 51C', 'Organic Chemistry III', 5, 'Advanced synthesis, bioorganic chemistry, and analytical methods');
+  ('h0000000-0000-0000-0000-0000000000ca', 'b0000000-0000-0000-0000-000000000006', 'CHEM 51C', 'Organic Chemistry III', 5, 'Advanced synthesis, bioorganic chemistry, and analytical methods') on conflict do nothing;
 
 -- ============================================================
 -- ARTICULATION AGREEMENTS - Santa Monica College to UC Irvine
@@ -54,7 +54,7 @@ insert into articulation_agreements (cc_course_id, university_course_id, cc_inst
   ('g0000000-0000-0000-0000-0000000000c7', 'h0000000-0000-0000-0000-0000000000c7', 'a0000000-0000-0000-0000-000000000001', 'b0000000-0000-0000-0000-000000000006', 'Molecular Biology', 2024),
   ('g0000000-0000-0000-0000-0000000000c8', 'h0000000-0000-0000-0000-0000000000c8', 'a0000000-0000-0000-0000-000000000001', 'b0000000-0000-0000-0000-000000000006', 'Molecular Biology', 2024),
   ('g0000000-0000-0000-0000-0000000000c9', 'h0000000-0000-0000-0000-0000000000c9', 'a0000000-0000-0000-0000-000000000001', 'b0000000-0000-0000-0000-000000000006', 'Molecular Biology', 2024),
-  ('g0000000-0000-0000-0000-0000000000ca', 'h0000000-0000-0000-0000-0000000000ca', 'a0000000-0000-0000-0000-000000000001', 'b0000000-0000-0000-0000-000000000006', 'Molecular Biology', 2024);
+  ('g0000000-0000-0000-0000-0000000000ca', 'h0000000-0000-0000-0000-0000000000ca', 'a0000000-0000-0000-0000-000000000001', 'b0000000-0000-0000-0000-000000000006', 'Molecular Biology', 2024) on conflict do nothing;
 
 -- ============================================================
 -- PREREQUISITE RELATIONSHIPS
@@ -75,4 +75,4 @@ insert into prerequisites (course_id, prerequisite_course_id) values
   ('h0000000-0000-0000-0000-0000000000c7', 'h0000000-0000-0000-0000-0000000000c6'),
   ('h0000000-0000-0000-0000-0000000000c8', 'h0000000-0000-0000-0000-0000000000c4'),
   ('h0000000-0000-0000-0000-0000000000c9', 'h0000000-0000-0000-0000-0000000000c8'),
-  ('h0000000-0000-0000-0000-0000000000ca', 'h0000000-0000-0000-0000-0000000000c9');
+  ('h0000000-0000-0000-0000-0000000000ca', 'h0000000-0000-0000-0000-0000000000c9') on conflict do nothing;

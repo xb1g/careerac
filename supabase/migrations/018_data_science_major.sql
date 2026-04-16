@@ -15,7 +15,7 @@ insert into courses (id, institution_id, code, title, units, description) values
   ('g0000000-0000-0000-0000-000000000063', 'a0000000-0000-0000-0000-000000000003', 'MATH 5C', 'Multivariable Calculus', 5, 'Vectors, partial derivatives, multiple integration, and applications'),
   ('g0000000-0000-0000-0000-000000000064', 'a0000000-0000-0000-0000-000000000003', 'MATH 3', 'Linear Algebra', 4, 'Matrices, systems of equations, vector spaces, and linear transformations'),
   ('g0000000-0000-0000-0000-000000000065', 'a0000000-0000-0000-0000-000000000003', 'CIS 10', 'Programming I: Python', 4, 'Introductory programming with Python, variables, conditionals, loops, and functions'),
-  ('g0000000-0000-0000-0000-000000000066', 'a0000000-0000-0000-0000-000000000003', 'CIS 11', 'Programming II: Data Structures', 4, 'Object-oriented programming, recursion, arrays, and data structures');
+  ('g0000000-0000-0000-0000-000000000066', 'a0000000-0000-0000-0000-000000000003', 'CIS 11', 'Programming II: Data Structures', 4, 'Object-oriented programming, recursion, arrays, and data structures') on conflict do nothing;
 
 -- ============================================================
 -- COURSES - Data Science Major (UC Berkeley)
@@ -27,7 +27,7 @@ insert into courses (id, institution_id, code, title, units, description) values
   ('h0000000-0000-0000-0000-000000000063', 'b0000000-0000-0000-0000-000000000004', 'MATH 53', 'Multivariable Calculus', 4, 'Vectors, multivariable differentiation, and integration'),
   ('h0000000-0000-0000-0000-000000000064', 'b0000000-0000-0000-0000-000000000004', 'MATH 54', 'Linear Algebra and Differential Equations', 4, 'Linear algebra, matrices, and differential equations'),
   ('h0000000-0000-0000-0000-000000000065', 'b0000000-0000-0000-0000-000000000004', 'COMPSCI 61A', 'The Structure and Interpretation of Computer Programs', 4, 'Programming fundamentals, abstraction, and functional programming'),
-  ('h0000000-0000-0000-0000-000000000066', 'b0000000-0000-0000-0000-000000000004', 'COMPSCI 61B', 'Data Structures', 4, 'Object-oriented programming, recursion, and data structures');
+  ('h0000000-0000-0000-0000-000000000066', 'b0000000-0000-0000-0000-000000000004', 'COMPSCI 61B', 'Data Structures', 4, 'Object-oriented programming, recursion, and data structures') on conflict do nothing;
 
 -- ============================================================
 -- ARTICULATION AGREEMENTS - Pasadena City College to UC Berkeley
@@ -39,7 +39,7 @@ insert into articulation_agreements (cc_course_id, university_course_id, cc_inst
   ('g0000000-0000-0000-0000-000000000063', 'h0000000-0000-0000-0000-000000000063', 'a0000000-0000-0000-0000-000000000003', 'b0000000-0000-0000-0000-000000000004', 'Data Science', 2024),
   ('g0000000-0000-0000-0000-000000000064', 'h0000000-0000-0000-0000-000000000064', 'a0000000-0000-0000-0000-000000000003', 'b0000000-0000-0000-0000-000000000004', 'Data Science', 2024),
   ('g0000000-0000-0000-0000-000000000065', 'h0000000-0000-0000-0000-000000000065', 'a0000000-0000-0000-0000-000000000003', 'b0000000-0000-0000-0000-000000000004', 'Data Science', 2024),
-  ('g0000000-0000-0000-0000-000000000066', 'h0000000-0000-0000-0000-000000000066', 'a0000000-0000-0000-0000-000000000003', 'b0000000-0000-0000-0000-000000000004', 'Data Science', 2024);
+  ('g0000000-0000-0000-0000-000000000066', 'h0000000-0000-0000-0000-000000000066', 'a0000000-0000-0000-0000-000000000003', 'b0000000-0000-0000-0000-000000000004', 'Data Science', 2024) on conflict do nothing;
 
 -- ============================================================
 -- PREREQUISITE RELATIONSHIPS
@@ -51,4 +51,4 @@ insert into prerequisites (course_id, prerequisite_course_id) values
   ('h0000000-0000-0000-0000-000000000062', 'h0000000-0000-0000-0000-000000000061'),  -- Berkeley Calc II requires Calc I
   ('h0000000-0000-0000-0000-000000000063', 'h0000000-0000-0000-0000-000000000062'),  -- Berkeley Multivariable requires Calc II
   ('h0000000-0000-0000-0000-000000000064', 'h0000000-0000-0000-0000-000000000062'),  -- Linear algebra requires Calc II
-  ('h0000000-0000-0000-0000-000000000066', 'h0000000-0000-0000-0000-000000000065');  -- CS 61B requires CS 61A
+  ('h0000000-0000-0000-0000-000000000066', 'h0000000-0000-0000-0000-000000000065') on conflict do nothing;  -- CS 61B requires CS 61A

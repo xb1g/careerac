@@ -21,7 +21,7 @@ insert into courses (id, institution_id, code, title, units, description) values
   ('30000000-0000-0000-0000-000000000006', 'a0000000-0000-0000-0000-000000000001', 'CS 55', 'Java Programming', 3, 'Object-oriented programming fundamentals'),
   ('30000000-0000-0000-0000-000000000007', 'a0000000-0000-0000-0000-000000000001', 'CS 57', 'Python Programming', 3, 'Python for data analysis'),
   ('30000000-0000-0000-0000-000000000008', 'a0000000-0000-0000-0000-000000000001', 'MATH 11', 'Discrete Mathematics', 3, 'Logic, sets, combinatorics, and graph theory'),
-  ('30000000-0000-0000-0000-000000000009', 'a0000000-0000-0000-0000-000000000001', 'ECON 1', 'Principles of Microeconomics', 3, 'Supply, demand, market structures, and consumer theory');
+  ('30000000-0000-0000-0000-000000000009', 'a0000000-0000-0000-0000-000000000001', 'ECON 1', 'Principles of Microeconomics', 3, 'Supply, demand, market structures, and consumer theory') on conflict do nothing;
 
 -- ============================================================
 -- TRANSFER PATHWAY REQUIREMENTS
@@ -104,4 +104,4 @@ insert into transfer_pathways (id, major_id, institution_id, requirements) value
 - UCSD: 3.5-3.8
 - UCD: 3.4-3.7
 - UCSB: 3.4-3.7
-');
+') on conflict do nothing;

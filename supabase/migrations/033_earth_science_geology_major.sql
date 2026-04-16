@@ -25,7 +25,7 @@ insert into courses (id, institution_id, code, title, units, description) values
   ('40000000-0000-0000-0000-00000000000a', 'a0000000-0000-0000-0000-000000000001', 'GEOL 4', 'Petrology', 3, 'Igneous, sedimentary, and metamorphic rocks'),
   ('40000000-0000-0000-0000-00000000000b', 'a0000000-0000-0000-0000-000000000001', 'GEOG 1', 'Physical Geography', 3, 'Landforms, climate, and ecosystems'),
   ('40000000-0000-0000-0000-00000000000c', 'a0000000-0000-0000-0000-000000000001', 'BIO 21', 'Environmental Science', 3, 'Ecology, conservation, and environmental issues'),
-  ('40000000-0000-0000-0000-00000000000d', 'a0000000-0000-0000-0000-000000000001', 'MATH 54', 'Statistics', 4, 'Descriptive and inferential statistics');
+  ('40000000-0000-0000-0000-00000000000d', 'a0000000-0000-0000-0000-000000000001', 'MATH 54', 'Statistics', 4, 'Descriptive and inferential statistics') on conflict do nothing;
 
 -- ============================================================
 -- TRANSFER PATHWAY REQUIREMENTS
@@ -121,4 +121,4 @@ insert into transfer_pathways (id, major_id, institution_id, requirements) value
 - UCSD: 3.3-3.6
 - UCSB: 3.3-3.6
 - UCSC: 3.2-3.5 (strong field program)
-');
+') on conflict do nothing;

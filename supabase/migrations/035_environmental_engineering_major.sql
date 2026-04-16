@@ -27,7 +27,7 @@ insert into courses (id, institution_id, code, title, units, description) values
   ('60000000-0000-0000-0000-00000000000c', 'a0000000-0000-0000-0000-000000000001', 'ENGR 12', 'Statics', 3, 'Force systems, equilibrium, and structural analysis'),
   ('60000000-0000-0000-0000-00000000000d', 'a0000000-0000-0000-0000-000000000001', 'ENVR 1', 'Environmental Science', 3, 'Ecology, conservation, and environmental issues'),
   ('60000000-0000-0000-0000-00000000000e', 'a0000000-0000-0000-0000-000000000001', 'GEOL 1', 'Physical Geology', 3, 'Earth materials, structures, and processes'),
-  ('60000000-0000-0000-0000-00000000000f', 'a0000000-0000-0000-0000-000000000001', 'CS 55', 'Java Programming', 3, 'Object-oriented programming fundamentals');
+  ('60000000-0000-0000-0000-00000000000f', 'a0000000-0000-0000-0000-000000000001', 'CS 55', 'Java Programming', 3, 'Object-oriented programming fundamentals') on conflict do nothing;
 
 -- ============================================================
 -- TRANSFER PATHWAY REQUIREMENTS
@@ -129,4 +129,4 @@ insert into transfer_pathways (id, major_id, institution_id, requirements) value
 - UCLA: 3.5-3.8
 - UCSD: 3.4-3.7
 - UCSB: 3.4-3.7
-');
+') on conflict do nothing;

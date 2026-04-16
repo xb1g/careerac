@@ -18,7 +18,7 @@ insert into courses (id, institution_id, code, title, units, description) values
   ('e0000000-0000-0000-0000-000000000008', 'a0000000-0000-0000-0000-000000000001', 'BIO 10', 'Introduction to Biology', 4, 'Cell biology, genetics, evolution (non-majors)'),
   ('e0000000-0000-0000-0000-000000000009', 'a0000000-0000-0000-0000-000000000001', 'CHEM 11', 'Introduction to Chemistry', 4, 'Basic chemistry for life sciences'),
   ('e0000000-0000-0000-0000-00000000000a', 'a0000000-0000-0000-0000-000000000001', 'ANTHRO 1', 'Introduction to Cultural Anthropology', 3, 'Study of human cultures and societies'),
-  ('e0000000-0000-0000-0000-00000000000b', 'a0000000-0000-0000-0000-000000000001', 'SOC 1', 'Introduction to Sociology', 3, 'Sociological concepts and social institutions');
+  ('e0000000-0000-0000-0000-00000000000b', 'a0000000-0000-0000-0000-000000000001', 'SOC 1', 'Introduction to Sociology', 3, 'Sociological concepts and social institutions') on conflict do nothing;
 
 -- ============================================================
 -- COURSES - Psychology Major (UCLA)
@@ -32,7 +32,7 @@ insert into courses (id, institution_id, code, title, units, description) values
   ('f0000000-0000-0000-0000-000000000006', 'b0000000-0000-0000-0000-000000000001', 'LIFESCI 7A', 'Cell and Molecular Biology', 5, 'Cell biology, genetics, and molecular biology'),
   ('f0000000-0000-0000-0000-000000000007', 'b0000000-0000-0000-0000-000000000001', 'CHEM 14A', 'General Chemistry for Life Scientists', 4, 'Chemistry for life science students'),
   ('f0000000-0000-0000-0000-000000000008', 'b0000000-0000-0000-0000-000000000001', 'SOCIOL 1', 'Introduction to Sociology', 4, 'Introduction to sociological thinking'),
-  ('f0000000-0000-0000-0000-000000000009', 'b0000000-0000-0000-0000-000000000001', 'ANTHRO 2', 'Introduction to Cultural Anthropology', 4, 'Cultural anthropology survey');
+  ('f0000000-0000-0000-0000-000000000009', 'b0000000-0000-0000-0000-000000000001', 'ANTHRO 2', 'Introduction to Cultural Anthropology', 4, 'Cultural anthropology survey') on conflict do nothing;
 
 -- ============================================================
 -- ARTICULATION AGREEMENTS - SMC to UCLA Psychology
@@ -45,7 +45,7 @@ insert into articulation_agreements (cc_course_id, university_course_id, cc_inst
   ('e0000000-0000-0000-0000-000000000008', 'f0000000-0000-0000-0000-000000000006', 'a0000000-0000-0000-0000-000000000001', 'b0000000-0000-0000-0000-000000000001', 'Psychology', 2024),
   ('e0000000-0000-0000-0000-000000000009', 'f0000000-0000-0000-0000-000000000007', 'a0000000-0000-0000-0000-000000000001', 'b0000000-0000-0000-0000-000000000001', 'Psychology', 2024),
   ('e0000000-0000-0000-0000-00000000000a', 'f0000000-0000-0000-0000-000000000009', 'a0000000-0000-0000-0000-000000000001', 'b0000000-0000-0000-0000-000000000001', 'Psychology', 2024),
-  ('e0000000-0000-0000-0000-00000000000b', 'f0000000-0000-0000-0000-000000000008', 'a0000000-0000-0000-0000-000000000001', 'b0000000-0000-0000-0000-000000000001', 'Psychology', 2024);
+  ('e0000000-0000-0000-0000-00000000000b', 'f0000000-0000-0000-0000-000000000008', 'a0000000-0000-0000-0000-000000000001', 'b0000000-0000-0000-0000-000000000001', 'Psychology', 2024) on conflict do nothing;
 
 -- ============================================================
 -- COURSES - Economics Major (De Anza College)
@@ -56,7 +56,7 @@ insert into courses (id, institution_id, code, title, units, description) values
   ('e0000000-0000-0000-0000-000000000011', 'a0000000-0000-0000-0000-000000000002', 'ECON 2', 'Principles of Macroeconomics', 4, 'National income, employment, monetary policy'),
   ('e0000000-0000-0000-0000-000000000012', 'a0000000-0000-0000-0000-000000000002', 'ECON 3', 'Money, Banking and Financial Institutions', 4, 'Financial markets and monetary theory'),
   ('e0000000-0000-0000-0000-000000000013', 'a0000000-0000-0000-0000-000000000002', 'ECON 5', 'International Economics', 4, 'International trade and finance'),
-  ('e0000000-0000-0000-0000-000000000014', 'a0000000-0000-0000-0000-000000000002', 'MATH 1A', 'Single Variable Calculus', 5, 'Differential and integral calculus');
+  ('e0000000-0000-0000-0000-000000000014', 'a0000000-0000-0000-0000-000000000002', 'MATH 1A', 'Single Variable Calculus', 5, 'Differential and integral calculus') on conflict do nothing;
 
 -- ============================================================
 -- COURSES - Economics Major (UC Berkeley)
@@ -67,7 +67,7 @@ insert into courses (id, institution_id, code, title, units, description) values
   ('f0000000-0000-0000-0000-000000000012', 'b0000000-0000-0000-0000-000000000004', 'MATH 1A', 'Calculus', 4, 'Single variable calculus'),
   ('f0000000-0000-0000-0000-000000000013', 'b0000000-0000-0000-0000-000000000004', 'MATH 1B', 'Calculus', 4, 'Integration and series'),
   ('f0000000-0000-0000-0000-000000000014', 'b0000000-0000-0000-0000-000000000004', 'ECON 100A', 'Microeconomic Theory', 4, 'Intermediate microeconomics'),
-  ('f0000000-0000-0000-0000-000000000015', 'b0000000-0000-0000-0000-000000000004', 'ECON 100B', 'Macroeconomic Theory', 4, 'Intermediate macroeconomics');
+  ('f0000000-0000-0000-0000-000000000015', 'b0000000-0000-0000-0000-000000000004', 'ECON 100B', 'Macroeconomic Theory', 4, 'Intermediate macroeconomics') on conflict do nothing;
 
 -- ============================================================
 -- ARTICULATION AGREEMENTS - De Anza to UC Berkeley Economics
@@ -76,7 +76,7 @@ insert into articulation_agreements (cc_course_id, university_course_id, cc_inst
   ('e0000000-0000-0000-0000-000000000010', 'f0000000-0000-0000-0000-000000000010', 'a0000000-0000-0000-0000-000000000002', 'b0000000-0000-0000-0000-000000000004', 'Economics', 2024),
   ('e0000000-0000-0000-0000-000000000011', 'f0000000-0000-0000-0000-000000000011', 'a0000000-0000-0000-0000-000000000002', 'b0000000-0000-0000-0000-000000000004', 'Economics', 2024),
   ('e0000000-0000-0000-0000-000000000014', 'f0000000-0000-0000-0000-000000000012', 'a0000000-0000-0000-0000-000000000002', 'b0000000-0000-0000-0000-000000000004', 'Economics', 2024),
-  ('c0000000-0000-0000-0000-000000000015', 'f0000000-0000-0000-0000-000000000013', 'a0000000-0000-0000-0000-000000000002', 'b0000000-0000-0000-0000-000000000004', 'Economics', 2024);
+  ('c0000000-0000-0000-0000-000000000015', 'f0000000-0000-0000-0000-000000000013', 'a0000000-0000-0000-0000-000000000002', 'b0000000-0000-0000-0000-000000000004', 'Economics', 2024) on conflict do nothing;
 
 -- ============================================================
 -- COURSES - English Major (Pasadena City College)
@@ -91,7 +91,7 @@ insert into courses (id, institution_id, code, title, units, description) values
   ('e0000000-0000-0000-0000-000000000025', 'a0000000-0000-0000-0000-000000000003', 'ENGL 44', 'American Literature 1865 to Present', 3, 'Survey of American literature from 1865'),
   ('e0000000-0000-0000-0000-000000000026', 'a0000000-0000-0000-0000-000000000003', 'ENGL 46', 'Introduction to Shakespeare', 3, 'Study of Shakespeare''s major works'),
   ('e0000000-0000-0000-0000-000000000027', 'a0000000-0000-0000-0000-000000000003', 'SPAN 1', 'Elementary Spanish I', 5, 'Introduction to Spanish language'),
-  ('e0000000-0000-0000-0000-000000000028', 'a0000000-0000-0000-0000-000000000003', 'SPAN 2', 'Elementary Spanish II', 5, 'Continuation of Spanish I');
+  ('e0000000-0000-0000-0000-000000000028', 'a0000000-0000-0000-0000-000000000003', 'SPAN 2', 'Elementary Spanish II', 5, 'Continuation of Spanish I') on conflict do nothing;
 
 -- ============================================================
 -- COURSES - English Major (UCLA)
@@ -105,7 +105,7 @@ insert into courses (id, institution_id, code, title, units, description) values
   ('f0000000-0000-0000-0000-000000000025', 'b0000000-0000-0000-0000-000000000001', 'ENGL 11B', 'American Literature 1865-Present', 5, 'Survey of American literature from 1865'),
   ('f0000000-0000-0000-0000-000000000026', 'b0000000-0000-0000-0000-000000000001', 'ENGL 90', 'Shakespeare', 5, 'Study of Shakespeare''s plays'),
   ('f0000000-0000-0000-0000-000000000027', 'b0000000-0000-0000-0000-000000000001', 'SPAN 1', 'Elementary Spanish', 5, 'Introduction to Spanish'),
-  ('f0000000-0000-0000-0000-000000000028', 'b0000000-0000-0000-0000-000000000001', 'SPAN 2', 'Elementary Spanish', 5, 'Continuation of Spanish');
+  ('f0000000-0000-0000-0000-000000000028', 'b0000000-0000-0000-0000-000000000001', 'SPAN 2', 'Elementary Spanish', 5, 'Continuation of Spanish') on conflict do nothing;
 
 -- ============================================================
 -- ARTICULATION AGREEMENTS - PCC to UCLA English
@@ -117,7 +117,7 @@ insert into articulation_agreements (cc_course_id, university_course_id, cc_inst
   ('e0000000-0000-0000-0000-000000000025', 'f0000000-0000-0000-0000-000000000025', 'a0000000-0000-0000-0000-000000000003', 'b0000000-0000-0000-0000-000000000001', 'English', 2024),
   ('e0000000-0000-0000-0000-000000000026', 'f0000000-0000-0000-0000-000000000026', 'a0000000-0000-0000-0000-000000000003', 'b0000000-0000-0000-0000-000000000001', 'English', 2024),
   ('e0000000-0000-0000-0000-000000000027', 'f0000000-0000-0000-0000-000000000027', 'a0000000-0000-0000-0000-000000000003', 'b0000000-0000-0000-0000-000000000001', 'English', 2024),
-  ('e0000000-0000-0000-0000-000000000028', 'f0000000-0000-0000-0000-000000000028', 'a0000000-0000-0000-0000-000000000003', 'b0000000-0000-0000-0000-000000000001', 'English', 2024);
+  ('e0000000-0000-0000-0000-000000000028', 'f0000000-0000-0000-0000-000000000028', 'a0000000-0000-0000-0000-000000000003', 'b0000000-0000-0000-0000-000000000001', 'English', 2024) on conflict do nothing;
 
 -- ============================================================
 -- COURSES - Sociology Major (Foothill College)
@@ -129,7 +129,7 @@ insert into courses (id, institution_id, code, title, units, description) values
   ('e0000000-0000-0000-0000-000000000032', 'a0000000-0000-0000-0000-000000004', 'SOC 3', 'Marriage and Family', 5, 'Sociology of family and relationships'),
   ('e0000000-0000-0000-0000-000000000033', 'a0000000-0000-0000-0000-000000000004', 'SOC 10', 'Race and Ethnic Relations', 5, 'Race, ethnicity, and social stratification'),
   ('e0000000-0000-0000-0000-000000000034', 'a0000000-0000-0000-0000-000000000004', 'SOC 14', 'Sociology of Crime', 5, 'Crime, delinquency, and social control'),
-  ('e0000000-0000-0000-0000-000000000035', 'a0000000-0000-0000-0000-000000000004', 'MATH 10', 'Elementary Statistics', 5, 'Descriptive and inferential statistics');
+  ('e0000000-0000-0000-0000-000000000035', 'a0000000-0000-0000-0000-000000000004', 'MATH 10', 'Elementary Statistics', 5, 'Descriptive and inferential statistics') on conflict do nothing;
 
 -- ============================================================
 -- COURSES - Sociology Major (UC Davis)
@@ -138,7 +138,7 @@ insert into courses (id, institution_id, code, title, units, description) values
   ('f0000000-0000-0000-0000-000000000030', 'b0000000-0000-0000-0000-000000000007', 'SOC 1', 'Introduction to Sociology', 4, 'Introduction to sociological thinking'),
   ('f0000000-0000-0000-0000-000000000031', 'b0000000-0000-0000-0000-000000000007', 'SOC 2', 'Self and Society', 4, 'Sociology of everyday life'),
   ('f0000000-0000-0000-0000-000000000032', 'b0000000-0000-0000-0000-000000000007', 'SOC 46A', 'Introduction to Social Research', 4, 'Research methods in sociology'),
-  ('f0000000-0000-0000-0000-000000000033', 'b0000000-0000-0000-0000-000000000007', 'STAT 7', 'Statistical Methods', 4, 'Applied statistics for social sciences');
+  ('f0000000-0000-0000-0000-000000000033', 'b0000000-0000-0000-0000-000000000007', 'STAT 7', 'Statistical Methods', 4, 'Applied statistics for social sciences') on conflict do nothing;
 
 -- ============================================================
 -- ARTICULATION AGREEMENTS - Foothill to UC Davis Sociology
@@ -146,7 +146,7 @@ insert into courses (id, institution_id, code, title, units, description) values
 insert into articulation_agreements (cc_course_id, university_course_id, cc_institution_id, university_institution_id, major, effective_year) values
   ('e0000000-0000-0000-0000-000000000030', 'f0000000-0000-0000-0000-000000000030', 'a0000000-0000-0000-0000-000000000004', 'b0000000-0000-0000-0000-000000000007', 'Sociology', 2024),
   ('e0000000-0000-0000-0000-000000000031', 'f0000000-0000-0000-0000-000000000031', 'a0000000-0000-0000-0000-000000000004', 'b0000000-0000-0000-0000-000000000007', 'Sociology', 2024),
-  ('e0000000-0000-0000-0000-000000000035', 'f0000000-0000-0000-0000-000000000033', 'a0000000-0000-0000-0000-000000000004', 'b0000000-0000-0000-0000-000000000007', 'Sociology', 2024);
+  ('e0000000-0000-0000-0000-000000000035', 'f0000000-0000-0000-0000-000000000033', 'a0000000-0000-0000-0000-000000000004', 'b0000000-0000-0000-0000-000000000007', 'Sociology', 2024) on conflict do nothing;
 
 -- ============================================================
 -- COURSES - History Major (Berkeley City College)
@@ -158,7 +158,7 @@ insert into courses (id, institution_id, code, title, units, description) values
   ('e0000000-0000-0000-0000-000000000042', 'a0000000-0000-0000-0000-000000000005', 'HIST 7A', 'History of the United States to 1877', 3, 'American history through Reconstruction'),
   ('e0000000-0000-0000-0000-000000000043', 'a0000000-0000-0000-0000-000000000005', 'HIST 7B', 'History of the United States Since 1865', 3, 'American history from Reconstruction'),
   ('e0000000-0000-0000-0000-000000000044', 'a0000000-0000-0000-0000-000000000005', 'HIST 12', 'Introduction to Asian American History', 3, 'History of Asian Americans'),
-  ('e0000000-0000-0000-0000-000000000045', 'a0000000-0000-0000-0000-000000000005', 'HIST 19', 'Introduction to Latin American History', 3, 'Latin American history survey');
+  ('e0000000-0000-0000-0000-000000000045', 'a0000000-0000-0000-0000-000000000005', 'HIST 19', 'Introduction to Latin American History', 3, 'Latin American history survey') on conflict do nothing;
 
 -- ============================================================
 -- COURSES - History Major (UC Berkeley)
@@ -168,7 +168,7 @@ insert into courses (id, institution_id, code, title, units, description) values
   ('f0000000-0000-0000-0000-000000000041', 'b0000000-0000-0000-0000-000000000004', 'HIST 1B', 'Western Civilization', 4, 'Western civilization survey'),
   ('f0000000-0000-0000-0000-000000000042', 'b0000000-0000-0000-0000-000000000004', 'HIST 7A', 'The United States to 1865', 4, 'American history to Civil War'),
   ('f0000000-0000-0000-0000-000000000043', 'b0000000-0000-0000-0000-000000000004', 'HIST 7B', 'The United States Since 1865', 4, 'American history from Civil War'),
-  ('f0000000-0000-0000-0000-000000000044', 'b0000000-0000-0000-0000-000000000004', 'HIST 100', 'Special Topics in History', 4, 'Historical methodology');
+  ('f0000000-0000-0000-0000-000000000044', 'b0000000-0000-0000-0000-000000000004', 'HIST 100', 'Special Topics in History', 4, 'Historical methodology') on conflict do nothing;
 
 -- ============================================================
 -- ARTICULATION AGREEMENTS - BCC to UC Berkeley History
@@ -178,7 +178,7 @@ insert into articulation_agreements (cc_course_id, university_course_id, cc_inst
   ('e0000000-0000-0000-0000-000000000041', 'f0000000-0000-0000-0000-000000000041', 'a0000000-0000-0000-0000-000000000005', 'b0000000-0000-0000-0000-000000000004', 'History', 2024),
   ('e0000000-0000-0000-0000-000000000042', 'f0000000-0000-0000-0000-000000000042', 'a0000000-0000-0000-0000-000000000005', 'b0000000-0000-0000-0000-000000000004', 'History', 2024),
   ('e0000000-0000-0000-0000-000000000043', 'f0000000-0000-0000-0000-000000000043', 'a0000000-0000-0000-0000-000000000005', 'b0000000-0000-0000-0000-000000000004', 'History', 2024),
-  ('e0000000-0000-0000-0000-000000000045', 'f0000000-0000-0000-0000-000000000044', 'a0000000-0000-0000-0000-000000000005', 'b0000000-0000-0000-0000-000000000004', 'History', 2024);
+  ('e0000000-0000-0000-0000-000000000045', 'f0000000-0000-0000-0000-000000000044', 'a0000000-0000-0000-0000-000000000005', 'b0000000-0000-0000-0000-000000000004', 'History', 2024) on conflict do nothing;
 
 -- ============================================================
 -- COURSES - Political Science Major (Long Beach City College)
@@ -190,7 +190,7 @@ insert into courses (id, institution_id, code, title, units, description) values
   ('e0000000-0000-0000-0000-000000000052', 'a0000000-0000-0000-0000-000000000006', 'POLSC 5', 'Comparative Government', 3, 'Comparison of political systems'),
   ('e0000000-0000-0000-0000-000000000053', 'a0000000-0000-0000-0000-000000000006', 'POLSC 7', 'International Relations', 3, 'International politics and institutions'),
   ('e0000000-0000-0000-0000-000000000054', 'a0000000-0000-0000-0000-000000000006', 'POLSC 10', 'Introduction to Public Policy', 3, 'Public policy analysis and process'),
-  ('e0000000-0000-0000-0000-000000000055', 'a0000000-0000-0000-0000-000000000006', 'MATH 37', 'Statistics for the Social Sciences', 4, 'Statistical methods for social sciences');
+  ('e0000000-0000-0000-0000-000000000055', 'a0000000-0000-0000-0000-000000000006', 'MATH 37', 'Statistics for the Social Sciences', 4, 'Statistical methods for social sciences') on conflict do nothing;
 
 -- ============================================================
 -- COURSES - Political Science Major (UC San Diego)
@@ -200,7 +200,7 @@ insert into courses (id, institution_id, code, title, units, description) values
   ('f0000000-0000-0000-0000-000000000051', 'b0000000-0000-0000-0000-000000000005', 'POLI 11D', 'Introduction to Political Science', 4, 'Political science methods and concepts'),
   ('f0000000-0000-0000-0000-000000000052', 'b0000000-0000-0000-0000-000000000005', 'POLI 12D', 'International Relations', 4, 'International politics'),
   ('f0000000-0000-0000-0000-000000000053', 'b0000000-0000-0000-0000-000000000005', 'POLI 13D', 'Introduction to Political Theory', 4, 'Political theory and philosophy'),
-  ('f0000000-0000-0000-0000-000000000054', 'b0000000-0000-0000-0000-000000000005', 'POLI 100H', 'Research Design', 4, 'Research methods in political science');
+  ('f0000000-0000-0000-0000-000000000054', 'b0000000-0000-0000-0000-000000000005', 'POLI 100H', 'Research Design', 4, 'Research methods in political science') on conflict do nothing;
 
 -- ============================================================
 -- ARTICULATION AGREEMENTS - LBCC to UCSD Political Science
@@ -209,7 +209,7 @@ insert into articulation_agreements (cc_course_id, university_course_id, cc_inst
   ('e0000000-0000-0000-0000-000000000050', 'f0000000-0000-0000-0000-000000000050', 'a0000000-0000-0000-0000-000000000006', 'b0000000-0000-0000-0000-000000000005', 'Political Science', 2024),
   ('e0000000-0000-0000-0000-000000000051', 'f0000000-0000-0000-0000-000000000053', 'a0000000-0000-0000-0000-000000000006', 'b0000000-0000-0000-0000-000000000005', 'Political Science', 2024),
   ('e0000000-0000-0000-0000-000000000052', 'f0000000-0000-0000-0000-000000000051', 'a0000000-0000-0000-0000-000000000006', 'b0000000-0000-0000-0000-000000000005', 'Political Science', 2024),
-  ('e0000000-0000-0000-0000-000000000053', 'f0000000-0000-0000-0000-000000000052', 'a0000000-0000-0000-0000-000000000006', 'b0000000-0000-0000-0000-000000000005', 'Political Science', 2024);
+  ('e0000000-0000-0000-0000-000000000053', 'f0000000-0000-0000-0000-000000000052', 'a0000000-0000-0000-0000-000000000006', 'b0000000-0000-0000-0000-000000000005', 'Political Science', 2024) on conflict do nothing;
 
 -- ============================================================
 -- COURSES - Biology Major (LA Pierce College)  
@@ -225,7 +225,7 @@ insert into courses (id, institution_id, code, title, units, description) values
   ('e0000000-0000-0000-0000-000000000066', 'a0000000-0000-0000-0000-000000000007', 'MATH 261', 'Calculus I', 5, 'Differential and integral calculus'),
   ('e0000000-0000-0000-0000-000000000067', 'a0000000-0000-0000-0000-000000000007', 'MATH 262', 'Calculus II', 5, 'Integration techniques and series'),
   ('e0000000-0000-0000-0000-000000000068', 'a0000000-0000-0000-0000-000000000007', 'PHYS 101', 'General Physics I', 4, 'Mechanics and heat'),
-  ('e0000000-0000-0000-0000-000000000069', 'a0000000-0000-0000-0000-000000000007', 'PHYS 102', 'General Physics II', 4, 'Electricity, magnetism, optics');
+  ('e0000000-0000-0000-0000-000000000069', 'a0000000-0000-0000-0000-000000000007', 'PHYS 102', 'General Physics II', 4, 'Electricity, magnetism, optics') on conflict do nothing;
 
 -- ============================================================
 -- COURSES - Biology Major (UC Davis)
@@ -240,7 +240,7 @@ insert into courses (id, institution_id, code, title, units, description) values
   ('f0000000-0000-0000-0000-000000000066', 'b0000000-0000-0000-0000-000000000007', 'MAT 21A', 'Calculus', 4, 'Single variable calculus'),
   ('f0000000-0000-0000-0000-000000000067', 'b0000000-0000-0000-0000-000000000007', 'MAT 21B', 'Calculus', 4, 'Integration and applications'),
   ('f0000000-0000-0000-0000-000000000068', 'b0000000-0000-0000-0000-000000000007', 'PHY 7A', 'General Physics', 4, 'Mechanics and oscillations'),
-  ('f0000000-0000-0000-0000-000000000069', 'b0000000-0000-0000-0000-000000000007', 'PHY 7B', 'General Physics', 4, 'Electromagnetism and waves');
+  ('f0000000-0000-0000-0000-000000000069', 'b0000000-0000-0000-0000-000000000007', 'PHY 7B', 'General Physics', 4, 'Electromagnetism and waves') on conflict do nothing;
 
 -- ============================================================
 -- ARTICULATION AGREEMENTS - Pierce to UC Davis Biology
@@ -252,7 +252,7 @@ insert into articulation_agreements (cc_course_id, university_course_id, cc_inst
   ('e0000000-0000-0000-0000-000000000063', 'f0000000-0000-0000-0000-000000000063', 'a0000000-0000-0000-0000-000000000007', 'b0000000-0000-0000-0000-000000000007', 'Biology', 2024),
   ('e0000000-0000-0000-0000-000000000064', 'f0000000-0000-0000-0000-000000000064', 'a0000000-0000-0000-0000-000000000007', 'b0000000-0000-0000-0000-000000000007', 'Biology', 2024),
   ('e0000000-0000-0000-0000-000000000065', 'f0000000-0000-0000-0000-000000000065', 'a0000000-0000-0000-0000-000000000007', 'b0000000-0000-0000-0000-000000000007', 'Biology', 2024),
-  ('e0000000-0000-0000-0000-000000000066', 'f0000000-0000-0000-0000-000000000066', 'a0000000-0000-0000-0000-000000000007', 'b0000000-0000-0000-0000-000000000007', 'Biology', 2024);
+  ('e0000000-0000-0000-0000-000000000066', 'f0000000-0000-0000-0000-000000000066', 'a0000000-0000-0000-0000-000000000007', 'b0000000-0000-0000-0000-000000000007', 'Biology', 2024) on conflict do nothing;
 
 -- ============================================================
 -- PREREQUISITES
@@ -261,33 +261,33 @@ insert into articulation_agreements (cc_course_id, university_course_id, cc_inst
 insert into prerequisites (course_id, prerequisite_course_id) values
   ('e0000000-0000-0000-0000-000000000007', 'c0000000-0000-0000-0000-000000000008'),  -- Calc for Life Sciences requires Calc I
   ('e0000000-0000-0000-0000-000000000009', 'c0000000-0000-0000-0000-000000000008'),  -- Chem requires Math
-  ('e0000000-0000-0000-0000-000000000008', 'c0000000-0000-0000-0000-00000000000f');  -- Bio requires English
+  ('e0000000-0000-0000-0000-000000000008', 'c0000000-0000-0000-0000-00000000000f') on conflict do nothing;  -- Bio requires English
 
 -- Economics prerequisites
 insert into prerequisites (course_id, prerequisite_course_id) values
   ('e0000000-0000-0000-0000-000000000012', 'e0000000-0000-0000-0000-000000000010'),  -- Econ 3 requires Econ 1
   ('e0000000-0000-0000-0000-000000000013', 'e0000000-0000-0000-0000-000000000011'),  -- Econ 5 requires Econ 2
-  ('c0000000-0000-0000-0000-000000000015', 'c0000000-0000-0000-0000-000000000014');  -- De Anza Calc II requires Calc I
+  ('c0000000-0000-0000-0000-000000000015', 'c0000000-0000-0000-0000-000000000014') on conflict do nothing;  -- De Anza Calc II requires Calc I
 
 -- English prerequisites
 insert into prerequisites (course_id, prerequisite_course_id) values
   ('e0000000-0000-0000-0000-000000000022', 'e0000000-0000-0000-0000-000000000021'),  -- British Lit requires Comp
   ('e0000000-0000-0000-0000-000000000023', 'e0000000-0000-0000-0000-000000000021'),  -- British Lit II requires Comp
-  ('e0000000-0000-0000-0000-000000000028', 'e0000000-0000-0000-0000-000000000027');  -- Spanish II requires Spanish I
+  ('e0000000-0000-0000-0000-000000000028', 'e0000000-0000-0000-0000-000000000027') on conflict do nothing;  -- Spanish II requires Spanish I
 
 -- Sociology prerequisites
 insert into prerequisites (course_id, prerequisite_course_id) values
   ('e0000000-0000-0000-0000-000000000031', 'e0000000-0000-0000-0000-000000000030'),  -- Social Problems requires Intro
   ('e0000000-0000-0000-0000-000000000032', 'e0000000-0000-0000-0000-000000000030'),  -- Marriage/Family requires Intro
   ('e0000000-0000-0000-0000-000000000033', 'e0000000-0000-0000-0000-000000000030'),  -- Race Relations requires Intro
-  ('e0000000-0000-0000-0000-000000000034', 'e0000000-0000-0000-0000-000000000030');  -- Crime requires Intro
+  ('e0000000-0000-0000-0000-000000000034', 'e0000000-0000-0000-0000-000000000030') on conflict do nothing;  -- Crime requires Intro
 
 -- History prerequisites (none for intro courses)
 
 -- Political Science prerequisites
 insert into prerequisites (course_id, prerequisite_course_id) values
   ('e0000000-0000-0000-0000-000000000052', 'e0000000-0000-0000-0000-000000000050'),  -- Comparative requires American
-  ('e0000000-0000-0000-0000-000000000054', 'e0000000-0000-0000-0000-000000000050');  -- Public Policy requires American
+  ('e0000000-0000-0000-0000-000000000054', 'e0000000-0000-0000-0000-000000000050') on conflict do nothing;  -- Public Policy requires American
 
 -- Biology prerequisites
 insert into prerequisites (course_id, prerequisite_course_id) values
@@ -298,7 +298,7 @@ insert into prerequisites (course_id, prerequisite_course_id) values
   ('e0000000-0000-0000-0000-000000000067', 'e0000000-0000-0000-0000-000000000066'),  -- Calc II requires Calc I
   ('e0000000-0000-0000-0000-000000000069', 'e0000000-0000-0000-0000-000000000068'),  -- Physics II requires Physics I
   ('e0000000-0000-0000-0000-000000000068', 'e0000000-0000-0000-0000-000000000067'),  -- Physics requires Calc II
-  ('e0000000-0000-0000-0000-000000000062', 'e0000000-0000-0000-0000-000000000066');  -- Chem requires concurrent Calc
+  ('e0000000-0000-0000-0000-000000000062', 'e0000000-0000-0000-0000-000000000066') on conflict do nothing;  -- Chem requires concurrent Calc
 
 -- ============================================================
 -- ADDITIONAL COURSES FOR EXISTING CCs (Philosophy, Communication, Anthropology)
@@ -311,7 +311,7 @@ insert into courses (id, institution_id, code, title, units, description) values
   ('e0000000-0000-0000-0000-000000000071', 'a0000000-0000-0000-0000-000000000001', 'PHIL 5', 'Symbolic Logic', 3, 'Introduction to formal logic'),
   ('e0000000-0000-0000-0000-000000000072', 'a0000000-0000-0000-0000-000000000001', 'PHIL 6', 'Ancient Philosophy', 3, 'Greek and Roman philosophy'),
   ('e0000000-0000-0000-0000-000000000073', 'a0000000-0000-0000-0000-000000000001', 'PHIL 7', 'Modern Philosophy', 3, 'Philosophy from Descartes to Kant'),
-  ('e0000000-0000-0000-0000-000000000074', 'a0000000-0000-0000-0000-000000000001', 'PHIL 10', 'Ethics', 3, 'Moral philosophy and ethical theory');
+  ('e0000000-0000-0000-0000-000000000074', 'a0000000-0000-0000-0000-000000000001', 'PHIL 10', 'Ethics', 3, 'Moral philosophy and ethical theory') on conflict do nothing;
 
 -- Philosophy courses for UCLA
 insert into courses (id, institution_id, code, title, units, description) values
@@ -319,7 +319,7 @@ insert into courses (id, institution_id, code, title, units, description) values
   ('f0000000-0000-0000-0000-000000000071', 'b0000000-0000-0000-0000-000000000001', 'PHIL 5', 'Logic, First Course', 5, 'Introduction to formal logic'),
   ('f0000000-0000-0000-0000-000000000072', 'b0000000-0000-0000-0000-000000000001', 'PHIL 6', 'Ancient Philosophy', 4, 'Greek philosophy'),
   ('f0000000-0000-0000-0000-000000000073', 'b0000000-0000-0000-0000-000000000001', 'PHIL 7', 'Modern Philosophy', 4, 'Modern European philosophy'),
-  ('f0000000-0000-0000-0000-000000000074', 'b0000000-0000-0000-0000-000000000001', 'PHIL 22', 'Ethics', 5, 'Introduction to ethical theory');
+  ('f0000000-0000-0000-0000-000000000074', 'b0000000-0000-0000-0000-000000000001', 'PHIL 22', 'Ethics', 5, 'Introduction to ethical theory') on conflict do nothing;
 
 -- Articulation agreements for Philosophy
 insert into articulation_agreements (cc_course_id, university_course_id, cc_institution_id, university_institution_id, major, effective_year) values
@@ -327,7 +327,7 @@ insert into articulation_agreements (cc_course_id, university_course_id, cc_inst
   ('e0000000-0000-0000-0000-000000000071', 'f0000000-0000-0000-0000-000000000071', 'a0000000-0000-0000-0000-000000000001', 'b0000000-0000-0000-0000-000000000001', 'Philosophy', 2024),
   ('e0000000-0000-0000-0000-000000000072', 'f0000000-0000-0000-0000-000000000072', 'a0000000-0000-0000-0000-000000000001', 'b0000000-0000-0000-0000-000000000001', 'Philosophy', 2024),
   ('e0000000-0000-0000-0000-000000000073', 'f0000000-0000-0000-0000-000000000073', 'a0000000-0000-0000-0000-000000000001', 'b0000000-0000-0000-0000-000000000001', 'Philosophy', 2024),
-  ('e0000000-0000-0000-0000-000000000074', 'f0000000-0000-0000-0000-000000000074', 'a0000000-0000-0000-0000-000000000001', 'b0000000-0000-0000-0000-000000000001', 'Philosophy', 2024);
+  ('e0000000-0000-0000-0000-000000000074', 'f0000000-0000-0000-0000-000000000074', 'a0000000-0000-0000-0000-000000000001', 'b0000000-0000-0000-0000-000000000001', 'Philosophy', 2024) on conflict do nothing;
 
 -- Communication courses for De Anza
 insert into courses (id, institution_id, code, title, units, description) values
@@ -336,7 +336,7 @@ insert into courses (id, institution_id, code, title, units, description) values
   ('e0000000-0000-0000-0000-000000000082', 'a0000000-0000-0000-0000-000000000002', 'COMM 2', 'Interpersonal Communication', 4, 'Communication in relationships'),
   ('e0000000-0000-0000-0000-000000000083', 'a0000000-0000-0000-0000-000000000002', 'COMM 3', 'Public Speaking', 4, 'Oral communication and presentation'),
   ('e0000000-0000-0000-0000-000000000084', 'a0000000-0000-0000-0000-000000000002', 'COMM 4', 'Small Group Communication', 4, 'Group dynamics and leadership'),
-  ('e0000000-0000-0000-0000-000000000085', 'a0000000-0000-0000-0000-000000000002', 'LING 1', 'Introduction to Linguistics', 4, 'Study of language structure');
+  ('e0000000-0000-0000-0000-000000000085', 'a0000000-0000-0000-0000-000000000002', 'LING 1', 'Introduction to Linguistics', 4, 'Study of language structure') on conflict do nothing;
 
 -- Communication courses for SJSU
 insert into courses (id, institution_id, code, title, units, description) values
@@ -344,7 +344,7 @@ insert into courses (id, institution_id, code, title, units, description) values
   ('f0000000-0000-0000-0000-000000000081', 'b0000000-0000-0000-0000-000000000002', 'COMM 20', 'Public Speaking', 3, 'Public speaking and presentation'),
   ('f0000000-0000-0000-0000-000000000082', 'b0000000-0000-0000-0000-000000000002', 'COMM 30', 'Interpersonal Communication', 3, 'Interpersonal communication theory'),
   ('f0000000-0000-0000-0000-000000000083', 'b0000000-0000-0000-0000-000000000002', 'COMM 40', 'Group Communication', 3, 'Small group communication'),
-  ('f0000000-0000-0000-0000-000000000084', 'b0000000-0000-0000-0000-000000000002', 'LING 101', 'Introduction to Linguistics', 3, 'Introduction to language science');
+  ('f0000000-0000-0000-0000-000000000084', 'b0000000-0000-0000-0000-000000000002', 'LING 101', 'Introduction to Linguistics', 3, 'Introduction to language science') on conflict do nothing;
 
 -- Articulation agreements for Communication
 insert into articulation_agreements (cc_course_id, university_course_id, cc_institution_id, university_institution_id, major, effective_year) values
@@ -352,28 +352,28 @@ insert into articulation_agreements (cc_course_id, university_course_id, cc_inst
   ('e0000000-0000-0000-0000-000000000082', 'f0000000-0000-0000-0000-000000000082', 'a0000000-0000-0000-0000-000000000002', 'b0000000-0000-0000-0000-000000000002', 'Communication', 2024),
   ('e0000000-0000-0000-0000-000000000083', 'f0000000-0000-0000-0000-000000000081', 'a0000000-0000-0000-0000-000000000002', 'b0000000-0000-0000-0000-000000000002', 'Communication', 2024),
   ('e0000000-0000-0000-0000-000000000084', 'f0000000-0000-0000-0000-000000000083', 'a0000000-0000-0000-0000-000000000002', 'b0000000-0000-0000-0000-000000000002', 'Communication', 2024),
-  ('e0000000-0000-0000-0000-000000000085', 'f0000000-0000-0000-0000-000000000084', 'a0000000-0000-0000-0000-000000000002', 'b0000000-0000-0000-0000-000000000002', 'Communication', 2024);
+  ('e0000000-0000-0000-0000-000000000085', 'f0000000-0000-0000-0000-000000000084', 'a0000000-0000-0000-0000-000000000002', 'b0000000-0000-0000-0000-000000000002', 'Communication', 2024) on conflict do nothing;
 
 -- Anthropology courses for Pasadena City College
 insert into courses (id, institution_id, code, title, units, description) values
   ('e0000000-0000-0000-0000-000000000090', 'a0000000-0000-0000-0000-000000000003', 'ANTHRO 2', 'Physical Anthropology', 3, 'Human evolution and variation'),
   ('e0000000-0000-0000-0000-000000000091', 'a0000000-0000-0000-0000-000000000003', 'ANTHRO 3', 'Cultural Anthropology', 3, 'Study of living cultures'),
   ('e0000000-0000-0000-0000-000000000092', 'a0000000-0000-0000-0000-000000000003', 'ANTHRO 4', 'Introduction to Archaeology', 3, 'Archaeological methods and theory'),
-  ('e0000000-0000-0000-0000-000000000093', 'a0000000-0000-0000-0000-000000000003', 'ANTHRO 5', 'Native American Cultures', 3, 'Indigenous peoples of North America');
+  ('e0000000-0000-0000-0000-000000000093', 'a0000000-0000-0000-0000-000000000003', 'ANTHRO 5', 'Native American Cultures', 3, 'Indigenous peoples of North America') on conflict do nothing;
 
 -- Anthropology courses for USC
 insert into courses (id, institution_id, code, title, units, description) values
   ('f0000000-0000-0000-0000-000000000090', 'b0000000-0000-0000-0000-000000000003', 'ANTH 100', 'Introduction to Anthropology', 4, 'Biological anthropology and archaeology'),
   ('f0000000-0000-0000-0000-000000000091', 'b0000000-0000-0000-0000-000000000003', 'ANTH 200', 'Cultural Anthropology', 4, 'Theory and method in cultural anthropology'),
   ('f0000000-0000-0000-0000-000000000092', 'b0000000-0000-0000-0000-000000000003', 'ANTH 202', 'Archaeology', 4, 'Archaeological method and theory'),
-  ('f0000000-0000-0000-0000-000000000093', 'b0000000-0000-0000-0000-000000000003', 'ANTH 263', 'North American Indians', 4, 'Native American cultures');
+  ('f0000000-0000-0000-0000-000000000093', 'b0000000-0000-0000-0000-000000000003', 'ANTH 263', 'North American Indians', 4, 'Native American cultures') on conflict do nothing;
 
 -- Articulation agreements for Anthropology
 insert into articulation_agreements (cc_course_id, university_course_id, cc_institution_id, university_institution_id, major, effective_year) values
   ('e0000000-0000-0000-0000-000000000090', 'f0000000-0000-0000-0000-000000000090', 'a0000000-0000-0000-0000-000000000003', 'b0000000-0000-0000-0000-000000000003', 'Anthropology', 2024),
   ('e0000000-0000-0000-0000-000000000091', 'f0000000-0000-0000-0000-000000000091', 'a0000000-0000-0000-0000-000000000003', 'b0000000-0000-0000-0000-000000000003', 'Anthropology', 2024),
   ('e0000000-0000-0000-0000-000000000092', 'f0000000-0000-0000-0000-000000000092', 'a0000000-0000-0000-0000-000000000003', 'b0000000-0000-0000-0000-000000000003', 'Anthropology', 2024),
-  ('e0000000-0000-0000-0000-000000000093', 'f0000000-0000-0000-0000-000000000093', 'a0000000-0000-0000-0000-000000000003', 'b0000000-0000-0000-0000-000000000003', 'Anthropology', 2024);
+  ('e0000000-0000-0000-0000-000000000093', 'f0000000-0000-0000-0000-000000000093', 'a0000000-0000-0000-0000-000000000003', 'b0000000-0000-0000-0000-000000000003', 'Anthropology', 2024) on conflict do nothing;
 
 -- Additional prerequisites
 insert into prerequisites (course_id, prerequisite_course_id) values
@@ -384,4 +384,4 @@ insert into prerequisites (course_id, prerequisite_course_id) values
   ('e0000000-0000-0000-0000-000000000083', 'e0000000-0000-0000-0000-000000000080'),  -- Public speaking requires Intro
   ('e0000000-0000-0000-0000-000000000084', 'e0000000-0000-0000-0000-000000000080'),  -- Group comm requires Intro
   ('e0000000-0000-0000-0000-000000000092', 'e0000000-0000-0000-0000-000000000091'),  -- Archaeology requires Cultural
-  ('e0000000-0000-0000-0000-000000000093', 'e0000000-0000-0000-0000-000000000091');  -- Native American requires Cultural
+  ('e0000000-0000-0000-0000-000000000093', 'e0000000-0000-0000-0000-000000000091') on conflict do nothing;  -- Native American requires Cultural

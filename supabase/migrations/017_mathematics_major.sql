@@ -13,7 +13,7 @@ insert into courses (id, institution_id, code, title, units, description) values
   ('g0000000-0000-0000-0000-000000000041', 'a0000000-0000-0000-0000-000000000004', 'MATH 1B', 'Single Variable Calculus II', 5, 'Integration, techniques of integration, and applications'),
   ('g0000000-0000-0000-0000-000000000042', 'a0000000-0000-0000-0000-000000000004', 'MATH 1C', 'Multivariable Calculus', 5, 'Vectors, partial derivatives, multiple integration, and vector calculus'),
   ('g0000000-0000-0000-0000-000000000043', 'a0000000-0000-0000-0000-000000000004', 'MATH 2A', 'Linear Algebra', 5, 'Matrices, systems of equations, vector spaces, and linear transformations'),
-  ('g0000000-0000-0000-0000-000000000044', 'a0000000-0000-0000-0000-000000000004', 'MATH 2B', 'Differential Equations', 5, 'First-order and higher-order differential equations with applications');
+  ('g0000000-0000-0000-0000-000000000044', 'a0000000-0000-0000-0000-000000000004', 'MATH 2B', 'Differential Equations', 5, 'First-order and higher-order differential equations with applications') on conflict do nothing;
 
 -- ============================================================
 -- COURSES - Mathematics Major (UC Davis)
@@ -23,7 +23,7 @@ insert into courses (id, institution_id, code, title, units, description) values
   ('h0000000-0000-0000-0000-000000000041', 'b0000000-0000-0000-0000-000000000007', 'MAT 21B', 'Calculus', 4, 'Single variable calculus II'),
   ('h0000000-0000-0000-0000-000000000042', 'b0000000-0000-0000-0000-000000000007', 'MAT 21C', 'Calculus', 4, 'Multivariable calculus'),
   ('h0000000-0000-0000-0000-000000000043', 'b0000000-0000-0000-0000-000000000007', 'MAT 22A', 'Linear Algebra', 4, 'Matrices, vector spaces, and linear transformations'),
-  ('h0000000-0000-0000-0000-000000000044', 'b0000000-0000-0000-0000-000000000007', 'MAT 22B', 'Differential Equations', 4, 'Ordinary differential equations and applications');
+  ('h0000000-0000-0000-0000-000000000044', 'b0000000-0000-0000-0000-000000000007', 'MAT 22B', 'Differential Equations', 4, 'Ordinary differential equations and applications') on conflict do nothing;
 
 -- ============================================================
 -- ARTICULATION AGREEMENTS - Foothill to UC Davis Mathematics
@@ -33,7 +33,7 @@ insert into articulation_agreements (cc_course_id, university_course_id, cc_inst
   ('g0000000-0000-0000-0000-000000000041', 'h0000000-0000-0000-0000-000000000041', 'a0000000-0000-0000-0000-000000000004', 'b0000000-0000-0000-0000-000000000007', 'Mathematics', 2024),
   ('g0000000-0000-0000-0000-000000000042', 'h0000000-0000-0000-0000-000000000042', 'a0000000-0000-0000-0000-000000000004', 'b0000000-0000-0000-0000-000000000007', 'Mathematics', 2024),
   ('g0000000-0000-0000-0000-000000000043', 'h0000000-0000-0000-0000-000000000043', 'a0000000-0000-0000-0000-000000000004', 'b0000000-0000-0000-0000-000000000007', 'Mathematics', 2024),
-  ('g0000000-0000-0000-0000-000000000044', 'h0000000-0000-0000-0000-000000000044', 'a0000000-0000-0000-0000-000000000004', 'b0000000-0000-0000-0000-000000000007', 'Mathematics', 2024);
+  ('g0000000-0000-0000-0000-000000000044', 'h0000000-0000-0000-0000-000000000044', 'a0000000-0000-0000-0000-000000000004', 'b0000000-0000-0000-0000-000000000007', 'Mathematics', 2024) on conflict do nothing;
 
 -- ============================================================
 -- PREREQUISITES
@@ -48,4 +48,4 @@ insert into prerequisites (course_id, prerequisite_course_id) values
   ('h0000000-0000-0000-0000-000000000042', 'h0000000-0000-0000-0000-000000000041'),
   ('h0000000-0000-0000-0000-000000000043', 'h0000000-0000-0000-0000-000000000041'),
   ('h0000000-0000-0000-0000-000000000044', 'h0000000-0000-0000-0000-000000000042'),
-  ('h0000000-0000-0000-0000-000000000044', 'h0000000-0000-0000-0000-000000000043');
+  ('h0000000-0000-0000-0000-000000000044', 'h0000000-0000-0000-0000-000000000043') on conflict do nothing;
