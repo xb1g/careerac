@@ -17,8 +17,8 @@ interface PlaybookCardProps {
 export function PlaybookCard({ playbook }: PlaybookCardProps) {
   const isVerified = playbook.verification_status === "verified";
   const cardClasses = isVerified
-    ? "border-emerald-200/80 bg-white hover:border-emerald-300 dark:border-emerald-900/60 dark:bg-zinc-900 dark:hover:border-emerald-700"
-    : "border-amber-200/80 bg-amber-50/60 hover:border-amber-300 dark:border-amber-900/60 dark:bg-amber-950/10 dark:hover:border-amber-700";
+    ? "border-zinc-300 bg-white hover:border-zinc-400 dark:border-zinc-700 dark:bg-zinc-900 dark:hover:border-zinc-600"
+    : "border-zinc-300 bg-zinc-50 hover:border-zinc-400 dark:border-zinc-700 dark:bg-zinc-900/60 dark:hover:border-zinc-600";
 
   return (
     <Link
@@ -33,7 +33,7 @@ export function PlaybookCard({ playbook }: PlaybookCardProps) {
             <span className="font-medium text-zinc-700 dark:text-zinc-300" data-testid="cc-name">
               {playbook.cc_abbreviation ?? playbook.cc_name}
             </span>
-            <svg className="w-3 h-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <svg className="w-3 h-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
             </svg>
             <span className="font-medium text-zinc-700 dark:text-zinc-300 truncate" data-testid="target-name">
@@ -53,7 +53,7 @@ export function PlaybookCard({ playbook }: PlaybookCardProps) {
         </div>
 
         {/* Badge */}
-        <div className="flex-shrink-0">
+        <div className="shrink-0">
           {isVerified ? (
             <span
               className="inline-flex items-center gap-1 rounded-full bg-emerald-50 dark:bg-emerald-900/30 px-2.5 py-1 text-xs font-medium text-emerald-700 dark:text-emerald-400 ring-1 ring-inset ring-emerald-600/20"
