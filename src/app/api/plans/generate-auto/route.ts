@@ -4,7 +4,9 @@ import { MiniMaxApiError } from "@/lib/ai-stream";
 import { PlanGenerationPipeline } from "@/lib/plan-pipeline";
 import {
   resolveInstitutionIdsByName,
+  resolveUniversityIdsByNames,
   savePlanRecord,
+  type ComparisonTargetPayload,
 } from "@/lib/plan-service";
 import type { MultiUniversityPlan, ParsedPlan, TransferPlan } from "@/types/plan";
 import type { TranscriptData } from "@/types/transcript";
@@ -127,6 +129,38 @@ function buildPlanTitle(plan: TransferPlan | MultiUniversityPlan): string {
 
   const transferPlan = plan as TransferPlan;
   return `${transferPlan.ccName} → ${transferPlan.targetUniversity}`;
+}
+
+async function buildComparisonTargetsFromPlan(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  plan: ParsedPlan | null,
+): Promise<ComparisonTargetPayload[] | null> {
+  if (!plan || !("isMultiUniversity" in plan) || !plan.isMultiUniversity) {
+    return null;
+  }
+
+  const names = plan.universities
+    .map((u) => u.universityName)
+    .filter((name): name is string => typeof name === "string" && name.trim().length > 0);
+
+  if (names.length === 0) return null;
+
+  const resolved = await resolveUniversityIdsByNames(supabase, names);
+
+  const payload: ComparisonTargetPayload[] = [];
+  const seen = new Set<string>();
+  resolved.forEach((entry) => {
+    if (!entry.institutionId || seen.has(entry.institutionId)) return;
+    seen.add(entry.institutionId);
+    payload.push({
+      institution_id: entry.institutionId,
+      name: entry.name,
+      abbreviation: entry.abbreviation,
+      priority_order: payload.length + 1,
+    });
+  });
+
+  return payload.length > 0 ? payload : null;
 }
 
 function isMiniMaxError(error: unknown): boolean {
@@ -282,6 +316,11 @@ export async function POST(req: Request) {
       generated.rawText,
     );
 
+    const comparisonTargets = await buildComparisonTargetsFromPlan(
+      supabase,
+      generated.parsedPlan,
+    );
+
     try {
       const savedPlan = await savePlanRecord(supabase, {
         userId: user.id,
@@ -294,7 +333,7 @@ export async function POST(req: Request) {
         maxCreditsPerSemester,
         transcriptId,
         hasTargetSchool,
-        comparisonTargets: null,
+        comparisonTargets,
       });
 
       return NextResponse.json(

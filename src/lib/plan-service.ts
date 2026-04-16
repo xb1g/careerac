@@ -97,6 +97,41 @@ async function syncUserTargets(
   }
 }
 
+export interface ResolvedUniversity {
+  name: string;
+  institutionId: string | null;
+  abbreviation: string | null;
+}
+
+export async function resolveUniversityIdsByNames(
+  supabase: SupabaseServerClient,
+  names: string[],
+): Promise<ResolvedUniversity[]> {
+  const queries = names.map(async (name): Promise<ResolvedUniversity> => {
+    const trimmed = name.trim().replace(/,/g, " ");
+    if (!trimmed) {
+      return { name, institutionId: null, abbreviation: null };
+    }
+
+    const { data } = await supabase
+      .from("institutions")
+      .select("id, abbreviation")
+      .or(`name.ilike.%${trimmed}%,abbreviation.ilike.%${trimmed}%`)
+      .eq("type", "university")
+      .limit(1)
+      .maybeSingle();
+
+    const inst = data as { id: string; abbreviation: string | null } | null;
+    return {
+      name,
+      institutionId: inst?.id ?? null,
+      abbreviation: inst?.abbreviation ?? null,
+    };
+  });
+
+  return Promise.all(queries);
+}
+
 export async function resolveInstitutionIdsByName(
   supabase: SupabaseServerClient,
   ccName: string,
