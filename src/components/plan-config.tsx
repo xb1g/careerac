@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { TranscriptData } from "@/types/transcript";
+import { MajorAutocomplete } from "./major-autocomplete";
 
 export interface PlanConfiguration {
   maxCreditsPerSemester: number;
@@ -26,6 +27,18 @@ export default function PlanConfig({ transcriptData, onConfigured, onBack }: Pla
   const [hasTargetSchool, setHasTargetSchool] = useState(false);
   const [targetSchool, setTargetSchool] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [majorOptions, setMajorOptions] = useState<
+    { id: string; name: string; category: string | null }[]
+  >([]);
+
+  useEffect(() => {
+    fetch("/api/majors")
+      .then((res) => res.json())
+      .then((data) => {
+        if (Array.isArray(data)) setMajorOptions(data);
+      })
+      .catch((err) => console.error("Failed to fetch majors:", err));
+  }, []);
 
   const effectiveCredits = isCustom ? parseInt(customCredits) || 0 : maxCredits;
 
@@ -86,14 +99,12 @@ export default function PlanConfig({ transcriptData, onConfigured, onBack }: Pla
         <label htmlFor="major-input" className="block text-sm font-medium text-zinc-900 dark:text-white">
           Intended Major
         </label>
-        <input
+        <MajorAutocomplete
           id="major-input"
-          type="text"
           value={major}
-          onChange={(e) => { setMajor(e.target.value); setErrors({}); }}
+          onChange={(v) => { setMajor(v); setErrors({}); }}
+          majors={majorOptions}
           placeholder="e.g., Computer Science"
-          className="w-full max-w-md rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2.5 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
-          /* eslint-disable-next-line jsx-a11y/no-autofocus */
           autoFocus
         />
         {errors.major && <p className="text-sm text-red-600 dark:text-red-400">{errors.major}</p>}
