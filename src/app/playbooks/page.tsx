@@ -238,7 +238,7 @@ export default async function PlaybooksPage({ searchParams }: PlaybooksPageProps
           <h1 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-white">Community Playbooks</h1>
           <p className="mt-2 text-zinc-600 dark:text-zinc-400">Learn from verified transfer students and browse community-submitted stories.</p>
 
-          <div className="mt-6 inline-flex rounded-xl border border-zinc-200 bg-white p-1 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+          <div className="mt-6 inline-flex gap-1.5 bg-zinc-100 dark:bg-zinc-800/60 rounded-xl p-1">
             {([
               ["all", "All"],
               ["verified", "Verified"],
@@ -250,10 +250,10 @@ export default async function PlaybooksPage({ searchParams }: PlaybooksPageProps
                 <Link
                   key={tab}
                   href={buildTabHref(tab, params)}
-                  className={`rounded-lg px-4 py-2 text-sm font-semibold transition ${
+                  className={`px-3.5 py-1.5 text-xs font-medium rounded-lg transition-all duration-200 ${
                     isActive
-                      ? "bg-blue-600 text-white shadow-sm"
-                      : "text-zinc-600 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
+                      ? "bg-white dark:bg-zinc-700 text-zinc-900 dark:text-white shadow-sm"
+                      : "text-zinc-500 dark:text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-300"
                   }`}
                 >
                   {label}
