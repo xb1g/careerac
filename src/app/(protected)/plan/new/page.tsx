@@ -706,7 +706,7 @@ export default function NewPlanPage() {
                       <button
                         type="button"
                         onClick={() => removeComparisonTarget(target.institution_id)}
-                        className="text-white/70 hover:text-white dark:text-zinc-500 dark:hover:text-zinc-900"
+                        className="text-white/70 hover:text-white dark:text-zinc-500 dark:hover:text-zinc-900 cursor-pointer"
                       >
                         ×
                       </button>
@@ -725,7 +725,7 @@ export default function NewPlanPage() {
                     key={institution.id}
                     type="button"
                     onClick={() => (isSelected ? removeComparisonTarget(institution.id) : addComparisonTarget(institution))}
-                    className={`rounded-2xl border p-4 text-left transition-colors ${
+                    className={`rounded-2xl border p-4 text-left transition-colors cursor-pointer ${
                       isSelected
                         ? "border-blue-500 bg-blue-50 dark:border-blue-400 dark:bg-blue-500/10"
                         : "border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 hover:border-zinc-300 dark:hover:border-zinc-700"
@@ -751,14 +751,14 @@ export default function NewPlanPage() {
               <button
                 type="button"
                 onClick={handleContinueToChat}
-                className="rounded-lg bg-blue-600 text-white px-6 py-2.5 text-sm font-medium hover:bg-blue-700 transition-colors"
+                className="rounded-lg bg-blue-600 text-white px-6 py-2.5 text-sm font-medium hover:bg-blue-700 transition-colors cursor-pointer"
               >
                 Continue to Plan
               </button>
               <button
                 type="button"
                 onClick={handleBackToConfig}
-                className="rounded-lg border border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 px-6 py-2.5 text-sm font-medium hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors"
+                className="rounded-lg border border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 px-6 py-2.5 text-sm font-medium hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
               >
                 Back
               </button>
