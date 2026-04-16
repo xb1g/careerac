@@ -10,9 +10,19 @@ export function stripPlanJsonFromText(text: string): string {
 
   let stripped = text.replace(/```(?:json)?\s*\n?[\s\S]*?\n?\s*```/g, "");
 
+  // Strip native MiniMax tool-call blocks if the model leaks them into text.
+  stripped = stripped.replace(/\[TOOL_CALL\][\s\S]*?\[\/TOOL_CALL\]/g, "");
+  stripped = stripped.replace(/<tool_call>[\s\S]*?<\/tool_call>/g, "");
+  stripped = stripped.replace(/<function_call>[\s\S]*?<\/function_call>/g, "");
+
+  // Hide in-progress fenced/tool blocks during streaming.
   const openFence = stripped.indexOf("```");
   if (openFence !== -1) {
     stripped = stripped.slice(0, openFence);
+  }
+  const openToolCall = stripped.indexOf("[TOOL_CALL]");
+  if (openToolCall !== -1) {
+    stripped = stripped.slice(0, openToolCall);
   }
 
   return stripped.replace(/\n{3,}/g, "\n\n").trim();
