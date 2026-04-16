@@ -97,7 +97,7 @@ export default function ComparisonDashboard({ planId, className = "" }: Comparis
           <button
             type="button"
             onClick={handleToggleExpanded}
-            className="inline-flex items-center justify-center rounded-xl border border-zinc-300 dark:border-zinc-700 px-4 py-2 text-sm font-medium text-zinc-700 dark:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-colors"
+            className="inline-flex items-center justify-center rounded-xl border border-zinc-300 dark:border-zinc-700 px-4 py-2 text-sm font-medium text-zinc-700 dark:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-colors cursor-pointer"
           >
             {expanded ? "Hide comparison" : "Compare schools"}
           </button>
@@ -125,7 +125,7 @@ export default function ComparisonDashboard({ planId, className = "" }: Comparis
                       key={result.institutionId}
                       type="button"
                       onClick={() => setSelectedInstitutionId(result.institutionId)}
-                      className={`rounded-2xl border p-4 text-left transition-all ${
+                      className={`rounded-2xl border p-4 text-left transition-all cursor-pointer ${
                         selectedInstitutionId === result.institutionId
                           ? "border-blue-500 bg-blue-50/60 dark:border-blue-400 dark:bg-blue-500/10"
                           : "border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 hover:border-zinc-300 dark:hover:border-zinc-700"
