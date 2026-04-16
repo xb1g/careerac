@@ -111,7 +111,7 @@ export default function TranscriptUpload({ onTranscriptParsed, onSkip }: Transcr
     const grade = manualCourse.grade.toUpperCase();
     const status: TranscriptCourse["status"] =
       grade === "IP" || grade === "I" ? "in_progress" :
-      grade === "W" || grade === "EW" ? "withdrawn" : "completed";
+        grade === "W" || grade === "EW" ? "withdrawn" : "completed";
 
     setManualCourses((prev) => [
       ...prev,
@@ -296,6 +296,12 @@ export default function TranscriptUpload({ onTranscriptParsed, onSkip }: Transcr
           >
             Skip
           </button>
+          <button
+            onClick={() => setShowManualEntry(false)}
+            className="rounded-lg text-zinc-500 dark:text-zinc-400 px-4 py-2.5 text-sm hover:text-zinc-700 dark:hover:text-zinc-300 transition-colors cursor-pointer sm:ml-auto"
+          >
+            Back
+          </button>
         </div>
       </div>
     );
@@ -352,13 +358,12 @@ export default function TranscriptUpload({ onTranscriptParsed, onSkip }: Transcr
                   <td className="px-3 py-2 text-zinc-700 dark:text-zinc-300">{course.grade}</td>
                   <td className="px-3 py-2">
                     <span
-                      className={`inline-block rounded-full px-2 py-0.5 text-xs font-medium ${
-                        course.status === "completed"
+                      className={`inline-block rounded-full px-2 py-0.5 text-xs font-medium ${course.status === "completed"
                           ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300"
                           : course.status === "in_progress"
-                          ? "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300"
-                          : "bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400"
-                      }`}
+                            ? "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300"
+                            : "bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400"
+                        }`}
                     >
                       {course.status === "in_progress" ? "In Progress" : course.status === "completed" ? "Completed" : "Withdrawn"}
                     </span>
@@ -420,11 +425,10 @@ export default function TranscriptUpload({ onTranscriptParsed, onSkip }: Transcr
         onDrop={handleDrop}
         onClick={() => fileInputRef.current?.click()}
         onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); fileInputRef.current?.click(); } }}
-        className={`cursor-pointer rounded-xl border-2 border-dashed p-12 text-center transition-all ${
-          isDragging
+        className={`cursor-pointer rounded-xl border-2 border-dashed p-12 text-center transition-all ${isDragging
             ? "border-blue-500 bg-blue-50 dark:bg-blue-900/10"
             : "border-zinc-300 dark:border-zinc-700 hover:border-zinc-400 dark:hover:border-zinc-600"
-        } ${isUploading ? "opacity-50 pointer-events-none" : ""}`}
+          } ${isUploading ? "opacity-50 pointer-events-none" : ""}`}
       >
         <input
           ref={fileInputRef}
