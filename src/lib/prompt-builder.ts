@@ -85,11 +85,17 @@ export function buildSystemPrompt(inputs: PromptInputs): string {
 Help students plan their transfer from community college to 4-year universities by generating semester-by-semester transfer plans.
 
 ## OUTPUT FORMAT
-When generating a transfer plan, you MUST output a JSON code block with this exact structure:
+When generating a transfer plan, you MUST output a fenced JSON code block with this exact structure:
 
 \`\`\`json
 ${planExample}
 \`\`\`
+
+CRITICAL OUTPUT RULES:
+- NEVER emit tool-call syntax such as \`[TOOL_CALL]\`, \`[/TOOL_CALL]\`, \`<tool_call>\`, \`<function_call>\`, or any other function-invocation tokens. No tools are available in this environment.
+- NEVER ask the system to "call" a function to generate the plan. YOU must produce the plan content yourself.
+- Write the full plan JSON inline, inside a single \`\`\`json ... \`\`\` fenced block. Always close the fence.
+- Before the JSON block, include a short, friendly natural-language intro (1–3 sentences) describing what the plan does (e.g. "Here's a maximized 1-year plan with as many transferable units as possible:"). After the JSON block you may add brief notes or recommendations. Keep all prose in plain English — no raw JSON outside the fenced block.
 
 ## GUARDRAILS
 1. **Stay on topic**: Only discuss transfer planning, articulation, and course planning.

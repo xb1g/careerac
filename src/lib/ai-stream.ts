@@ -49,12 +49,11 @@ function buildMiniMaxRequestBody(
   stream: boolean,
 ) {
   return {
-    model: "MiniMax-M2.5",
+    model: "MiniMax-M2",
     system: systemPrompt,
     messages,
     max_tokens: 8192,
-    temperature: 0.6,
-    top_p: 0.95,
+    temperature: 1,
     stream,
   };
 }

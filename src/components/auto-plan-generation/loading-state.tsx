@@ -65,7 +65,7 @@ export function AutoGenerationLoading({
         <p className="text-zinc-500 dark:text-zinc-400 mb-10">
           {isRecovering
             ? "We restored your in-progress request. Retry below if generation did not finish."
-            : "We&apos;re crunching the numbers to build your optimal transfer path."}
+            : "We're crunching the numbers to build your optimal transfer path."}
         </p>
 
         <div className="h-2 w-full bg-zinc-100 dark:bg-zinc-800 rounded-full overflow-hidden mb-10">
