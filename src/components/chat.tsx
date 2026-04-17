@@ -45,6 +45,8 @@ interface ChatProps {
   maxCreditsPerSemester?: number;
   /** Whether the student has a target school */
   hasTargetSchool?: boolean;
+  /** If set, fires this text as the first user message on mount to kick off generation. */
+  autoStartPrompt?: string;
 }
 
 export default function Chat({
@@ -62,11 +64,13 @@ export default function Chat({
   transcriptData,
   maxCreditsPerSemester,
   hasTargetSchool,
+  autoStartPrompt,
 }: ChatProps) {
   const [input, setInput] = useState("");
   const lastProcessedMessageId = useRef<string | null>(null);
   const [isAccepting, setIsAccepting] = useState(false);
   const recoverySentRef = useRef<string | null>(null);
+  const autoStartSentRef = useRef(false);
 
   const defaultMessages: UIMessage[] = [
     {
@@ -129,6 +133,14 @@ export default function Chat({
       text: `[SYSTEM: Recovery needed] The student has marked "${recoveryContext.failedCourseCode} (${recoveryContext.failedCourseTitle})" as ${statusLabel}. Please analyze the impact and suggest alternatives.`,
     });
   }, [recoveryContext, isLoading, sendMessage]);
+
+  // Auto-fire the first user message when the wizard passes a ready-to-go prompt
+  useEffect(() => {
+    if (!autoStartPrompt || autoStartSentRef.current || isLoading) return;
+    if (recoveryContext) return;
+    autoStartSentRef.current = true;
+    sendMessage({ text: autoStartPrompt });
+  }, [autoStartPrompt, isLoading, recoveryContext, sendMessage]);
 
   // Check the latest assistant message for a plan
   const lastAssistantMessage = messages.filter((m) => m.role === "assistant").pop();

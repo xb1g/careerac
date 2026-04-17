@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useRef, useEffect } from "react";
+import { useState, useCallback, useRef, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Chat from "@/components/chat";
 import SemesterPlan from "@/components/semester-plan";
@@ -16,6 +16,7 @@ import {
   type GenerationError,
 } from "@/components/auto-plan-generation";
 import { detectMajorFromTranscript } from "@/lib/major-detector";
+import { buildSyntheticUserPrompt } from "@/lib/plan-prompts";
 import { ParsedPlan, TransferPlan, MultiUniversityPlan } from "@/types/plan";
 import type { TranscriptData } from "@/types/transcript";
 import { resolveInstitutionIds } from "@/utils/plan-institutions";
@@ -489,6 +490,16 @@ export default function NewPlanPage() {
     setCurrentPlan(plan);
   }, []);
 
+  const autoStartPrompt = useMemo(() => {
+    if (!transcriptData || !planConfig?.major) return undefined;
+    return buildSyntheticUserPrompt(
+      transcriptData,
+      planConfig.major,
+      planConfig.hasTargetSchool ? planConfig.targetSchool : null,
+      planConfig.maxCreditsPerSemester ?? 15,
+    );
+  }, [transcriptData, planConfig]);
+
   // Build welcome message based on context
   const welcomeMessage = transcriptData
     ? `I see you've taken ${transcriptData.courses.length} courses at ${transcriptData.institution} with ${transcriptData.totalUnitsCompleted} completed units${transcriptData.gpa ? ` (GPA: ${transcriptData.gpa})` : ""}. ${
@@ -569,6 +580,7 @@ export default function NewPlanPage() {
               transcriptData={transcriptData ?? undefined}
               maxCreditsPerSemester={planConfig?.maxCreditsPerSemester}
               hasTargetSchool={planConfig?.hasTargetSchool}
+              autoStartPrompt={autoStartPrompt}
             />
           </div>
 

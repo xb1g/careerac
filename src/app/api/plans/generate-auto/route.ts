@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import type { UIMessage } from "ai";
 import { MiniMaxApiError } from "@/lib/ai-stream";
 import { PlanGenerationPipeline } from "@/lib/plan-pipeline";
+import { buildSyntheticUserPrompt } from "@/lib/plan-prompts";
 import {
   resolveInstitutionIdsByName,
   resolveUniversityIdsByNames,
@@ -67,24 +68,6 @@ function isSavablePlan(
   plan: ParsedPlan | null,
 ): plan is TransferPlan | MultiUniversityPlan {
   return Boolean(plan && !("isNoData" in plan));
-}
-
-function buildSyntheticUserPrompt(
-  transcriptData: TranscriptData,
-  detectedMajor: string,
-  targetSchool: string | null,
-  maxCreditsPerSemester: number,
-): string {
-  const destination = targetSchool
-    ? `transfer to ${targetSchool}`
-    : "find the best-fit transfer options";
-
-  return [
-    `Generate a complete transfer plan for a ${transcriptData.institution} student who wants to ${destination}.`,
-    `The student's intended major is ${detectedMajor}.`,
-    `Use the transcript to account for completed and in-progress coursework.`,
-    `Keep every semester at or below ${maxCreditsPerSemester} units.`,
-  ].join(" ");
 }
 
 function buildSyntheticChatHistory(
