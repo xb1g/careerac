@@ -15,7 +15,7 @@ export interface RecoveryContext {
   planData: Record<string, unknown> | null;
 }
 
-interface ChatProps {
+export interface ChatProps {
   welcomeMessage?: string;
   className?: string;
   onPlanGenerated?: (plan: ParsedPlan) => void;

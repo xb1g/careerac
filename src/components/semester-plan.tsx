@@ -66,33 +66,46 @@ function SemesterGrid({ plan, onCourseClick }: { plan: TransferPlan; onCourseCli
         </div>
       </div>
 
-      {/* Semesters Timeline */}
-      <div className="flex-1 overflow-y-auto p-6 md:p-8 lg:p-10" data-testid="semester-grid">
-        <div className="relative border-l-2 border-zinc-200 dark:border-zinc-800 ml-4 space-y-12 pb-12">
+      {/* Semester Columns */}
+      <div
+        className="flex-1 overflow-x-auto overflow-y-hidden"
+        data-testid="semester-grid"
+        role="list"
+      >
+        <div className="flex gap-4 px-4 md:px-6 lg:px-8 py-6 min-h-full snap-x snap-mandatory">
           {plan.semesters.map((semester) => {
-            // Calculate semester units excluding completed courses
             const semesterRemainingUnits = semester.courses.reduce((total, course) => {
               return course.status === "completed" ? total : total + course.units;
             }, 0);
 
             return (
-              <div key={semester.number} className="relative pl-8 md:pl-10 group">
-                {/* Timeline Dot */}
-                <div className="absolute -left-[9px] top-1.5 h-4 w-4 rounded-full bg-white dark:bg-zinc-900 border-[3px] border-zinc-300 dark:border-zinc-700 shadow-sm group-hover:border-blue-500 dark:group-hover:border-blue-500 transition-colors duration-300" />
-
-                {/* Semester Header */}
-                <div className="mb-5 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4" data-testid="semester-header">
-                  <h3 className="text-lg font-bold tracking-tight text-zinc-900 dark:text-zinc-100" data-testid="semester-label">
+              <section
+                key={semester.number}
+                role="listitem"
+                aria-label={semester.label}
+                className="flex-shrink-0 w-[85vw] sm:w-[320px] lg:w-[300px] snap-start flex flex-col rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50 shadow-sm"
+              >
+                {/* Column header */}
+                <header
+                  className="sticky top-0 z-[1] px-4 py-3 border-b border-zinc-200 dark:border-zinc-800 bg-white/90 dark:bg-zinc-900/80 backdrop-blur-sm rounded-t-xl flex items-center justify-between gap-2"
+                  data-testid="semester-header"
+                >
+                  <h3
+                    className="text-sm font-bold tracking-tight text-zinc-900 dark:text-zinc-100 truncate"
+                    data-testid="semester-label"
+                  >
                     {semester.label}
                   </h3>
-                  <div className="h-px bg-zinc-200 dark:bg-zinc-800 flex-1 hidden sm:block" />
-                  <span className="inline-flex items-center rounded-md bg-zinc-100 dark:bg-zinc-800 px-2.5 py-1 text-xs font-semibold text-zinc-600 dark:text-zinc-400 tracking-wide uppercase" data-testid="semester-units">
+                  <span
+                    className="inline-flex items-center rounded-md bg-zinc-100 dark:bg-zinc-800 px-2 py-0.5 text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 uppercase tracking-wide whitespace-nowrap"
+                    data-testid="semester-units"
+                  >
                     {semesterRemainingUnits} {semesterRemainingUnits === 1 ? "unit" : "units"} remaining
                   </span>
-                </div>
+                </header>
 
-                {/* Courses Grid */}
-                <div className="grid grid-cols-1 xl:grid-cols-2 gap-3 lg:gap-4">
+                {/* Column body */}
+                <div className="flex flex-col gap-3 p-3 overflow-y-auto min-h-[200px] flex-1">
                   {semester.courses.map((course, idx) => (
                     <CourseCard
                       key={`${course.code}-${idx}`}
@@ -104,7 +117,7 @@ function SemesterGrid({ plan, onCourseClick }: { plan: TransferPlan; onCourseCli
                     />
                   ))}
                 </div>
-              </div>
+              </section>
             );
           })}
         </div>

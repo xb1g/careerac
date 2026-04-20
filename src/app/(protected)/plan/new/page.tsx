@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useRef, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import Chat from "@/components/chat";
+import ChatWidget from "@/components/chat-widget";
 import SemesterPlan from "@/components/semester-plan";
 import TranscriptUpload from "@/components/transcript-upload";
 import SavedCoursesSource from "@/components/saved-courses-source";
@@ -571,43 +571,40 @@ export default function NewPlanPage() {
           </div>
         </div>
 
-        <div className="flex flex-1 overflow-hidden">
-          <div className="w-full lg:w-1/2 border-r border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950">
-            <Chat
-              welcomeMessage={welcomeMessage}
-              onPlanGenerated={handlePlanGenerated}
-              onSavePlan={debouncedSave}
-              transcriptData={transcriptData ?? undefined}
-              maxCreditsPerSemester={planConfig?.maxCreditsPerSemester}
-              hasTargetSchool={planConfig?.hasTargetSchool}
-              autoStartPrompt={autoStartPrompt}
-            />
-          </div>
-
-          <div className="hidden lg:flex lg:w-1/2 flex-col bg-zinc-50 dark:bg-zinc-900">
-            {currentPlan ? (
-              <SemesterPlan plan={currentPlan} planId={savedPlanId} />
-            ) : (
-              <div className="flex-1 flex items-center justify-center p-8">
-                <div className="text-center">
-                  <div className="mx-auto h-12 w-12 text-zinc-400">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 0 1 0 3.75H5.625a1.875 1.875 0 0 1 0-3.75Z" />
-                    </svg>
-                  </div>
-                  <h3 className="mt-4 text-sm font-medium text-zinc-900 dark:text-white">
-                    Your plan will appear here
-                  </h3>
-                  <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400 max-w-sm mx-auto">
-                    {planConfig?.hasTargetSchool
-                      ? "The AI is generating your semester-by-semester transfer plan."
-                      : "The AI will analyze your coursework and show transfer options for multiple universities."}
-                  </p>
+        <div className="flex-1 overflow-hidden bg-zinc-50 dark:bg-zinc-900">
+          {currentPlan ? (
+            <SemesterPlan plan={currentPlan} planId={savedPlanId} />
+          ) : (
+            <div className="h-full flex items-center justify-center p-8">
+              <div className="text-center">
+                <div className="mx-auto h-12 w-12 text-zinc-400">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 0 1 0 3.75H5.625a1.875 1.875 0 0 1 0-3.75Z" />
+                  </svg>
                 </div>
+                <h3 className="mt-4 text-sm font-medium text-zinc-900 dark:text-white">
+                  Your plan will appear here
+                </h3>
+                <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400 max-w-sm mx-auto">
+                  {planConfig?.hasTargetSchool
+                    ? "The AI is generating your semester-by-semester transfer plan."
+                    : "The AI will analyze your coursework and show transfer options for multiple universities."}
+                </p>
               </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
+
+        <ChatWidget
+          defaultOpen
+          welcomeMessage={welcomeMessage}
+          onPlanGenerated={handlePlanGenerated}
+          onSavePlan={debouncedSave}
+          transcriptData={transcriptData ?? undefined}
+          maxCreditsPerSemester={planConfig?.maxCreditsPerSemester}
+          hasTargetSchool={planConfig?.hasTargetSchool}
+          autoStartPrompt={autoStartPrompt}
+        />
       </div>
     );
   }

@@ -2,7 +2,8 @@
 
 import { useState, useCallback, useRef } from "react";
 import { UIMessage } from "@ai-sdk/react";
-import Chat, { RecoveryContext } from "@/components/chat";
+import { RecoveryContext } from "@/components/chat";
+import ChatWidget from "@/components/chat-widget";
 import ComparisonDashboard from "@/components/comparison-dashboard";
 import { RecoveryAlternative } from "@/components/recovery-message";
 import SemesterPlan from "@/components/semester-plan";
@@ -338,58 +339,53 @@ export default function PlanDetailClient({ plan, transcript }: PlanDetailClientP
 
       <ComparisonDashboard planId={plan.id} />
 
-      {/* Split layout: chat panel (left) + plan display (right) */}
-      <div className="flex flex-1 overflow-hidden bg-[#FAFAFA] dark:bg-zinc-950">
-        {/* Chat panel */}
-        <div className="w-full lg:w-1/2 border-r border-zinc-200/50 dark:border-zinc-800/50 z-10 relative">
-          <Chat
-            onPlanGenerated={handlePlanGenerated}
-            onSavePlan={handleSavePlan}
-            initialMessages={initialMessages}
-            onMessagesChange={(messages) => {
-              latestMessagesRef.current = messages;
-            }}
-            onLoadingChange={setIsChatLoading}
-            recoveryContext={recoveryContext}
-            onAcceptAlternative={handleAcceptAlternative}
-            planId={plan.id}
-            transcriptData={transcriptData ?? undefined}
-          />
-        </div>
-
-        {/* Plan display area */}
-        <div className="hidden lg:flex lg:w-1/2 flex-col bg-[#FAFAFA] dark:bg-zinc-900/50 relative">
-          {currentPlan ? (
-            <SemesterPlan plan={currentPlan} onCourseClick={handleCourseClick} planId={plan.id} />
-          ) : (
-            <div className="flex-1 flex items-center justify-center p-8">
-              <div className="text-center">
-                <div className="mx-auto h-12 w-12 text-zinc-400">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={1.5}
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 0 1 0 3.75H5.625a1.875 1.875 0 0 1 0-3.75Z"
-                    />
-                  </svg>
-                </div>
-                <h3 className="mt-4 text-sm font-medium text-zinc-900 dark:text-white">
-                  No plan data loaded
-                </h3>
-                <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400 max-w-sm mx-auto">
-                  Chat with the AI to generate or modify your transfer plan.
-                </p>
+      {/* Full-width plan display; chat lives in a floating widget */}
+      <div className="flex-1 overflow-hidden bg-[#FAFAFA] dark:bg-zinc-900/50 relative">
+        {currentPlan ? (
+          <SemesterPlan plan={currentPlan} onCourseClick={handleCourseClick} planId={plan.id} />
+        ) : (
+          <div className="h-full flex items-center justify-center p-8">
+            <div className="text-center">
+              <div className="mx-auto h-12 w-12 text-zinc-400">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 0 1 0 3.75H5.625a1.875 1.875 0 0 1 0-3.75Z"
+                  />
+                </svg>
               </div>
+              <h3 className="mt-4 text-sm font-medium text-zinc-900 dark:text-white">
+                No plan data loaded
+              </h3>
+              <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400 max-w-sm mx-auto">
+                Chat with the AI to generate or modify your transfer plan.
+              </p>
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
+
+      <ChatWidget
+        defaultOpen={Boolean(recoveryContext)}
+        onPlanGenerated={handlePlanGenerated}
+        onSavePlan={handleSavePlan}
+        initialMessages={initialMessages}
+        onMessagesChange={(messages) => {
+          latestMessagesRef.current = messages;
+        }}
+        onLoadingChange={setIsChatLoading}
+        recoveryContext={recoveryContext}
+        onAcceptAlternative={handleAcceptAlternative}
+        planId={plan.id}
+        transcriptData={transcriptData ?? undefined}
+      />
 
       {/* Course Status Menu */}
       {selectedCourse && (
