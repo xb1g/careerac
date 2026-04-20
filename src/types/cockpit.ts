@@ -52,7 +52,8 @@ export interface CockpitAction {
 
 export interface CockpitQuickStats {
   currentGpa: number | null;
-  unitsCompleted: number;
+  ccUnitsCompleted: number;
+  transferUnitsEquivalent: number | null;
   unitsRemaining: number;
   estimatedGraduation: string;
 }

@@ -25,6 +25,16 @@ type TransferPathwayRow = {
   institution_id: string;
   requirements: string | null;
 };
+type ArticulationRow = {
+  cc_course_id: string;
+  university_course_id: string;
+  university_institution_id: string;
+};
+type CourseRow = {
+  id: string;
+  code: string;
+  units: number;
+};
 
 const DEFAULT_GE_UNITS_REQUIRED = 39;
 const TRANSFER_UNITS_TARGET = 60;
@@ -232,6 +242,21 @@ function dedupeById<T extends { id: string }>(items: T[]): T[] {
   });
 }
 
+function canonicalSchoolName(name: string): string {
+  // Strip trailing "(Major)" so multi-university plans differing only by major collapse together.
+  return name.replace(/\s*\([^)]*\)\s*$/, "").trim();
+}
+
+function dedupeDeadlines(items: CockpitDeadline[]): CockpitDeadline[] {
+  const seen = new Set<string>();
+  return items.filter((item) => {
+    const key = `${canonicalSchoolName(item.schoolName)}|${item.kind}|${item.title}|${item.date}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
 export async function GET() {
   try {
     const supabase = await createClient();
@@ -297,7 +322,49 @@ export async function GET() {
     const completedCourseCodes = new Set(completedCourses.map((course) => normalizeCourseCode(course.course_code)));
     const inProgressCourseCodes = new Set(inProgressCourses.map((course) => normalizeCourseCode(course.course_code)));
     const currentGpa = calculateGpa(completedCourses);
-    const unitsCompleted = completedCourses.reduce((sum, course) => sum + Number(course.units ?? 0), 0);
+    const ccUnitsCompleted = completedCourses.reduce((sum, course) => sum + Number(course.units ?? 0), 0);
+
+    // Compute transfer-equivalent units via articulation agreements for the primary plan's target institution
+    const primaryTargetInstitutionId = planRows[0]?.target_institution_id ?? null;
+    let transferUnitsEquivalent: number | null = null;
+    if (primaryTargetInstitutionId && completedCourses.length > 0) {
+      const { data: agreements } = await supabase
+        .from("articulation_agreements")
+        .select("cc_course_id, university_course_id, university_institution_id")
+        .eq("university_institution_id", primaryTargetInstitutionId)
+        .returns<ArticulationRow[]>();
+
+      if (agreements && agreements.length > 0) {
+        const uniCourseIds = [...new Set(agreements.map((a) => a.university_course_id))];
+        const { data: uniCourses } = await supabase
+          .from("courses")
+          .select("id, code, units")
+          .in("id", uniCourseIds)
+          .returns<CourseRow[]>();
+
+        const { data: ccCourses } = await supabase
+          .from("courses")
+          .select("id, code, units")
+          .in("id", agreements.map((a) => a.cc_course_id))
+          .returns<CourseRow[]>();
+
+        if (uniCourses && ccCourses) {
+          const uniCourseById = new Map(uniCourses.map((c) => [c.id, c]));
+          const ccCourseById = new Map(ccCourses.map((c) => [c.id, c]));
+
+          let total = 0;
+          for (const agreement of agreements) {
+            const ccCourse = ccCourseById.get(agreement.cc_course_id);
+            const uniCourse = uniCourseById.get(agreement.university_course_id);
+            if (!ccCourse || !uniCourse) continue;
+            if (completedCourseCodes.has(normalizeCourseCode(ccCourse.code))) {
+              total += Number(uniCourse.units ?? 0);
+            }
+          }
+          transferUnitsEquivalent = Math.round(total * 10) / 10;
+        }
+      }
+    }
 
     const targetSchools: CockpitTargetSchool[] = [];
     const upcomingDeadlines: CockpitDeadline[] = [];
@@ -426,8 +493,8 @@ export async function GET() {
         return sum + Number(matchedCourse?.units ?? 0);
       }, 0);
 
-    const geCompletedUnits = Math.max(unitsCompleted - completedRequiredUnits, 0);
-    const unitsRemaining = Math.max(TRANSFER_UNITS_TARGET - unitsCompleted, 0);
+    const geCompletedUnits = Math.max(ccUnitsCompleted - completedRequiredUnits, 0);
+    const unitsRemaining = Math.max(TRANSFER_UNITS_TARGET - ccUnitsCompleted, 0);
 
     const nextBestAction: CockpitAction | null = (() => {
       const severeRisk = riskAlerts.find((alert) => alert.severity === "high");
@@ -483,7 +550,7 @@ export async function GET() {
         },
         gpa: gpaMetric,
       },
-      upcomingDeadlines: dedupeById(upcomingDeadlines)
+      upcomingDeadlines: dedupeDeadlines(upcomingDeadlines)
         .filter((deadline) => deadline.daysRemaining >= -7)
         .sort((a, b) => a.daysRemaining - b.daysRemaining)
         .slice(0, 6),
@@ -491,7 +558,8 @@ export async function GET() {
       nextBestAction,
       quickStats: {
         currentGpa,
-        unitsCompleted: Math.round(unitsCompleted * 10) / 10,
+        ccUnitsCompleted: Math.round(ccUnitsCompleted * 10) / 10,
+        transferUnitsEquivalent,
         unitsRemaining: Math.round(unitsRemaining * 10) / 10,
         estimatedGraduation: formatEstimatedGraduation(unitsRemaining),
       },

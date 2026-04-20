@@ -196,10 +196,10 @@ export function TransferCockpit({ hasPlans }: TransferCockpitProps) {
     if (!data) return [];
 
     return [
-      { label: "Current GPA", value: data.quickStats.currentGpa !== null ? data.quickStats.currentGpa.toFixed(2) : "—" },
-      { label: "Units completed", value: data.quickStats.unitsCompleted },
-      { label: "Units remaining", value: data.quickStats.unitsRemaining },
-      { label: "Estimated transfer", value: data.quickStats.estimatedGraduation },
+      { label: "Current GPA", value: data.quickStats.currentGpa !== null ? data.quickStats.currentGpa.toFixed(2) : "—", sub: null },
+      { label: "Units at CC", value: data.quickStats.ccUnitsCompleted, sub: data.quickStats.transferUnitsEquivalent !== null ? `Transfers as ${data.quickStats.transferUnitsEquivalent} units` : null },
+      { label: "Units left at CC", value: data.quickStats.unitsRemaining, sub: "of 60 to transfer" },
+      { label: "Estimated transfer", value: data.quickStats.estimatedGraduation, sub: null },
     ];
   }, [data]);
 
@@ -396,6 +396,7 @@ export function TransferCockpit({ hasPlans }: TransferCockpitProps) {
                   <div key={stat.label} className="rounded-2xl bg-zinc-50/80 p-4 dark:bg-zinc-900/70">
                     <p className="text-xs font-semibold uppercase tracking-[0.18em] text-zinc-500 dark:text-zinc-400">{stat.label}</p>
                     <p className="mt-2 text-xl font-bold tracking-tight text-zinc-900 dark:text-white">{stat.value}</p>
+                    {stat.sub ? <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">{stat.sub}</p> : null}
                   </div>
                 ))}
               </div>
