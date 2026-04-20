@@ -26,18 +26,7 @@ interface PlanConfigProps {
 }
 
 const DROPDOWN_COUNT = 10;
-
-function buildGradOptions(startTerm: string, dropdownStartOffset: number): string[] {
-  const options: string[] = [];
-  let current = startTerm;
-  // Advance to the dropdown start (4 semesters ahead of current term)
-  for (let i = 0; i < dropdownStartOffset; i++) current = advanceTerm(current);
-  for (let i = 0; i < DROPDOWN_COUNT; i++) {
-    options.push(current);
-    current = advanceTerm(current);
-  }
-  return options;
-}
+const DEFAULT_SEMESTERS_AHEAD = 4;
 
 function semestersBetween(from: string, to: string): number {
   const a = parseTerm(from);
@@ -64,28 +53,37 @@ export default function PlanConfig({ transcriptData, onConfigured, onBack }: Pla
     );
     const start = computeNextRegistrationTerm(new Date(), latestTerm).label;
     const curr = currentTerm();
-    // Dropdown begins 4 semesters ahead of the current academic term
+
+    // Default: 4 semesters ahead of the current academic term, but never before startTerm.
     const currParsed = parseTerm(curr);
     const startParsed = parseTerm(start);
-    // Offset from startTerm to 4-semesters-ahead-of-current
-    let dropdownStart = start;
+    let defaultValue = start;
     if (currParsed && startParsed) {
       let ahead = start;
       let count = termToOrdinal(startParsed) - termToOrdinal(currParsed);
-      // We want to reach 4 semesters ahead of curr; advance from startTerm if needed
-      while (count < 4) {
+      while (count < DEFAULT_SEMESTERS_AHEAD) {
         ahead = advanceTerm(ahead);
         count++;
       }
-      dropdownStart = ahead;
+      defaultValue = ahead;
     }
+
+    // Options begin at startTerm (= at least 1 semester ahead) so users can
+    // still pick an earlier graduation than the 4-ahead default.
     const options: string[] = [];
-    let cur = dropdownStart;
+    let cur = start;
     for (let i = 0; i < DROPDOWN_COUNT; i++) {
       options.push(cur);
       cur = advanceTerm(cur);
     }
-    return { startTerm: start, gradOptions: options, defaultGrad: options[0] };
+    // Ensure the default is reachable from the dropdown, even if startTerm is
+    // unusually early and DROPDOWN_COUNT doesn't cover the default.
+    while (!options.includes(defaultValue)) {
+      options.push(cur);
+      cur = advanceTerm(cur);
+    }
+
+    return { startTerm: start, gradOptions: options, defaultGrad: defaultValue };
   }, [transcriptData]);
 
   const [gradSemester, setGradSemester] = useState<string>("");
@@ -170,7 +168,7 @@ export default function PlanConfig({ transcriptData, onConfigured, onBack }: Pla
           id="grad-semester"
           value={selectedGrad}
           onChange={(e) => { setGradSemester(e.target.value); setErrors({}); }}
-          className="w-48 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
+          className="w-48 cursor-pointer rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
         >
           {gradOptions.map((term) => (
             <option key={term} value={term}>{term}</option>
