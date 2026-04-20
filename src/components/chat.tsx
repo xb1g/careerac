@@ -176,7 +176,7 @@ export default function Chat({
         const existingPlan = messages
           .filter((m) => m.role === "assistant")
           .map((m) => m.parts.filter((p) => p.type === "text").map((p) => (p as { text: string }).text).join("\n"))
-          .map(parsePlanFromAIResponse)
+          .map((text) => parsePlanFromAIResponse(text))
           .find((p): p is ParsedPlan => p !== null && !("isNoData" in p && p.isNoData));
 
         if (existingPlan) {

@@ -5,6 +5,8 @@ import MultiUniversityView from "./multi-university-view";
 interface SemesterPlanProps {
   plan: ParsedPlan;
   onCourseClick?: (course: PlanCourse & { semesterNumber: number }, currentStatus: CourseStatus) => void;
+  /** Required for multi-university view card navigation. Omit for transient/pre-save states. */
+  planId?: string | null;
 }
 
 function isMultiUniversityPlan(plan: ParsedPlan): plan is MultiUniversityPlan {
@@ -129,9 +131,9 @@ function NoDataMessage({ message }: { message: string }) {
   );
 }
 
-export default function SemesterPlan({ plan, onCourseClick }: SemesterPlanProps) {
+export default function SemesterPlan({ plan, onCourseClick, planId }: SemesterPlanProps) {
   if (isMultiUniversityPlan(plan)) {
-    return <MultiUniversityView plan={plan} />;
+    return <MultiUniversityView plan={plan} planId={planId} />;
   }
 
   if (isTransferPlan(plan)) {

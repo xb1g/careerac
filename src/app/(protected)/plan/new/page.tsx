@@ -586,7 +586,7 @@ export default function NewPlanPage() {
 
           <div className="hidden lg:flex lg:w-1/2 flex-col bg-zinc-50 dark:bg-zinc-900">
             {currentPlan ? (
-              <SemesterPlan plan={currentPlan} />
+              <SemesterPlan plan={currentPlan} planId={savedPlanId} />
             ) : (
               <div className="flex-1 flex items-center justify-center p-8">
                 <div className="text-center">

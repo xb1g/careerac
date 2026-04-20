@@ -360,7 +360,7 @@ export default function PlanDetailClient({ plan, transcript }: PlanDetailClientP
         {/* Plan display area */}
         <div className="hidden lg:flex lg:w-1/2 flex-col bg-[#FAFAFA] dark:bg-zinc-900/50 relative">
           {currentPlan ? (
-            <SemesterPlan plan={currentPlan} onCourseClick={handleCourseClick} />
+            <SemesterPlan plan={currentPlan} onCourseClick={handleCourseClick} planId={plan.id} />
           ) : (
             <div className="flex-1 flex items-center justify-center p-8">
               <div className="text-center">
