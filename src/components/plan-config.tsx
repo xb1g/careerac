@@ -1,9 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import type { TranscriptData } from "@/types/transcript";
 import { MajorAutocomplete } from "./major-autocomplete";
 import { SchoolAutocomplete } from "./school-autocomplete";
+import {
+  advanceTerm,
+  computeNextRegistrationTerm,
+  findLatestTerm,
+  parseTerm,
+  termToOrdinal,
+} from "@/utils/term";
 
 export interface PlanConfiguration {
   maxCreditsPerSemester: number;
@@ -18,40 +25,96 @@ interface PlanConfigProps {
   onBack: () => void;
 }
 
-const CREDIT_PRESETS = [12, 15, 18];
+const DROPDOWN_COUNT = 10;
+
+function buildGradOptions(startTerm: string, dropdownStartOffset: number): string[] {
+  const options: string[] = [];
+  let current = startTerm;
+  // Advance to the dropdown start (4 semesters ahead of current term)
+  for (let i = 0; i < dropdownStartOffset; i++) current = advanceTerm(current);
+  for (let i = 0; i < DROPDOWN_COUNT; i++) {
+    options.push(current);
+    current = advanceTerm(current);
+  }
+  return options;
+}
+
+function semestersBetween(from: string, to: string): number {
+  const a = parseTerm(from);
+  const b = parseTerm(to);
+  if (!a || !b) return 1;
+  return Math.max(1, termToOrdinal(b) - termToOrdinal(a) + 1);
+}
+
+function currentTerm(now = new Date()): string {
+  const month = now.getMonth() + 1;
+  const year = now.getFullYear();
+  return month >= 6 ? `Fall ${year}` : `Spring ${year}`;
+}
 
 export default function PlanConfig({ transcriptData, onConfigured, onBack }: PlanConfigProps) {
-  const [maxCredits, setMaxCredits] = useState<number>(15);
-  const [customCredits, setCustomCredits] = useState("");
-  const [isCustom, setIsCustom] = useState(false);
   const [major, setMajor] = useState(transcriptData?.major || "");
   const [hasTargetSchool, setHasTargetSchool] = useState(false);
   const [targetSchool, setTargetSchool] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const effectiveCredits = isCustom ? parseInt(customCredits) || 0 : maxCredits;
+  const { startTerm, gradOptions, defaultGrad } = useMemo(() => {
+    const latestTerm = findLatestTerm(
+      (transcriptData?.courses ?? []).map((c) => (c as { semester?: string }).semester),
+    );
+    const start = computeNextRegistrationTerm(new Date(), latestTerm).label;
+    const curr = currentTerm();
+    // Dropdown begins 4 semesters ahead of the current academic term
+    const currParsed = parseTerm(curr);
+    const startParsed = parseTerm(start);
+    // Offset from startTerm to 4-semesters-ahead-of-current
+    let dropdownStart = start;
+    if (currParsed && startParsed) {
+      let ahead = start;
+      let count = termToOrdinal(startParsed) - termToOrdinal(currParsed);
+      // We want to reach 4 semesters ahead of curr; advance from startTerm if needed
+      while (count < 4) {
+        ahead = advanceTerm(ahead);
+        count++;
+      }
+      dropdownStart = ahead;
+    }
+    const options: string[] = [];
+    let cur = dropdownStart;
+    for (let i = 0; i < DROPDOWN_COUNT; i++) {
+      options.push(cur);
+      cur = advanceTerm(cur);
+    }
+    return { startTerm: start, gradOptions: options, defaultGrad: options[0] };
+  }, [transcriptData]);
+
+  const [gradSemester, setGradSemester] = useState<string>("");
+  const selectedGrad = gradSemester || defaultGrad;
+
+  const maxCreditsPerSemester = useMemo(() => {
+    const totalUnitsCompleted = transcriptData?.totalUnitsCompleted ?? 0;
+    const remaining = Math.max(60 - totalUnitsCompleted, 15);
+    const sems = semestersBetween(startTerm, selectedGrad);
+    return Math.min(18, Math.max(12, Math.ceil(remaining / sems)));
+  }, [startTerm, selectedGrad, transcriptData]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const newErrors: Record<string, string> = {};
-
-    if (effectiveCredits < 1 || effectiveCredits > 24) {
-      newErrors.credits = "Credits must be between 1 and 24.";
-    }
-    if (!major.trim()) {
-      newErrors.major = "Please enter your intended major.";
-    }
+    if (!major.trim()) newErrors.major = "Please enter your intended major.";
     if (hasTargetSchool && !targetSchool.trim()) {
       newErrors.targetSchool = "Please enter your target school or choose 'Help me find the best fit'.";
     }
-
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      return;
+    // Ensure at least 1 semester ahead
+    const startParsed = parseTerm(startTerm);
+    const gradParsed = parseTerm(selectedGrad);
+    if (!startParsed || !gradParsed || termToOrdinal(gradParsed) < termToOrdinal(startParsed)) {
+      newErrors.gradSemester = "Intended graduation must be at least one semester ahead.";
     }
+    if (Object.keys(newErrors).length > 0) { setErrors(newErrors); return; }
 
     onConfigured({
-      maxCreditsPerSemester: effectiveCredits,
+      maxCreditsPerSemester,
       major: major.trim(),
       hasTargetSchool,
       targetSchool: hasTargetSchool ? targetSchool.trim() : "",
@@ -59,10 +122,9 @@ export default function PlanConfig({ transcriptData, onConfigured, onBack }: Pla
   };
 
   const handleSkip = () => {
-    const skippedMajor = major.trim() || "Undecided";
     onConfigured({
       maxCreditsPerSemester: 15,
-      major: skippedMajor,
+      major: major.trim() || "Undecided",
       hasTargetSchool: false,
       targetSchool: "",
     });
@@ -97,53 +159,25 @@ export default function PlanConfig({ transcriptData, onConfigured, onBack }: Pla
         {errors.major && <p className="text-sm text-red-600 dark:text-red-400">{errors.major}</p>}
       </div>
 
-      <fieldset className="space-y-3">
-        <legend className="block text-sm font-medium text-zinc-900 dark:text-white">
-          Maximum Credits Per Semester
-        </legend>
+      <div className="space-y-2">
+        <label htmlFor="grad-semester" className="block text-sm font-medium text-zinc-900 dark:text-white">
+          Intended Graduation Semester
+        </label>
         <p className="text-xs text-zinc-500 dark:text-zinc-400">
-          This is a strict limit. Every semester in your plan will have this many units or fewer.
+          The semester you plan to transfer. Your plan will be paced to finish by then.
         </p>
-        <div className="flex flex-wrap gap-2">
-          {CREDIT_PRESETS.map((preset) => (
-            <button
-              key={preset}
-              type="button"
-              onClick={() => { setMaxCredits(preset); setIsCustom(false); }}
-              className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
-                !isCustom && maxCredits === preset
-                  ? "bg-blue-600 text-white"
-                  : "border border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800"
-              }`}
-            >
-              {preset} units
-            </button>
+        <select
+          id="grad-semester"
+          value={selectedGrad}
+          onChange={(e) => { setGradSemester(e.target.value); setErrors({}); }}
+          className="w-48 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
+        >
+          {gradOptions.map((term) => (
+            <option key={term} value={term}>{term}</option>
           ))}
-          <button
-            type="button"
-            onClick={() => setIsCustom(true)}
-            className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors cursor-pointer ${
-              isCustom
-                ? "bg-blue-600 text-white"
-                : "border border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800"
-            }`}
-          >
-            Custom
-          </button>
-        </div>
-        {isCustom && (
-          <input
-            type="number"
-            min={1}
-            max={24}
-            value={customCredits}
-            onChange={(e) => setCustomCredits(e.target.value)}
-            placeholder="Enter max units"
-            className="w-32 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
-          />
-        )}
-        {errors.credits && <p className="text-sm text-red-600 dark:text-red-400">{errors.credits}</p>}
-      </fieldset>
+        </select>
+        {errors.gradSemester && <p className="text-sm text-red-600 dark:text-red-400">{errors.gradSemester}</p>}
+      </div>
 
       <fieldset className="space-y-3">
         <legend className="block text-sm font-medium text-zinc-900 dark:text-white">
