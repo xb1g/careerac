@@ -20,10 +20,6 @@ export default function ChatWidget({
   const panelRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    if (defaultOpen) setOpen(true);
-  }, [defaultOpen]);
-
-  useEffect(() => {
     onOpenChange?.(open);
   }, [open, onOpenChange]);
 
