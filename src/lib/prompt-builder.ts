@@ -17,6 +17,7 @@ export interface PromptInputs {
   maxCreditsPerSemester?: number;
   hasTargetSchool?: boolean;
   recoveryPrompt?: string;
+  startTerm?: string;
 }
 
 /**
@@ -34,6 +35,7 @@ export function buildSystemPrompt(inputs: PromptInputs): string {
     maxCreditsPerSemester,
     hasTargetSchool,
     recoveryPrompt,
+    startTerm,
   } = inputs;
 
   // Build the example JSON from the schema constant
@@ -45,7 +47,7 @@ export function buildSystemPrompt(inputs: PromptInputs): string {
       semesters: [
         {
           number: 1,
-          label: "Fall 2024",
+          label: startTerm ?? "Fall 2026",
           courses: [
             {
               code: "CS 1",
@@ -113,6 +115,7 @@ ${noDataExample}
 4. **Prerequisite ordering**: NEVER schedule a course before its prerequisites. If CS 2 requires CS 1, then CS 1 must appear in an earlier semester than CS 2.
 5. **Include all fields**: Every course must have code, title, and units. Include transfer equivalency when available.
 6. **Be precise about supported majors**: If a student asks for a major that is not in the articulation matches above, do NOT claim CareerAC only supports a narrower set unless that limitation is explicitly stated in the available major list below.
+7. **Respect the start term**: The first semester's label MUST be "${startTerm ?? "Fall 2026"}" and subsequent semesters follow Spring/Fall progression in order from there. Never emit past terms or terms earlier than the start term.
 
 ## AVAILABLE ARTICULATION DATA
 The following are the articulation agreements in our database. Use ONLY these courses when generating plans:

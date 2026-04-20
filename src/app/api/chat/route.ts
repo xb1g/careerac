@@ -11,6 +11,8 @@ import {
   type PlanContext,
   type RecoveryContext,
 } from "@/lib/plan-pipeline";
+import { computeNextRegistrationTerm, findLatestTerm } from "@/utils/term";
+import { createClient } from "@/utils/supabase/server";
 
 export async function POST(req: Request) {
   try {
@@ -30,6 +32,21 @@ export async function POST(req: Request) {
       hasTargetSchool?: boolean;
     } = await req.json();
 
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+
+    let startTerm: string | undefined;
+    if (user) {
+      const { data: terms } = await supabase
+        .from("user_courses")
+        .select("term")
+        .eq("user_id", user.id)
+        .neq("status", "planned")
+        .returns<{ term: string | null }[]>();
+      const latestTerm = findLatestTerm((terms ?? []).map((r) => r.term));
+      startTerm = computeNextRegistrationTerm(new Date(), latestTerm).label;
+    }
+
     return await PlanGenerationPipeline.stream(
       { messages, planContext },
       {
@@ -37,6 +54,7 @@ export async function POST(req: Request) {
         maxCreditsPerSemester,
         hasTargetSchool,
         recoveryContext,
+        startTerm,
       },
     );
   } catch (error) {

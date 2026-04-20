@@ -1,4 +1,5 @@
 import type { ParsedPlan, TransferPlan, NoDataResponse, PlanCourse, PlanSemester, MultiUniversityPlan, UniversityFit } from "@/types/plan";
+import { advanceTerm } from "@/utils/term";
 
 /**
  * Removes fenced JSON code blocks from a chat response so students only see
@@ -32,7 +33,7 @@ export function stripPlanJsonFromText(text: string): string {
  * Extracts and parses a structured transfer plan from AI response text.
  * The AI is expected to output a JSON block with the plan data.
  */
-export function parsePlanFromAIResponse(text: string): ParsedPlan | null {
+export function parsePlanFromAIResponse(text: string, startTerm?: string): ParsedPlan | null {
   // Try to find JSON block in the response
   const jsonMatch = text.match(/```(?:json)?\s*\n?([\s\S]*?)\n?\s*```/);
   if (!jsonMatch) {
@@ -48,10 +49,10 @@ export function parsePlanFromAIResponse(text: string): ParsedPlan | null {
 
     // Check for multi-university plan format
     if (parsed && typeof parsed === "object" && parsed.isMultiUniversity === true) {
-      return validateMultiUniversityPlan(parsed);
+      return validateMultiUniversityPlan(parsed, startTerm);
     }
 
-    return validateAndNormalizePlan(parsed);
+    return validateAndNormalizePlan(parsed, startTerm);
   } catch {
     // If JSON parsing fails, check for no-data indicators in the text
     if (hasNoDataIndicators(text)) {
@@ -59,6 +60,16 @@ export function parsePlanFromAIResponse(text: string): ParsedPlan | null {
     }
     return null;
   }
+}
+
+/** Rewrites semester labels starting from startTerm, advancing Spring/Fall in order. */
+function rewriteSemesterLabels(semesters: PlanSemester[], startTerm: string): PlanSemester[] {
+  let current = startTerm;
+  return semesters.map((sem) => {
+    const label = current;
+    current = advanceTerm(current);
+    return { ...sem, label };
+  });
 }
 
 function hasNoDataIndicators(text: string): boolean {
@@ -89,7 +100,7 @@ function extractNoDataMessage(text: string): NoDataResponse {
   };
 }
 
-function validateAndNormalizePlan(raw: unknown): ParsedPlan | null {
+function validateAndNormalizePlan(raw: unknown, startTerm?: string): ParsedPlan | null {
   if (!raw || typeof raw !== "object") return null;
 
   const obj = raw as Record<string, unknown>;
@@ -167,23 +178,26 @@ function validateAndNormalizePlan(raw: unknown): ParsedPlan | null {
     // If ordering is wrong, try to fix it
     const fixed = reorderSemestersForPrerequisites(semesters);
     if (fixed) {
-      const fixedTotalUnits = fixed.reduce((sum: number, s: PlanSemester) => sum + s.totalUnits, 0);
+      const labeled = startTerm ? rewriteSemesterLabels(fixed, startTerm) : fixed;
+      const fixedTotalUnits = labeled.reduce((sum: number, s: PlanSemester) => sum + s.totalUnits, 0);
       return {
         ccName: typeof obj.ccName === "string" ? obj.ccName : "",
         targetUniversity: typeof obj.targetUniversity === "string" ? obj.targetUniversity : "",
         targetMajor: typeof obj.targetMajor === "string" ? obj.targetMajor : "",
-        semesters: fixed,
+        semesters: labeled,
         totalUnits: fixedTotalUnits,
       };
     }
     // If can't fix, still return but note the issue
   }
 
+  const finalSemesters = startTerm ? rewriteSemesterLabels(semesters, startTerm) : semesters;
+
   const plan: TransferPlan = {
     ccName: typeof obj.ccName === "string" ? obj.ccName : "",
     targetUniversity: typeof obj.targetUniversity === "string" ? obj.targetUniversity : "",
     targetMajor: typeof obj.targetMajor === "string" ? obj.targetMajor : "",
-    semesters,
+    semesters: finalSemesters,
     totalUnits: typeof obj.totalUnits === "number" ? obj.totalUnits : totalUnits,
   };
 
@@ -327,7 +341,7 @@ function reorderSemestersForPrerequisites(semesters: PlanSemester[]): PlanSemest
 /**
  * Validates and normalizes a multi-university plan from AI response.
  */
-function validateMultiUniversityPlan(raw: Record<string, unknown>): MultiUniversityPlan | null {
+function validateMultiUniversityPlan(raw: Record<string, unknown>, startTerm?: string): MultiUniversityPlan | null {
   if (!raw.universities || !Array.isArray(raw.universities) || raw.universities.length === 0) {
     return null;
   }
@@ -343,7 +357,7 @@ function validateMultiUniversityPlan(raw: Record<string, unknown>): MultiUnivers
     // Validate the embedded plan
     let plan: TransferPlan | null = null;
     if (u.plan && typeof u.plan === "object") {
-      const validated = validateAndNormalizePlan(u.plan);
+      const validated = validateAndNormalizePlan(u.plan, startTerm);
       if (validated && !("isNoData" in validated)) {
         plan = validated as TransferPlan;
       }

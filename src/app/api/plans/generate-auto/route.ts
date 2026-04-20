@@ -12,6 +12,7 @@ import {
 import type { MultiUniversityPlan, ParsedPlan, TransferPlan } from "@/types/plan";
 import type { TranscriptData } from "@/types/transcript";
 import { createClient } from "@/utils/supabase/server";
+import { computeNextRegistrationTerm, findLatestTerm } from "@/utils/term";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -223,17 +224,20 @@ export async function POST(req: Request) {
       ? body.transcriptId
       : null;
 
-    const { ccInstitutionId, targetInstitutionId } = await resolveInstitutionIdsByName(
-      supabase,
-      body.transcriptData.institution,
-      targetSchool,
-    );
+    const [{ ccInstitutionId, targetInstitutionId }, { data: userCourseTerms }] = await Promise.all([
+      resolveInstitutionIdsByName(supabase, body.transcriptData.institution, targetSchool),
+      supabase.from("user_courses").select("term").eq("user_id", user.id).neq("status", "planned").returns<{ term: string | null }[]>(),
+    ]);
+
+    const latestTerm = findLatestTerm((userCourseTerms ?? []).map((r) => r.term));
+    const startTerm = computeNextRegistrationTerm(new Date(), latestTerm).label;
 
     const userPrompt = buildSyntheticUserPrompt(
       body.transcriptData,
       detectedMajor,
       targetSchool,
       maxCreditsPerSemester,
+      startTerm,
     );
 
     let generated;
@@ -260,6 +264,7 @@ export async function POST(req: Request) {
           transcriptData: body.transcriptData,
           maxCreditsPerSemester,
           hasTargetSchool,
+          startTerm,
         },
       );
       console.log("auto-plan generate ms", Date.now() - generateStartedAt);

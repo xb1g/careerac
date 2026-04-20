@@ -97,6 +97,7 @@ export interface PlanRequestOptions {
   maxCreditsPerSemester?: number;
   hasTargetSchool?: boolean;
   recoveryContext?: RecoveryContext;
+  startTerm?: string;
 }
 
 interface PreparedPlanPrompt {
@@ -124,6 +125,7 @@ export class PlanGenerationPipeline {
       maxCreditsPerSemester,
       hasTargetSchool,
       recoveryContext,
+      startTerm,
     } = options;
 
     const [articulationResult, prerequisiteData, playbookContext] =
@@ -150,6 +152,7 @@ export class PlanGenerationPipeline {
       maxCreditsPerSemester,
       hasTargetSchool,
       recoveryPrompt,
+      startTerm,
     });
 
     return {
@@ -182,7 +185,7 @@ export class PlanGenerationPipeline {
 
     return {
       rawText,
-      parsedPlan: parsePlanFromAIResponse(rawText),
+      parsedPlan: parsePlanFromAIResponse(rawText, options.startTerm),
     };
   }
 }
