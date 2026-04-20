@@ -71,7 +71,7 @@ async function callMiniMax(
   let minimaxResponse: Response;
   try {
     minimaxResponse = await fetch(
-      "https://api.minimax.io/anthropic/v1/messages",
+      "https://api.minimaxi.com/anthropic/v1/messages",
       {
         method: "POST",
         headers: {

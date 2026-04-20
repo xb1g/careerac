@@ -6,7 +6,7 @@ interface MiniMaxMessage {
 }
 
 interface MiniMaxResponse {
-  // Response shape for POST https://api.minimax.io/v1/text/chatcompletion_v2
+  // Response shape for POST https://api.minimaxi.com/v1/text/chatcompletion_v2
   // and OpenAI-compatible /v1/chat/completions — `message` is a singular
   // object per choice (not a `messages[]` array like the deprecated
   // chatcompletion_pro endpoint).
@@ -56,7 +56,7 @@ Rules:
     { role: "user", content: `Parse this transcript:\n\n${rawText}` }
   ];
 
-  const response = await fetch("https://api.minimax.io/v1/text/chatcompletion_v2", {
+  const response = await fetch("https://api.minimaxi.com/v1/text/chatcompletion_v2", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

@@ -39,7 +39,7 @@ describe("generateTextFromMiniMax", () => {
     expect(fetchMock).toHaveBeenCalledTimes(1);
 
     const [url, init] = fetchMock.mock.calls[0];
-    expect(url).toBe("https://api.minimax.io/anthropic/v1/messages");
+    expect(url).toBe("https://api.minimaxi.com/anthropic/v1/messages");
     expect(init.method).toBe("POST");
     expect(init.headers.Authorization).toBe("Bearer test-key");
 

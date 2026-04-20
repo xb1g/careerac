@@ -168,6 +168,43 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      <section className="relative z-10 px-6 sm:px-8 lg:px-12 py-20 lg:py-28">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-12">
+            <span className="inline-block px-4 py-1.5 rounded-full bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 text-xs font-bold uppercase tracking-wider mb-4">
+              The Team
+            </span>
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-zinc-900 dark:text-white mb-4">
+              Meet the founders
+            </h2>
+          </div>
+
+          <div className="flex flex-wrap items-center justify-center gap-8 lg:gap-12">
+            <div className="flex flex-col items-center">
+              <div className="w-40 h-40 rounded-full overflow-hidden border-4 border-white dark:border-zinc-800 shadow-xl">
+                <img
+                  src="/founders/ali.png"
+                  alt="Ali"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <span className="mt-4 text-lg font-bold text-zinc-900 dark:text-white">Ali</span>
+            </div>
+
+            <div className="flex flex-col items-center">
+              <div className="w-40 h-40 rounded-full overflow-hidden border-4 border-white dark:border-zinc-800 shadow-xl">
+                <img
+                  src="/founders/big.jpg"
+                  alt="Big"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <span className="mt-4 text-lg font-bold text-zinc-900 dark:text-white">Big</span>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }

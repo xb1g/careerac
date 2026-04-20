@@ -69,7 +69,7 @@ describe("parseTranscriptWithAI", () => {
     vi.restoreAllMocks();
   });
 
-  it("hits the chatcompletion_v2 endpoint on api.minimax.io with a Bearer token", async () => {
+  it("hits the chatcompletion_v2 endpoint on api.minimaxi.com with a Bearer token", async () => {
     const fetchMock = vi.fn().mockResolvedValue({
       ok: true,
       status: 200,
@@ -81,7 +81,7 @@ describe("parseTranscriptWithAI", () => {
 
     expect(fetchMock).toHaveBeenCalledTimes(1);
     const [url, init] = fetchMock.mock.calls[0];
-    expect(url).toBe("https://api.minimax.io/v1/text/chatcompletion_v2");
+    expect(url).toBe("https://api.minimaxi.com/v1/text/chatcompletion_v2");
     expect(init.method).toBe("POST");
     expect(init.headers["Authorization"]).toBe("Bearer test-key");
     expect(init.headers["Content-Type"]).toBe("application/json");
