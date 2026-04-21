@@ -45,7 +45,7 @@ interface SelectedComparisonTarget {
 }
 
 const AUTO_GENERATION_SESSION_KEY = "careerac:auto-plan-generation";
-const MAX_COMPARISON_TARGETS = 20;
+const MAX_COMPARISON_TARGETS = 10;
 
 function normalizeGenerationError(error: unknown): GenerationError {
   if (error && typeof error === "object") {
@@ -101,18 +101,40 @@ export default function NewPlanPage() {
   const [institutionSearch, setInstitutionSearch] = useState("");
   const [comparisonTargets, setComparisonTargets] = useState<SelectedComparisonTarget[]>([]);
   const [institutionsLoaded, setInstitutionsLoaded] = useState(false);
-  const [selectionError, setSelectionError] = useState<string | null>(null);
   const [currentPlan, setCurrentPlan] = useState<ParsedPlan | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
   const [savedPlanId, setSavedPlanId] = useState<string | null>(null);
   const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isSavingRef = useRef(false);
+  const pendingTargetSchoolRef = useRef<string | null>(null);
 
   const clearPersistedAutoGeneration = useCallback(() => {
     if (typeof window !== "undefined") {
       window.sessionStorage.removeItem(AUTO_GENERATION_SESSION_KEY);
     }
+  }, []);
+
+  const buildDefaultComparisonTargets = useCallback((targetSchool: string | null | undefined, availableUniversities: UniversityOption[]) => {
+    if (!targetSchool || availableUniversities.length === 0) return [];
+
+    const normalizedTarget = targetSchool.toLowerCase();
+    const bestMatch = availableUniversities.find((institution) => {
+      const name = institution.name.toLowerCase();
+      const abbreviation = institution.abbreviation?.toLowerCase() ?? "";
+      return name.includes(normalizedTarget) || normalizedTarget.includes(name) || (abbreviation && abbreviation === normalizedTarget);
+    });
+
+    if (!bestMatch) return [];
+
+    return [
+      {
+        institution_id: bestMatch.id,
+        name: bestMatch.name,
+        abbreviation: bestMatch.abbreviation,
+        priority_order: 1,
+      },
+    ];
   }, []);
 
   useEffect(() => {
@@ -190,6 +212,7 @@ export default function NewPlanPage() {
         if (response.ok) {
           const nextUniversities = Array.isArray(payload.universities) ? payload.universities : [];
           setUniversities(nextUniversities);
+          setComparisonTargets((current) => current.length > 0 ? current : buildDefaultComparisonTargets(pendingTargetSchoolRef.current, nextUniversities));
         }
         setInstitutionsLoaded(true);
       })
@@ -203,7 +226,7 @@ export default function NewPlanPage() {
       }
       isSavingRef.current = false;
     };
-  }, []);
+  }, [buildDefaultComparisonTargets]);
 
   const handleTranscriptParsed = useCallback((data: TranscriptData, id: string) => {
     setTranscriptData(data);
@@ -318,16 +341,11 @@ export default function NewPlanPage() {
   }, []);
 
   const handleConfigured = useCallback((config: PlanConfiguration) => {
-    setSelectionError(null);
+    pendingTargetSchoolRef.current = config.targetSchool;
     setPlanConfig(config);
-    if (config.hasTargetSchool) {
-      setStep("compare");
-      return;
-    }
-
-    setComparisonTargets([]);
-    setStep("chat");
-  }, []);
+    setComparisonTargets((current) => current.length > 0 ? current : buildDefaultComparisonTargets(config.targetSchool, universities));
+    setStep("compare");
+  }, [buildDefaultComparisonTargets, universities]);
 
   const handleBackToUpload = useCallback(() => {
     setGenerationError(null);
@@ -378,48 +396,23 @@ export default function NewPlanPage() {
   }, []);
 
   const handleContinueToChat = useCallback(() => {
-    if (planConfig?.hasTargetSchool && comparisonTargets.length === 0) {
-      setSelectionError("Select at least one university to continue.");
-      return;
-    }
-    setSelectionError(null);
     setStep("chat");
-  }, [comparisonTargets.length, planConfig?.hasTargetSchool]);
+  }, []);
 
   const savePlan = useCallback(async (plan: ParsedPlan, messages: unknown[]): Promise<string | null> => {
     if ("isNoData" in plan && plan.isNoData) {
       return null;
     }
 
-    const selectedMajor = planConfig?.major?.trim() || "";
-    const normalizedPlan: ParsedPlan = selectedMajor
-      ? ("isMultiUniversity" in plan && plan.isMultiUniversity
-        ? {
-          ...plan,
-          major: selectedMajor,
-          universities: plan.universities.map((university) => ({
-            ...university,
-            plan: {
-              ...university.plan,
-              targetMajor: selectedMajor,
-            },
-          })),
-        }
-        : {
-          ...(plan as TransferPlan),
-          targetMajor: selectedMajor,
-        })
-      : plan;
-
     let title: string;
     let targetMajor: string;
 
-    if ("isMultiUniversity" in normalizedPlan && normalizedPlan.isMultiUniversity) {
-      const multiPlan = normalizedPlan as MultiUniversityPlan;
+    if ("isMultiUniversity" in plan && plan.isMultiUniversity) {
+      const multiPlan = plan as MultiUniversityPlan;
       title = `${multiPlan.studentCC} → Multiple Universities (${multiPlan.major})`;
       targetMajor = multiPlan.major;
     } else {
-      const transferPlan = normalizedPlan as TransferPlan;
+      const transferPlan = plan as TransferPlan;
       title = `${transferPlan.ccName} → ${transferPlan.targetUniversity}`;
       targetMajor = transferPlan.targetMajor;
     }
@@ -434,10 +427,10 @@ export default function NewPlanPage() {
       }));
 
       const resolvedNames = await resolveInstitutionIds(
-        transcriptData?.institution || ("ccName" in normalizedPlan ? normalizedPlan.ccName : ""),
-        ("isMultiUniversity" in normalizedPlan && normalizedPlan.isMultiUniversity)
+        transcriptData?.institution || ("ccName" in plan ? plan.ccName : ""),
+        ("isMultiUniversity" in plan && plan.isMultiUniversity)
           ? primaryTarget?.name || ""
-          : (normalizedPlan as TransferPlan).targetUniversity,
+          : (plan as TransferPlan).targetUniversity,
       );
 
       const response = await fetch("/api/plans", {
@@ -448,7 +441,7 @@ export default function NewPlanPage() {
           cc_institution_id: resolvedNames.ccId ?? null,
           target_institution_id: primaryTarget?.institution_id ?? resolvedNames.targetId ?? null,
           target_major: targetMajor,
-          plan_data: JSON.parse(JSON.stringify(normalizedPlan)),
+          plan_data: JSON.parse(JSON.stringify(plan)),
           chat_history: JSON.parse(JSON.stringify(messages)),
           max_credits_per_semester: planConfig?.maxCreditsPerSemester || null,
           transcript_id: transcriptId || null,
@@ -506,37 +499,19 @@ export default function NewPlanPage() {
     return buildSyntheticUserPrompt(
       transcriptData,
       planConfig.major,
-      null,
+      planConfig.hasTargetSchool ? planConfig.targetSchool : null,
       planConfig.maxCreditsPerSemester ?? 15,
-      undefined,
-      planConfig.hasTargetSchool
-        ? comparisonTargets.map((target) => target.name)
-        : [],
     );
-  }, [comparisonTargets, transcriptData, planConfig]);
-
-  const selectedUniversityIds = useMemo(
-    () => planConfig?.hasTargetSchool
-      ? comparisonTargets.map((target) => target.institution_id)
-      : [],
-    [comparisonTargets, planConfig?.hasTargetSchool],
-  );
-
-  const selectedUniversityNames = useMemo(
-    () => planConfig?.hasTargetSchool
-      ? comparisonTargets.map((target) => target.name)
-      : [],
-    [comparisonTargets, planConfig?.hasTargetSchool],
-  );
+  }, [transcriptData, planConfig]);
 
   // Build welcome message based on context
   const welcomeMessage = transcriptData
     ? `I see you've taken ${transcriptData.courses.length} courses at ${transcriptData.institution} with ${transcriptData.totalUnitsCompleted} completed units${transcriptData.gpa ? ` (GPA: ${transcriptData.gpa})` : ""}. ${planConfig?.hasTargetSchool
-      ? `Let me generate ranked plans for your selected schools in ${planConfig.major}.`
+      ? `Let me help you plan your transfer to ${planConfig.targetSchool} for ${planConfig.major}.`
       : `Let me analyze your coursework and find the best university matches for ${planConfig?.major || "your major"}.`
     }`
     : planConfig?.hasTargetSchool
-      ? `I&apos;ll generate ranked plans for your selected universities in ${planConfig.major}.`
+      ? `Tell me about your community college and I'll help you plan your transfer to ${planConfig.targetSchool} for ${planConfig.major}.`
       : `I'll analyze the available transfer paths and find the best university matches for ${planConfig?.major || "your major"}. Tell me about your community college to get started.`;
 
   // Step indicator
@@ -551,13 +526,13 @@ export default function NewPlanPage() {
         { key: "upload", label: "Transcript" },
         { key: "choice", label: "Choose" },
         { key: "config", label: "Settings" },
-        ...((planConfig?.hasTargetSchool || step === "compare") ? [{ key: "compare", label: "Schools" }] : []),
+        { key: "compare", label: "Compare" },
         { key: "chat", label: "Plan" },
       ]
       : [
         { key: "upload", label: "Transcript" },
         { key: "config", label: "Settings" },
-        ...((planConfig?.hasTargetSchool || step === "compare") ? [{ key: "compare", label: "Schools" }] : []),
+        { key: "compare", label: "Compare" },
         { key: "chat", label: "Plan" },
       ];
 
@@ -566,7 +541,8 @@ export default function NewPlanPage() {
       if (!institutionSearch.trim()) return true;
       const query = institutionSearch.toLowerCase();
       return institution.name.toLowerCase().includes(query) || institution.abbreviation?.toLowerCase().includes(query);
-    });
+    })
+    .slice(0, 12);
 
   if (step === "chat") {
     return (
@@ -579,7 +555,7 @@ export default function NewPlanPage() {
               </h1>
               <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
                 {planConfig?.hasTargetSchool
-                  ? `${planConfig.major} → Selected Schools (${comparisonTargets.length}) | Max ${planConfig.maxCreditsPerSemester} units/semester`
+                  ? `${planConfig.major} → ${planConfig.targetSchool} | Max ${planConfig.maxCreditsPerSemester} units/semester`
                   : `${planConfig?.major} → Best Fit | Max ${planConfig?.maxCreditsPerSemester} units/semester`}
               </p>
             </div>
@@ -627,14 +603,9 @@ export default function NewPlanPage() {
           welcomeMessage={welcomeMessage}
           onPlanGenerated={handlePlanGenerated}
           onSavePlan={debouncedSave}
-          planContext={{
-            targetMajor: planConfig?.major,
-            selectedTargetInstitutionIds: selectedUniversityIds,
-          }}
           transcriptData={transcriptData ?? undefined}
           maxCreditsPerSemester={planConfig?.maxCreditsPerSemester}
           hasTargetSchool={planConfig?.hasTargetSchool}
-          selectedUniversityNames={selectedUniversityNames}
           autoStartPrompt={autoStartPrompt}
         />
       </div>
@@ -650,10 +621,10 @@ export default function NewPlanPage() {
             <div key={s.key} className="flex items-center gap-2">
               <div
                 className={`flex items-center justify-center w-7 h-7 rounded-full text-xs font-medium ${s.key === step
-                  ? "bg-blue-600 text-white"
-                  : steps.findIndex((x) => x.key === step) > i
-                    ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300"
-                    : "bg-zinc-100 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400"
+                    ? "bg-blue-600 text-white"
+                    : steps.findIndex((x) => x.key === step) > i
+                      ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300"
+                      : "bg-zinc-100 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400"
                   }`}
               >
                 {steps.findIndex((x) => x.key === step) > i ? (
@@ -666,8 +637,8 @@ export default function NewPlanPage() {
               </div>
               <span
                 className={`text-sm ${s.key === step
-                  ? "font-medium text-zinc-900 dark:text-white"
-                  : "text-zinc-500 dark:text-zinc-400"
+                    ? "font-medium text-zinc-900 dark:text-white"
+                    : "text-zinc-500 dark:text-zinc-400"
                   }`}
               >
                 {s.label}
@@ -738,9 +709,9 @@ export default function NewPlanPage() {
         {step === "compare" && (
           <div className="space-y-8">
             <div>
-              <h2 className="text-xl font-semibold text-zinc-900 dark:text-white">Choose Your Schools</h2>
+              <h2 className="text-xl font-semibold text-zinc-900 dark:text-white">Compare Schools</h2>
               <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
-                Select up to {MAX_COMPARISON_TARGETS} universities from the full catalog. We&apos;ll generate plans only for the schools you choose.
+                Choose up to {MAX_COMPARISON_TARGETS} universities to compare. The first selected school becomes your primary target.
               </p>
             </div>
 
@@ -760,7 +731,9 @@ export default function NewPlanPage() {
               <div className="mt-4 flex flex-wrap gap-2">
                 {comparisonTargets.length === 0 ? (
                   <p className="text-sm text-zinc-500 dark:text-zinc-400">
-                    Choose at least one university to continue.
+                    {planConfig?.hasTargetSchool
+                      ? "Select your main target and any alternate schools to compare later."
+                      : "Pick schools you want the dashboard to compare after your plan is saved."}
                   </p>
                 ) : (
                   comparisonTargets.map((target, index) => (
@@ -769,7 +742,7 @@ export default function NewPlanPage() {
                       className="inline-flex items-center gap-2 rounded-full bg-zinc-900 px-3 py-1.5 text-sm text-white dark:bg-white dark:text-zinc-900"
                     >
                       <span>{target.abbreviation ?? target.name}</span>
-                      {index === 0 && <span className="text-[10px] uppercase tracking-wide opacity-70">1st</span>}
+                      {index === 0 && <span className="text-[10px] uppercase tracking-wide opacity-70">Primary</span>}
                       <button
                         type="button"
                         onClick={() => removeComparisonTarget(target.institution_id)}
@@ -781,9 +754,6 @@ export default function NewPlanPage() {
                   ))
                 )}
               </div>
-              {selectionError && (
-                <p className="mt-3 text-sm text-red-600 dark:text-red-400">{selectionError}</p>
-              )}
             </div>
 
             <div className="grid gap-3 sm:grid-cols-2">
@@ -796,8 +766,8 @@ export default function NewPlanPage() {
                     type="button"
                     onClick={() => (isSelected ? removeComparisonTarget(institution.id) : addComparisonTarget(institution))}
                     className={`rounded-2xl border p-4 text-left transition-colors cursor-pointer ${isSelected
-                      ? "border-blue-500 bg-blue-50 dark:border-blue-400 dark:bg-blue-500/10"
-                      : "border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 hover:border-zinc-300 dark:hover:border-zinc-700"
+                        ? "border-blue-500 bg-blue-50 dark:border-blue-400 dark:bg-blue-500/10"
+                        : "border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 hover:border-zinc-300 dark:hover:border-zinc-700"
                       }`}
                   >
                     <div className="flex items-start justify-between gap-3">
@@ -822,7 +792,7 @@ export default function NewPlanPage() {
                 onClick={handleContinueToChat}
                 className="rounded-lg bg-blue-600 text-white px-6 py-2.5 text-sm font-medium hover:bg-blue-700 transition-colors cursor-pointer"
               >
-                Generate Plan
+                Continue to Plan
               </button>
               <button
                 type="button"

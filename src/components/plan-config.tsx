@@ -15,6 +15,7 @@ export interface PlanConfiguration {
   maxCreditsPerSemester: number;
   major: string;
   hasTargetSchool: boolean;
+  targetSchool: string | null;
 }
 
 interface PlanConfigProps {
@@ -42,6 +43,7 @@ function currentTerm(now = new Date()): string {
 export default function PlanConfig({ transcriptData, onConfigured, onBack }: PlanConfigProps) {
   const [major, setMajor] = useState(transcriptData?.major || "");
   const [hasTargetSchool, setHasTargetSchool] = useState(false);
+  const [targetSchool, setTargetSchool] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const { startTerm, gradOptions, defaultGrad } = useMemo(() => {
@@ -97,6 +99,9 @@ export default function PlanConfig({ transcriptData, onConfigured, onBack }: Pla
     e.preventDefault();
     const newErrors: Record<string, string> = {};
     if (!major.trim()) newErrors.major = "Please enter your intended major.";
+    if (hasTargetSchool && !targetSchool.trim()) {
+      newErrors.targetSchool = "Enter your target school, or switch to “Help me find the best fit.”";
+    }
     // Ensure at least 1 semester ahead
     const startParsed = parseTerm(startTerm);
     const gradParsed = parseTerm(selectedGrad);
@@ -109,6 +114,7 @@ export default function PlanConfig({ transcriptData, onConfigured, onBack }: Pla
       maxCreditsPerSemester,
       major: major.trim(),
       hasTargetSchool,
+      targetSchool: hasTargetSchool ? targetSchool.trim() : null,
     });
   };
 
@@ -117,6 +123,7 @@ export default function PlanConfig({ transcriptData, onConfigured, onBack }: Pla
       maxCreditsPerSemester: 15,
       major: major.trim() || "Undecided",
       hasTargetSchool: false,
+      targetSchool: null,
     });
   };
 
@@ -191,6 +198,7 @@ export default function PlanConfig({ transcriptData, onConfigured, onBack }: Pla
             </div>
           </label>
 
+          {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
           <label className="flex items-start gap-3 cursor-pointer">
             <input
               type="radio"
@@ -207,6 +215,23 @@ export default function PlanConfig({ transcriptData, onConfigured, onBack }: Pla
             </div>
           </label>
         </div>
+
+        {hasTargetSchool && (
+          <div className="ml-7 space-y-2">
+            <label htmlFor="target-school-input" className="block text-sm font-medium text-zinc-900 dark:text-white">
+              Primary target school
+            </label>
+            <input
+              id="target-school-input"
+              type="text"
+              value={targetSchool}
+              onChange={(e) => { setTargetSchool(e.target.value); setErrors((prev) => ({ ...prev, targetSchool: "" })); }}
+              placeholder="e.g., UC Berkeley"
+              className="w-full rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
+            />
+            {errors.targetSchool && <p className="text-sm text-red-600 dark:text-red-400">{errors.targetSchool}</p>}
+          </div>
+        )}
       </fieldset>
 
       <div className="flex flex-col sm:flex-row gap-3 pt-4">
