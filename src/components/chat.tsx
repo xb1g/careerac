@@ -6,6 +6,7 @@ import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { ParsedPlan } from "@/types/plan";
 import { parsePlanFromAIResponse, stripPlanJsonFromText } from "@/utils/plan-parser";
 import RecoveryMessage, { RecoveryAlternative } from "./recovery-message";
+import { ChatMarkdown } from "./chat-markdown";
 import type { TranscriptData } from "@/types/transcript";
 
 export interface RecoveryContext {
@@ -317,8 +318,11 @@ export default function Chat({
                       message.role === "assistant" ? stripPlanJsonFromText(rawText) : rawText;
                     if (!displayText) return null;
                     return (
-                      <div key={`${message.id}-${i}`} className="whitespace-pre-wrap text-[15px] leading-relaxed">
-                        {displayText}
+                      <div key={`${message.id}-${i}`}>
+                        <ChatMarkdown
+                          text={displayText}
+                          variant={message.role === "user" ? "user" : "assistant"}
+                        />
                       </div>
                     );
                   }

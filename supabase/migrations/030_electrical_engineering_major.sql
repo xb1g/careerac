@@ -6,34 +6,34 @@
 -- MAJOR DEFINITION
 -- ============================================================
 insert into majors (id, name, category, description, degree_type, total_units_required, participating_uc_campuses) values
-  ('m0000000-0000-0000-0000-000000000030', 'Electrical Engineering', 'Engineering', 'Design and analysis of electrical systems, circuits, signal processing, and electronics. Core of modern technology infrastructure.', 'BS', 185, array['UCB', 'UCD', 'UCI', 'UCLA', 'UCM', 'UCR', 'UCSD', 'UCSB', 'UCSC'])
+  ('c0000000-0000-0000-0000-000000000030', 'Electrical Engineering', 'Engineering', 'Design and analysis of electrical systems, circuits, signal processing, and electronics. Core of modern technology infrastructure.', 'BS', 185, array['UCB', 'UCD', 'UCI', 'UCLA', 'UCM', 'UCR', 'UCSD', 'UCSB', 'UCSC'])
 on conflict (id) do nothing;
 
 -- ============================================================
 -- COURSES - Electrical Engineering (Santa Monica College)
 -- ============================================================
 insert into courses (id, institution_id, code, title, units, description) values
-  ('n0000000-0000-0000-0000-000000000001', 'a0000000-0000-0000-0000-000000000001', 'MATH 28', 'Calculus I', 5, 'Limits, derivatives, and applications'),
-  ('n0000000-0000-0000-0000-000000000002', 'a0000000-0000-0000-0000-000000000001', 'MATH 29', 'Calculus II', 5, 'Integration, techniques, and applications'),
-  ('n0000000-0000-0000-0000-000000000003', 'a0000000-0000-0000-0000-000000000001', 'MATH 32', 'Multivariable Calculus', 5, 'Vector calculus and partial derivatives'),
-  ('n0000000-0000-0000-0000-000000000004', 'a0000000-0000-0000-0000-000000000001', 'MATH 33', 'Linear Algebra', 3, 'Matrices, vector spaces, and linear transformations'),
-  ('n0000000-0000-0000-0000-000000000005', 'a0000000-0000-0000-0000-000000000001', 'MATH 34', 'Differential Equations', 3, 'First-order and linear differential equations'),
-  ('n0000000-0000-0000-0000-000000000006', 'a0000000-0000-0000-0000-000000000001', 'PHYS 21', 'Physics for Scientists and Engineers I', 5, 'Mechanics and motion with laboratory'),
-  ('n0000000-0000-0000-0000-000000000007', 'a0000000-0000-0000-0000-000000000001', 'PHYS 22', 'Physics for Scientists and Engineers II', 5, 'Electricity and magnetism with laboratory'),
-  ('n0000000-0000-0000-0000-000000000008', 'a0000000-0000-0000-0000-000000000001', 'PHYS 23', 'Physics for Scientists and Engineers III', 5, 'Waves, optics, and modern physics with laboratory'),
-  ('n0000000-0000-0000-0000-000000000009', 'a0000000-0000-0000-0000-000000000001', 'CHEM 11', 'General Chemistry I', 5, 'Introductory chemical principles with laboratory'),
-  ('n0000000-0000-0000-0000-00000000000a', 'a0000000-0000-0000-0000-000000000001', 'ENGR 12', 'Statics', 3, 'Force systems, equilibrium, and structural analysis'),
-  ('n0000000-0000-0000-0000-00000000000b', 'a0000000-0000-0000-0000-000000000001', 'ENGR 16', 'Circuits and Electronics', 3, 'Basic circuit analysis and digital electronics'),
-  ('n0000000-0000-0000-0000-00000000000c', 'a0000000-0000-0000-0000-000000000001', 'CS 55', 'Java Programming', 3, 'Object-oriented programming fundamentals'),
-  ('n0000000-0000-0000-0000-00000000000d', 'a0000000-0000-0000-0000-000000000001', 'CS 56', 'C++ Programming', 3, 'Programming fundamentals in C++'),
-  ('n0000000-0000-0000-0000-00000000000e', 'a0000000-0000-0000-0000-000000000001', 'ENGR 20', 'Introduction to Digital Systems', 3, 'Digital logic, Boolean algebra, and circuit design'),
-  ('n0000000-0000-0000-0000-00000000000f', 'a0000000-0000-0000-0000-000000000001', 'MATH 7', 'Discrete Mathematics', 3, 'Logic, sets, combinatorics, and graph theory') on conflict do nothing;
+  ('d0000000-0000-0000-0000-000000000001', 'a0000000-0000-0000-0000-000000000001', 'MATH 28', 'Calculus I', 5, 'Limits, derivatives, and applications'),
+  ('d0000000-0000-0000-0000-000000000002', 'a0000000-0000-0000-0000-000000000001', 'MATH 29', 'Calculus II', 5, 'Integration, techniques, and applications'),
+  ('d0000000-0000-0000-0000-000000000003', 'a0000000-0000-0000-0000-000000000001', 'MATH 32', 'Multivariable Calculus', 5, 'Vector calculus and partial derivatives'),
+  ('d0000000-0000-0000-0000-000000000004', 'a0000000-0000-0000-0000-000000000001', 'MATH 33', 'Linear Algebra', 3, 'Matrices, vector spaces, and linear transformations'),
+  ('d0000000-0000-0000-0000-000000000005', 'a0000000-0000-0000-0000-000000000001', 'MATH 34', 'Differential Equations', 3, 'First-order and linear differential equations'),
+  ('d0000000-0000-0000-0000-000000000006', 'a0000000-0000-0000-0000-000000000001', 'PHYS 21', 'Physics for Scientists and Engineers I', 5, 'Mechanics and motion with laboratory'),
+  ('d0000000-0000-0000-0000-000000000007', 'a0000000-0000-0000-0000-000000000001', 'PHYS 22', 'Physics for Scientists and Engineers II', 5, 'Electricity and magnetism with laboratory'),
+  ('d0000000-0000-0000-0000-000000000008', 'a0000000-0000-0000-0000-000000000001', 'PHYS 23', 'Physics for Scientists and Engineers III', 5, 'Waves, optics, and modern physics with laboratory'),
+  ('d0000000-0000-0000-0000-000000000009', 'a0000000-0000-0000-0000-000000000001', 'CHEM 11', 'General Chemistry I', 5, 'Introductory chemical principles with laboratory'),
+  ('d0000000-0000-0000-0000-00000000000a', 'a0000000-0000-0000-0000-000000000001', 'ENGR 12', 'Statics', 3, 'Force systems, equilibrium, and structural analysis'),
+  ('d0000000-0000-0000-0000-00000000000b', 'a0000000-0000-0000-0000-000000000001', 'ENGR 16', 'Circuits and Electronics', 3, 'Basic circuit analysis and digital electronics'),
+  ('d0000000-0000-0000-0000-00000000000c', 'a0000000-0000-0000-0000-000000000001', 'CS 55', 'Java Programming', 3, 'Object-oriented programming fundamentals'),
+  ('d0000000-0000-0000-0000-00000000000d', 'a0000000-0000-0000-0000-000000000001', 'CS 56', 'C++ Programming', 3, 'Programming fundamentals in C++'),
+  ('d0000000-0000-0000-0000-00000000000e', 'a0000000-0000-0000-0000-000000000001', 'ENGR 20', 'Introduction to Digital Systems', 3, 'Digital logic, Boolean algebra, and circuit design'),
+  ('d0000000-0000-0000-0000-00000000000f', 'a0000000-0000-0000-0000-000000000001', 'MATH 7', 'Discrete Mathematics', 3, 'Logic, sets, combinatorics, and graph theory') on conflict do nothing;
 
 -- ============================================================
 -- TRANSFER PATHWAY REQUIREMENTS
 -- ============================================================
 insert into transfer_pathways (id, major_id, institution_id, requirements) values
-  ('tp-electrical-001', 'm0000000-0000-0000-0000-000000000030', 'a0000000-0000-0000-0000-000000000001', '
+  ('d0000000-0000-0000-0000-000000000030', 'c0000000-0000-0000-0000-000000000030', 'a0000000-0000-0000-0000-000000000001', '
 ## UC Electrical Engineering Transfer Requirements
 
 ### Minimum GPA Requirements
