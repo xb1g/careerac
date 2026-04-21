@@ -166,7 +166,7 @@ export async function POST(req: Request) {
       parsed_data: parsedData ? JSON.parse(JSON.stringify(parsedData)) : null,
       parse_status: parseStatus,
       parse_error: parseError,
-      parse_method: parseMethod,
+      parse_method: parseMethod === "regex" ? "regex" : "ai",
       updated_at: new Date().toISOString(),
     };
 

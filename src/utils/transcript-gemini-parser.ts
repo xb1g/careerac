@@ -1,8 +1,9 @@
-import { GoogleGenerativeAI, SchemaType } from "@google/generative-ai";
+import { GoogleGenAI } from "@google/genai";
 import type { TranscriptCourse, TranscriptData } from "@/types/transcript";
 
 /**
- * Parses transcript text using Gemini 3.1 Flash Lite.
+ * Parses transcript text using Gemini 3.1 Flash Lite Preview.
+ * Uses the @google/genai SDK as requested.
  */
 export async function parseTranscriptWithGemini(rawText: string): Promise<TranscriptData> {
   if (!rawText || !rawText.trim()) {
@@ -14,60 +15,102 @@ export async function parseTranscriptWithGemini(rawText: string): Promise<Transc
     throw new Error("GEMINI_API_KEY is not configured in the environment.");
   }
 
-  const genAI = new GoogleGenerativeAI(apiKey);
-  
-  // Use gemini-2.0-flash-lite as 3.1 is typically preview/experimental via specific SDKs
-  // but if the key supports it, the model name will work.
-  const model = genAI.getGenerativeModel({
-    model: "gemini-1.5-flash-latest", // Standard stable flash model
-    generationConfig: {
-      responseMimeType: "application/json",
-      responseSchema: {
-        type: SchemaType.OBJECT,
-        properties: {
-          institution: { type: SchemaType.STRING },
-          courses: {
-            type: SchemaType.ARRAY,
-            items: {
-              type: SchemaType.OBJECT,
-              properties: {
-                code: { type: SchemaType.STRING },
-                title: { type: SchemaType.STRING },
-                units: { type: SchemaType.NUMBER },
-                grade: { type: SchemaType.STRING },
-                status: { type: SchemaType.STRING, enum: ["completed", "in_progress", "withdrawn"] },
-                semester: { type: SchemaType.STRING }
-              },
-              required: ["code", "title", "units", "grade", "status", "semester"]
-            }
-          }
-        },
-        required: ["institution", "courses"]
-      }
-    }
+  // Initialize the new SDK
+  const ai = new GoogleGenAI({
+    apiKey: apiKey,
   });
 
-  const prompt = `Extract all courses from this transcript text. Return a clean list of courses with their units, grades, and statuses.
+  const model = "gemini-3.1-flash-lite-preview";
   
-  Rules:
-  - grade can be: A+, A, A-, B+, B, B-, C+, C, C-, D+, D, D-, F, IP, W, P, NP, CR, NC
-  - status must be "completed", "in_progress", or "withdrawn"
-  - units must be a number
-  - semester should be like "Fall 2023"
-  
-  Transcript Text:
-  ${rawText}`;
+  // Define the system prompt and rules
+  const systemPrompt = `You are a transcript parsing expert. Extract all courses from the provided transcript text and return ONLY valid JSON in this exact format:
+{
+  "institution": "University Name",
+  "courses": [
+    {
+      "code": "CS 101",
+      "title": "Introduction to Computer Science",
+      "units": 3.0,
+      "grade": "A",
+      "status": "completed",
+      "semester": "Fall 2023"
+    }
+  ]
+}
 
-  const result = await model.generateContent(prompt);
-  const response = await result.response;
-  const content = response.text();
+Rules:
+- status must be "completed", "in_progress", or "withdrawn"
+- grade can be: A+, A, A-, B+, B, B-, C+, C, C-, D+, D, D-, F, IP, W, P, NP, CR, NC
+- units must be a number
+- Extract the institution name from the transcript header
+- Return ONLY the JSON, no explanation or markdown`;
 
-  if (!content) {
-    throw new Error("Gemini returned empty content.");
-  }
+  const contents = [
+    {
+      role: "user",
+      parts: [
+        {
+          text: `${systemPrompt}\n\nParse this transcript:\n\n${rawText}`,
+        },
+      ],
+    },
+  ];
+
+  // Configuration as requested by user
+  // Note: @google/genai uses config.thinkingConfig for reasoning models
+  const config = {
+    thinkingConfig: {
+      includeThoughts: true, // Typically required to use thinking features
+    },
+    // We want structured output
+    responseMimeType: "application/json",
+  };
 
   try {
-    const parsed = JSON.parse(content);
+    const result = await ai.models.generateContent({
+      model,
+      config,
+      contents,
+    });
+
+    // In @google/genai, the candidates and text are directly on the result object
+    const candidate = result.candidates?.[0];
+    const content = candidate?.content?.parts?.[0]?.text;
+
+    if (!content) {
+      // Fallback to text() helper if available on result
+      const fallbackText = typeof (result as any).text === 'function' 
+        ? (result as any).text() 
+        : (result as any).text;
+      
+      if (!fallbackText) {
+        throw new Error("Gemini 3.1 returned empty content.");
+      }
+      return processParsedContent(fallbackText);
+    }
+
+    return processParsedContent(content);
+  } catch (error) {
+    console.error("Gemini 3.1 Parsing Error:", error);
+    throw new Error(`Failed to parse transcript with Gemini 3.1: ${error}`);
+  }
+}
+
+function processParsedContent(content: string): TranscriptData {
+  try {
+    // Clean potential markdown fencing
+    const jsonMatch = content.match(/```(?:json)?\s*([\s\S]*?)```/) || [null, content];
+    const jsonStr = jsonMatch[1]?.trim() || content.trim();
+    
+    const parsed = JSON.parse(jsonStr);
+
+    // Validate and normalize status
+    if (parsed.courses) {
+      parsed.courses = parsed.courses.map((c: any) => ({
+        ...c,
+        status: ["completed", "in_progress", "withdrawn"].includes(c.status) ? c.status : "completed"
+      }));
+    }
 
     // Calculate totals
     const totalUnitsCompleted = (parsed.courses || [])
