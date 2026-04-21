@@ -3,44 +3,48 @@ import { parseTranscriptWithGemini } from "../transcript-gemini-parser";
 
 // Mock the @google/genai SDK
 vi.mock("@google/genai", () => {
-  return {
-    GoogleGenAI: vi.fn().mockImplementation(() => ({
-      models: {
-        generateContent: vi.fn().mockResolvedValue({
-          candidates: [
+  const generateContentMock = vi.fn().mockResolvedValue({
+    candidates: [
+      {
+        content: {
+          parts: [
             {
-              content: {
-                parts: [
+              text: JSON.stringify({
+                institution: "De Anza College",
+                courses: [
                   {
-                    text: JSON.stringify({
-                      institution: "De Anza College",
-                      courses: [
-                        {
-                          code: "CIS 22A",
-                          title: "C++ Programming",
-                          units: 4.5,
-                          grade: "A",
-                          status: "completed",
-                          semester: "Fall 2023",
-                        },
-                        {
-                          code: "MATH 1B",
-                          title: "Calculus II",
-                          units: 5.0,
-                          grade: "IP",
-                          status: "in_progress",
-                          semester: "Spring 2024",
-                        },
-                      ],
-                    }),
+                    code: "CIS 22A",
+                    title: "C++ Programming",
+                    units: 4.5,
+                    grade: "A",
+                    status: "completed",
+                    semester: "Fall 2023",
+                  },
+                  {
+                    code: "MATH 1B",
+                    title: "Calculus II",
+                    units: 5.0,
+                    grade: "IP",
+                    status: "in_progress",
+                    semester: "Spring 2024",
                   },
                 ],
-              },
+              }),
             },
           ],
-        }),
+        },
       },
-    })),
+    ],
+  });
+
+  return {
+    GoogleGenAI: vi.fn().mockImplementation(function() {
+      return {
+        models: {
+          generateContent: generateContentMock,
+        },
+      };
+    }),
   };
 });
 
