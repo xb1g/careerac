@@ -1,6 +1,7 @@
 import { createClient } from "@/utils/supabase/server";
 import { parseTranscriptText } from "@/utils/transcript-parser";
-import { parseTranscriptWithAI } from "@/utils/transcript-ai-parser";
+import { parseTranscriptWithAI as parseWithMiniMax } from "@/utils/transcript-ai-parser";
+import { parseTranscriptWithGemini } from "@/utils/transcript-gemini-parser";
 import { syncTranscriptToUserCourses } from "@/utils/sync-transcript-courses";
 import type { Database } from "@/types/database";
 
@@ -117,25 +118,35 @@ export async function POST(req: Request) {
     let parsedData;
     let parseStatus: "completed" | "failed" = "completed";
     let parseError: string | null = null;
-    let parseMethod: "ai" | "regex" = "regex";
+    let parseMethod: "gemini" | "minimax" | "regex" = "regex";
 
     try {
       const pdfData = { text: await extractTextFromPdf(buffer) };
 
-      // Try AI parsing first if API key is available
-      if (process.env.MINIMAX_API_KEY) {
+      // 1. Try Gemini first (most robust)
+      if (process.env.GEMINI_API_KEY) {
         try {
-          parsedData = await parseTranscriptWithAI(pdfData.text);
-          parseMethod = "ai";
-        } catch (aiError) {
-          console.warn("AI parsing failed, falling back to regex:", aiError);
-          // Fall through to regex
+          parsedData = await parseTranscriptWithGemini(pdfData.text);
+          parseMethod = "gemini";
+        } catch (geminiError) {
+          console.warn("Gemini parsing failed, falling back:", geminiError);
         }
       }
 
-      // Fallback to regex if AI failed or no API key
+      // 2. Try MiniMax second
+      if (!parsedData && process.env.MINIMAX_API_KEY) {
+        try {
+          parsedData = await parseWithMiniMax(pdfData.text);
+          parseMethod = "minimax";
+        } catch (miniMaxError) {
+          console.warn("MiniMax parsing failed, falling back:", miniMaxError);
+        }
+      }
+
+      // 3. Fallback to regex
       if (!parsedData) {
         parsedData = parseTranscriptText(pdfData.text);
+        parseMethod = "regex";
         if (parsedData.courses.length === 0) {
           parseStatus = "failed";
           parseError = "Could not extract any courses from the transcript. The format may not be supported. Please use manual entry.";

@@ -22,6 +22,10 @@ interface MiniMaxResponse {
  * Falls back to regex parser if AI fails.
  */
 export async function parseTranscriptWithAI(rawText: string): Promise<TranscriptData> {
+  if (!rawText || !rawText.trim()) {
+    throw new Error("No readable text found in the transcript. It may be a scanned image or empty.");
+  }
+
   const apiKey = process.env.MINIMAX_API_KEY;
 
   if (!apiKey) {
@@ -75,11 +79,25 @@ Rules:
     throw new Error(`MiniMax API error: ${response.status} - ${errorText}`);
   }
 
-  const data: MiniMaxResponse = await response.json();
+  const data: any = await response.json();
+  
+  // Check for MiniMax specific error in base_resp
+  if (data.base_resp && data.base_resp.status_code !== 0) {
+    throw new Error(`MiniMax API business error: ${data.base_resp.status_code} - ${data.base_resp.status_msg}`);
+  }
+
   const content = data.choices?.[0]?.message?.content;
 
   if (!content) {
-    throw new Error("No content returned from MiniMax");
+    console.error("MiniMax full response for debugging:", JSON.stringify(data, null, 2));
+    
+    // Check if there is reasoning_content that we could potentially use or if it's just empty
+    const reasoning = data.choices?.[0]?.message?.reasoning_content;
+    if (reasoning) {
+      throw new Error("MiniMax returned reasoning but no final content. The model might be stuck in thought.");
+    }
+    
+    throw new Error(`No content returned from MiniMax. Choices length: ${data.choices?.length || 0}. Status code: ${data.base_resp?.status_code}`);
   }
 
   // Parse JSON from response (handle potential markdown code blocks)
