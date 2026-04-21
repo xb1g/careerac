@@ -23,6 +23,7 @@ export async function POST(req: Request) {
       transcriptData,
       maxCreditsPerSemester,
       hasTargetSchool,
+      selectedUniversityNames,
     }: {
       messages: UIMessage[];
       recoveryContext?: RecoveryContext;
@@ -30,6 +31,7 @@ export async function POST(req: Request) {
       transcriptData?: TranscriptData;
       maxCreditsPerSemester?: number;
       hasTargetSchool?: boolean;
+      selectedUniversityNames?: string[];
     } = await req.json();
 
     const supabase = await createClient();
@@ -53,6 +55,7 @@ export async function POST(req: Request) {
         transcriptData,
         maxCreditsPerSemester,
         hasTargetSchool,
+        selectedUniversityNames,
         recoveryContext,
         startTerm,
       },

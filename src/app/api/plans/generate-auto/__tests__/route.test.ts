@@ -17,6 +17,15 @@ vi.mock("@/utils/supabase/server", () => ({
     auth: {
       getUser: mockGetUser,
     },
+    from: vi.fn(() => ({
+      select: vi.fn(() => ({
+        eq: vi.fn(() => ({
+          neq: vi.fn(() => ({
+            returns: vi.fn(async () => ({ data: [], error: null })),
+          })),
+        })),
+      })),
+    })),
   })),
 }));
 
@@ -118,7 +127,7 @@ describe("POST /api/plans/generate-auto", () => {
     expect(body.chatHistory[2]).toMatchObject({ role: "assistant" });
 
     expect(mockGenerate).toHaveBeenCalledWith(
-      {
+      expect.objectContaining({
         messages: expect.arrayContaining([
           expect.objectContaining({ role: "user" }),
         ]),
@@ -127,12 +136,13 @@ describe("POST /api/plans/generate-auto", () => {
           targetInstitutionId: "uni-1",
           targetMajor: "Computer Science",
         },
-      },
-      {
+      }),
+      expect.objectContaining({
         transcriptData,
         maxCreditsPerSemester: 15,
         hasTargetSchool: true,
-      },
+        startTerm: expect.any(String),
+      }),
     );
 
     expect(mockSavePlanRecord).toHaveBeenCalledWith(

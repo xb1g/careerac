@@ -136,7 +136,11 @@ describe("PlanGenerationPipeline.generate", () => {
     expect(mockGenerateTextFromMiniMax).toHaveBeenCalledWith("SYSTEM PROMPT", [
       { role: "user", content: [{ type: "text", text: "Generate it" }] },
     ]);
-    expect(mockParsePlanFromAIResponse).toHaveBeenCalledWith("```json\n{}\n```");
+    expect(mockParsePlanFromAIResponse).toHaveBeenCalledWith(
+      "```json\n{}\n```",
+      undefined,
+      "Computer Science",
+    );
     expect(result).toEqual({
       rawText: "```json\n{}\n```",
       parsedPlan: {

@@ -78,6 +78,7 @@ export interface PlanContext {
   ccInstitutionId?: string;
   targetInstitutionId?: string;
   targetMajor?: string;
+  selectedTargetInstitutionIds?: string[];
 }
 
 export interface RecoveryContext {
@@ -96,6 +97,7 @@ export interface PlanRequestOptions {
   transcriptData?: TranscriptData;
   maxCreditsPerSemester?: number;
   hasTargetSchool?: boolean;
+  selectedUniversityNames?: string[];
   recoveryContext?: RecoveryContext;
   startTerm?: string;
 }
@@ -124,6 +126,7 @@ export class PlanGenerationPipeline {
       transcriptData,
       maxCreditsPerSemester,
       hasTargetSchool,
+      selectedUniversityNames,
       recoveryContext,
       startTerm,
     } = options;
@@ -148,9 +151,11 @@ export class PlanGenerationPipeline {
       availableMajors: articulationResult.availableMajors,
       prerequisiteData,
       playbookContext,
+      selectedMajor: planContext?.targetMajor,
       transcriptData,
       maxCreditsPerSemester,
       hasTargetSchool,
+      selectedUniversityNames,
       recoveryPrompt,
       startTerm,
     });
@@ -185,7 +190,11 @@ export class PlanGenerationPipeline {
 
     return {
       rawText,
-      parsedPlan: parsePlanFromAIResponse(rawText, options.startTerm),
+      parsedPlan: parsePlanFromAIResponse(
+        rawText,
+        options.startTerm,
+        request.planContext?.targetMajor,
+      ),
     };
   }
 }

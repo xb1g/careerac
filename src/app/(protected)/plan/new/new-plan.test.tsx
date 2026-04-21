@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import NewPlanPage from "./page";
 
@@ -17,6 +17,21 @@ vi.mock("@/components/semester-plan", () => ({
 }));
 
 describe("NewPlanPage", () => {
+  beforeEach(() => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => ({
+        ok: true,
+        json: async () => ({
+          universities: [
+            { id: "ucla", name: "University of California, Los Angeles", abbreviation: "UCLA" },
+            { id: "ucb", name: "University of California, Berkeley", abbreviation: "UC Berkeley" },
+          ],
+        }),
+      })),
+    );
+  });
+
   it("renders the upload step first", () => {
     render(<NewPlanPage />);
 
@@ -33,14 +48,26 @@ describe("NewPlanPage", () => {
     expect(screen.getByRole("button", { name: "Generate Plan" })).toBeInTheDocument();
   });
 
-  it("shows the compare step after configuration", () => {
+  it("goes straight to plan generation for best-fit mode", () => {
     render(<NewPlanPage />);
 
     fireEvent.click(screen.getByRole("button", { name: "Skip This Step" }));
     fireEvent.change(screen.getByLabelText("Intended Major"), { target: { value: "Computer Science" } });
     fireEvent.click(screen.getByRole("button", { name: "Generate Plan" }));
 
-    expect(screen.getByText("Compare Schools")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Continue to Plan" })).toBeInTheDocument();
+    expect(screen.getByTestId("chat-widget-panel")).toBeInTheDocument();
+    expect(screen.queryByText("Choose Your Schools")).not.toBeInTheDocument();
+  });
+
+  it("opens school catalog selection when schools-in-mind mode is selected", async () => {
+    render(<NewPlanPage />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Skip This Step" }));
+    fireEvent.change(screen.getByLabelText("Intended Major"), { target: { value: "Computer Science" } });
+    fireEvent.click(screen.getAllByRole("radio")[1]);
+    fireEvent.click(screen.getByRole("button", { name: "Generate Plan" }));
+
+    expect(screen.getByText("Choose Your Schools")).toBeInTheDocument();
+    expect(await screen.findByText("University of California, Los Angeles")).toBeInTheDocument();
   });
 });

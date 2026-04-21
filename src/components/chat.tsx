@@ -38,6 +38,7 @@ export interface ChatProps {
     ccInstitutionId?: string;
     targetInstitutionId?: string;
     targetMajor?: string;
+    selectedTargetInstitutionIds?: string[];
   };
   /** Parsed transcript data to pass to AI */
   transcriptData?: TranscriptData;
@@ -45,6 +46,8 @@ export interface ChatProps {
   maxCreditsPerSemester?: number;
   /** Whether the student has a target school */
   hasTargetSchool?: boolean;
+  /** Selected universities for schools-in-mind generation */
+  selectedUniversityNames?: string[];
   /** If set, fires this text as the first user message on mount to kick off generation. */
   autoStartPrompt?: string;
 }
@@ -64,6 +67,7 @@ export default function Chat({
   transcriptData,
   maxCreditsPerSemester,
   hasTargetSchool,
+  selectedUniversityNames,
   autoStartPrompt,
 }: ChatProps) {
   const [input, setInput] = useState("");
@@ -89,9 +93,12 @@ export default function Chat({
           ...(transcriptData ? { transcriptData } : {}),
           ...(maxCreditsPerSemester ? { maxCreditsPerSemester } : {}),
           ...(hasTargetSchool !== undefined ? { hasTargetSchool } : {}),
+          ...(selectedUniversityNames && selectedUniversityNames.length > 0
+            ? { selectedUniversityNames }
+            : {}),
         },
       }),
-    [planContext, transcriptData, maxCreditsPerSemester, hasTargetSchool],
+    [planContext, transcriptData, maxCreditsPerSemester, hasTargetSchool, selectedUniversityNames],
   );
 
   const { messages, sendMessage, status, error, clearError } = useChat({
@@ -126,8 +133,8 @@ export default function Chat({
     const statusLabel = recoveryContext.status === "waitlisted"
       ? "waitlisted"
       : recoveryContext.status === "cancelled"
-      ? "cancelled"
-      : "failed";
+        ? "cancelled"
+        : "failed";
 
     sendMessage({
       text: `[SYSTEM: Recovery needed] The student has marked "${recoveryContext.failedCourseCode} (${recoveryContext.failedCourseTitle})" as ${statusLabel}. Please analyze the impact and suggest alternatives.`,
@@ -158,7 +165,8 @@ export default function Chat({
 
     if (!textParts) return;
 
-    const parsed = parsePlanFromAIResponse(textParts);
+    const expectedMajor = planContext?.targetMajor;
+    const parsed = parsePlanFromAIResponse(textParts, undefined, expectedMajor);
     if (parsed) {
       lastProcessedMessageId.current = lastAssistantMessage.id;
       onPlanGenerated?.(parsed);
@@ -169,14 +177,14 @@ export default function Chat({
       const hasPlan = messages.some((m) => {
         if (m.role !== "assistant") return false;
         const parts = m.parts.filter((p) => p.type === "text").map((p) => (p as { text: string }).text).join("\n");
-        return parsePlanFromAIResponse(parts) !== null;
+        return parsePlanFromAIResponse(parts, undefined, expectedMajor) !== null;
       });
       if (hasPlan) {
         // There's a plan in history - save the updated messages
         const existingPlan = messages
           .filter((m) => m.role === "assistant")
           .map((m) => m.parts.filter((p) => p.type === "text").map((p) => (p as { text: string }).text).join("\n"))
-          .map((text) => parsePlanFromAIResponse(text))
+          .map((text) => parsePlanFromAIResponse(text, undefined, expectedMajor))
           .find((p): p is ParsedPlan => p !== null && !("isNoData" in p && p.isNoData));
 
         if (existingPlan) {
@@ -272,11 +280,11 @@ export default function Chat({
 
   const recoveryParsed = recoveryMessage
     ? parseRecoveryAlternatives(
-        recoveryMessage.parts
-          .filter((p) => p.type === "text")
-          .map((p) => (p as { text: string }).text)
-          .join("\n")
-      )
+      recoveryMessage.parts
+        .filter((p) => p.type === "text")
+        .map((p) => (p as { text: string }).text)
+        .join("\n")
+    )
     : null;
 
   const showRecoveryUI = recoveryContext && recoveryMessage && !isLoading && recoveryParsed;
@@ -287,22 +295,20 @@ export default function Chat({
       <div className="flex-1 overflow-y-auto px-4 md:px-6 py-6 md:py-8 space-y-6 scroll-smooth">
         {messages.map((message) => {
           // Skip mapping system messages to the UI rendering loop entirely
-          const isSystem = message.parts.some(p => p.type === "text" && (p as {text: string}).text.startsWith("[SYSTEM:"));
+          const isSystem = message.parts.some(p => p.type === "text" && (p as { text: string }).text.startsWith("[SYSTEM:"));
           if (isSystem) return null;
 
           return (
             <div
               key={message.id}
-              className={`flex ${
-                message.role === "user" ? "justify-end" : "justify-start"
-              }`}
+              className={`flex ${message.role === "user" ? "justify-end" : "justify-start"
+                }`}
             >
               <div
-                className={`max-w-[85%] rounded-[1.25rem] px-5 py-3.5 shadow-sm transition-all duration-300 ${
-                  message.role === "user"
+                className={`max-w-[85%] rounded-[1.25rem] px-5 py-3.5 shadow-sm transition-all duration-300 ${message.role === "user"
                     ? "bg-blue-600 text-white rounded-br-sm shadow-blue-500/10"
                     : "bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md border border-zinc-200/60 dark:border-zinc-800/60 text-zinc-800 dark:text-zinc-200 rounded-bl-sm"
-                }`}
+                  }`}
               >
                 {message.parts.map((part, i) => {
                   if (part.type === "text") {
@@ -378,7 +384,7 @@ export default function Chat({
       </div>
 
       {/* Input area */}
-      <div className="px-4 md:px-6 pb-6 md:pb-8 pt-2 bg-gradient-to-t from-[#FAFAFA] dark:from-zinc-950 via-[#FAFAFA]/80 dark:via-zinc-950/80 to-transparent sticky bottom-0 z-10 w-full">
+      <div className="px-4 md:px-6 pb-6 md:pb-8 pt-2 bg-linear-to-t from-[#FAFAFA] dark:from-zinc-950 via-[#FAFAFA]/80 dark:via-zinc-950/80 to-transparent sticky bottom-0 z-10 w-full">
         <form onSubmit={handleSubmit} className="relative max-w-3xl mx-auto flex w-full">
           <input
             type="text"
@@ -395,7 +401,7 @@ export default function Chat({
             className="absolute right-2 top-1/2 -translate-y-1/2 p-2.5 rounded-full bg-blue-600 hover:bg-blue-700 text-white shadow-sm transition-all duration-300 disabled:opacity-0 disabled:scale-90 scale-100 cursor-pointer"
             aria-label="Send message"
           >
-            <svg className="w-4 h-4 translate-x-[1px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
+            <svg className="w-4 h-4 translate-x-px" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 19V5M5 12l7-7 7 7" />
             </svg>
           </button>

@@ -29,11 +29,11 @@ export function stripPlanJsonFromText(text: string): string {
   return stripped.replace(/\n{3,}/g, "\n\n").trim();
 }
 
-/**
- * Extracts and parses a structured transfer plan from AI response text.
- * The AI is expected to output a JSON block with the plan data.
- */
-export function parsePlanFromAIResponse(text: string, startTerm?: string): ParsedPlan | null {
+export function parsePlanFromAIResponse(
+  text: string,
+  startTerm?: string,
+  expectedMajor?: string,
+): ParsedPlan | null {
   // Try to find JSON block in the response
   const jsonMatch = text.match(/```(?:json)?\s*\n?([\s\S]*?)\n?\s*```/);
   if (!jsonMatch) {
@@ -49,10 +49,10 @@ export function parsePlanFromAIResponse(text: string, startTerm?: string): Parse
 
     // Check for multi-university plan format
     if (parsed && typeof parsed === "object" && parsed.isMultiUniversity === true) {
-      return validateMultiUniversityPlan(parsed, startTerm);
+      return validateMultiUniversityPlan(parsed, startTerm, expectedMajor);
     }
 
-    return validateAndNormalizePlan(parsed, startTerm);
+    return validateAndNormalizePlan(parsed, startTerm, expectedMajor);
   } catch {
     // If JSON parsing fails, check for no-data indicators in the text
     if (hasNoDataIndicators(text)) {
@@ -100,10 +100,11 @@ function extractNoDataMessage(text: string): NoDataResponse {
   };
 }
 
-function validateAndNormalizePlan(raw: unknown, startTerm?: string): ParsedPlan | null {
+function validateAndNormalizePlan(raw: unknown, startTerm?: string, expectedMajor?: string): ParsedPlan | null {
   if (!raw || typeof raw !== "object") return null;
 
   const obj = raw as Record<string, unknown>;
+  const normalizedExpectedMajor = expectedMajor?.trim() || "";
 
   // Check if this is a no-data response
   if (obj.isNoData === true && typeof obj.noDataMessage === "string") {
@@ -183,7 +184,7 @@ function validateAndNormalizePlan(raw: unknown, startTerm?: string): ParsedPlan 
       return {
         ccName: typeof obj.ccName === "string" ? obj.ccName : "",
         targetUniversity: typeof obj.targetUniversity === "string" ? obj.targetUniversity : "",
-        targetMajor: typeof obj.targetMajor === "string" ? obj.targetMajor : "",
+        targetMajor: normalizedExpectedMajor || (typeof obj.targetMajor === "string" ? obj.targetMajor : ""),
         semesters: labeled,
         totalUnits: fixedTotalUnits,
       };
@@ -196,7 +197,7 @@ function validateAndNormalizePlan(raw: unknown, startTerm?: string): ParsedPlan 
   const plan: TransferPlan = {
     ccName: typeof obj.ccName === "string" ? obj.ccName : "",
     targetUniversity: typeof obj.targetUniversity === "string" ? obj.targetUniversity : "",
-    targetMajor: typeof obj.targetMajor === "string" ? obj.targetMajor : "",
+    targetMajor: normalizedExpectedMajor || (typeof obj.targetMajor === "string" ? obj.targetMajor : ""),
     semesters: finalSemesters,
     totalUnits: typeof obj.totalUnits === "number" ? obj.totalUnits : totalUnits,
   };
@@ -341,7 +342,7 @@ function reorderSemestersForPrerequisites(semesters: PlanSemester[]): PlanSemest
 /**
  * Validates and normalizes a multi-university plan from AI response.
  */
-function validateMultiUniversityPlan(raw: Record<string, unknown>, startTerm?: string): MultiUniversityPlan | null {
+function validateMultiUniversityPlan(raw: Record<string, unknown>, startTerm?: string, expectedMajor?: string): MultiUniversityPlan | null {
   if (!raw.universities || !Array.isArray(raw.universities) || raw.universities.length === 0) {
     return null;
   }
@@ -357,7 +358,7 @@ function validateMultiUniversityPlan(raw: Record<string, unknown>, startTerm?: s
     // Validate the embedded plan
     let plan: TransferPlan | null = null;
     if (u.plan && typeof u.plan === "object") {
-      const validated = validateAndNormalizePlan(u.plan, startTerm);
+      const validated = validateAndNormalizePlan(u.plan, startTerm, expectedMajor);
       if (validated && !("isNoData" in validated)) {
         plan = validated as TransferPlan;
       }
@@ -384,11 +385,12 @@ function validateMultiUniversityPlan(raw: Record<string, unknown>, startTerm?: s
   universities.sort((a, b) => b.fitScore - a.fitScore);
 
   const summary = raw.transcriptSummary as Record<string, unknown> | undefined;
+  const normalizedExpectedMajor = expectedMajor?.trim() || "";
 
   return {
     isMultiUniversity: true,
     studentCC: typeof raw.studentCC === "string" ? raw.studentCC : "",
-    major: typeof raw.major === "string" ? raw.major : "",
+    major: normalizedExpectedMajor || (typeof raw.major === "string" ? raw.major : ""),
     maxCreditsPerSemester: typeof raw.maxCreditsPerSemester === "number" ? raw.maxCreditsPerSemester : 15,
     transcriptSummary: {
       completedCourses: typeof summary?.completedCourses === "number" ? summary.completedCourses : 0,

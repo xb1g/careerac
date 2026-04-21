@@ -3,7 +3,6 @@
 import { useMemo, useState } from "react";
 import type { TranscriptData } from "@/types/transcript";
 import { MajorAutocomplete } from "./major-autocomplete";
-import { SchoolAutocomplete } from "./school-autocomplete";
 import {
   advanceTerm,
   computeNextRegistrationTerm,
@@ -16,7 +15,6 @@ export interface PlanConfiguration {
   maxCreditsPerSemester: number;
   major: string;
   hasTargetSchool: boolean;
-  targetSchool: string;
 }
 
 interface PlanConfigProps {
@@ -44,7 +42,6 @@ function currentTerm(now = new Date()): string {
 export default function PlanConfig({ transcriptData, onConfigured, onBack }: PlanConfigProps) {
   const [major, setMajor] = useState(transcriptData?.major || "");
   const [hasTargetSchool, setHasTargetSchool] = useState(false);
-  const [targetSchool, setTargetSchool] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const { startTerm, gradOptions, defaultGrad } = useMemo(() => {
@@ -100,9 +97,6 @@ export default function PlanConfig({ transcriptData, onConfigured, onBack }: Pla
     e.preventDefault();
     const newErrors: Record<string, string> = {};
     if (!major.trim()) newErrors.major = "Please enter your intended major.";
-    if (hasTargetSchool && !targetSchool.trim()) {
-      newErrors.targetSchool = "Please enter your target school or choose 'Help me find the best fit'.";
-    }
     // Ensure at least 1 semester ahead
     const startParsed = parseTerm(startTerm);
     const gradParsed = parseTerm(selectedGrad);
@@ -115,7 +109,6 @@ export default function PlanConfig({ transcriptData, onConfigured, onBack }: Pla
       maxCreditsPerSemester,
       major: major.trim(),
       hasTargetSchool,
-      targetSchool: hasTargetSchool ? targetSchool.trim() : "",
     });
   };
 
@@ -124,7 +117,6 @@ export default function PlanConfig({ transcriptData, onConfigured, onBack }: Pla
       maxCreditsPerSemester: 15,
       major: major.trim() || "Undecided",
       hasTargetSchool: false,
-      targetSchool: "",
     });
   };
 
@@ -194,7 +186,7 @@ export default function PlanConfig({ transcriptData, onConfigured, onBack }: Pla
             <div>
               <span className="text-sm font-medium text-zinc-900 dark:text-white">Help me find the best fit</span>
               <p className="text-xs text-zinc-500 dark:text-zinc-400">
-                I&apos;ll analyze your courses and show transfer likelihoods for multiple universities.
+                I&apos;ll pick the strongest transfer options for your major automatically.
               </p>
             </div>
           </label>
@@ -207,18 +199,11 @@ export default function PlanConfig({ transcriptData, onConfigured, onBack }: Pla
               onChange={() => setHasTargetSchool(true)}
               className="mt-0.5 h-4 w-4 text-blue-600 focus:ring-blue-500"
             />
-            <div className="flex-1">
-              <span className="text-sm font-medium text-zinc-900 dark:text-white">Yes, I have a target school</span>
-              {hasTargetSchool && (
-                <div className="mt-2">
-                  <SchoolAutocomplete
-                    value={targetSchool}
-                    onChange={setTargetSchool}
-                    placeholder="e.g., UCLA, UC Berkeley, San Jose State"
-                  />
-                  {errors.targetSchool && <p className="text-sm text-red-600 dark:text-red-400 mt-1">{errors.targetSchool}</p>}
-                </div>
-              )}
+            <div>
+              <span className="text-sm font-medium text-zinc-900 dark:text-white">I have schools in mind</span>
+              <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                Next you&apos;ll select schools from the full university catalog.
+              </p>
             </div>
           </label>
         </div>

@@ -5,6 +5,8 @@ import {
   type ComparisonTargetPayload,
 } from "@/lib/plan-service";
 
+const MAX_COMPARISON_TARGETS = 20;
+
 export async function POST(req: NextRequest) {
   try {
     const supabase = await createClient();
@@ -33,6 +35,13 @@ export async function POST(req: NextRequest) {
     if (!title || !target_major) {
       return NextResponse.json(
         { error: "Missing required fields: title, target_major" },
+        { status: 400 }
+      );
+    }
+
+    if (Array.isArray(comparison_targets) && comparison_targets.length > MAX_COMPARISON_TARGETS) {
+      return NextResponse.json(
+        { error: `You can select up to ${MAX_COMPARISON_TARGETS} comparison targets.` },
         { status: 400 }
       );
     }

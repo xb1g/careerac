@@ -219,6 +219,32 @@ Let me know if you have any questions!`;
       const result = parsePlanFromAIResponse(response);
       expect(result).toBeNull();
     });
+
+    it("enforces expected major when model returns a different major", () => {
+      const response = `\`\`\`json
+{
+  "ccName": "Test CC",
+  "targetUniversity": "UCLA",
+  "targetMajor": "Mechanical Engineering",
+  "semesters": [
+    {
+      "number": 1,
+      "label": "Fall 2026",
+      "courses": [
+        { "code": "CS 1", "title": "Intro to CS", "units": 4 }
+      ]
+    }
+  ]
+}
+\`\`\``;
+
+      const result = parsePlanFromAIResponse(response, undefined, "Computer Science");
+
+      expect(result).not.toBeNull();
+      if (result && !("isNoData" in result) && !("isMultiUniversity" in result)) {
+        expect(result.targetMajor).toBe("Computer Science");
+      }
+    });
   });
 
   describe("buildSystemPrompt", () => {
@@ -285,6 +311,17 @@ Let me know if you have any questions!`;
       expect(prompt).toContain("Don't fabricate");
       expect(prompt).toContain("Admit when no data");
       expect(prompt).toContain("Prerequisite ordering");
+    });
+
+    it("locks major and selected schools when provided", () => {
+      const prompt = buildSystemPrompt({
+        ...defaults,
+        selectedMajor: "Computer Science",
+        selectedUniversityNames: ["UCLA", "UC Berkeley"],
+      });
+
+      expect(prompt).toContain('selected major is "Computer Science"');
+      expect(prompt).toContain("ONLY use these selected universities: UCLA, UC Berkeley");
     });
 
     it("includes output format instructions", () => {

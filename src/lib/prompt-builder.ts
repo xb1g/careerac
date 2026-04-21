@@ -13,9 +13,11 @@ export interface PromptInputs {
   availableMajors?: string[];
   prerequisiteData: string;
   playbookContext: string;
+  selectedMajor?: string;
   transcriptData?: TranscriptData;
   maxCreditsPerSemester?: number;
   hasTargetSchool?: boolean;
+  selectedUniversityNames?: string[];
   recoveryPrompt?: string;
   startTerm?: string;
 }
@@ -31,9 +33,11 @@ export function buildSystemPrompt(inputs: PromptInputs): string {
     availableMajors = [],
     prerequisiteData,
     playbookContext,
+    selectedMajor,
     transcriptData,
     maxCreditsPerSemester,
     hasTargetSchool,
+    selectedUniversityNames = [],
     recoveryPrompt,
     startTerm,
   } = inputs;
@@ -117,6 +121,10 @@ ${noDataExample}
 6. **Be precise about supported majors**: If a student asks for a major that is not in the articulation matches above, do NOT claim CareerAC only supports a narrower set unless that limitation is explicitly stated in the available major list below.
 7. **Respect the start term**: The first semester's label MUST be "${startTerm ?? "Fall 2026"}" and subsequent semesters follow Spring/Fall progression in order from there. Never emit past terms or terms earlier than the start term.
 
+${selectedMajor
+      ? `8. **Lock the major**: The student's selected major is "${selectedMajor}". In every JSON response, the output major MUST stay exactly "${selectedMajor}". Never replace it with a different major.`
+      : ""}
+
 ## AVAILABLE ARTICULATION DATA
 The following are the articulation agreements in our database. Use ONLY these courses when generating plans:
 
@@ -143,8 +151,8 @@ If the user already has a plan and asks to modify it (e.g., "Move MATH 101 to se
     prompt += buildMaxCreditsSection(maxCreditsPerSemester);
   }
 
-  if (hasTargetSchool === false) {
-    prompt += buildMultiUniversitySection(maxCreditsPerSemester);
+  if (hasTargetSchool === false || selectedUniversityNames.length > 0) {
+    prompt += buildMultiUniversitySection(maxCreditsPerSemester, selectedUniversityNames);
   }
 
   if (recoveryPrompt) {
@@ -206,11 +214,17 @@ This is a STRICT limit. Every semester in the plan MUST have ${maxCreditsPerSeme
 
 function buildMultiUniversitySection(
   maxCreditsPerSemester?: number,
+  selectedUniversityNames: string[] = [],
 ): string {
+  const selectedList = selectedUniversityNames.length > 0
+    ? `\n\nONLY use these selected universities: ${selectedUniversityNames.join(", ")}. Do not add universities outside this list, even if they have articulation data.`
+    : "";
+
   return `
 
 ## MULTI-UNIVERSITY ANALYSIS MODE
 The student does NOT have a specific target school. Analyze the articulation data and generate plans for MULTIPLE universities that match their CC and major.
+${selectedList}
 
 You MUST output a JSON code block with this structure instead of the standard plan format:
 

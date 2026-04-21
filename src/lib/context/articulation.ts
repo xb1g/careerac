@@ -119,6 +119,19 @@ export async function getArticulationContext(
       );
     }
 
+    const selectedInstitutionIds = Array.isArray(planContext?.selectedTargetInstitutionIds)
+      ? Array.from(
+        new Set(
+          planContext.selectedTargetInstitutionIds
+            .filter((id): id is string => typeof id === "string" && id.trim().length > 0),
+        ),
+      )
+      : [];
+
+    if (selectedInstitutionIds.length > 0) {
+      query = query.in("university_institution_id", selectedInstitutionIds);
+    }
+
     // Keep the full major catalog separate from the scoped articulation slice so
     // the AI does not incorrectly infer that only the currently matched majors exist.
     const [{ data: scopedAgreements, error }, { data: majorRows }] =
