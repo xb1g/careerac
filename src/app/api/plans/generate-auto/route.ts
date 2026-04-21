@@ -15,7 +15,7 @@ import { createClient } from "@/utils/supabase/server";
 import { computeNextRegistrationTerm, findLatestTerm } from "@/utils/term";
 
 export const runtime = "nodejs";
-export const maxDuration = 60;
+export const maxDuration = 120;
 
 type GenerateAutoErrorCode =
   | "UNAUTHORIZED"

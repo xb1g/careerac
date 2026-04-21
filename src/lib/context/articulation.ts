@@ -179,38 +179,37 @@ export async function getArticulationContext(
     ];
 
     // Fetch courses and institutions in parallel
-    const ccCoursesResult =
-      ccCourseIds.length > 0
-        ? await supabase
+    const [ccCoursesResult, uniCoursesResult, ccInstsResult, uniInstsResult] =
+      await Promise.all([
+        ccCourseIds.length > 0
+          ? supabase
             .from("courses")
             .select("id, code, title, units")
             .in("id", ccCourseIds)
             .returns<CourseRow[]>()
-        : { data: [] as CourseRow[] };
-    const uniCoursesResult =
-      uniCourseIds.length > 0
-        ? await supabase
+          : Promise.resolve({ data: [] as CourseRow[] }),
+        uniCourseIds.length > 0
+          ? supabase
             .from("courses")
             .select("id, code, title, units")
             .in("id", uniCourseIds)
             .returns<CourseRow[]>()
-        : { data: [] as CourseRow[] };
-    const ccInstsResult =
-      ccInstIds.length > 0
-        ? await supabase
+          : Promise.resolve({ data: [] as CourseRow[] }),
+        ccInstIds.length > 0
+          ? supabase
             .from("institutions")
             .select("id, name, abbreviation")
             .in("id", ccInstIds)
             .returns<InstitutionRow[]>()
-        : { data: [] as InstitutionRow[] };
-    const uniInstsResult =
-      uniInstIds.length > 0
-        ? await supabase
+          : Promise.resolve({ data: [] as InstitutionRow[] }),
+        uniInstIds.length > 0
+          ? supabase
             .from("institutions")
             .select("id, name, abbreviation")
             .in("id", uniInstIds)
             .returns<InstitutionRow[]>()
-        : { data: [] as InstitutionRow[] };
+          : Promise.resolve({ data: [] as InstitutionRow[] }),
+      ]);
 
     // Build lookup maps
     const courseMap = new Map<string, CourseRow>();
@@ -293,10 +292,10 @@ export async function getPrerequisiteContext(): Promise<string> {
     const { data: courses } =
       courseIds.length > 0
         ? await supabase
-            .from("courses")
-            .select("id, code")
-            .in("id", courseIds)
-            .returns<{ id: string; code: string }[]>()
+          .from("courses")
+          .select("id, code")
+          .in("id", courseIds)
+          .returns<{ id: string; code: string }[]>()
         : { data: [] };
 
     const courseCodeMap = new Map<string, string>();

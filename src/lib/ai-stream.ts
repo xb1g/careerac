@@ -58,7 +58,21 @@ function buildMiniMaxRequestBody(
   };
 }
 
-const MINIMAX_TIMEOUT_MS = 50_000;
+const MINIMAX_STREAM_TIMEOUT_MS = 30_000;
+const MINIMAX_GENERATE_TIMEOUT_MS = 90_000;
+
+function getMiniMaxTimeoutMs(stream: boolean): number {
+  const envKey = stream
+    ? process.env.MINIMAX_STREAM_TIMEOUT_MS
+    : process.env.MINIMAX_GENERATE_TIMEOUT_MS;
+
+  const parsed = envKey ? Number(envKey) : Number.NaN;
+  if (Number.isFinite(parsed) && parsed > 0) {
+    return parsed;
+  }
+
+  return stream ? MINIMAX_STREAM_TIMEOUT_MS : MINIMAX_GENERATE_TIMEOUT_MS;
+}
 
 async function callMiniMax(
   systemPrompt: string,
@@ -66,7 +80,8 @@ async function callMiniMax(
   stream: boolean,
 ): Promise<Response> {
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), MINIMAX_TIMEOUT_MS);
+  const timeoutMs = getMiniMaxTimeoutMs(stream);
+  const timeout = setTimeout(() => controller.abort(), timeoutMs);
 
   let minimaxResponse: Response;
   try {
@@ -82,6 +97,14 @@ async function callMiniMax(
         signal: controller.signal,
       },
     );
+  } catch (error) {
+    if (error instanceof Error && error.name === "AbortError") {
+      throw new MiniMaxApiError(
+        `MiniMax API timeout after ${timeoutMs}ms`,
+        504,
+      );
+    }
+    throw error;
   } finally {
     clearTimeout(timeout);
   }
