@@ -5,18 +5,6 @@ interface MiniMaxMessage {
   content: string;
 }
 
-interface MiniMaxResponse {
-  // Response shape for POST https://api.minimaxi.com/v1/text/chatcompletion_v2
-  // and OpenAI-compatible /v1/chat/completions — `message` is a singular
-  // object per choice (not a `messages[]` array like the deprecated
-  // chatcompletion_pro endpoint).
-  choices: Array<{
-    finish_reason?: string;
-    index?: number;
-    message: { role: string; content: string; name?: string };
-  }>;
-}
-
 /**
  * Parses transcript text using MiniMax AI model.
  * Falls back to regex parser if AI fails.
@@ -79,7 +67,18 @@ Rules:
     throw new Error(`MiniMax API error: ${response.status} - ${errorText}`);
   }
 
-  const data: any = await response.json();
+  const data = (await response.json()) as {
+    choices?: Array<{
+      message?: {
+        content?: string;
+        reasoning_content?: string;
+      };
+    }>;
+    base_resp?: {
+      status_code: number;
+      status_msg: string;
+    };
+  };
   
   // Check for MiniMax specific error in base_resp
   if (data.base_resp && data.base_resp.status_code !== 0) {
@@ -105,7 +104,10 @@ Rules:
   const jsonStr = jsonMatch[1]?.trim() || content.trim();
 
   try {
-    const parsed = JSON.parse(jsonStr);
+    const parsed = JSON.parse(jsonStr) as {
+      institution: string;
+      courses: TranscriptCourse[];
+    };
 
     // Validate structure
     if (!parsed.institution || !Array.isArray(parsed.courses)) {

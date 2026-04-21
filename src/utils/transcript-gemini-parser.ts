@@ -78,10 +78,8 @@ Rules:
     const content = candidate?.content?.parts?.[0]?.text;
 
     if (!content) {
-      // Fallback to text() helper if available on result
-      const fallbackText = typeof (result as any).text === 'function' 
-        ? (result as any).text() 
-        : (result as any).text;
+      // Safely access text or provide empty string
+      const fallbackText = result.text || "";
       
       if (!fallbackText) {
         throw new Error("Gemini 3.1 returned empty content.");
@@ -102,13 +100,16 @@ function processParsedContent(content: string): TranscriptData {
     const jsonMatch = content.match(/```(?:json)?\s*([\s\S]*?)```/) || [null, content];
     const jsonStr = jsonMatch[1]?.trim() || content.trim();
     
-    const parsed = JSON.parse(jsonStr);
+    const parsed = JSON.parse(jsonStr) as { 
+      institution: string; 
+      courses: TranscriptCourse[] 
+    };
 
     // Validate and normalize status
     if (parsed.courses) {
-      parsed.courses = parsed.courses.map((c: any) => ({
+      parsed.courses = parsed.courses.map((c: TranscriptCourse) => ({
         ...c,
-        status: ["completed", "in_progress", "withdrawn"].includes(c.status) ? c.status : "completed"
+        status: (["completed", "in_progress", "withdrawn"].includes(c.status) ? c.status : "completed") as "completed" | "in_progress" | "withdrawn"
       }));
     }
 
