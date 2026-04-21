@@ -4,7 +4,7 @@ import { useState, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import type { UIMessage } from "@ai-sdk/react";
-import Chat from "@/components/chat";
+import ChatWidget from "@/components/chat-widget";
 import SemesterPlan from "@/components/semester-plan";
 import type { ParsedPlan, TransferPlan } from "@/types/plan";
 import type { TranscriptData } from "@/types/transcript";
@@ -140,24 +140,21 @@ export default function UniversityDetailContent(props: Props) {
         {chooseError && <p className="mt-2 text-sm text-red-600">{chooseError}</p>}
       </div>
 
-      <div className="flex flex-1 overflow-hidden bg-[#FAFAFA] dark:bg-zinc-950">
-        <div className="w-full lg:w-1/2 border-r border-zinc-200/50 dark:border-zinc-800/50">
-          <Chat
-            welcomeMessage={welcome}
-            onPlanGenerated={handlePlanGenerated}
-            onMessagesChange={(m) => {
-              latestMessagesRef.current = m;
-            }}
-            onLoadingChange={setIsChatLoading}
-            maxCreditsPerSemester={props.maxCreditsPerSemester}
-            hasTargetSchool={true}
-            transcriptData={props.transcript?.parsed_data}
-          />
-        </div>
-        <div className="hidden lg:flex lg:w-1/2 flex-col bg-[#FAFAFA] dark:bg-zinc-900/50">
-          <SemesterPlan plan={currentPlan} />
-        </div>
+      <div className="flex-1 overflow-hidden bg-[#FAFAFA] dark:bg-zinc-900/50 relative">
+        <SemesterPlan plan={currentPlan} />
       </div>
+
+      <ChatWidget
+        welcomeMessage={welcome}
+        onPlanGenerated={handlePlanGenerated}
+        onMessagesChange={(m) => {
+          latestMessagesRef.current = m;
+        }}
+        onLoadingChange={setIsChatLoading}
+        maxCreditsPerSemester={props.maxCreditsPerSemester}
+        hasTargetSchool={true}
+        transcriptData={props.transcript?.parsed_data}
+      />
     </div>
   );
 }

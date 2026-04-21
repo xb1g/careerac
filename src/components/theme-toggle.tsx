@@ -77,7 +77,13 @@ export default function ThemeToggle() {
           ? "Light"
           : "Dark";
 
-  const Icon = iconTheme === "dark" ? MoonIcon : iconTheme === "light" ? SunIcon : SystemIcon;
+  const Icon = !mounted
+    ? SystemIcon
+    : iconTheme === "dark"
+      ? MoonIcon
+      : iconTheme === "light"
+        ? SunIcon
+        : SystemIcon;
 
   return (
     <div className="relative" ref={rootRef}>
