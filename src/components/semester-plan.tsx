@@ -1,20 +1,75 @@
-import { TransferPlan, NoDataResponse, ParsedPlan, CourseStatus, PlanCourse, MultiUniversityPlan } from "@/types/plan";
+import { TransferPlan, NoDataResponse, ParsedPlan, CourseStatus, PlanCourse } from "@/types/plan";
 import CourseCard from "./course-card";
-import MultiUniversityView from "./multi-university-view";
 
 interface SemesterPlanProps {
   plan: ParsedPlan;
   onCourseClick?: (course: PlanCourse & { semesterNumber: number }, currentStatus: CourseStatus) => void;
-  /** Required for multi-university view card navigation. Omit for transient/pre-save states. */
+  /** Optional; reserved for future persistence hooks. */
   planId?: string | null;
 }
 
-function isMultiUniversityPlan(plan: ParsedPlan): plan is MultiUniversityPlan {
-  return "isMultiUniversity" in plan && (plan as MultiUniversityPlan).isMultiUniversity === true;
+function isTransferPlan(plan: ParsedPlan): plan is TransferPlan {
+  return !(plan as NoDataResponse).isNoData;
 }
 
-function isTransferPlan(plan: ParsedPlan): plan is TransferPlan {
-  return !isMultiUniversityPlan(plan) && !(plan as NoDataResponse).isNoData;
+function PlanHeader({ plan }: { plan: TransferPlan }) {
+  const covered = plan.coveredSchools ?? [];
+  const isMultiSchool = covered.length > 1;
+
+  if (!isMultiSchool) {
+    return (
+      <h2 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 flex items-center gap-2" data-testid="plan-header">
+        {plan.ccName}
+        <svg className="w-5 h-5 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+        </svg>
+        {plan.targetUniversity}
+      </h2>
+    );
+  }
+
+  return (
+    <div data-testid="plan-header" data-multi-school="true">
+      <h2 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
+        {plan.ccName}
+        <svg className="w-5 h-5 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+        </svg>
+        <span>{covered.length} schools</span>
+      </h2>
+      <ul className="mt-2 flex flex-wrap gap-1.5" data-testid="covered-schools">
+        {covered.map((school) => (
+          <li
+            key={school.name}
+            className="inline-flex items-center gap-1.5 rounded-full bg-zinc-100 dark:bg-zinc-800 px-2.5 py-1 text-[11px] font-medium text-zinc-700 dark:text-zinc-300"
+            data-testid={`covered-school-${school.name}`}
+          >
+            <span className="font-semibold">{school.name}</span>
+            <span className="text-zinc-500 dark:text-zinc-400">{Math.round(school.fitScore)}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+function AsteriskLegend({ plan }: { plan: TransferPlan }) {
+  const covered = plan.coveredSchools ?? [];
+  if (covered.length <= 1) return null;
+
+  const hasSchoolSpecific = plan.semesters.some((s) =>
+    s.courses.some((c) => Array.isArray(c.requiredBy) && c.requiredBy.length > 0 && c.requiredBy.length < covered.length),
+  );
+  if (!hasSchoolSpecific) return null;
+
+  return (
+    <p
+      className="mt-2 text-[11px] font-medium text-zinc-500 dark:text-zinc-400"
+      data-testid="asterisk-legend"
+    >
+      * indicates a course required by a subset of covered schools — hover a course to see which.
+    </p>
+  );
 }
 
 function SemesterGrid({ plan, onCourseClick }: { plan: TransferPlan; onCourseClick?: SemesterPlanProps["onCourseClick"] }) {
@@ -33,16 +88,11 @@ function SemesterGrid({ plan, onCourseClick }: { plan: TransferPlan; onCourseCli
       <div className="px-6 py-5 border-b border-zinc-200/80 dark:border-zinc-800/80 bg-white/50 dark:bg-zinc-900/50 backdrop-blur-md sticky top-0 z-10">
         <div className="flex items-start justify-between">
           <div>
-            <h2 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 flex items-center gap-2" data-testid="plan-header">
-              {plan.ccName}
-              <svg className="w-5 h-5 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-              </svg>
-              {plan.targetUniversity}
-            </h2>
+            <PlanHeader plan={plan} />
             <p className="text-sm font-medium text-zinc-500 dark:text-zinc-400 mt-1">
               {plan.targetMajor}
             </p>
+            <AsteriskLegend plan={plan} />
           </div>
           <div className="text-right flex flex-col items-end">
             <div className="flex items-baseline gap-1.5">
@@ -110,6 +160,7 @@ function SemesterGrid({ plan, onCourseClick }: { plan: TransferPlan; onCourseCli
                     <CourseCard
                       key={`${course.code}-${idx}`}
                       course={{ ...course, semesterNumber: semester.number }}
+                      coveredSchoolCount={plan.coveredSchools?.length ?? 0}
                       onClick={onCourseClick ? (c) => onCourseClick(
                         { ...c, semesterNumber: semester.number },
                         c.status || "planned"
@@ -144,11 +195,7 @@ function NoDataMessage({ message }: { message: string }) {
   );
 }
 
-export default function SemesterPlan({ plan, onCourseClick, planId }: SemesterPlanProps) {
-  if (isMultiUniversityPlan(plan)) {
-    return <MultiUniversityView plan={plan} planId={planId} />;
-  }
-
+export default function SemesterPlan({ plan, onCourseClick }: SemesterPlanProps) {
   if (isTransferPlan(plan)) {
     return <SemesterGrid plan={plan} onCourseClick={onCourseClick} />;
   }

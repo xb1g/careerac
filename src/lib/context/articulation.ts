@@ -277,6 +277,78 @@ export async function getArticulationContext(
   }
 }
 
+export interface RankedUniversity {
+  id: string;
+  name: string;
+  abbreviation: string | null;
+}
+
+/**
+ * Returns up to `limit` university institutions with the best articulation
+ * coverage for the given CC + major combination. Used when a student has not
+ * picked a specific target school so generate-auto can seed the unified plan
+ * prompt with a concrete short list instead of letting the AI pick blind.
+ */
+export async function rankBestFitUniversityIds(
+  ccInstitutionId: string | null | undefined,
+  targetMajor: string | null | undefined,
+  limit = 5,
+): Promise<RankedUniversity[]> {
+  try {
+    const supabase = await createClient();
+
+    let query = supabase
+      .from("articulation_agreements")
+      .select("university_institution_id, major")
+      .limit(2000);
+
+    if (ccInstitutionId) {
+      query = query.eq("cc_institution_id", ccInstitutionId);
+    }
+
+    const { data } = await query.returns<
+      Pick<ArticulationRow, "university_institution_id" | "major">[]
+    >();
+
+    if (!data || data.length === 0) return [];
+
+    const counts = new Map<string, number>();
+    for (const row of data) {
+      if (!row.university_institution_id) continue;
+      if (!isMajorMatch(row.major, targetMajor ?? undefined)) continue;
+      counts.set(
+        row.university_institution_id,
+        (counts.get(row.university_institution_id) ?? 0) + 1,
+      );
+    }
+
+    const topIds = [...counts.entries()]
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, limit)
+      .map(([id]) => id);
+
+    if (topIds.length === 0) return [];
+
+    const { data: institutions } = await supabase
+      .from("institutions")
+      .select("id, name, abbreviation")
+      .in("id", topIds)
+      .returns<Pick<InstitutionRow, "id" | "name" | "abbreviation">[]>();
+
+    const byId = new Map(institutions?.map((i) => [i.id, i]) ?? []);
+    return topIds
+      .map((id) => byId.get(id))
+      .filter((i): i is Pick<InstitutionRow, "id" | "name" | "abbreviation"> => Boolean(i))
+      .map((i) => ({
+        id: i.id,
+        name: i.name,
+        abbreviation: i.abbreviation ?? null,
+      }));
+  } catch {
+    return [];
+  }
+}
+
 /**
  * Fetches prerequisite relationships for relevant courses.
  */

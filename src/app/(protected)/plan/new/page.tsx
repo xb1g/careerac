@@ -17,7 +17,7 @@ import {
 } from "@/components/auto-plan-generation";
 import { detectMajorFromTranscript } from "@/lib/major-detector";
 import { buildSyntheticUserPrompt } from "@/lib/plan-prompts";
-import { ParsedPlan, TransferPlan, MultiUniversityPlan } from "@/types/plan";
+import { ParsedPlan, TransferPlan } from "@/types/plan";
 import type { TranscriptData } from "@/types/transcript";
 import { resolveInstitutionIds } from "@/utils/plan-institutions";
 
@@ -404,18 +404,12 @@ export default function NewPlanPage() {
       return null;
     }
 
-    let title: string;
-    let targetMajor: string;
-
-    if ("isMultiUniversity" in plan && plan.isMultiUniversity) {
-      const multiPlan = plan as MultiUniversityPlan;
-      title = `${multiPlan.studentCC} → Multiple Universities (${multiPlan.major})`;
-      targetMajor = multiPlan.major;
-    } else {
-      const transferPlan = plan as TransferPlan;
-      title = `${transferPlan.ccName} → ${transferPlan.targetUniversity}`;
-      targetMajor = transferPlan.targetMajor;
-    }
+    const transferPlan = plan as TransferPlan;
+    const coveredCount = transferPlan.coveredSchools?.length ?? 0;
+    const title = coveredCount > 1
+      ? `${transferPlan.ccName} → ${coveredCount} schools (${transferPlan.targetMajor})`
+      : `${transferPlan.ccName} → ${transferPlan.targetUniversity}`;
+    const targetMajor = transferPlan.targetMajor;
 
     try {
       const primaryTarget = comparisonTargets[0] ?? null;
@@ -427,10 +421,8 @@ export default function NewPlanPage() {
       }));
 
       const resolvedNames = await resolveInstitutionIds(
-        transcriptData?.institution || ("ccName" in plan ? plan.ccName : ""),
-        ("isMultiUniversity" in plan && plan.isMultiUniversity)
-          ? primaryTarget?.name || ""
-          : (plan as TransferPlan).targetUniversity,
+        transcriptData?.institution || transferPlan.ccName,
+        transferPlan.targetUniversity,
       );
 
       const response = await fetch("/api/plans", {

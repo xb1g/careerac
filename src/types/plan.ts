@@ -1,5 +1,18 @@
 export type CourseStatus = "planned" | "in_progress" | "completed" | "cancelled" | "waitlisted" | "failed";
 
+export interface CoveredSchool {
+  /** Human-readable name; must match `requiredBy` entries exactly. */
+  name: string;
+  /** Institution row UUID; null when the AI couldn't be resolved to a DB row. */
+  institutionId: string | null;
+  /** 0–100 fit score. */
+  fitScore: number;
+  articulatedUnits: number;
+  totalRequiredUnits: number;
+  /** Optional short badges shown under the school name. */
+  highlights?: string[];
+}
+
 export interface PlanCourse {
   code: string;
   title: string;
@@ -15,6 +28,12 @@ export interface PlanCourse {
   semesterNumber?: number;
   /** Links to the course code this is an alternative for (recovery) */
   alternative_for?: string;
+  /**
+   * Names of covered schools that require or accept this course.
+   * MUST be a subset of TransferPlan.coveredSchools[].name. When omitted
+   * the UI treats the course as universal across every covered school.
+   */
+  requiredBy?: string[];
 }
 
 export interface PlanSemester {
@@ -26,8 +45,18 @@ export interface PlanSemester {
 
 export interface TransferPlan {
   ccName: string;
+  /**
+   * Top-fit / primary school name. When `coveredSchools.length > 1`, this
+   * equals coveredSchools[0].name. For legacy single-school plans it is
+   * simply the target university name.
+   */
   targetUniversity: string;
   targetMajor: string;
+  /**
+   * Non-empty when this is a multi-school unified plan. Empty/undefined
+   * for single-school plans (renders without asterisks or legend).
+   */
+  coveredSchools?: CoveredSchool[];
   semesters: PlanSemester[];
   totalUnits: number;
 }
@@ -37,29 +66,4 @@ export interface NoDataResponse {
   message: string;
 }
 
-export interface UniversityFit {
-  universityName: string;
-  fitScore: number;
-  articulatedUnits: number;
-  totalRequiredUnits: number;
-  completedPrereqs: number;
-  totalPrereqs: number;
-  remainingSemesters: number;
-  plan: TransferPlan;
-  highlights: string[];
-}
-
-export interface MultiUniversityPlan {
-  isMultiUniversity: true;
-  studentCC: string;
-  major: string;
-  maxCreditsPerSemester: number;
-  transcriptSummary: {
-    completedCourses: number;
-    totalUnits: number;
-    gpa?: number;
-  };
-  universities: UniversityFit[];
-}
-
-export type ParsedPlan = TransferPlan | NoDataResponse | MultiUniversityPlan;
+export type ParsedPlan = TransferPlan | NoDataResponse;

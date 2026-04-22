@@ -55,7 +55,7 @@ Let me know if you have any questions!`;
       const result = parsePlanFromAIResponse(response);
 
       expect(result).not.toBeNull();
-      if (result && !("isNoData" in result) && !("isMultiUniversity" in result)) {
+      if (result && !("isNoData" in result)) {
         expect(result.ccName).toBe("Santa Monica College");
         expect(result.targetUniversity).toBe("UCLA");
         expect(result.targetMajor).toBe("Computer Science");
@@ -130,7 +130,7 @@ Let me know if you have any questions!`;
 
       // The parser should attempt to fix ordering via topological sort
       // If it can fix it, result should be valid; if not, null
-      if (result && !("isNoData" in result) && !("isMultiUniversity" in result)) {
+      if (result && !("isNoData" in result)) {
         // Verify that CS 1 now comes before CS 2
         const cs1Semester = result.semesters.find((s) =>
           s.courses.some((c) => c.code === "CS 1")
@@ -166,7 +166,7 @@ Let me know if you have any questions!`;
       const result = parsePlanFromAIResponse(response);
 
       expect(result).not.toBeNull();
-      if (result && !("isNoData" in result) && !("isMultiUniversity" in result)) {
+      if (result && !("isNoData" in result)) {
         expect(result.semesters[0].totalUnits).toBe(7);
         expect(result.totalUnits).toBe(7);
       }
@@ -193,7 +193,7 @@ Let me know if you have any questions!`;
       const result = parsePlanFromAIResponse(response);
 
       expect(result).not.toBeNull();
-      if (result && !("isNoData" in result) && !("isMultiUniversity" in result)) {
+      if (result && !("isNoData" in result)) {
         expect(result.semesters[0].courses[0].code).toBe("CS 1");
         expect(result.semesters[0].courses[0].prerequisites).toBeUndefined();
         expect(result.semesters[0].courses[0].transferEquivalency).toBeUndefined();
@@ -241,9 +241,118 @@ Let me know if you have any questions!`;
       const result = parsePlanFromAIResponse(response, undefined, "Computer Science");
 
       expect(result).not.toBeNull();
-      if (result && !("isNoData" in result) && !("isMultiUniversity" in result)) {
+      if (result && !("isNoData" in result)) {
         expect(result.targetMajor).toBe("Computer Science");
       }
+    });
+
+    it("parses unified multi-school plan with coveredSchools and requiredBy", () => {
+      const response = `\`\`\`json
+{
+  "ccName": "Santa Monica College",
+  "targetUniversity": "UCLA",
+  "targetMajor": "Computer Science",
+  "coveredSchools": [
+    { "name": "UCLA", "institutionId": null, "fitScore": 90, "articulatedUnits": 40, "totalRequiredUnits": 60 },
+    { "name": "UC Berkeley", "institutionId": null, "fitScore": 82, "articulatedUnits": 38, "totalRequiredUnits": 60 },
+    { "name": "UC San Diego", "institutionId": null, "fitScore": 75, "articulatedUnits": 34, "totalRequiredUnits": 60 }
+  ],
+  "semesters": [
+    {
+      "number": 1,
+      "label": "Fall 2026",
+      "courses": [
+        { "code": "CS 1", "title": "Intro to CS", "units": 4, "requiredBy": ["UCLA", "UC Berkeley", "UC San Diego"] },
+        { "code": "CS 17", "title": "Discrete", "units": 3, "requiredBy": ["UCLA"] }
+      ]
+    }
+  ],
+  "totalUnits": 7
+}
+\`\`\``;
+
+      const result = parsePlanFromAIResponse(response);
+
+      expect(result).not.toBeNull();
+      if (result && !("isNoData" in result)) {
+        expect(result.coveredSchools).toHaveLength(3);
+        // Sorted by fitScore desc
+        expect(result.coveredSchools?.[0].name).toBe("UCLA");
+        expect(result.targetUniversity).toBe("UCLA");
+
+        const [cs1, cs17] = result.semesters[0].courses;
+        // Universal course (all 3 schools) normalizes to undefined
+        expect(cs1.requiredBy).toBeUndefined();
+        // School-specific course preserves the subset
+        expect(cs17.requiredBy).toEqual(["UCLA"]);
+      }
+    });
+
+    it("filters requiredBy entries that aren't in coveredSchools", () => {
+      const response = `\`\`\`json
+{
+  "ccName": "Santa Monica College",
+  "targetUniversity": "UCLA",
+  "targetMajor": "Computer Science",
+  "coveredSchools": [
+    { "name": "UCLA", "fitScore": 90, "articulatedUnits": 40, "totalRequiredUnits": 60 },
+    { "name": "UC Berkeley", "fitScore": 82, "articulatedUnits": 38, "totalRequiredUnits": 60 }
+  ],
+  "semesters": [
+    {
+      "number": 1,
+      "label": "Fall 2026",
+      "courses": [
+        { "code": "CS 1", "title": "Intro to CS", "units": 4, "requiredBy": ["UCLA", "Stanford"] }
+      ]
+    }
+  ]
+}
+\`\`\``;
+
+      const result = parsePlanFromAIResponse(response);
+      expect(result).not.toBeNull();
+      if (result && !("isNoData" in result)) {
+        expect(result.semesters[0].courses[0].requiredBy).toEqual(["UCLA"]);
+      }
+    });
+
+    it("treats omitted requiredBy as universal (undefined)", () => {
+      const response = `\`\`\`json
+{
+  "ccName": "SMC",
+  "targetUniversity": "UCLA",
+  "targetMajor": "CS",
+  "coveredSchools": [
+    { "name": "UCLA", "fitScore": 90, "articulatedUnits": 40, "totalRequiredUnits": 60 },
+    { "name": "UC Berkeley", "fitScore": 82, "articulatedUnits": 38, "totalRequiredUnits": 60 }
+  ],
+  "semesters": [
+    { "number": 1, "label": "Fall", "courses": [{ "code": "CS 1", "title": "Intro", "units": 4 }] }
+  ]
+}
+\`\`\``;
+
+      const result = parsePlanFromAIResponse(response);
+      expect(result).not.toBeNull();
+      if (result && !("isNoData" in result)) {
+        expect(result.semesters[0].courses[0].requiredBy).toBeUndefined();
+      }
+    });
+
+    it("returns NoData for legacy isMultiUniversity plans", () => {
+      const response = `\`\`\`json
+{
+  "isMultiUniversity": true,
+  "studentCC": "SMC",
+  "major": "CS",
+  "universities": []
+}
+\`\`\``;
+
+      const result = parsePlanFromAIResponse(response);
+      expect(result).not.toBeNull();
+      expect(result && "isNoData" in result && result.isNoData).toBe(true);
     });
   });
 
@@ -322,6 +431,37 @@ Let me know if you have any questions!`;
 
       expect(prompt).toContain('selected major is "Computer Science"');
       expect(prompt).toContain("ONLY use these selected universities: UCLA, UC Berkeley");
+    });
+
+    it("engages unified multi-school mode when hasTargetSchool=false", () => {
+      const prompt = buildSystemPrompt({
+        ...defaults,
+        hasTargetSchool: false,
+      });
+
+      expect(prompt).toContain("UNIFIED MULTI-SCHOOL PLAN MODE");
+      expect(prompt).toContain("coveredSchools");
+      expect(prompt).toContain("requiredBy");
+    });
+
+    it("engages unified multi-school mode when multiple schools are selected", () => {
+      const prompt = buildSystemPrompt({
+        ...defaults,
+        selectedUniversityNames: ["UCLA", "UC Berkeley"],
+      });
+
+      expect(prompt).toContain("UNIFIED MULTI-SCHOOL PLAN MODE");
+      expect(prompt).toContain("SINGLE unified plan");
+    });
+
+    it("does not engage unified mode for a single selected school", () => {
+      const prompt = buildSystemPrompt({
+        ...defaults,
+        hasTargetSchool: true,
+        selectedUniversityNames: ["UCLA"],
+      });
+
+      expect(prompt).not.toContain("UNIFIED MULTI-SCHOOL PLAN MODE");
     });
 
     it("includes output format instructions", () => {

@@ -3,6 +3,12 @@ import { PlanCourse, CourseStatus } from "@/types/plan";
 interface CourseCardProps {
   course: PlanCourse;
   onClick?: (course: PlanCourse) => void;
+  /**
+   * Total schools the parent plan covers. When > 1 and the course's
+   * requiredBy is a proper subset, the card renders an asterisk and a
+   * tooltip listing the requiring schools.
+   */
+  coveredSchoolCount?: number;
 }
 
 const statusStyles: Record<Exclude<CourseStatus, "planned">, { indicator: string; bg: string; textClass: string }> = {
@@ -33,7 +39,7 @@ const statusStyles: Record<Exclude<CourseStatus, "planned">, { indicator: string
   },
 };
 
-export default function CourseCard({ course, onClick }: CourseCardProps) {
+export default function CourseCard({ course, onClick, coveredSchoolCount = 0 }: CourseCardProps) {
   const status = course.status || "planned";
   const isInteractive = !!onClick;
   const style = status !== "planned" ? statusStyles[status] : {
@@ -41,6 +47,15 @@ export default function CourseCard({ course, onClick }: CourseCardProps) {
     bg: "bg-white dark:bg-zinc-900 border-zinc-200/60 dark:border-zinc-800",
     textClass: "",
   };
+
+  const isSchoolSpecific =
+    coveredSchoolCount > 1 &&
+    Array.isArray(course.requiredBy) &&
+    course.requiredBy.length > 0 &&
+    course.requiredBy.length < coveredSchoolCount;
+  const requiredByTooltip = isSchoolSpecific
+    ? `Required by: ${course.requiredBy!.join(", ")}`
+    : undefined;
 
   const handleClick = () => {
     onClick?.(course);
@@ -68,6 +83,16 @@ export default function CourseCard({ course, onClick }: CourseCardProps) {
           <div className="flex items-center gap-2">
             <h4 className="text-[13px] font-semibold text-zinc-900 dark:text-zinc-100 uppercase tracking-wider" data-testid="course-code">
               {course.code}
+              {isSchoolSpecific && (
+                <span
+                  className="ml-0.5 text-amber-600 dark:text-amber-400"
+                  data-testid="course-required-by-asterisk"
+                  title={requiredByTooltip}
+                  aria-label={requiredByTooltip}
+                >
+                  *
+                </span>
+              )}
             </h4>
             {status !== "planned" && (
               <span className="text-[10px] uppercase font-bold tracking-widest text-zinc-500 dark:text-zinc-400">

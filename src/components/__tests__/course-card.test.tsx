@@ -78,4 +78,31 @@ describe("CourseCard", () => {
     // The notes paragraph shouldn't exist
     expect(container.textContent).not.toContain("Offered Fall and Spring only");
   });
+
+  describe("requiredBy asterisk", () => {
+    it("renders an asterisk when requiredBy is a proper subset of covered schools", () => {
+      const course: PlanCourse = { ...baseCourse, requiredBy: ["UCLA"] };
+      render(<CourseCard course={course} coveredSchoolCount={3} />);
+      const asterisk = screen.getByTestId("course-required-by-asterisk");
+      expect(asterisk).toBeInTheDocument();
+      expect(asterisk).toHaveAttribute("title", expect.stringContaining("UCLA"));
+    });
+
+    it("does not render an asterisk when requiredBy covers every school", () => {
+      const course: PlanCourse = { ...baseCourse, requiredBy: ["UCLA", "UC Berkeley", "UC San Diego"] };
+      render(<CourseCard course={course} coveredSchoolCount={3} />);
+      expect(screen.queryByTestId("course-required-by-asterisk")).not.toBeInTheDocument();
+    });
+
+    it("does not render an asterisk when coveredSchoolCount <= 1", () => {
+      const course: PlanCourse = { ...baseCourse, requiredBy: ["UCLA"] };
+      render(<CourseCard course={course} coveredSchoolCount={1} />);
+      expect(screen.queryByTestId("course-required-by-asterisk")).not.toBeInTheDocument();
+    });
+
+    it("does not render an asterisk when requiredBy is omitted", () => {
+      render(<CourseCard course={baseCourse} coveredSchoolCount={3} />);
+      expect(screen.queryByTestId("course-required-by-asterisk")).not.toBeInTheDocument();
+    });
+  });
 });

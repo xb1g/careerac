@@ -31,8 +31,24 @@ export const PLAN_JSON_SCHEMA = {
   type: "object",
   properties: {
     ccName: { type: "string", description: "Community College Name" },
-    targetUniversity: { type: "string", description: "Target University Name" },
+    targetUniversity: { type: "string", description: "Top-fit university; equals coveredSchools[0].name when multi-school" },
     targetMajor: { type: "string", description: "Target Major" },
+    coveredSchools: {
+      type: "array",
+      description: "Schools this unified plan serves (present only in multi-school mode).",
+      items: {
+        type: "object",
+        required: ["name", "fitScore", "articulatedUnits", "totalRequiredUnits"],
+        properties: {
+          name: { type: "string" },
+          institutionId: { type: ["string", "null"] },
+          fitScore: { type: "number" },
+          articulatedUnits: { type: "number" },
+          totalRequiredUnits: { type: "number" },
+          highlights: { type: "array", items: { type: "string" } },
+        },
+      },
+    },
     semesters: {
       type: "array",
       items: {
@@ -52,6 +68,11 @@ export const PLAN_JSON_SCHEMA = {
                 transferEquivalency: { type: "string" },
                 prerequisites: { type: "array", items: { type: "string" } },
                 notes: { type: "string" },
+                requiredBy: {
+                  type: "array",
+                  items: { type: "string" },
+                  description: "Subset of coveredSchools[].name that require/accept this course; omit when universal.",
+                },
               },
             },
           },

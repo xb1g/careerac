@@ -151,8 +151,12 @@ If the user already has a plan and asks to modify it (e.g., "Move MATH 101 to se
     prompt += buildMaxCreditsSection(maxCreditsPerSemester);
   }
 
-  if (hasTargetSchool === false || selectedUniversityNames.length > 0) {
-    prompt += buildMultiUniversitySection(maxCreditsPerSemester, selectedUniversityNames);
+  // Engage unified multi-school mode when there is no single target OR when the
+  // user explicitly selected more than one school to compare. A single-school
+  // selection still routes through the standard template.
+  const isMultiSchool = hasTargetSchool === false || selectedUniversityNames.length > 1;
+  if (isMultiSchool) {
+    prompt += buildUnifiedMultiSchoolSection(maxCreditsPerSemester, selectedUniversityNames);
   }
 
   if (recoveryPrompt) {
@@ -212,60 +216,93 @@ function buildMaxCreditsSection(maxCreditsPerSemester: number): string {
 This is a STRICT limit. Every semester in the plan MUST have ${maxCreditsPerSemester} or fewer total units. No exceptions. If you cannot fit all required courses within this limit, add more semesters rather than exceeding the limit. NEVER generate a semester that exceeds ${maxCreditsPerSemester} units.`;
 }
 
-function buildMultiUniversitySection(
-  maxCreditsPerSemester?: number,
-  selectedUniversityNames: string[] = [],
+function buildUnifiedMultiSchoolSection(
+  maxCreditsPerSemester: number | undefined,
+  selectedUniversityNames: string[],
 ): string {
-  const selectedList = selectedUniversityNames.length > 0
-    ? `\n\nONLY use these selected universities: ${selectedUniversityNames.join(", ")}. Do not add universities outside this list, even if they have articulation data.`
-    : "";
+  const explicit = selectedUniversityNames.length > 0;
+  const schoolList = explicit
+    ? `ONLY use these selected universities: ${selectedUniversityNames.join(", ")}. Plan across all of them in a SINGLE unified plan — do NOT produce one plan per school, and do not add universities outside this list.`
+    : `The student has NOT selected target schools. From the articulation data, pick the 3–5 universities with the BEST articulation coverage for their major and cover all of them in a single unified plan.`;
 
   return `
 
-## MULTI-UNIVERSITY ANALYSIS MODE
-The student does NOT have a specific target school. Analyze the articulation data and generate plans for MULTIPLE universities that match their CC and major.
-${selectedList}
+## UNIFIED MULTI-SCHOOL PLAN MODE
+${schoolList}
 
-You MUST output a JSON code block with this structure instead of the standard plan format:
+You MUST output a SINGLE TransferPlan JSON block (same shape as the standard plan), with two multi-school additions:
+
+1. A top-level \`coveredSchools\` array listing every school this plan serves.
+2. On every course, a \`requiredBy\` array listing which of the coveredSchools names require or accept that course.
+
+### HOLISTIC PLANNING RULES
+- Analyze ALL covered schools' requirements together. Do NOT duplicate plans per school.
+- PREFER courses that satisfy the MOST schools. When a single CC course articulates to multiple targets, schedule it ONCE and list all targets in \`requiredBy\`.
+- Only add a school-specific course (one that articulates to a subset of covered schools) when omitting it would leave a required subject gap for that school.
+- \`requiredBy\` course names MUST exactly match entries in \`coveredSchools[].name\`.
+- If a course is universal (required/accepted by every covered school), you MAY set \`requiredBy\` to all coveredSchool names or omit the field (the parser defaults omission to "all").
+
+### EXAMPLE JSON (2 covered schools)
 
 \`\`\`json
 {
-  "isMultiUniversity": true,
-  "studentCC": "Community College Name",
-  "major": "Student's Major",
-  "maxCreditsPerSemester": ${maxCreditsPerSemester || 15},
-  "transcriptSummary": {
-    "completedCourses": 10,
-    "totalUnits": 32,
-    "gpa": 3.45
-  },
-  "universities": [
+  "ccName": "Santa Monica College",
+  "targetUniversity": "UCLA",
+  "targetMajor": "Computer Science",
+  "coveredSchools": [
     {
-      "universityName": "University Name",
-      "fitScore": 85,
-      "articulatedUnits": 40,
+      "name": "UCLA",
+      "institutionId": null,
+      "fitScore": 86,
+      "articulatedUnits": 42,
       "totalRequiredUnits": 60,
-      "completedPrereqs": 8,
-      "totalPrereqs": 10,
-      "remainingSemesters": 3,
-      "plan": {
-        "ccName": "...",
-        "targetUniversity": "...",
-        "targetMajor": "...",
-        "semesters": [...],
-        "totalUnits": 60
-      },
-      "highlights": ["85% of lower-div major requirements completed", "All math prerequisites satisfied"]
+      "highlights": ["All math prereqs satisfied"]
+    },
+    {
+      "name": "UC Berkeley",
+      "institutionId": null,
+      "fitScore": 78,
+      "articulatedUnits": 38,
+      "totalRequiredUnits": 60,
+      "highlights": ["Strong CS articulation"]
     }
-  ]
+  ],
+  "semesters": [
+    {
+      "number": 1,
+      "label": "Fall 2026",
+      "courses": [
+        {
+          "code": "CS 1",
+          "title": "Intro to CS I",
+          "units": 4,
+          "transferEquivalency": "UCLA CS 31 / UCB CS 61A",
+          "requiredBy": ["UCLA", "UC Berkeley"]
+        },
+        {
+          "code": "CS 17",
+          "title": "Discrete Structures",
+          "units": 3,
+          "transferEquivalency": "UCLA CS 180 equiv",
+          "requiredBy": ["UCLA"]
+        }
+      ]
+    }
+  ],
+  "totalUnits": 60
 }
 \`\`\`
 
-RANKING: Sort universities by fitScore (highest first). Calculate fitScore as:
-- 40% weight: percentage of required courses already completed or articulated
-- 30% weight: percentage of prerequisites already satisfied
-- 20% weight: fewer remaining semesters = higher score
-- 10% weight: GPA competitiveness for the program
+In the example above, CS 17 is school-specific (UCLA only) and the UI will render "CS 17*".
 
-Each university's plan must respect the max credits per semester limit. Include only universities where articulation data exists.`;
+### RANKING (for coveredSchools.fitScore)
+Calculate fitScore 0–100 per school:
+- 40%: percentage of required courses already completed or articulated
+- 30%: percentage of prerequisites already satisfied
+- 20%: fewer remaining semesters → higher score
+- 10%: GPA competitiveness for that program
+
+Sort coveredSchools descending by fitScore. Set top-level \`targetUniversity\` = coveredSchools[0].name.
+
+Every semester must still respect the max credits per semester limit (${maxCreditsPerSemester ?? 15}).`;
 }

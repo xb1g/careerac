@@ -162,7 +162,7 @@ export default function PlanDetailClient({ plan, transcript }: PlanDetailClientP
       console.log("Alternative accepted:", result);
 
       // Update local plan state to reflect the new course
-      if (currentPlan && !("isNoData" in currentPlan) && !("isMultiUniversity" in currentPlan)) {
+      if (currentPlan && !("isNoData" in currentPlan)) {
         const updatedPlan: TransferPlan = {
           ...currentPlan,
           semesters: currentPlan.semesters.map((semester) => {
@@ -206,7 +206,7 @@ export default function PlanDetailClient({ plan, transcript }: PlanDetailClientP
 
     // Build the updated plan
     const buildUpdatedPlan = (prev: ParsedPlan | null): TransferPlan | null => {
-      if (!prev || "isNoData" in prev || "isMultiUniversity" in prev) return null;
+      if (!prev || "isNoData" in prev) return null;
       return {
         ...prev,
         semesters: prev.semesters.map((semester) => {

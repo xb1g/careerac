@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import type { UIMessage } from "ai";
 import { MiniMaxApiError } from "@/lib/ai-stream";
+import { rankBestFitUniversityIds } from "@/lib/context/articulation";
 import { PlanGenerationPipeline } from "@/lib/plan-pipeline";
 import { buildSyntheticUserPrompt } from "@/lib/plan-prompts";
 import {
@@ -9,7 +10,7 @@ import {
   savePlanRecord,
   type ComparisonTargetPayload,
 } from "@/lib/plan-service";
-import type { MultiUniversityPlan, ParsedPlan, TransferPlan } from "@/types/plan";
+import type { ParsedPlan, TransferPlan } from "@/types/plan";
 import type { TranscriptData } from "@/types/transcript";
 import { createClient } from "@/utils/supabase/server";
 import { computeNextRegistrationTerm, findLatestTerm } from "@/utils/term";
@@ -67,7 +68,7 @@ function isTranscriptData(value: unknown): value is TranscriptData {
 
 function isSavablePlan(
   plan: ParsedPlan | null,
-): plan is TransferPlan | MultiUniversityPlan {
+): plan is TransferPlan {
   return Boolean(plan && !("isNoData" in plan));
 }
 
@@ -106,25 +107,24 @@ function buildSyntheticChatHistory(
   ];
 }
 
-function buildPlanTitle(plan: TransferPlan | MultiUniversityPlan): string {
-  if ("isMultiUniversity" in plan && plan.isMultiUniversity) {
-    return `${plan.studentCC} → Multiple Universities (${plan.major})`;
+function buildPlanTitle(plan: TransferPlan): string {
+  const covered = plan.coveredSchools ?? [];
+  if (covered.length > 1) {
+    return `${plan.ccName} → ${covered.length} schools (${plan.targetMajor})`;
   }
-
-  const transferPlan = plan as TransferPlan;
-  return `${transferPlan.ccName} → ${transferPlan.targetUniversity}`;
+  return `${plan.ccName} → ${plan.targetUniversity}`;
 }
 
 async function buildComparisonTargetsFromPlan(
   supabase: Awaited<ReturnType<typeof createClient>>,
   plan: ParsedPlan | null,
 ): Promise<ComparisonTargetPayload[] | null> {
-  if (!plan || !("isMultiUniversity" in plan) || !plan.isMultiUniversity) {
-    return null;
-  }
+  if (!plan || "isNoData" in plan) return null;
+  const covered = plan.coveredSchools ?? [];
+  if (covered.length <= 1) return null;
 
-  const names = plan.universities
-    .map((u) => u.universityName)
+  const names = covered
+    .map((s) => s.name)
     .filter((name): name is string => typeof name === "string" && name.trim().length > 0);
 
   if (names.length === 0) return null;
@@ -232,6 +232,15 @@ export async function POST(req: Request) {
     const latestTerm = findLatestTerm((userCourseTerms ?? []).map((r) => r.term));
     const startTerm = computeNextRegistrationTerm(new Date(), latestTerm).label;
 
+    // Auto-pick covered schools when the student has no explicit target —
+    // seeds the unified-multi-school prompt with a concrete short list so the
+    // AI doesn't have to guess from the full articulation corpus.
+    const coveredInstitutions = hasTargetSchool
+      ? []
+      : await rankBestFitUniversityIds(ccInstitutionId, detectedMajor, 5);
+    const selectedUniversityNames = coveredInstitutions.map((i) => i.name);
+    const selectedTargetInstitutionIds = coveredInstitutions.map((i) => i.id);
+
     const userPrompt = buildSyntheticUserPrompt(
       body.transcriptData,
       detectedMajor,
@@ -258,12 +267,18 @@ export async function POST(req: Request) {
               ? (targetInstitutionId ?? undefined)
               : undefined,
             targetMajor: detectedMajor,
+            selectedTargetInstitutionIds: selectedTargetInstitutionIds.length > 0
+              ? selectedTargetInstitutionIds
+              : undefined,
           },
         },
         {
           transcriptData: body.transcriptData,
           maxCreditsPerSemester,
           hasTargetSchool,
+          selectedUniversityNames: selectedUniversityNames.length > 0
+            ? selectedUniversityNames
+            : undefined,
           startTerm,
         },
       );
@@ -309,14 +324,31 @@ export async function POST(req: Request) {
       generated.parsedPlan,
     );
 
+    // For unified multi-school plans, anchor target_institution_id to the
+    // top-fit school (coveredSchools[0]) so comparison/cockpit widgets still
+    // have a primary school to query. Falls back to null when we can't
+    // resolve the name to an institution row.
+    const plan = generated.parsedPlan;
+    const topFitName = plan.coveredSchools?.[0]?.name;
+    let resolvedTopFitId: string | null = null;
+    if (topFitName) {
+      const match = coveredInstitutions.find((i) => i.name === topFitName);
+      resolvedTopFitId = match?.id
+        ?? (await resolveUniversityIdsByNames(supabase, [topFitName]))[0]?.institutionId
+        ?? null;
+    }
+    const finalTargetInstitutionId = hasTargetSchool
+      ? targetInstitutionId
+      : resolvedTopFitId;
+
     try {
       const savedPlan = await savePlanRecord(supabase, {
         userId: user.id,
-        title: buildPlanTitle(generated.parsedPlan),
+        title: buildPlanTitle(plan),
         ccInstitutionId,
-        targetInstitutionId: hasTargetSchool ? targetInstitutionId : null,
+        targetInstitutionId: finalTargetInstitutionId,
         targetMajor: detectedMajor,
-        planData: generated.parsedPlan,
+        planData: plan,
         chatHistory,
         maxCreditsPerSemester,
         transcriptId,

@@ -50,6 +50,29 @@ const mockNoDataPlan: ParsedPlan = {
   message: "No articulation data found for this path. Please try a different combination.",
 };
 
+const mockMultiSchoolPlan: ParsedPlan = {
+  ccName: "Santa Monica College",
+  targetUniversity: "UCLA",
+  targetMajor: "Computer Science",
+  coveredSchools: [
+    { name: "UCLA", institutionId: null, fitScore: 90, articulatedUnits: 40, totalRequiredUnits: 60 },
+    { name: "UC Berkeley", institutionId: null, fitScore: 82, articulatedUnits: 38, totalRequiredUnits: 60 },
+    { name: "UC San Diego", institutionId: null, fitScore: 75, articulatedUnits: 34, totalRequiredUnits: 60 },
+  ],
+  semesters: [
+    {
+      number: 1,
+      label: "Fall 2026",
+      courses: [
+        { code: "CS 1", title: "Intro to CS", units: 4 },
+        { code: "CS 17", title: "Discrete", units: 3, requiredBy: ["UCLA"] },
+      ],
+      totalUnits: 7,
+    },
+  ],
+  totalUnits: 7,
+};
+
 describe("SemesterPlan", () => {
   describe("transfer plan rendering", () => {
     it("renders plan header with CC, target university, and major", () => {
@@ -125,6 +148,31 @@ describe("SemesterPlan", () => {
 
       expect(screen.queryByTestId("semester-grid")).not.toBeInTheDocument();
       expect(screen.queryByTestId("plan-header")).not.toBeInTheDocument();
+    });
+  });
+
+  describe("multi-school rendering", () => {
+    it("renders covered-school badges when coveredSchools.length > 1", () => {
+      render(<SemesterPlan plan={mockMultiSchoolPlan} />);
+
+      const header = screen.getByTestId("plan-header");
+      expect(header).toHaveAttribute("data-multi-school", "true");
+      expect(header).toHaveTextContent("3 schools");
+
+      expect(screen.getByTestId("covered-schools")).toBeInTheDocument();
+      expect(screen.getByTestId("covered-school-UCLA")).toBeInTheDocument();
+      expect(screen.getByTestId("covered-school-UC Berkeley")).toBeInTheDocument();
+      expect(screen.getByTestId("covered-school-UC San Diego")).toBeInTheDocument();
+    });
+
+    it("shows asterisk legend when some courses are school-specific", () => {
+      render(<SemesterPlan plan={mockMultiSchoolPlan} />);
+      expect(screen.getByTestId("asterisk-legend")).toBeInTheDocument();
+    });
+
+    it("renders an asterisk next to school-specific course codes", () => {
+      render(<SemesterPlan plan={mockMultiSchoolPlan} />);
+      expect(screen.getByTestId("course-required-by-asterisk")).toBeInTheDocument();
     });
   });
 

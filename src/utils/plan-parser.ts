@@ -1,4 +1,4 @@
-import type { ParsedPlan, TransferPlan, NoDataResponse, PlanCourse, PlanSemester, MultiUniversityPlan, UniversityFit } from "@/types/plan";
+import type { ParsedPlan, TransferPlan, NoDataResponse, PlanCourse, PlanSemester, CoveredSchool } from "@/types/plan";
 import { advanceTerm } from "@/utils/term";
 
 /**
@@ -47,9 +47,15 @@ export function parsePlanFromAIResponse(
   try {
     const parsed = JSON.parse(jsonMatch[1].trim());
 
-    // Check for multi-university plan format
-    if (parsed && typeof parsed === "object" && parsed.isMultiUniversity === true) {
-      return validateMultiUniversityPlan(parsed, startTerm, expectedMajor);
+    // Legacy guard: old plans used `isMultiUniversity: true` with a
+    // `universities[]` wrapper. The unified schema replaces that with
+    // `coveredSchools[]` + `requiredBy[]`; surface a friendly NoData
+    // response rather than crashing downstream consumers.
+    if (parsed && typeof parsed === "object" && (parsed as Record<string, unknown>).isMultiUniversity === true) {
+      return {
+        isNoData: true,
+        message: "This plan was generated with an older format. Please regenerate it to see the unified multi-school view.",
+      };
     }
 
     return validateAndNormalizePlan(parsed, startTerm, expectedMajor);
@@ -119,6 +125,9 @@ function validateAndNormalizePlan(raw: unknown, startTerm?: string, expectedMajo
     return null;
   }
 
+  const coveredSchools = normalizeCoveredSchools(obj.coveredSchools);
+  const coveredSchoolNames = new Set(coveredSchools.map((s) => s.name));
+
   const semesters: PlanSemester[] = [];
   let totalUnits = 0;
 
@@ -155,6 +164,11 @@ function validateAndNormalizePlan(raw: unknown, startTerm?: string, expectedMajo
         planCourse.notes = c.notes;
       }
 
+      const requiredBy = normalizeRequiredBy(c.requiredBy, coveredSchoolNames);
+      if (requiredBy) {
+        planCourse.requiredBy = requiredBy;
+      }
+
       courses.push(planCourse);
       semesterUnits += c.units as number;
     }
@@ -174,6 +188,14 @@ function validateAndNormalizePlan(raw: unknown, startTerm?: string, expectedMajo
 
   if (semesters.length === 0) return null;
 
+  // When multi-school, mirror the top-fit school into `targetUniversity` so
+  // legacy consumers (plan titles, breadcrumbs) continue to read something
+  // sensible without knowing about coveredSchools.
+  const rawTargetUniversity = typeof obj.targetUniversity === "string" ? obj.targetUniversity : "";
+  const targetUniversity = coveredSchools.length > 0
+    ? coveredSchools[0].name
+    : rawTargetUniversity;
+
   // Verify prerequisite ordering
   if (!verifyPrerequisiteOrdering(semesters)) {
     // If ordering is wrong, try to fix it
@@ -183,8 +205,9 @@ function validateAndNormalizePlan(raw: unknown, startTerm?: string, expectedMajo
       const fixedTotalUnits = labeled.reduce((sum: number, s: PlanSemester) => sum + s.totalUnits, 0);
       return {
         ccName: typeof obj.ccName === "string" ? obj.ccName : "",
-        targetUniversity: typeof obj.targetUniversity === "string" ? obj.targetUniversity : "",
+        targetUniversity,
         targetMajor: normalizedExpectedMajor || (typeof obj.targetMajor === "string" ? obj.targetMajor : ""),
+        ...(coveredSchools.length > 0 ? { coveredSchools } : {}),
         semesters: labeled,
         totalUnits: fixedTotalUnits,
       };
@@ -196,13 +219,61 @@ function validateAndNormalizePlan(raw: unknown, startTerm?: string, expectedMajo
 
   const plan: TransferPlan = {
     ccName: typeof obj.ccName === "string" ? obj.ccName : "",
-    targetUniversity: typeof obj.targetUniversity === "string" ? obj.targetUniversity : "",
+    targetUniversity,
     targetMajor: normalizedExpectedMajor || (typeof obj.targetMajor === "string" ? obj.targetMajor : ""),
+    ...(coveredSchools.length > 0 ? { coveredSchools } : {}),
     semesters: finalSemesters,
     totalUnits: typeof obj.totalUnits === "number" ? obj.totalUnits : totalUnits,
   };
 
   return plan;
+}
+
+function normalizeCoveredSchools(raw: unknown): CoveredSchool[] {
+  if (!Array.isArray(raw)) return [];
+
+  const schools: CoveredSchool[] = [];
+  for (const entry of raw) {
+    if (!entry || typeof entry !== "object") continue;
+    const s = entry as Record<string, unknown>;
+    if (typeof s.name !== "string" || !s.name.trim()) continue;
+
+    schools.push({
+      name: s.name.trim(),
+      institutionId: typeof s.institutionId === "string" ? s.institutionId : null,
+      fitScore: clampScore(s.fitScore),
+      articulatedUnits: typeof s.articulatedUnits === "number" ? s.articulatedUnits : 0,
+      totalRequiredUnits: typeof s.totalRequiredUnits === "number" ? s.totalRequiredUnits : 0,
+      highlights: Array.isArray(s.highlights)
+        ? s.highlights.filter((h): h is string => typeof h === "string")
+        : undefined,
+    });
+  }
+
+  schools.sort((a, b) => b.fitScore - a.fitScore);
+  return schools;
+}
+
+function clampScore(value: unknown): number {
+  if (typeof value !== "number" || Number.isNaN(value)) return 0;
+  return Math.max(0, Math.min(100, value));
+}
+
+function normalizeRequiredBy(raw: unknown, coveredNames: Set<string>): string[] | undefined {
+  if (!Array.isArray(raw)) return undefined;
+  if (coveredNames.size === 0) return undefined;
+
+  const filtered = raw
+    .filter((entry): entry is string => typeof entry === "string")
+    .map((entry) => entry.trim())
+    .filter((entry) => coveredNames.has(entry));
+
+  // Omitted / all-schools / empty after filtering -> treat as universal.
+  if (filtered.length === 0 || filtered.length === coveredNames.size) {
+    return undefined;
+  }
+
+  return [...new Set(filtered)];
 }
 
 function verifyPrerequisiteOrdering(semesters: PlanSemester[]): boolean {
@@ -337,68 +408,6 @@ function reorderSemestersForPrerequisites(semesters: PlanSemester[]): PlanSemest
   }
 
   return newSemesters;
-}
-
-/**
- * Validates and normalizes a multi-university plan from AI response.
- */
-function validateMultiUniversityPlan(raw: Record<string, unknown>, startTerm?: string, expectedMajor?: string): MultiUniversityPlan | null {
-  if (!raw.universities || !Array.isArray(raw.universities) || raw.universities.length === 0) {
-    return null;
-  }
-
-  const universities: UniversityFit[] = [];
-
-  for (const uni of raw.universities) {
-    if (!uni || typeof uni !== "object") continue;
-    const u = uni as Record<string, unknown>;
-
-    if (typeof u.universityName !== "string" || typeof u.fitScore !== "number") continue;
-
-    // Validate the embedded plan
-    let plan: TransferPlan | null = null;
-    if (u.plan && typeof u.plan === "object") {
-      const validated = validateAndNormalizePlan(u.plan, startTerm, expectedMajor);
-      if (validated && !("isNoData" in validated)) {
-        plan = validated as TransferPlan;
-      }
-    }
-
-    if (!plan) continue;
-
-    universities.push({
-      universityName: u.universityName,
-      fitScore: Math.max(0, Math.min(100, u.fitScore)),
-      articulatedUnits: typeof u.articulatedUnits === "number" ? u.articulatedUnits : 0,
-      totalRequiredUnits: typeof u.totalRequiredUnits === "number" ? u.totalRequiredUnits : 0,
-      completedPrereqs: typeof u.completedPrereqs === "number" ? u.completedPrereqs : 0,
-      totalPrereqs: typeof u.totalPrereqs === "number" ? u.totalPrereqs : 0,
-      remainingSemesters: typeof u.remainingSemesters === "number" ? u.remainingSemesters : plan.semesters.length,
-      plan,
-      highlights: Array.isArray(u.highlights) ? u.highlights.filter((h): h is string => typeof h === "string") : [],
-    });
-  }
-
-  if (universities.length === 0) return null;
-
-  // Sort by fitScore descending
-  universities.sort((a, b) => b.fitScore - a.fitScore);
-
-  const summary = raw.transcriptSummary as Record<string, unknown> | undefined;
-  const normalizedExpectedMajor = expectedMajor?.trim() || "";
-
-  return {
-    isMultiUniversity: true,
-    studentCC: typeof raw.studentCC === "string" ? raw.studentCC : "",
-    major: normalizedExpectedMajor || (typeof raw.major === "string" ? raw.major : ""),
-    maxCreditsPerSemester: typeof raw.maxCreditsPerSemester === "number" ? raw.maxCreditsPerSemester : 15,
-    transcriptSummary: {
-      completedCourses: typeof summary?.completedCourses === "number" ? summary.completedCourses : 0,
-      totalUnits: typeof summary?.totalUnits === "number" ? summary.totalUnits : 0,
-      gpa: typeof summary?.gpa === "number" ? summary.gpa : undefined,
-    },
-    universities,
-  };
 }
 
 /**
