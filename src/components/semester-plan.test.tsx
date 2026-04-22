@@ -52,6 +52,21 @@ describe("SemesterPlan", () => {
     expect(courseCodes[0]).toHaveTextContent("CS 101");
   });
 
+  it("uses scrollable containers for timeline content", () => {
+    renderSemesterPlan(mockPlan);
+
+    const grid = screen.getByTestId("semester-grid");
+    expect(grid).toHaveClass("overflow-y-auto");
+    expect(grid).not.toHaveClass("overflow-y-hidden");
+
+    const columnBodies = screen.getAllByTestId("semester-column-body");
+    expect(columnBodies.length).toBeGreaterThan(0);
+    for (const body of columnBodies) {
+      expect(body).toHaveClass("min-h-0");
+      expect(body).toHaveClass("overflow-y-auto");
+    }
+  });
+
   it("shows total units in header", () => {
     renderSemesterPlan(mockPlan);
 

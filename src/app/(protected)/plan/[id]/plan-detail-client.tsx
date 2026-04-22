@@ -11,14 +11,18 @@ import CourseStatusMenu from "@/components/course-status-menu";
 import { notifyCockpitRefresh } from "@/lib/cockpit-events";
 import TranscriptEditor from "@/components/transcript-editor";
 import { ParsedPlan, TransferPlan, PlanCourse, CourseStatus } from "@/types/plan";
+import type { Json } from "@/types/database";
 import { TranscriptData } from "@/types/transcript";
+import { shouldShowComparisonSection } from "@/utils/comparison-visibility";
 import { createClient } from "@/utils/supabase/client";
 
 interface PlanDetailClientProps {
   plan: {
     id: string;
     title: string;
+    target_institution_id: string | null;
     target_major: string;
+    comparison_targets: Json | null;
     plan_data: unknown;
     chat_history: unknown[];
   };
@@ -31,6 +35,11 @@ interface PlanDetailClientProps {
 }
 
 export default function PlanDetailClient({ plan, transcript }: PlanDetailClientProps) {
+  const showComparisonSection = shouldShowComparisonSection({
+    target_institution_id: plan.target_institution_id,
+    comparison_targets: plan.comparison_targets,
+  });
+
   // Initialize chat history from saved plan
   const initialMessages: UIMessage[] = (() => {
     if (plan.chat_history && Array.isArray(plan.chat_history) && plan.chat_history.length > 0) {
@@ -270,7 +279,7 @@ export default function PlanDetailClient({ plan, transcript }: PlanDetailClientP
   }, []);
 
   return (
-    <div className="flex flex-col h-[calc(100vh-4rem)]">
+    <div className="flex h-full min-h-0 flex-col">
       {/* Header */}
       <div className="px-6 lg:px-8 py-4 lg:py-5 border-b border-zinc-200/50 dark:border-zinc-800/50 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-xl relative z-20 shadow-[0_1px_2px_rgba(0,0,0,0.02)]">
         <div className="flex items-center justify-between">
@@ -328,7 +337,7 @@ export default function PlanDetailClient({ plan, transcript }: PlanDetailClientP
             <div className="mt-3">
               <TranscriptEditor
                 transcriptId={transcript.id}
-            transcriptData={transcriptData ?? undefined}
+                transcriptData={transcriptData ?? undefined}
                 onSave={handleTranscriptSave}
                 onCancel={() => setTranscriptExpanded(false)}
               />
@@ -337,10 +346,10 @@ export default function PlanDetailClient({ plan, transcript }: PlanDetailClientP
         </div>
       )}
 
-      <ComparisonDashboard planId={plan.id} />
+      {showComparisonSection && <ComparisonDashboard planId={plan.id} />}
 
       {/* Full-width plan display; chat lives in a floating widget */}
-      <div className="flex-1 overflow-hidden bg-[#FAFAFA] dark:bg-zinc-900/50 relative">
+      <div className="relative min-h-0 flex-1 overflow-hidden bg-[#FAFAFA] dark:bg-zinc-900/50">
         {currentPlan ? (
           <SemesterPlan plan={currentPlan} onCourseClick={handleCourseClick} planId={plan.id} />
         ) : (

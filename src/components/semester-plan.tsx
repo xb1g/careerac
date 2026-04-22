@@ -28,13 +28,13 @@ function SemesterGrid({ plan, onCourseClick }: { plan: TransferPlan; onCourseCli
   const completedUnits = plan.totalUnits - remainingUnits;
 
   return (
-    <div className="flex flex-col h-full bg-[#FAFAFA] dark:bg-zinc-900/50">
+    <div className="flex h-full min-h-0 flex-col bg-[#FAFAFA] dark:bg-zinc-900/50">
       {/* Plan Header */}
       <div className="px-6 py-5 border-b border-zinc-200/80 dark:border-zinc-800/80 bg-white/50 dark:bg-zinc-900/50 backdrop-blur-md sticky top-0 z-10">
         <div className="flex items-start justify-between">
           <div>
             <h2 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 flex items-center gap-2" data-testid="plan-header">
-              {plan.ccName} 
+              {plan.ccName}
               <svg className="w-5 h-5 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
               </svg>
@@ -68,11 +68,11 @@ function SemesterGrid({ plan, onCourseClick }: { plan: TransferPlan; onCourseCli
 
       {/* Semester Columns */}
       <div
-        className="flex-1 overflow-x-auto overflow-y-hidden"
+        className="min-h-0 flex-1 overflow-x-auto overflow-y-auto"
         data-testid="semester-grid"
         role="list"
       >
-        <div className="flex gap-4 px-4 md:px-6 lg:px-8 py-6 min-h-full snap-x snap-mandatory">
+        <div className="flex h-full min-h-0 gap-4 px-4 py-6 md:px-6 lg:px-8 snap-x snap-mandatory items-stretch">
           {plan.semesters.map((semester) => {
             const semesterRemainingUnits = semester.courses.reduce((total, course) => {
               return course.status === "completed" ? total : total + course.units;
@@ -83,11 +83,11 @@ function SemesterGrid({ plan, onCourseClick }: { plan: TransferPlan; onCourseCli
                 key={semester.number}
                 role="listitem"
                 aria-label={semester.label}
-                className="flex-shrink-0 w-[85vw] sm:w-[320px] lg:w-[300px] snap-start flex flex-col rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50 shadow-sm"
+                className="flex h-full min-h-0 w-[85vw] shrink-0 snap-start flex-col rounded-xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900/50 sm:w-[320px] lg:w-75"
               >
                 {/* Column header */}
                 <header
-                  className="sticky top-0 z-[1] px-4 py-3 border-b border-zinc-200 dark:border-zinc-800 bg-white/90 dark:bg-zinc-900/80 backdrop-blur-sm rounded-t-xl flex items-center justify-between gap-2"
+                  className="sticky top-0 z-1 px-4 py-3 border-b border-zinc-200 dark:border-zinc-800 bg-white/90 dark:bg-zinc-900/80 backdrop-blur-sm rounded-t-xl flex items-center justify-between gap-2"
                   data-testid="semester-header"
                 >
                   <h3
@@ -105,7 +105,7 @@ function SemesterGrid({ plan, onCourseClick }: { plan: TransferPlan; onCourseCli
                 </header>
 
                 {/* Column body */}
-                <div className="flex flex-col gap-3 p-3 overflow-y-auto min-h-[200px] flex-1">
+                <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto p-3" data-testid="semester-column-body">
                   {semester.courses.map((course, idx) => (
                     <CourseCard
                       key={`${course.code}-${idx}`}

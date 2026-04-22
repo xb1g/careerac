@@ -63,7 +63,9 @@ export default async function PlanDetail({ params }: PlanDetailProps) {
   const planWithMergedData = {
     id: plan.id,
     title: plan.title,
+    target_institution_id: plan.target_institution_id,
     target_major: plan.target_major,
+    comparison_targets: plan.comparison_targets,
     plan_data: mergedPlanData,
     chat_history: (plan.chat_history as unknown[]) ?? [],
   };

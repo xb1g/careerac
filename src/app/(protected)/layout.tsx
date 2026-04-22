@@ -19,7 +19,7 @@ export default async function ProtectedLayout({
   return (
     <div className="flex min-h-screen flex-col">
       <Header userEmail={user.email ?? null} />
-      <main className="flex-1">{children}</main>
+      <main className="flex min-h-0 flex-1 flex-col">{children}</main>
     </div>
   );
 }
