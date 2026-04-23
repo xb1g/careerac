@@ -373,7 +373,7 @@ export default function PlanDetailClient({ plan, transcript }: PlanDetailClientP
       </div>
 
       <ChatWidget
-        defaultOpen={Boolean(recoveryContext)}
+        defaultOpen={true}
         onPlanGenerated={handlePlanGenerated}
         onSavePlan={handleSavePlan}
         initialMessages={initialMessages}

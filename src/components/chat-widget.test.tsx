@@ -20,23 +20,23 @@ describe("ChatWidget", () => {
     vi.clearAllMocks();
   });
 
-  it("renders FAB visible and panel closed by default", () => {
+  it("renders FAB visible and panel open by default", () => {
     render(<ChatWidget />);
 
     expect(screen.getByTestId("chat-widget-fab")).toBeInTheDocument();
     expect(screen.getByTestId("chat-widget-fab")).toHaveAttribute(
       "aria-expanded",
-      "false",
+      "true",
     );
     expect(screen.getByTestId("chat-widget-panel")).toHaveAttribute(
       "aria-hidden",
-      "true",
+      "false",
     );
   });
 
   it("toggles aria-hidden on the panel when FAB is clicked", async () => {
     const user = userEvent.setup();
-    render(<ChatWidget />);
+    render(<ChatWidget defaultOpen={false} />);
 
     const panel = screen.getByTestId("chat-widget-panel");
     expect(panel).toHaveAttribute("aria-hidden", "true");
@@ -112,7 +112,10 @@ describe("ChatWidget", () => {
   it("fires onOpenChange when toggled", async () => {
     const user = userEvent.setup();
     const onOpenChange = vi.fn();
-    render(<ChatWidget onOpenChange={onOpenChange} />);
+    render(<ChatWidget defaultOpen={false} onOpenChange={onOpenChange} />);
+
+    // First call on mount (open=false)
+    expect(onOpenChange).toHaveBeenCalledWith(false);
 
     await user.click(screen.getByTestId("chat-widget-fab"));
     expect(onOpenChange).toHaveBeenCalledWith(true);

@@ -534,9 +534,9 @@ export async function GET() {
       targetSchools,
       requirementsProgress: {
         courses: {
-          completed: completedRequiredCourses,
-          required: totalRequiredCourses,
-          completionPercent: totalRequiredCourses === 0 ? 0 : Math.round((completedRequiredCourses / totalRequiredCourses) * 100),
+          completed: Math.round(ccUnitsCompleted),
+          required: TRANSFER_UNITS_TARGET,
+          completionPercent: Math.min(100, Math.round((ccUnitsCompleted / TRANSFER_UNITS_TARGET) * 100)),
         },
         ge: {
           completed: Math.round(geCompletedUnits),

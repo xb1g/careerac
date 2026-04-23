@@ -56,7 +56,7 @@ describe("NewPlanPage", () => {
     fireEvent.click(screen.getByRole("button", { name: "Generate Plan" }));
 
     expect(screen.getByTestId("chat-widget-panel")).toBeInTheDocument();
-    expect(screen.queryByText("Choose Your Schools")).not.toBeInTheDocument();
+    expect(screen.queryByText("Compare Schools")).not.toBeInTheDocument();
   });
 
   it("opens school catalog selection when schools-in-mind mode is selected", async () => {
@@ -65,9 +65,10 @@ describe("NewPlanPage", () => {
     fireEvent.click(screen.getByRole("button", { name: "Skip This Step" }));
     fireEvent.change(screen.getByLabelText("Intended Major"), { target: { value: "Computer Science" } });
     fireEvent.click(screen.getAllByRole("radio")[1]);
+    fireEvent.change(screen.getByLabelText("Primary target school"), { target: { value: "UCLA" } });
     fireEvent.click(screen.getByRole("button", { name: "Generate Plan" }));
 
-    expect(screen.getByText("Choose Your Schools")).toBeInTheDocument();
+    expect(screen.getByText("Compare Schools")).toBeInTheDocument();
     expect(await screen.findByText("University of California, Los Angeles")).toBeInTheDocument();
   });
 });

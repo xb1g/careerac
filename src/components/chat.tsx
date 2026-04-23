@@ -6,8 +6,13 @@ import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { ParsedPlan } from "@/types/plan";
 import { parsePlanFromAIResponse, stripPlanJsonFromText } from "@/utils/plan-parser";
 import RecoveryMessage, { RecoveryAlternative } from "./recovery-message";
-import { ChatMarkdown } from "./chat-markdown";
+import dynamic from "next/dynamic";
 import type { TranscriptData } from "@/types/transcript";
+
+const ChatMarkdown = dynamic(() => import("./chat-markdown").then((mod) => mod.ChatMarkdown), {
+  ssr: false,
+  loading: () => <div className="animate-pulse bg-zinc-200 dark:bg-zinc-800 h-4 w-24 rounded" />,
+});
 
 export interface RecoveryContext {
   failedCourseCode: string;
@@ -193,7 +198,7 @@ export default function Chat({
         }
       }
     }
-  }, [lastAssistantMessage, onPlanGenerated, onSavePlan, messages, isLoading]);
+  }, [lastAssistantMessage, onPlanGenerated, onSavePlan, messages, isLoading, planContext?.targetMajor]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

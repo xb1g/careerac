@@ -16,6 +16,7 @@ export interface PlanConfiguration {
   major: string;
   hasTargetSchool: boolean;
   targetSchool: string | null;
+  communityCollege: string | null;
 }
 
 interface PlanConfigProps {
@@ -44,6 +45,7 @@ export default function PlanConfig({ transcriptData, onConfigured, onBack }: Pla
   const [major, setMajor] = useState(transcriptData?.major || "");
   const [hasTargetSchool, setHasTargetSchool] = useState(false);
   const [targetSchool, setTargetSchool] = useState("");
+  const [communityCollege, setCommunityCollege] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const { startTerm, gradOptions, defaultGrad } = useMemo(() => {
@@ -115,6 +117,7 @@ export default function PlanConfig({ transcriptData, onConfigured, onBack }: Pla
       major: major.trim(),
       hasTargetSchool,
       targetSchool: hasTargetSchool ? targetSchool.trim() : null,
+      communityCollege: communityCollege.trim() || null,
     });
   };
 
@@ -124,6 +127,7 @@ export default function PlanConfig({ transcriptData, onConfigured, onBack }: Pla
       major: major.trim() || "Undecided",
       hasTargetSchool: false,
       targetSchool: null,
+      communityCollege: communityCollege.trim() || null,
     });
   };
 
@@ -142,6 +146,25 @@ export default function PlanConfig({ transcriptData, onConfigured, onBack }: Pla
           {transcriptData.gpa !== undefined && ` (GPA: ${transcriptData.gpa})`}
         </div>
       )}
+
+      <div className="space-y-2">
+        <label htmlFor="cc-input" className="block text-sm font-medium text-zinc-900 dark:text-white">
+          Community College{transcriptData ? " (optional)" : ""}
+        </label>
+        <p className="text-xs text-zinc-500 dark:text-zinc-400">
+          {transcriptData
+            ? "Override the college from your transcript if needed."
+            : "Enter the community college you're attending or plan to attend."}
+        </p>
+        <input
+          id="cc-input"
+          type="text"
+          value={communityCollege}
+          onChange={(e) => { setCommunityCollege(e.target.value); setErrors({}); }}
+          placeholder="e.g., College of San Mateo, Cañada College"
+          className="w-full rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
+        />
+      </div>
 
       <div className="space-y-2">
         <label htmlFor="major-input" className="block text-sm font-medium text-zinc-900 dark:text-white">

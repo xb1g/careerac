@@ -1,8 +1,8 @@
 import { createClient } from "@/utils/supabase/server";
 import { EmptyState } from "./empty-state";
 import Link from "next/link";
-import { TransferCockpit } from "@/components/transfer-cockpit";
 import { DeletePlanButton } from "./delete-plan-button";
+import RequirementProgress from "@/components/requirement-progress";
 
 interface PlanCard {
   id: string;
@@ -81,7 +81,9 @@ function PlanCard({ plan }: { plan: PlanCard }) {
 }
 
 export default async function DashboardPage() {
-  const plans = await getUserPlans();
+  const allPlans = await getUserPlans();
+  const mainPlan = allPlans[0];
+  const secondaryPlans = allPlans.slice(1);
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-zinc-950 pb-20">
@@ -92,7 +94,7 @@ export default async function DashboardPage() {
               Dashboard
             </h1>
             <p className="mt-2 text-[15px] text-gray-600 dark:text-gray-400 font-medium">
-              Your transfer readiness overview, plus every plan you&apos;re tracking.
+              Your primary transfer path and overall readiness.
             </p>
           </div>
           <Link
@@ -106,31 +108,45 @@ export default async function DashboardPage() {
           </Link>
         </div>
 
-        <TransferCockpit hasPlans={plans.length > 0} />
+        {allPlans.length === 0 ? (
+          <EmptyState />
+        ) : (
+          <div className="space-y-12">
+            {/* Global Progress */}
+            <RequirementProgress hasPlans={true} />
 
-        <div className="mt-10">
-          <div className="mb-6 flex items-center justify-between gap-4">
-            <div>
-              <h2 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Your plans</h2>
-              <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">Keep your saved transfer plans close by for deeper edits and recovery workflows.</p>
-            </div>
-            {plans.length > 0 ? (
-              <span className="rounded-full bg-white/80 px-3 py-1 text-xs font-semibold text-gray-600 shadow-sm ring-1 ring-gray-200/70 dark:bg-zinc-900/70 dark:text-zinc-300 dark:ring-zinc-800/80">
-                {plans.length} total
-              </span>
-            ) : null}
+            {/* Main Plan */}
+            <section>
+              <div className="mb-6">
+                <h2 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Main Plan</h2>
+                <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">Your primary transfer goal and active roadmap.</p>
+              </div>
+              <div className="max-w-2xl">
+                <PlanCard plan={mainPlan} />
+              </div>
+            </section>
+
+            {/* Secondary Plans */}
+            {secondaryPlans.length > 0 && (
+              <section className="pt-8 border-t border-zinc-200 dark:border-zinc-800">
+                <div className="mb-6 flex items-center justify-between">
+                  <div>
+                    <h2 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">Alternative Paths</h2>
+                    <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">Other universities or majors you are exploring.</p>
+                  </div>
+                  <span className="rounded-full bg-white/80 px-3 py-1 text-xs font-semibold text-gray-600 shadow-sm ring-1 ring-gray-200/70 dark:bg-zinc-900/70 dark:text-zinc-300 dark:ring-zinc-800/80">
+                    {secondaryPlans.length} plans
+                  </span>
+                </div>
+                <div className="grid gap-6 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3">
+                  {secondaryPlans.map((plan) => (
+                    <PlanCard key={plan.id} plan={plan} />
+                  ))}
+                </div>
+              </section>
+            )}
           </div>
-
-          {plans.length === 0 ? (
-            <EmptyState />
-          ) : (
-            <div className="grid gap-6 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3">
-              {plans.map((plan) => (
-                <PlanCard key={plan.id} plan={plan} />
-              ))}
-            </div>
-          )}
-        </div>
+        )}
       </div>
     </div>
   );

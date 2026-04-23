@@ -11,7 +11,7 @@ type ChatWidgetProps = ChatProps & {
 };
 
 export default function ChatWidget({
-  defaultOpen = false,
+  defaultOpen = true,
   title = "AI Assistant",
   onOpenChange,
   ...chatProps
