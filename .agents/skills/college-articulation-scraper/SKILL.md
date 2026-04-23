@@ -11,6 +11,48 @@ Use this skill to gather transfer-ready course data for a college and map it to 
 
 Prefer official sources, parallelize by school or target campus, and return evidence-backed results that clearly separate facts, inferred mappings, and unknowns.
 
+## ASSIST.org Critical Implementation Notes
+
+**DO NOT assume ASSIST institution IDs** - The numeric IDs in ASSIST URLs (e.g., `institution=74`) do NOT match college names intuitively. You MUST discover the correct ID for each college via API interception or testing.
+
+**Use browser response interception** - ASSIST's API returns HTTP 400 when called directly via fetch/curl, but works when responses are intercepted during browser navigation.
+
+**Correct API pattern for ASSIST:**
+```
+URL: https://www.assist.org/transfer/results?year={YEAR}&institution={ID}&type={TYPE}&view=transferability
+API Endpoint (intercept from browser): https://www.assist.org/api/transferability/courses?institutionId={ID}&academicYearId={YEAR}&listType={TYPE}
+```
+
+**Known ASSIST institution IDs (discovered 2026-04):**
+| College | ASSIST ID |
+|---------|-----------|
+| Berkeley City College | 58 |
+| College of Alameda | 111 |
+| Laney College | 77 |
+| Merritt College | 13 |
+| College of San Mateo | 5 |
+| Cañada College | 68 |
+| Skyline College | 127 |
+| Orange Coast College | 74 |
+| Cypress College | 71 |
+| Fullerton College | 134 |
+| Golden West College | 55 |
+
+**Course data field mapping from ASSIST API:**
+```typescript
+{
+  identifier: "ENGL A109",      // Full course code
+  prefixCode: "ENGL",           // Department prefix
+  courseNumber: "A109",        // Course number
+  courseTitle: "Critical Reasoning and Writing for Science and Technology",
+  departmentName: "English",
+  maxUnits: 4,
+  minUnits: 4,
+  isCsuTransferable: true,
+  transferAreas: [{ code: "UCTCA", codeDescription: "UCTCA" }, ...]
+}
+```
+
 ## Workflow
 
 1. Confirm the scope:
@@ -27,6 +69,8 @@ Prefer official sources, parallelize by school or target campus, and return evid
 - Prefer `agent-browser` when direct CLI browser automation is available.
 - Otherwise use the `browse` skill already present in the environment.
 - If the user explicitly asks for another browser wrapper such as OpenCLI, use it only when it is actually available in the environment; otherwise fall back to `agent-browser` or `browse` and say so.
+
+**For ASSIST specifically:** Use Playwright to intercept API responses during page navigation. Set up a response listener BEFORE navigating, then navigate to the transferability page.
 
 4. Split work into subagents when the task spans multiple independent axes:
 - One subagent per source college when comparing several colleges.

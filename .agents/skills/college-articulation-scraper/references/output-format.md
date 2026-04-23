@@ -7,6 +7,7 @@ Use this schema when the user wants structured results, a reusable dataset, or a
 ```json
 {
   "source_college": "",
+  "source_college_assist_id": 0,
   "catalog_year": "",
   "scraped_at": "",
   "targets": [],
@@ -16,7 +17,7 @@ Use this schema when the user wants structured results, a reusable dataset, or a
 }
 ```
 
-## Course object
+## Course object (standard format)
 
 ```json
 {
@@ -24,8 +25,34 @@ Use this schema when the user wants structured results, a reusable dataset, or a
   "course_title": "",
   "units": "",
   "department": "",
+  "prefix": "",
   "prerequisites": [],
-  "source_url": ""
+  "source_url": "",
+  "is_csu_transferable": true,
+  "is_uc_transferable": true,
+  "transfer_areas": [{"code": "UCTCA", "description": "UCTCA"}, ...]
+}
+```
+
+## ASSIST API Course object (exact fields from API)
+
+When scraping from ASSIST, use these exact field names from the API response:
+
+```json
+{
+  "identifier": "ENGL A109",
+  "prefixCode": "ENGL",
+  "courseNumber": "A109",
+  "courseTitle": "Critical Reasoning and Writing for Science and Technology",
+  "departmentName": "English",
+  "maxUnits": 4,
+  "minUnits": 4,
+  "isCsuTransferable": true,
+  "transferAreas": [
+    { "code": "1B", "codeDescription": "Critical Thinking - English Composition" },
+    { "code": "UC-E", "codeDescription": "English Composition" },
+    { "code": "UCTCA", "codeDescription": "UCTCA" }
+  ]
 }
 ```
 
@@ -61,3 +88,4 @@ Use this schema when the user wants structured results, a reusable dataset, or a
 - State whether ASSIST or another official articulation system was available.
 - Separate confirmed mappings from probable matches derived from multiple official sources.
 - Call out missing years, inaccessible pages, or program-specific ambiguity.
+- Note any institution ID discoveries or corrections made during scraping.
