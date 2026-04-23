@@ -1,12 +1,16 @@
 #!/usr/bin/env node
 /**
- * Debug: Show the actual structure of course data
+ * Debug: Print full API response structure
  */
 
 import { chromium } from 'playwright';
+import { writeFileSync } from 'fs';
 
-async function debug() {
-  console.log('Starting...');
+const YEAR_ID = 76;
+const LIST_TYPE = 'UCTCA';
+
+async function debugCollege() {
+  console.log('\n=== Debugging API Response Structure ===');
   
   const browser = await chromium.launch({ headless: true });
   const context = await browser.newContext({
@@ -14,42 +18,55 @@ async function debug() {
   });
   const page = await context.newPage();
   
-  let courseData = null;
-  
-  page.on('response', async (response) => {
-    const url = response.url();
+  try {
+    const apiUrl = `https://www.assist.org/api/transferability/courses?institutionId=2&academicYearId=${YEAR_ID}&listType=${LIST_TYPE}`;
     
-    if (url.includes('/api/transferability/courses') && url.includes('institutionId=74')) {
-      console.log('Found courses API!');
-      const data = await response.json();
-      courseData = data;
+    const [response] = await Promise.all([
+      page.waitForResponse(resp => resp.url().includes(apiUrl), { timeout: 60000 }),
+      page.goto(`https://www.assist.org/transfer/results?year=${YEAR_ID}&institution=2&type=${LIST_TYPE}&view=transferability`, { 
+        waitUntil: 'domcontentloaded', 
+        timeout: 90000 
+      })
+    ]);
+    
+    const data = await response.json();
+    
+    // Save full response for analysis
+    writeFileSync('/tmp/api-response.json', JSON.stringify(data, null, 2));
+    console.log('Full API response saved to /tmp/api-response.json');
+    
+    // Print top-level keys
+    console.log('\nTop-level keys:', Object.keys(data));
+    
+    // Check if there's a courseInformationList
+    if (data.courseInformationList) {
+      console.log('\nFound courseInformationList with', data.courseInformationList.length, 'items');
+      console.log('First item:', JSON.stringify(data.courseInformationList[0], null, 2));
+    } else {
+      console.log('\nNo courseInformationList found');
+      console.log('Data keys:', Object.keys(data));
+      
+      // Print first level of data
+      for (const key of Object.keys(data)) {
+        const val = data[key];
+        if (Array.isArray(val)) {
+          console.log(`  ${key}: Array[${val.length}]`);
+          if (val.length > 0) {
+            console.log(`    First item:`, JSON.stringify(val[0]).substring(0, 200));
+          }
+        } else if (typeof val === 'object') {
+          console.log(`  ${key}: Object with keys`, Object.keys(val || {}).slice(0, 5));
+        } else {
+          console.log(`  ${key}:`, String(val).substring(0, 100));
+        }
+      }
     }
-  });
-  
-  const url = 'https://www.assist.org/transfer/results?year=76&institution=74&type=UCTCA&view=transferability';
-  await page.goto(url, { waitUntil: 'networkidle', timeout: 60000 });
-  await new Promise(r => setTimeout(r, 3000));
+    
+  } catch (err) {
+    console.error(`Error: ${err.message}`);
+  }
   
   await browser.close();
-  
-  if (courseData) {
-    console.log('\n=== COURSE DATA STRUCTURE ===');
-    console.log(`listType: ${courseData.listType}`);
-    console.log(`institutionName: ${courseData.institutionName}`);
-    console.log(`academicYear: ${JSON.stringify(courseData.academicYear)}`);
-    console.log(`courseInformationList length: ${courseData.courseInformationList.length}`);
-    
-    console.log('\n=== FIRST 3 COURSES (FULL STRUCTURE) ===');
-    for (let i = 0; i < 3; i++) {
-      console.log(`\nCourse ${i}:`);
-      console.log(JSON.stringify(courseData.courseInformationList[i], null, 2));
-    }
-    
-    console.log('\n=== SAMPLE COURSE KEYS ===');
-    console.log(Object.keys(courseData.courseInformationList[0]));
-  } else {
-    console.log('No course data captured!');
-  }
 }
 
-debug().catch(console.error);
+debugCollege().catch(console.error);
