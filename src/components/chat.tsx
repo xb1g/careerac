@@ -147,6 +147,13 @@ export default function Chat({
     });
   }, [recoveryContext, isLoading, sendMessage]);
 
+  // Auto-fire risk resolution if param is present
+  useEffect(() => {
+    if (!resolveRisk || riskResolvedRef.current || isLoading) return;
+    riskResolvedRef.current = true;
+    sendMessage({ text: `[SYSTEM: Risk resolution] The student wants to resolve this risk: "${resolveRisk}". Please analyze the plan and suggest how to address it.` });
+  }, [resolveRisk, isLoading, sendMessage]);
+
   // Auto-fire the first user message when the wizard passes a ready-to-go prompt
   useEffect(() => {
     if (!autoStartPrompt || autoStartSentRef.current || isLoading) return;

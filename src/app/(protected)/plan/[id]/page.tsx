@@ -1,6 +1,7 @@
 import { createClient } from "@/utils/supabase/server";
 import PlanDetailPage from "./plan-detail-client";
 import { fetchPlanDetail } from "@/utils/fetch-plan-detail";
+import { Suspense } from "react";
 
 interface PlanDetailProps {
   params: Promise<{ id: string }>;
@@ -25,7 +26,11 @@ export default async function PlanDetail({ params }: PlanDetailProps) {
     return <PlanNotFound />;
   }
 
-  return <PlanDetailPage plan={detail.plan} transcript={detail.transcript} />;
+  return (
+    <Suspense fallback={<div className="flex-1 animate-pulse bg-zinc-50 dark:bg-zinc-900" />}>
+      <PlanDetailPage plan={detail.plan} transcript={detail.transcript} />
+    </Suspense>
+  );
 }
 
 function PlanNotFound() {

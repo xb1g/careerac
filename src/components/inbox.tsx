@@ -121,11 +121,19 @@ export default function Inbox() {
                         <p className="mt-1 text-xs leading-relaxed text-zinc-500 dark:text-zinc-400">{alert.description}</p>
                         {alert.planId && (
                           <Link 
-                            href={`/plan/${alert.planId}`}
+                            href={`/plan/${alert.planId}?resolveRisk=${encodeURIComponent(alert.title)}`}
                             onClick={() => setIsOpen(false)}
-                            className="mt-2 inline-block text-[11px] font-bold text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
+                            className={cn(
+                              "mt-3 inline-flex items-center justify-center rounded-full px-3.5 py-1.5 text-[10px] font-bold transition-all duration-300 border shadow-[0_2px_10px_-3px_rgba(0,0,0,0.1)] hover:shadow-[0_4px_12px_-2px_rgba(0,0,0,0.15)] active:scale-95 group",
+                              alert.severity === "high" 
+                                ? "bg-linear-to-r from-rose-600 to-rose-500 text-white border-rose-400/30 dark:border-rose-400/20 shadow-rose-500/10"
+                                : "bg-linear-to-r from-blue-600 to-indigo-500 text-white border-blue-400/30 dark:border-blue-400/20 shadow-blue-500/10"
+                            )}
                           >
-                            Resolve in plan →
+                            <span>Resolve in plan</span>
+                            <svg className="ml-1.5 h-2.5 w-2.5 transition-transform duration-300 group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5l6 6m0 0l-6 6m6-6H3" />
+                            </svg>
                           </Link>
                         )}
                       </div>

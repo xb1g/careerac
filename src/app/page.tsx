@@ -77,105 +77,128 @@ export default function HomePage() {
           </div>
 
           {/* Computer Science Demo Section */}
-          <div className="mt-20 relative max-w-5xl mx-auto">
-            <div className="absolute -inset-1 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-[2.5rem] blur opacity-20 dark:opacity-40"></div>
-            <div className="relative rounded-[2rem] border border-white/50 dark:border-zinc-800/50 bg-white/40 dark:bg-zinc-900/40 backdrop-blur-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row">
+          <div className="mt-20 relative max-w-5xl mx-auto group">
+            {/* Subtle App Frame */}
+            <div className="relative rounded-[1.5rem] border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 shadow-[0_32px_64px_-12px_rgba(0,0,0,0.1)] overflow-hidden flex flex-col md:flex-row ring-1 ring-zinc-200/50 dark:ring-zinc-800/50">
               {/* Sidebar / Context */}
-              <div className="w-full md:w-72 border-b md:border-b-0 md:border-r border-white/20 dark:border-zinc-800/50 p-6 flex flex-col gap-6">
+              <div className="w-full md:w-72 border-b md:border-b-0 md:border-r border-zinc-100 dark:border-zinc-900 bg-zinc-50/50 dark:bg-zinc-900/30 p-6 flex flex-col gap-6">
                 <div>
-                  <div className="text-[11px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-2">Current School</div>
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center text-orange-600 font-bold text-xs">OCC</div>
-                    <div className="text-sm font-bold text-zinc-900 dark:text-white">Orange Coast College</div>
+                  <div className="text-[10px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-3">Current School</div>
+                  <div className="flex items-center gap-3 p-2.5 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200/60 dark:border-zinc-800/60 shadow-sm">
+                    <div className="w-8 h-8 rounded-lg bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center text-orange-600 font-bold text-[10px]">OCC</div>
+                    <div className="text-xs font-bold text-zinc-900 dark:text-white">Orange Coast College</div>
                   </div>
                 </div>
                 <div>
-                  <div className="text-[11px] font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-widest mb-2">Target Goal</div>
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 font-bold text-xs">CAL</div>
-                    <div className="text-sm font-bold text-zinc-900 dark:text-white">UC Berkeley</div>
+                  <div className="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-widest mb-3">Target Goal</div>
+                  <div className="flex items-center gap-3 p-2.5 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200/60 dark:border-zinc-800/60 shadow-sm">
+                    <div className="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 font-bold text-[10px]">CAL</div>
+                    <div className="text-xs font-bold text-zinc-900 dark:text-white">UC Berkeley</div>
                   </div>
                 </div>
                 <div>
-                  <div className="text-[11px] font-bold text-zinc-500 uppercase tracking-widest mb-2">Target Major</div>
-                  <div className="text-sm font-bold text-zinc-900 dark:text-white">Computer Science (B.A.)</div>
-                </div>
-                <div className="mt-auto p-4 rounded-2xl bg-blue-600/5 border border-blue-600/10 hidden md:block">
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="w-2 h-2 rounded-full bg-blue-500"></div>
-                    <div className="text-[10px] font-bold text-blue-600 dark:text-blue-400 uppercase">Transfer Status</div>
+                  <div className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-3">Target Major</div>
+                  <div className="p-2.5 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200/60 dark:border-zinc-800/60 shadow-sm">
+                    <div className="text-xs font-bold text-zinc-900 dark:text-white">Computer Science (B.A.)</div>
                   </div>
-                  <div className="text-[20px] font-bold text-zinc-900 dark:text-white">84% Ready</div>
-                  <div className="mt-2 h-1.5 w-full bg-zinc-200 dark:bg-zinc-800 rounded-full overflow-hidden">
-                    <div className="h-full w-[84%] bg-blue-600 rounded-full"></div>
+                </div>
+                
+                <div className="mt-auto p-5 rounded-2xl bg-linear-to-br from-blue-600 to-indigo-700 shadow-lg shadow-blue-500/20 hidden md:block">
+                  <div className="flex items-center gap-2 mb-3">
+                    <div className="w-2 h-2 rounded-full bg-white/40 animate-pulse"></div>
+                    <div className="text-[9px] font-bold text-white/70 uppercase tracking-wider">Transfer Readiness</div>
+                  </div>
+                  <div className="text-[24px] font-black text-white leading-none mb-3">84%</div>
+                  <div className="h-1.5 w-full bg-white/20 rounded-full overflow-hidden">
+                    <div className="h-full w-[84%] bg-white rounded-full transition-all duration-1000 group-hover:w-[84%]"></div>
                   </div>
                 </div>
               </div>
 
               {/* Plan View */}
-              <div className="flex-1 p-6 md:p-8">
-                <div className="flex items-center justify-between mb-8">
-                   <h3 className="text-xl font-bold text-zinc-900 dark:text-white">Computer Science Path</h3>
-                   <span className="px-3 py-1 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold uppercase tracking-wider">Optimized for Berkeley</span>
+              <div className="flex-1 p-6 md:p-8 flex flex-col">
+                <div className="flex items-center justify-between mb-8 pb-4 border-b border-zinc-100 dark:border-zinc-900">
+                   <div>
+                     <h3 className="text-lg font-bold text-zinc-900 dark:text-white">Academic Roadmap</h3>
+                     <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">Personalized for Fall 2024 Start</p>
+                   </div>
+                   <div className="flex items-center gap-2">
+                     <span className="px-2.5 py-1 rounded-md bg-emerald-50 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold uppercase tracking-wider border border-emerald-100 dark:border-emerald-900">Verified Path</span>
+                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 flex-1">
                   {/* Semester 1 */}
-                  <div className="p-5 rounded-2xl bg-white/50 dark:bg-zinc-800/30 border border-white/50 dark:border-zinc-800 shadow-sm">
-                    <div className="flex items-center justify-between mb-4">
-                       <span className="text-xs font-bold text-zinc-500 uppercase">Semester 1</span>
-                       <span className="text-xs font-bold text-zinc-400">14 Units</span>
+                  <div className="group/sem">
+                    <div className="flex items-center justify-between mb-3 px-1">
+                       <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Semester 01</span>
+                       <span className="text-[10px] font-bold text-zinc-400">14.0 Units</span>
                     </div>
-                    <div className="space-y-3">
-                      <div className="flex items-center justify-between p-2 rounded-lg bg-emerald-500/5 border border-emerald-500/10">
-                        <span className="text-xs font-bold font-mono text-zinc-700 dark:text-zinc-300">CS A150</span>
-                        <span className="text-xs font-medium text-zinc-600 dark:text-zinc-400">C++ Programming</span>
-                        <div className="w-4 h-4 rounded-full bg-emerald-500 flex items-center justify-center">
-                          <svg className="w-2.5 h-2.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+                    <div className="space-y-2.5">
+                      <div className="flex items-center justify-between p-3 rounded-xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 transition-colors group-hover/sem:border-emerald-500/30 group-hover/sem:bg-emerald-500/[0.02]">
+                        <div className="flex flex-col">
+                          <span className="text-[10px] font-mono font-bold text-blue-600 dark:text-blue-400">CS A150</span>
+                          <span className="text-xs font-bold text-zinc-800 dark:text-zinc-200">C++ Programming</span>
+                        </div>
+                        <div className="w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center shadow-sm shadow-emerald-500/20">
+                          <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3.5}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
                         </div>
                       </div>
-                      <div className="flex items-center justify-between p-2 rounded-lg bg-emerald-500/5 border border-emerald-500/10">
-                        <span className="text-xs font-bold font-mono text-zinc-700 dark:text-zinc-300">MATH A180</span>
-                        <span className="text-xs font-medium text-zinc-600 dark:text-zinc-400">Calculus 1</span>
-                        <div className="w-4 h-4 rounded-full bg-emerald-500 flex items-center justify-center">
-                          <svg className="w-2.5 h-2.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+                      <div className="flex items-center justify-between p-3 rounded-xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 transition-colors group-hover/sem:border-emerald-500/30 group-hover/sem:bg-emerald-500/[0.02]">
+                        <div className="flex flex-col">
+                          <span className="text-[10px] font-mono font-bold text-blue-600 dark:text-blue-400">MATH A180</span>
+                          <span className="text-xs font-bold text-zinc-800 dark:text-zinc-200">Calculus 1</span>
+                        </div>
+                        <div className="w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center shadow-sm shadow-emerald-500/20">
+                          <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3.5}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
                         </div>
                       </div>
                     </div>
                   </div>
 
                   {/* Semester 2 */}
-                  <div className="p-5 rounded-2xl bg-white/50 dark:bg-zinc-800/30 border border-white/50 dark:border-zinc-800 shadow-sm relative">
-                    <div className="flex items-center justify-between mb-4">
-                       <span className="text-xs font-bold text-zinc-500 uppercase">Semester 2</span>
-                       <span className="text-xs font-bold text-zinc-400">16 Units</span>
+                  <div className="group/sem">
+                    <div className="flex items-center justify-between mb-3 px-1">
+                       <span className="text-[10px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest">Semester 02</span>
+                       <span className="text-[10px] font-bold text-zinc-400">16.0 Units</span>
                     </div>
-                    <div className="space-y-3">
-                      <div className="flex items-center justify-between p-2 rounded-lg bg-blue-500/5 border border-blue-500/10">
-                        <span className="text-xs font-bold font-mono text-blue-600 dark:text-blue-400">CS A250</span>
-                        <span className="text-xs font-medium text-zinc-600 dark:text-zinc-400">Data Structures</span>
-                        <div className="w-4 h-4 rounded-full border-2 border-blue-500/30 animate-pulse"></div>
+                    <div className="space-y-2.5">
+                      <div className="flex items-center justify-between p-3 rounded-xl bg-white dark:bg-zinc-950 border border-blue-200 dark:border-blue-900 shadow-sm ring-1 ring-blue-500/10 transition-all group-hover/sem:ring-blue-500/20">
+                        <div className="flex flex-col">
+                          <span className="text-[10px] font-mono font-bold text-blue-600 dark:text-blue-400">CS A250</span>
+                          <span className="text-xs font-bold text-zinc-900 dark:text-white">Data Structures</span>
+                        </div>
+                        <div className="w-5 h-5 rounded-full border-2 border-blue-500/30 flex items-center justify-center relative">
+                          <div className="absolute inset-0 rounded-full bg-blue-500/10 animate-ping"></div>
+                          <div className="w-1.5 h-1.5 rounded-full bg-blue-500"></div>
+                        </div>
                       </div>
-                      <div className="flex items-center justify-between p-2 rounded-lg bg-blue-500/5 border border-blue-500/10">
-                        <span className="text-xs font-bold font-mono text-blue-600 dark:text-blue-400">MATH A185</span>
-                        <span className="text-xs font-medium text-zinc-600 dark:text-zinc-400">Calculus 2</span>
-                        <div className="w-4 h-4 rounded-full border-2 border-blue-500/30 animate-pulse"></div>
+                      <div className="flex items-center justify-between p-3 rounded-xl bg-white dark:bg-zinc-950 border border-blue-200 dark:border-blue-900 shadow-sm ring-1 ring-blue-500/10 transition-all group-hover/sem:ring-blue-500/20">
+                        <div className="flex flex-col">
+                          <span className="text-[10px] font-mono font-bold text-blue-600 dark:text-blue-400">MATH A185</span>
+                          <span className="text-xs font-bold text-zinc-900 dark:text-white">Calculus 2</span>
+                        </div>
+                        <div className="w-5 h-5 rounded-full border-2 border-blue-500/30 flex items-center justify-center relative">
+                          <div className="absolute inset-0 rounded-full bg-blue-500/10 animate-ping [animation-delay:0.3s]"></div>
+                          <div className="w-1.5 h-1.5 rounded-full bg-blue-500"></div>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
 
-                <div className="mt-8 flex items-center justify-center">
-                  <div className="px-6 py-3 rounded-2xl bg-zinc-900/5 dark:bg-zinc-100/5 border border-zinc-900/10 dark:border-zinc-100/10 flex items-center gap-4">
+                <div className="mt-8 flex items-center justify-between p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-100 dark:border-zinc-800">
+                  <div className="flex items-center gap-4">
                     <div className="flex -space-x-2">
-                       <div className="w-6 h-6 rounded-full border-2 border-white bg-blue-500 flex items-center justify-center text-[10px] text-white font-bold">A</div>
-                       <div className="w-6 h-6 rounded-full border-2 border-white bg-indigo-500 flex items-center justify-center text-[10px] text-white font-bold">B</div>
-                       <div className="w-6 h-6 rounded-full border-2 border-white bg-purple-500 flex items-center justify-center text-[10px] text-white font-bold">C</div>
+                       <div className="w-7 h-7 rounded-full border-2 border-white dark:border-zinc-900 bg-blue-500 flex items-center justify-center text-[9px] text-white font-black">A</div>
+                       <div className="w-7 h-7 rounded-full border-2 border-white dark:border-zinc-900 bg-indigo-500 flex items-center justify-center text-[9px] text-white font-black">B</div>
+                       <div className="w-7 h-7 rounded-full border-2 border-white dark:border-zinc-900 bg-purple-500 flex items-center justify-center text-[9px] text-white font-black">C</div>
                     </div>
-                    <div className="text-[12px] font-medium text-zinc-500 dark:text-zinc-400">
-                      Join 1,200+ students planning their CS transfer today.
+                    <div className="text-[11px] font-bold text-zinc-600 dark:text-zinc-400">
+                      Join <span className="text-zinc-900 dark:text-white">1,200+ students</span> planning today.
                     </div>
                   </div>
+                  <button className="text-[11px] font-bold text-blue-600 dark:text-blue-400 hover:underline">View Full Plan →</button>
                 </div>
               </div>
             </div>
@@ -367,40 +390,49 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Time Saved Stats */}
-      <section className="relative z-10 px-6 sm:px-8 lg:px-12 py-20">
+      {/* Time Saved Stats / CTA */}
+      <section className="relative z-10 px-6 sm:px-8 lg:px-12 py-24 bg-white dark:bg-zinc-950">
         <div className="max-w-6xl mx-auto">
-          <div className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 rounded-[3rem] p-10 lg:p-14 text-center relative overflow-hidden">
-            <div className="absolute top-0 left-0 w-40 h-40 bg-white/10 rounded-full -translate-x-1/2 -translate-y-1/2"></div>
-            <div className="absolute bottom-0 right-0 w-60 h-60 bg-white/10 rounded-full translate-x-1/3 translate-y-1/3"></div>
+          <div className="bg-zinc-900 dark:bg-zinc-900/50 rounded-[2.5rem] p-8 lg:p-16 relative overflow-hidden border border-zinc-800 shadow-2xl ring-1 ring-zinc-700/30">
+            {/* Professional Grid Pattern */}
+            <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05] pointer-events-none" style={{ backgroundImage: "radial-gradient(circle at 2px 2px, white 1px, transparent 0)", backgroundSize: "32px 32px" }}></div>
             
-            <div className="relative z-10">
-              <h3 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-4">
-                Stop stressing. Start transferring.
+            <div className="relative z-10 max-w-4xl mx-auto text-center">
+              <h3 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white mb-6 tracking-tight">
+                Stop stressing. <br className="sm:hidden" /> Start transferring.
               </h3>
-              <p className="text-blue-100 text-lg max-w-2xl mx-auto mb-10">
-                Students spend <span className="font-bold text-white">20+ hours</span> researching transfer requirements. 
-                CareerAC builds your complete plan in <span className="font-bold text-white">under 5 minutes</span>.
+              <p className="text-zinc-400 text-lg sm:text-xl max-w-2xl mx-auto mb-14 font-medium leading-relaxed">
+                Students spend <span className="text-white font-bold">20+ hours</span> researching requirements. 
+                CareerAC automates the entire roadmap in <span className="text-blue-400 font-bold">under 5 minutes</span>.
               </p>
               
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-2xl mx-auto">
-                <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/10">
-                  <div className="text-3xl lg:text-4xl font-extrabold text-white mb-1">20+</div>
-                  <div className="text-blue-100 text-sm font-medium">Hours saved</div>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-16">
+                <div className="flex flex-col items-center p-6 rounded-2xl bg-white/5 border border-white/10 transition-colors hover:bg-white/[0.08]">
+                  <div className="text-4xl lg:text-5xl font-black text-white mb-2 tracking-tighter">20+</div>
+                  <div className="text-zinc-500 text-[10px] font-bold uppercase tracking-widest">Hours Saved</div>
                 </div>
-                <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/10">
-                  <div className="text-3xl lg:text-4xl font-extrabold text-white mb-1">5</div>
-                  <div className="text-blue-100 text-sm font-medium">Minutes to plan</div>
+                <div className="flex flex-col items-center p-6 rounded-2xl bg-white/5 border border-white/10 transition-colors hover:bg-white/[0.08]">
+                  <div className="text-4xl lg:text-5xl font-black text-blue-500 mb-2 tracking-tighter">5m</div>
+                  <div className="text-zinc-500 text-[10px] font-bold uppercase tracking-widest">To Full Plan</div>
                 </div>
-                <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/10">
-                  <div className="text-3xl lg:text-4xl font-extrabold text-white mb-1">100%</div>
-                  <div className="text-blue-100 text-sm font-medium">Personalized</div>
+                <div className="flex flex-col items-center p-6 rounded-2xl bg-white/5 border border-white/10 transition-colors hover:bg-white/[0.08]">
+                  <div className="text-4xl lg:text-5xl font-black text-white mb-2 tracking-tighter">100%</div>
+                  <div className="text-zinc-500 text-[10px] font-bold uppercase tracking-widest">Accuracy</div>
                 </div>
               </div>
 
-              <div className="mt-12">
-                <Link href="/auth/signup" className="inline-flex items-center justify-center px-8 py-4 bg-white text-blue-600 rounded-full font-bold text-lg hover:bg-zinc-50 transition-colors shadow-lg">
-                  Get Started Now
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <Link 
+                  href="/auth/signup" 
+                  className="w-full sm:w-auto inline-flex items-center justify-center px-10 py-4.5 bg-blue-600 text-white rounded-full font-bold text-lg hover:bg-blue-500 transition-all duration-300 shadow-xl shadow-blue-600/20 active:scale-95"
+                >
+                  Get Started for Free
+                </Link>
+                <Link 
+                  href="#how-it-works" 
+                  className="w-full sm:w-auto inline-flex items-center justify-center px-10 py-4.5 bg-transparent text-white border border-white/20 rounded-full font-bold text-lg hover:bg-white/10 transition-all duration-300"
+                >
+                  How it works
                 </Link>
               </div>
             </div>
