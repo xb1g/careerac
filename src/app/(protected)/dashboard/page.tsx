@@ -13,13 +13,13 @@ export default async function DashboardPage() {
   if (!user) return null;
 
   // Get the latest plan ID
-  const { data: latestPlan } = await supabase
+  const { data: latestPlan } = (await supabase
     .from("transfer_plans")
     .select("id")
     .eq("user_id", user.id)
     .order("created_at", { ascending: false })
     .limit(1)
-    .single();
+    .single()) as { data: { id: string } | null };
 
   if (!latestPlan) {
     return (

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useRef } from "react";
+import { useSearchParams } from "next/navigation";
 import { UIMessage } from "@ai-sdk/react";
 import { RecoveryContext } from "@/components/chat";
 import ChatWidget from "@/components/chat-widget";
@@ -36,6 +37,9 @@ interface PlanDetailClientProps {
 }
 
 export default function PlanDetailClient({ plan, transcript }: PlanDetailClientProps) {
+  const searchParams = useSearchParams();
+  const resolveRisk = searchParams?.get("resolveRisk") ?? undefined;
+
   const showComparisonSection = shouldShowComparisonSection({
     target_institution_id: plan.target_institution_id,
     comparison_targets: plan.comparison_targets,
@@ -398,6 +402,7 @@ export default function PlanDetailClient({ plan, transcript }: PlanDetailClientP
         onAcceptAlternative={handleAcceptAlternative}
         planId={plan.id}
         transcriptData={transcriptData ?? undefined}
+        resolveRisk={resolveRisk}
       />
 
       {/* Course Status Menu */}

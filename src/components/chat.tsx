@@ -56,6 +56,8 @@ export interface ChatProps {
   selectedUniversityNames?: string[];
   /** If set, fires this text as the first user message on mount to kick off generation. */
   autoStartPrompt?: string;
+  /** If set, fires a risk-resolution system message on mount for the given risk title. */
+  resolveRisk?: string;
 }
 
 export default function Chat({
@@ -75,12 +77,14 @@ export default function Chat({
   hasTargetSchool,
   selectedUniversityNames,
   autoStartPrompt,
+  resolveRisk,
 }: ChatProps) {
   const [input, setInput] = useState("");
   const lastProcessedMessageId = useRef<string | null>(null);
   const [isAccepting, setIsAccepting] = useState(false);
   const recoverySentRef = useRef<string | null>(null);
   const autoStartSentRef = useRef(false);
+  const riskResolvedRef = useRef(false);
 
   const defaultMessages: UIMessage[] = [
     {
