@@ -5,6 +5,7 @@ import { UIMessage } from "@ai-sdk/react";
 import { RecoveryContext } from "@/components/chat";
 import ChatWidget from "@/components/chat-widget";
 import ComparisonDashboard from "@/components/comparison-dashboard";
+import { DeletePlanButton } from "@/components/delete-plan-button";
 import { RecoveryAlternative } from "@/components/recovery-message";
 import SemesterPlan from "@/components/semester-plan";
 import CourseStatusMenu from "@/components/course-status-menu";
