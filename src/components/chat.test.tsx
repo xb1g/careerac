@@ -22,7 +22,7 @@ describe("Chat", () => {
     });
   });
 
-  it("renders with a welcome message", () => {
+  it("renders with a welcome message", async () => {
     mockUseChat.mockReturnValue({
       messages: [
         {
@@ -40,7 +40,7 @@ describe("Chat", () => {
 
     render(<Chat welcomeMessage="Hello! How can I help?" />);
 
-    expect(screen.getByText("Hello! How can I help?")).toBeInTheDocument();
+    expect(await screen.findByText("Hello! How can I help?")).toBeInTheDocument();
   });
 
   it("passes initialMessages to useChat when provided", () => {

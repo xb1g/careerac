@@ -1,9 +1,7 @@
 import { createClient } from "@/utils/supabase/server";
 import PlanDetailPage from "./plan-detail-client";
-import type { Database } from "@/types/database";
-import { mergeCourseStatusIntoPlanData } from "@/utils/plan-merge";
-
-type TransferPlanRow = Database["public"]["Tables"]["transfer_plans"]["Row"];
+import { fetchPlanDetail } from "@/utils/fetch-plan-detail";
+import { Suspense } from "react";
 
 interface PlanDetailProps {
   params: Promise<{ id: string }>;
@@ -22,55 +20,17 @@ export default async function PlanDetail({ params }: PlanDetailProps) {
     return <PlanNotFound />;
   }
 
-  // Fetch the plan
-  const { data: plan, error } = await supabase
-    .from("transfer_plans")
-    .select("*")
-    .eq("id", id)
-    .eq("user_id", user.id)
-    .single() as { data: TransferPlanRow | null; error: unknown };
+  const detail = await fetchPlanDetail(id, user.id);
 
-  if (error || !plan) {
+  if (!detail) {
     return <PlanNotFound />;
   }
 
-  // Fetch plan_courses to merge authoritative status data
-  const { data: planCourses } = await supabase
-    .from("plan_courses")
-    .select("id, semester_number, status, alternative_for")
-    .eq("plan_id", id)
-    .order("created_at", { ascending: true }) as { data: Array<{ semester_number: number; status: string; alternative_for: string | null }> | null; error: unknown };
-
-  // Fetch linked transcript if transcript_id exists
-  let transcript = null;
-  if (plan.transcript_id) {
-    const { data: transcriptData } = await supabase
-      .from("transcripts")
-      .select("*")
-      .eq("id", plan.transcript_id)
-      .eq("user_id", user.id)
-      .single();
-    transcript = transcriptData;
-  }
-
-  // Merge plan_courses status into plan_data for persistence
-  let mergedPlanData: unknown = plan.plan_data;
-  if (planCourses && planCourses.length > 0) {
-    mergedPlanData = mergeCourseStatusIntoPlanData(plan.plan_data, planCourses);
-  }
-
-  // Create a plan object with merged data
-  const planWithMergedData = {
-    id: plan.id,
-    title: plan.title,
-    target_institution_id: plan.target_institution_id,
-    target_major: plan.target_major,
-    comparison_targets: plan.comparison_targets,
-    plan_data: mergedPlanData,
-    chat_history: (plan.chat_history as unknown[]) ?? [],
-  };
-
-  return <PlanDetailPage plan={planWithMergedData} transcript={transcript as never} />;
+  return (
+    <Suspense fallback={<div className="flex-1 animate-pulse bg-zinc-50 dark:bg-zinc-900" />}>
+      <PlanDetailPage plan={detail.plan} transcript={detail.transcript} />
+    </Suspense>
+  );
 }
 
 function PlanNotFound() {

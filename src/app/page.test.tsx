@@ -21,13 +21,13 @@ describe("Landing Page", () => {
 
   it("renders the how-it-works section", () => {
     render(<HomePage />);
-    expect(screen.getByText(/How It Works/i)).toBeInTheDocument();
+    expect(screen.getByText(/how it works/i, { selector: 'span' })).toBeInTheDocument();
   });
 
   it("renders a CTA button linking to /auth/signup", () => {
     render(<HomePage />);
-    const ctaLink = screen.getByRole("link", { name: /get started/i });
-    expect(ctaLink).toBeInTheDocument();
-    expect(ctaLink.getAttribute("href")).toBe("/auth/signup");
+    const ctaLinks = screen.getAllByRole("link", { name: /get started/i });
+    expect(ctaLinks[0]).toBeInTheDocument();
+    expect(ctaLinks[0].getAttribute("href")).toBe("/auth/signup");
   });
 });

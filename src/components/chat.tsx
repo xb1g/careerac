@@ -6,8 +6,13 @@ import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { ParsedPlan } from "@/types/plan";
 import { parsePlanFromAIResponse, stripPlanJsonFromText } from "@/utils/plan-parser";
 import RecoveryMessage, { RecoveryAlternative } from "./recovery-message";
-import { ChatMarkdown } from "./chat-markdown";
+import dynamic from "next/dynamic";
 import type { TranscriptData } from "@/types/transcript";
+
+const ChatMarkdown = dynamic(() => import("./chat-markdown").then((mod) => mod.ChatMarkdown), {
+  ssr: false,
+  loading: () => <div className="animate-pulse bg-zinc-200 dark:bg-zinc-800 h-4 w-24 rounded" />,
+});
 
 export interface RecoveryContext {
   failedCourseCode: string;
@@ -142,6 +147,13 @@ export default function Chat({
     });
   }, [recoveryContext, isLoading, sendMessage]);
 
+  // Auto-fire risk resolution if param is present
+  useEffect(() => {
+    if (!resolveRisk || riskResolvedRef.current || isLoading) return;
+    riskResolvedRef.current = true;
+    sendMessage({ text: `[SYSTEM: Risk resolution] The student wants to resolve this risk: "${resolveRisk}". Please analyze the plan and suggest how to address it.` });
+  }, [resolveRisk, isLoading, sendMessage]);
+
   // Auto-fire the first user message when the wizard passes a ready-to-go prompt
   useEffect(() => {
     if (!autoStartPrompt || autoStartSentRef.current || isLoading) return;
@@ -193,7 +205,7 @@ export default function Chat({
         }
       }
     }
-  }, [lastAssistantMessage, onPlanGenerated, onSavePlan, messages, isLoading]);
+  }, [lastAssistantMessage, onPlanGenerated, onSavePlan, messages, isLoading, planContext?.targetMajor]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

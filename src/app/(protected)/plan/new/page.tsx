@@ -344,7 +344,12 @@ export default function NewPlanPage() {
     pendingTargetSchoolRef.current = config.targetSchool;
     setPlanConfig(config);
     setComparisonTargets((current) => current.length > 0 ? current : buildDefaultComparisonTargets(config.targetSchool, universities));
-    setStep("compare");
+
+    if (config.hasTargetSchool) {
+      setStep("compare");
+    } else {
+      setStep("chat");
+    }
   }, [buildDefaultComparisonTargets, universities]);
 
   const handleBackToUpload = useCallback(() => {
@@ -421,7 +426,7 @@ export default function NewPlanPage() {
       }));
 
       const resolvedNames = await resolveInstitutionIds(
-        transcriptData?.institution || transferPlan.ccName,
+        planConfig?.communityCollege || transcriptData?.institution || transferPlan.ccName,
         transferPlan.targetUniversity,
       );
 
@@ -497,14 +502,24 @@ export default function NewPlanPage() {
   }, [transcriptData, planConfig]);
 
   // Build welcome message based on context
+  const ccContext = planConfig?.communityCollege
+    ? ` at ${planConfig.communityCollege}`
+    : transcriptData
+      ? ` at ${transcriptData.institution}`
+      : "";
+
   const welcomeMessage = transcriptData
-    ? `I see you've taken ${transcriptData.courses.length} courses at ${transcriptData.institution} with ${transcriptData.totalUnitsCompleted} completed units${transcriptData.gpa ? ` (GPA: ${transcriptData.gpa})` : ""}. ${planConfig?.hasTargetSchool
+    ? `I see you've taken ${transcriptData.courses.length} courses${ccContext} with ${transcriptData.totalUnitsCompleted} completed units${transcriptData.gpa ? ` (GPA: ${transcriptData.gpa})` : ""}. ${planConfig?.hasTargetSchool
       ? `Let me help you plan your transfer to ${planConfig.targetSchool} for ${planConfig.major}.`
       : `Let me analyze your coursework and find the best university matches for ${planConfig?.major || "your major"}.`
     }`
-    : planConfig?.hasTargetSchool
-      ? `Tell me about your community college and I'll help you plan your transfer to ${planConfig.targetSchool} for ${planConfig.major}.`
-      : `I'll analyze the available transfer paths and find the best university matches for ${planConfig?.major || "your major"}. Tell me about your community college to get started.`;
+    : planConfig?.communityCollege
+      ? `I see you're attending ${planConfig.communityCollege}. ${planConfig?.hasTargetSchool
+        ? `Let me help you plan your transfer to ${planConfig.targetSchool} for ${planConfig.major}.`
+        : `Let me analyze transfer paths from ${planConfig.communityCollege} and find the best university matches for ${planConfig?.major || "your major"}.`}`
+      : planConfig?.hasTargetSchool
+        ? `Tell me about your community college and I'll help you plan your transfer to ${planConfig.targetSchool} for ${planConfig.major}.`
+        : `I'll analyze the available transfer paths and find the best university matches for ${planConfig?.major || "your major"}. Tell me about your community college to get started.`;
 
   // Step indicator
   const steps = step === "auto-generating"

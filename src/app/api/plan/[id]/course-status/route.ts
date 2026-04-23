@@ -2,6 +2,13 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
 import type { CourseStatus } from "@/types/plan";
 
+interface PlanCourseRow {
+  id: string;
+  course_id: string | null;
+  semester_number: number;
+  status: string;
+}
+
 export async function PATCH(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -18,7 +25,7 @@ export async function PATCH(
 
     const { id: planId } = await params;
     const body = await req.json();
-    const { courseCode, semesterNumber, status, planCourseId } = body as {
+    const { courseCode, status, planCourseId } = body as {
       courseCode: string;
       semesterNumber: number;
       status: CourseStatus;
@@ -44,21 +51,11 @@ export async function PATCH(
       return NextResponse.json({ error: "Plan not found" }, { status: 404 });
     }
 
-    // Update plan_courses status
-    let updateQuery = supabase
-      .from("plan_courses")
-      .update({
-        status,
-        updated_at: new Date().toISOString(),
-      } as never)
-      .eq("plan_id", planId)
-      .eq("semester_number", semesterNumber)
-      .select()
-      .maybeSingle();
-
-    // If we have a planCourseId, use it for more precise matching
+    // Attempt to update plan_courses status if it exists
+    let updatedCourse: PlanCourseRow | null = null;
+    
     if (planCourseId) {
-      updateQuery = supabase
+      const { data } = await supabase
         .from("plan_courses")
         .update({
           status,
@@ -67,48 +64,92 @@ export async function PATCH(
         .eq("id", planCourseId)
         .select()
         .maybeSingle();
+      updatedCourse = data as unknown as PlanCourseRow;
     }
 
-    const { data: updatedCourse, error: updateError } = await updateQuery;
+    // If no planCourseId or update failed, try to update by planId and semester + code if possible
+    // Note: plan_courses might not even exist yet for many plans as they are often just in plan_data JSON
+    if (!updatedCourse) {
+       // We don't have a reliable way to update plan_courses without an ID 
+       // because it doesn't store course_code directly (it stores course_id)
+       // and we might not have resolved course_id yet.
+    }
 
-    if (updateError) {
-      console.error("Error updating course status:", updateError);
-      return NextResponse.json(
-        { error: "Failed to update course status" },
-        { status: 500 }
-      );
+    // Sync to user_courses table - ALWAYS do this if courseCode and status are provided
+    // and status is meaningful for "My Courses"
+    let statusToSync: "completed" | "in_progress" | "planned" | null = null;
+    if (status === "completed") statusToSync = "completed";
+    else if (status === "in_progress") statusToSync = "in_progress";
+    else if (status === "planned" || status === "failed" || status === "cancelled" || status === "waitlisted") {
+      statusToSync = "planned";
+    }
+
+    if (statusToSync) {
+      // Get full course details if possible
+      let courseTitle = courseCode;
+      let courseUnits = 3;
+
+      // Try to find the course in the catalog to get the real title/units
+      const { data: courseCatalogData } = await supabase
+        .from("courses")
+        .select("title, units")
+        .eq("code", courseCode)
+        .limit(1)
+        .maybeSingle();
+      
+      if (courseCatalogData) {
+        const typed = courseCatalogData as { title: string; units: number };
+        courseTitle = typed.title;
+        courseUnits = typed.units;
+      }
+
+      // Upsert into user_courses
+      const { data: existingUserCourse } = await supabase
+        .from("user_courses")
+        .select("id")
+        .eq("user_id", user.id)
+        .eq("course_code", courseCode)
+        .maybeSingle();
+
+      if (existingUserCourse) {
+        const typedExisting = existingUserCourse as { id: string };
+        await supabase
+          .from("user_courses")
+          .update({
+            status: statusToSync,
+            course_title: courseTitle,
+            units: courseUnits,
+          } as never)
+          .eq("id", typedExisting.id);
+      } else {
+        await supabase
+          .from("user_courses")
+          .insert({
+            user_id: user.id,
+            course_code: courseCode,
+            course_title: courseTitle,
+            units: courseUnits,
+            status: statusToSync,
+          } as never);
+      }
     }
 
     // Create a failure event if the status is failed, cancelled, or waitlisted
-    let failureEvent = null;
     const isFailureStatus = status === "failed" || status === "cancelled" || status === "waitlisted";
-
     if (isFailureStatus && updatedCourse) {
-      const courseId = (updatedCourse as Record<string, unknown>).id as string;
-      const { data: failureData, error: failureError } = await supabase
+      await supabase
         .from("failure_events")
         .insert({
           plan_id: planId,
-          plan_course_id: courseId,
+          plan_course_id: updatedCourse.id,
           failure_type: status === "waitlisted" ? "waitlisted" : status === "cancelled" ? "cancelled" : "failed",
           created_at: new Date().toISOString(),
-        } as never)
-        .select()
-        .maybeSingle();
-
-      if (failureError) {
-        console.error("Error creating failure event:", failureError);
-        // Don't fail the whole request if failure event creation fails
-      } else {
-        failureEvent = failureData;
-      }
+        } as never);
     }
 
     return NextResponse.json({
       success: true,
-      course: updatedCourse,
       status,
-      failureEvent,
       triggerRecovery: isFailureStatus,
     });
   } catch (error) {

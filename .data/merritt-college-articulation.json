@@ -1,0 +1,806 @@
+{
+  "source_college": "Merritt College",
+  "catalog_year": "2024-2025",
+  "scraped_at": "2026-04-22",
+  "targets": [
+    "UC Berkeley",
+    "UC Davis",
+    "UC Irvine",
+    "UC Los Angeles",
+    "UC Merced",
+    "UC Riverside",
+    "UC San Diego",
+    "UC Santa Barbara",
+    "UC Santa Cruz",
+    "CSU system (all campuses)"
+  ],
+  "courses": [
+    {
+      "course_code": "ENGL C1000",
+      "course_title": "Academic Reading and Writing",
+      "units": "4",
+      "department": "ENGL",
+      "prerequisites": [],
+      "source_url": "https://merritt.edu/online-schedule"
+    },
+    {
+      "course_code": "ENGL C1000E",
+      "course_title": "Academic Reading and Writing with Support",
+      "units": "5",
+      "department": "ENGL",
+      "prerequisites": [],
+      "source_url": "https://merritt.edu/online-schedule"
+    },
+    {
+      "course_code": "ENGL C1001",
+      "course_title": "Critical Thinking and Writing",
+      "units": "4",
+      "department": "ENGL",
+      "prerequisites": ["ENGL C1000 or equivalent"],
+      "source_url": "https://merritt.edu/online-schedule"
+    },
+    {
+      "course_code": "STAT C1000",
+      "course_title": "Introduction to Statistics",
+      "units": "4",
+      "department": "STAT",
+      "prerequisites": ["MATH 240 or appropriate placement"],
+      "source_url": "https://merritt.edu/online-schedule"
+    },
+    {
+      "course_code": "COMM C1000",
+      "course_title": "Introduction to Public Speaking",
+      "units": "3",
+      "department": "COMM",
+      "prerequisites": [],
+      "source_url": "https://merritt.edu/online-schedule"
+    },
+    {
+      "course_code": "POLS C1000",
+      "course_title": "American Government and Politics",
+      "units": "3",
+      "department": "POLS",
+      "prerequisites": [],
+      "source_url": "https://merritt.edu/online-schedule"
+    },
+    {
+      "course_code": "PSYC C1000",
+      "course_title": "Introduction to Psychology",
+      "units": "3",
+      "department": "PSYC",
+      "prerequisites": [],
+      "source_url": "https://merritt.edu/online-schedule"
+    },
+    {
+      "course_code": "ENGL 1A",
+      "course_title": "Composition and Reading",
+      "units": "4",
+      "department": "ENGL",
+      "prerequisites": [],
+      "source_url": "https://6398505.fs1.hubspotusercontent-na1.net/hubfs/6398505/2024-2025%20Catalog%20with%20Supplement%20-%202024-12-09_153303.pdf",
+      "notes": "Replaced by ENGL C1000 effective Fall 2025"
+    },
+    {
+      "course_code": "ENGL 1AS",
+      "course_title": "Composition and Reading with Support",
+      "units": "5",
+      "department": "ENGL",
+      "prerequisites": [],
+      "source_url": "https://6398505.fs1.hubspotusercontent-na1.net/hubfs/6398505/2024-2025%20Catalog%20with%20Supplement%20-%202024-12-09_153303.pdf",
+      "notes": "Replaced by ENGL C1000E effective Fall 2025"
+    },
+    {
+      "course_code": "ENGL 5",
+      "course_title": "Critical Thinking in Reading and Writing",
+      "units": "4",
+      "department": "ENGL",
+      "prerequisites": ["ENGL 1A"],
+      "source_url": "https://6398505.fs1.hubspotusercontent-na1.net/hubfs/6398505/2024-2025%20Catalog%20with%20Supplement%20-%202024-12-09_153303.pdf",
+      "notes": "Replaced by ENGL C1001 effective Fall 2025"
+    },
+    {
+      "course_code": "MATH 13",
+      "course_title": "Introduction to Statistics",
+      "units": "4",
+      "department": "MATH",
+      "prerequisites": [],
+      "source_url": "https://merritt.edu/online-schedule",
+      "notes": "Replaced by STAT C1000 effective Fall 2025"
+    },
+    {
+      "course_code": "COMM 45",
+      "course_title": "Public Speaking",
+      "units": "3",
+      "department": "COMM",
+      "prerequisites": [],
+      "source_url": "https://merritt.edu/online-schedule",
+      "notes": "Replaced by COMM C1000 effective Fall 2025"
+    },
+    {
+      "course_code": "POSCI 1",
+      "course_title": "Government and Politics in the United States",
+      "units": "3",
+      "department": "POSCI",
+      "prerequisites": [],
+      "source_url": "https://merritt.edu/online-schedule",
+      "notes": "Replaced by POLS C1000 effective Fall 2025"
+    },
+    {
+      "course_code": "PSYCH 1A",
+      "course_title": "Introduction to General Psychology",
+      "units": "3",
+      "department": "PSYCH",
+      "prerequisites": [],
+      "source_url": "https://merritt.edu/online-schedule",
+      "notes": "Replaced by PSYC C1000 effective Fall 2025"
+    },
+    {
+      "course_code": "STAT 1",
+      "course_title": "Probability and Statistics",
+      "units": "4",
+      "department": "STAT",
+      "prerequisites": ["MATH 240"],
+      "source_url": "https://6398505.fs1.hubspotusercontent-na1.net/hubfs/6398505/merrittcalgetc2526v2-4.pdf"
+    },
+    {
+      "course_code": "STAT 2",
+      "course_title": "Introduction to Statistics",
+      "units": "4",
+      "department": "STAT",
+      "prerequisites": [],
+      "source_url": "https://6398505.fs1.hubspotusercontent-na1.net/hubfs/6398505/merrittcalgetc2526v2-4.pdf"
+    },
+    {
+      "course_code": "STAT 3A",
+      "course_title": "Statistics for Business and Economics",
+      "units": "4",
+      "department": "STAT",
+      "prerequisites": [],
+      "source_url": "https://6398505.fs1.hubspotusercontent-na1.net/hubfs/6398505/merrittcalgetc2526v2-4.pdf"
+    },
+    {
+      "course_code": "STAT 3B",
+      "course_title": "Statistics for Behavioral and Social Sciences",
+      "units": "4",
+      "department": "STAT",
+      "prerequisites": [],
+      "source_url": "https://6398505.fs1.hubspotusercontent-na1.net/hubfs/6398505/merrittcalgetc2526v2-4.pdf"
+    },
+    {
+      "course_code": "STAT 3C",
+      "course_title": "Statistics for Life Sciences",
+      "units": "4",
+      "department": "STAT",
+      "prerequisites": [],
+      "source_url": "https://6398505.fs1.hubspotusercontent-na1.net/hubfs/6398505/merrittcalgetc2526v2-4.pdf"
+    },
+    {
+      "course_code": "STAT 3E",
+      "course_title": "Statistics for Engineering and Physical Sciences",
+      "units": "4",
+      "department": "STAT",
+      "prerequisites": [],
+      "source_url": "https://6398505.fs1.hubspotusercontent-na1.net/hubfs/6398505/merrittcalgetc2526v2-4.pdf"
+    },
+    {
+      "course_code": "STAT 3F",
+      "course_title": "Statistics for Nursing and Health Sciences",
+      "units": "4",
+      "department": "STAT",
+      "prerequisites": [],
+      "source_url": "https://6398505.fs1.hubspotusercontent-na1.net/hubfs/6398505/merrittcalgetc2526v2-4.pdf"
+    },
+    {
+      "course_code": "STAT 11",
+      "course_title": "Statistics for Elementary Educators",
+      "units": "3",
+      "department": "STAT",
+      "prerequisites": [],
+      "source_url": "https://6398505.fs1.hubspotusercontent-na1.net/hubfs/6398505/merrittcalgetc2526v2-4.pdf"
+    },
+    {
+      "course_code": "STAT 15",
+      "course_title": "Introduction to Data Science",
+      "units": "4",
+      "department": "STAT",
+      "prerequisites": [],
+      "source_url": "https://6398505.fs1.hubspotusercontent-na1.net/hubfs/6398505/merrittcalgetc2526v2-4.pdf"
+    },
+    {
+      "course_code": "STAT 16A",
+      "course_title": "Probability and Statistics in Engineering",
+      "units": "4",
+      "department": "STAT",
+      "prerequisites": [],
+      "source_url": "https://6398505.fs1.hubspotusercontent-na1.net/hubfs/6398505/merrittcalgetc2526v2-4.pdf"
+    },
+    {
+      "course_code": "STAT 16B",
+      "course_title": "Probability and Statistics in Engineering",
+      "units": "4",
+      "department": "STAT",
+      "prerequisites": [],
+      "source_url": "https://6398505.fs1.hubspotusercontent-na1.net/hubfs/6398505/merrittcalgetc2526v2-4.pdf"
+    },
+    {
+      "course_code": "CIS 11",
+      "course_title": "Computer Programming for Data Science",
+      "units": "4",
+      "department": "CIS",
+      "prerequisites": [],
+      "source_url": "https://6398505.fs1.hubspotusercontent-na1.net/hubfs/6398505/merrittcalgetc2526v2-4.pdf"
+    },
+    {
+      "course_code": "MATH 1",
+      "course_title": "Calculus I",
+      "units": "5",
+      "department": "MATH",
+      "prerequisites": ["MATH 230 or appropriate placement"],
+      "source_url": "https://6398505.fs1.hubspotusercontent-na1.net/hubfs/6398505/merrittcalgetc2526v2-4.pdf"
+    },
+    {
+      "course_code": "MATH 2",
+      "course_title": "Calculus II",
+      "units": "5",
+      "department": "MATH",
+      "prerequisites": ["MATH 1"],
+      "source_url": "https://6398505.fs1.hubspotusercontent-na1.net/hubfs/6398505/merrittcalgetc2526v2-4.pdf"
+    },
+    {
+      "course_code": "MATH 3A",
+      "course_title": "Multivariable Calculus",
+      "units": "4",
+      "department": "MATH",
+      "prerequisites": ["MATH 2"],
+      "source_url": "https://6398505.fs1.hubspotusercontent-na1.net/hubfs/6398505/merrittcalgetc2526v2-4.pdf"
+    },
+    {
+      "course_code": "MATH 3B",
+      "course_title": "Linear Algebra",
+      "units": "4",
+      "department": "MATH",
+      "prerequisites": ["MATH 3A"],
+      "source_url": "https://6398505.fs1.hubspotusercontent-na1.net/hubfs/6398505/merrittcalgetc2526v2-4.pdf"
+    },
+    {
+      "course_code": "MATH 3C",
+      "course_title": "Differential Equations",
+      "units": "4",
+      "department": "MATH",
+      "prerequisites": ["MATH 3A"],
+      "source_url": "https://6398505.fs1.hubspotusercontent-na1.net/hubfs/6398505/merrittcalgetc2526v2-4.pdf"
+    },
+    {
+      "course_code": "COMM 3",
+      "course_title": "Public Speaking",
+      "units": "3",
+      "department": "COMM",
+      "prerequisites": [],
+      "source_url": "https://6398505.fs1.hubspotusercontent-na1.net/hubfs/6398505/merrittcalgetc2526v2-4.pdf"
+    },
+    {
+      "course_code": "ARCH 11A",
+      "course_title": "Architectural Design I",
+      "units": "4",
+      "department": "ARCH",
+      "prerequisites": [],
+      "source_url": "https://ced.berkeley.edu/admissions/undergraduate-admissions/articulation"
+    },
+    {
+      "course_code": "ARCH 11B",
+      "course_title": "Architectural Design II",
+      "units": "4",
+      "department": "ARCH",
+      "prerequisites": ["ARCH 11A"],
+      "source_url": "https://ced.berkeley.edu/admissions/undergraduate-admissions/articulation"
+    },
+    {
+      "course_code": "ENV DES 1",
+      "course_title": "Environmental Design",
+      "units": "3",
+      "department": "ENV DES",
+      "prerequisites": [],
+      "source_url": "https://ced.berkeley.edu/admissions/undergraduate-admissions/articulation"
+    },
+    {
+      "course_code": "AFRAM 19",
+      "course_title": "Racism in the United States",
+      "units": "3",
+      "department": "AFRAM",
+      "prerequisites": [],
+      "source_url": "https://6398505.fs1.hubspotusercontent-na1.net/hubfs/6398505/merrittcalgetc2526v2-4.pdf",
+      "notes": "Cal-GETC Area 6 effective Fall 2023"
+    },
+    {
+      "course_code": "AFRAM 30",
+      "course_title": "African-American History: Africa to 1865",
+      "units": "3",
+      "department": "AFRAM",
+      "prerequisites": [],
+      "source_url": "https://6398505.fs1.hubspotusercontent-na1.net/hubfs/6398505/merrittcalgetc2526v2-4.pdf",
+      "notes": "Cal-GETC Area 6 effective Fall 2023"
+    },
+    {
+      "course_code": "AFRAM 31",
+      "course_title": "African-American History: 1865 to Present",
+      "units": "3",
+      "department": "AFRAM",
+      "prerequisites": [],
+      "source_url": "https://6398505.fs1.hubspotusercontent-na1.net/hubfs/6398505/merrittcalgetc2526v2-4.pdf",
+      "notes": "Cal-GETC Area 6 effective Fall 2023"
+    },
+    {
+      "course_code": "M/LAT 6",
+      "course_title": "Mexican-American History",
+      "units": "3",
+      "department": "M/LAT",
+      "prerequisites": [],
+      "source_url": "https://6398505.fs1.hubspotusercontent-na1.net/hubfs/6398505/merrittcalgetc2526v2-4.pdf",
+      "notes": "Cal-GETC Area 6 effective Fall 2023"
+    },
+    {
+      "course_code": "CHEM 1A",
+      "course_title": "General Chemistry I",
+      "units": "5",
+      "department": "CHEM",
+      "prerequisites": ["MATH 230"],
+      "source_url": "https://6398505.fs1.hubspotusercontent-na1.net/hubfs/6398505/2024-2025%20Catalog%20with%20Supplement%20-%202024-12-09_153303.pdf"
+    },
+    {
+      "course_code": "CHEM 1B",
+      "course_title": "General Chemistry II",
+      "units": "5",
+      "department": "CHEM",
+      "prerequisites": ["CHEM 1A"],
+      "source_url": "https://6398505.fs1.hubspotusercontent-na1.net/hubfs/6398505/2024-2025%20Catalog%20with%20Supplement%20-%202024-12-09_153303.pdf"
+    },
+    {
+      "course_code": "BIOL 1A",
+      "course_title": "Principles of Biology",
+      "units": "5",
+      "department": "BIOL",
+      "prerequisites": [],
+      "source_url": "https://6398505.fs1.hubspotusercontent-na1.net/hubfs/6398505/2024-2025%20Catalog%20with%20Supplement%20-%202024-12-09_153303.pdf"
+    },
+    {
+      "course_code": "BIOL 1B",
+      "course_title": "Principles of Biology",
+      "units": "5",
+      "department": "BIOL",
+      "prerequisites": ["BIOL 1A"],
+      "source_url": "https://6398505.fs1.hubspotusercontent-na1.net/hubfs/6398505/2024-2025%20Catalog%20with%20Supplement%20-%202024-12-09_153303.pdf"
+    },
+    {
+      "course_code": "PHYS 4A",
+      "course_title": "Mechanics and Wave Motion",
+      "units": "4",
+      "department": "PHYS",
+      "prerequisites": ["MATH 1", "MATH 2 (can be concurrent)"],
+      "source_url": "https://6398505.fs1.hubspotusercontent-na1.net/hubfs/6398505/2024-2025%20Catalog%20with%20Supplement%20-%202024-12-09_153303.pdf"
+    },
+    {
+      "course_code": "PHYS 4B",
+      "course_title": "Electricity and Magnetism",
+      "units": "4",
+      "department": "PHYS",
+      "prerequisites": ["PHYS 4A"],
+      "source_url": "https://6398505.fs1.hubspotusercontent-na1.net/hubfs/6398505/2024-2025%20Catalog%20with%20Supplement%20-%202024-12-09_153303.pdf"
+    },
+    {
+      "course_code": "PHYS 4C",
+      "course_title": "Heat, Light, and Modern Physics",
+      "units": "4",
+      "department": "PHYS",
+      "prerequisites": ["PHYS 4A"],
+      "source_url": "https://6398505.fs1.hubspotusercontent-na1.net/hubfs/6398505/2024-2025%20Catalog%20with%20Supplement%20-%202024-12-09_153303.pdf"
+    },
+    {
+      "course_code": "ANTHR 1",
+      "course_title": "Physical Anthropology",
+      "units": "3",
+      "department": "ANTHR",
+      "prerequisites": [],
+      "source_url": "https://6398505.fs1.hubspotusercontent-na1.net/hubfs/6398505/merrittcalgetc2526v2-4.pdf"
+    },
+    {
+      "course_code": "ASTR 1",
+      "course_title": "Elementary Astronomy",
+      "units": "3",
+      "department": "ASTR",
+      "prerequisites": [],
+      "source_url": "https://6398505.fs1.hubspotusercontent-na1.net/hubfs/6398505/merrittcalgetc2526v2-4.pdf"
+    },
+    {
+      "course_code": "ASTR 10",
+      "course_title": "Astronomy Laboratory",
+      "units": "1",
+      "department": "ASTR",
+      "prerequisites": ["ASTR 1 (can be concurrent)"],
+      "source_url": "https://6398505.fs1.hubspotusercontent-na1.net/hubfs/6398505/merrittcalgetc2526v2-4.pdf"
+    },
+    {
+      "course_code": "GEOG 1",
+      "course_title": "Physical Geography",
+      "units": "3",
+      "department": "GEOG",
+      "prerequisites": [],
+      "source_url": "https://6398505.fs1.hubspotusercontent-na1.net/hubfs/6398505/merrittcalgetc2526v2-4.pdf"
+    },
+    {
+      "course_code": "GEOG 2",
+      "course_title": "Cultural Geography",
+      "units": "3",
+      "department": "GEOG",
+      "prerequisites": [],
+      "source_url": "https://6398505.fs1.hubspotusercontent-na1.net/hubfs/6398505/merrittcalgetc2526v2-4.pdf"
+    },
+    {
+      "course_code": "GEOL 1",
+      "course_title": "Physical Geology",
+      "units": "3",
+      "department": "GEOL",
+      "prerequisites": [],
+      "source_url": "https://6398505.fs1.hubspotusercontent-na1.net/hubfs/6398505/merrittcalgetc2526v2-4.pdf"
+    },
+    {
+      "course_code": "GEOL 10",
+      "course_title": "Geology Laboratory",
+      "units": "1",
+      "department": "GEOL",
+      "prerequisites": ["GEOL 1 (can be concurrent)"],
+      "source_url": "https://6398505.fs1.hubspotusercontent-na1.net/hubfs/6398505/merrittcalgetc2526v2-4.pdf"
+    }
+  ],
+  "mappings": [
+    {
+      "source_course_code": "ENV DES 1",
+      "target_school": "UC Berkeley",
+      "target_requirement_type": "major_prep",
+      "target_requirement_label": "College of Environmental Design — ENV DES 1",
+      "agreement_year": "2024-2025",
+      "status": "confirmed",
+      "evidence_urls": ["https://ced.berkeley.edu/admissions/undergraduate-admissions/articulation"],
+      "notes": "Confirmed via UC Berkeley CED official articulation table. Merritt College listed as approved for ENV DES 1."
+    },
+    {
+      "source_course_code": "ARCH 11A",
+      "target_school": "UC Berkeley",
+      "target_requirement_type": "major_prep",
+      "target_requirement_label": "College of Environmental Design — ARCH 11A",
+      "agreement_year": "2024-2025",
+      "status": "confirmed",
+      "evidence_urls": ["https://ced.berkeley.edu/admissions/undergraduate-admissions/articulation"],
+      "notes": "Confirmed via UC Berkeley CED official articulation table. Merritt College listed as approved for ARCH 11A."
+    },
+    {
+      "source_course_code": "ARCH 11B",
+      "target_school": "UC Berkeley",
+      "target_requirement_type": "major_prep",
+      "target_requirement_label": "College of Environmental Design — ARCH 11B",
+      "agreement_year": "2024-2025",
+      "status": "confirmed",
+      "evidence_urls": ["https://ced.berkeley.edu/admissions/undergraduate-admissions/articulation"],
+      "notes": "Confirmed via UC Berkeley CED official articulation table. Merritt College listed as approved for ARCH 11B."
+    },
+    {
+      "source_course_code": "ENGL C1000",
+      "target_school": "UC and CSU",
+      "target_requirement_type": "ge",
+      "target_requirement_label": "Cal-GETC Area 1A — English Composition",
+      "agreement_year": "2025-2026",
+      "status": "confirmed",
+      "evidence_urls": [
+        "https://6398505.fs1.hubspotusercontent-na1.net/hubfs/6398505/merrittcalgetc2526v2-4.pdf",
+        "https://www.csueastbay.edu/aps/cccge2526/merritt-college-cal-getc-25-26.pdf"
+      ],
+      "notes": "Cal-GETC 2025-2026 official document. Also satisfies CSU GE Area A1."
+    },
+    {
+      "source_course_code": "ENGL C1000E",
+      "target_school": "UC and CSU",
+      "target_requirement_type": "ge",
+      "target_requirement_label": "Cal-GETC Area 1A — English Composition (with support)",
+      "agreement_year": "2025-2026",
+      "status": "confirmed",
+      "evidence_urls": [
+        "https://6398505.fs1.hubspotusercontent-na1.net/hubfs/6398505/merrittcalgetc2526v2-4.pdf",
+        "https://www.csueastbay.edu/aps/cccge2526/merritt-college-cal-getc-25-26.pdf"
+      ],
+      "notes": "Cal-GETC 2025-2026 official document. Also satisfies CSU GE Area A1."
+    },
+    {
+      "source_course_code": "ENGL C1001",
+      "target_school": "UC and CSU",
+      "target_requirement_type": "ge",
+      "target_requirement_label": "Cal-GETC Area 1B — Critical Thinking and Composition",
+      "agreement_year": "2025-2026",
+      "status": "confirmed",
+      "evidence_urls": [
+        "https://6398505.fs1.hubspotusercontent-na1.net/hubfs/6398505/merrittcalgetc2526v2-4.pdf",
+        "https://www.csueastbay.edu/aps/cccge2526/merritt-college-cal-getc-25-26.pdf"
+      ],
+      "notes": "Cal-GETC 2025-2026 official document. Also satisfies CSU GE Area A2."
+    },
+    {
+      "source_course_code": "COMM 3",
+      "target_school": "UC and CSU",
+      "target_requirement_type": "ge",
+      "target_requirement_label": "Cal-GETC Area 1C — Oral Communication",
+      "agreement_year": "2025-2026",
+      "status": "confirmed",
+      "evidence_urls": [
+        "https://6398505.fs1.hubspotusercontent-na1.net/hubfs/6398505/merrittcalgetc2526v2-4.pdf",
+        "https://www.csueastbay.edu/aps/cccge2526/merritt-college-cal-getc-25-26.pdf"
+      ],
+      "notes": "Cal-GETC 2025-2026 official document. Also satisfies CSU GE Area A1."
+    },
+    {
+      "source_course_code": "COMM C1000",
+      "target_school": "UC and CSU",
+      "target_requirement_type": "ge",
+      "target_requirement_label": "Cal-GETC Area 1C — Oral Communication",
+      "agreement_year": "2025-2026",
+      "status": "confirmed",
+      "evidence_urls": [
+        "https://6398505.fs1.hubspotusercontent-na1.net/hubfs/6398505/merrittcalgetc2526v2-4.pdf",
+        "https://www.csueastbay.edu/aps/cccge2526/merritt-college-cal-getc-25-26.pdf"
+      ],
+      "notes": "Cal-GETC 2025-2026 official document. Effective Fall 2025 replacement for COMM 45."
+    },
+    {
+      "source_course_code": "STAT C1000",
+      "target_school": "UC and CSU",
+      "target_requirement_type": "ge",
+      "target_requirement_label": "Cal-GETC Area 2 — Mathematical Concepts and Quantitative Reasoning",
+      "agreement_year": "2025-2026",
+      "status": "confirmed",
+      "evidence_urls": [
+        "https://6398505.fs1.hubspotusercontent-na1.net/hubfs/6398505/merrittcalgetc2526v2-4.pdf",
+        "https://www.csueastbay.edu/aps/cccge2526/merritt-college-cal-getc-25-26.pdf"
+      ],
+      "notes": "Cal-GETC 2025-2026 official document. Effective Fall 2025 replacement for MATH 13."
+    },
+    {
+      "source_course_code": "STAT 1",
+      "target_school": "UC and CSU",
+      "target_requirement_type": "ge",
+      "target_requirement_label": "Cal-GETC Area 2 — Mathematical Concepts and Quantitative Reasoning",
+      "agreement_year": "2025-2026",
+      "status": "confirmed",
+      "evidence_urls": [
+        "https://6398505.fs1.hubspotusercontent-na1.net/hubfs/6398505/merrittcalgetc2526v2-4.pdf",
+        "https://www.csueastbay.edu/aps/cccge2526/merritt-college-cal-getc-25-26.pdf"
+      ],
+      "notes": "Cal-GETC 2025-2026 official document."
+    },
+    {
+      "source_course_code": "CIS 11",
+      "target_school": "UC and CSU",
+      "target_requirement_type": "ge",
+      "target_requirement_label": "Cal-GETC Area 2 — Mathematical Concepts and Quantitative Reasoning",
+      "agreement_year": "2025-2026",
+      "status": "confirmed",
+      "evidence_urls": [
+        "https://6398505.fs1.hubspotusercontent-na1.net/hubfs/6398505/merrittcalgetc2526v2-4.pdf",
+        "https://www.csueastbay.edu/aps/cccge2526/merritt-college-cal-getc-25-26.pdf"
+      ],
+      "notes": "Cal-GETC 2025-2026 official document."
+    },
+    {
+      "source_course_code": "AFRAM 19",
+      "target_school": "UC and CSU",
+      "target_requirement_type": "ge",
+      "target_requirement_label": "Cal-GETC Area 6 — Ethnic Studies",
+      "agreement_year": "2025-2026",
+      "status": "confirmed",
+      "evidence_urls": [
+        "https://6398505.fs1.hubspotusercontent-na1.net/hubfs/6398505/merrittcalgetc2526v2-4.pdf",
+        "https://www.csueastbay.edu/aps/cccge2526/merritt-college-cal-getc-25-26.pdf"
+      ],
+      "notes": "Cal-GETC 2025-2026 official document. Effective Fall 2023."
+    },
+    {
+      "source_course_code": "AFRAM 30",
+      "target_school": "UC and CSU",
+      "target_requirement_type": "ge",
+      "target_requirement_label": "Cal-GETC Area 6 — Ethnic Studies",
+      "agreement_year": "2025-2026",
+      "status": "confirmed",
+      "evidence_urls": [
+        "https://6398505.fs1.hubspotusercontent-na1.net/hubfs/6398505/merrittcalgetc2526v2-4.pdf",
+        "https://www.csueastbay.edu/aps/cccge2526/merritt-college-cal-getc-25-26.pdf"
+      ],
+      "notes": "Cal-GETC 2025-2026 official document. Effective Fall 2023."
+    },
+    {
+      "source_course_code": "AFRAM 31",
+      "target_school": "UC and CSU",
+      "target_requirement_type": "ge",
+      "target_requirement_label": "Cal-GETC Area 6 — Ethnic Studies",
+      "agreement_year": "2025-2026",
+      "status": "confirmed",
+      "evidence_urls": [
+        "https://6398505.fs1.hubspotusercontent-na1.net/hubfs/6398505/merrittcalgetc2526v2-4.pdf",
+        "https://www.csueastbay.edu/aps/cccge2526/merritt-college-cal-getc-25-26.pdf"
+      ],
+      "notes": "Cal-GETC 2025-2026 official document. Effective Fall 2023."
+    },
+    {
+      "source_course_code": "M/LAT 6",
+      "target_school": "UC and CSU",
+      "target_requirement_type": "ge",
+      "target_requirement_label": "Cal-GETC Area 6 — Ethnic Studies",
+      "agreement_year": "2025-2026",
+      "status": "confirmed",
+      "evidence_urls": [
+        "https://6398505.fs1.hubspotusercontent-na1.net/hubfs/6398505/merrittcalgetc2526v2-4.pdf",
+        "https://www.csueastbay.edu/aps/cccge2526/merritt-college-cal-getc-25-26.pdf"
+      ],
+      "notes": "Cal-GETC 2025-2026 official document. Effective Fall 2023."
+    },
+    {
+      "source_course_code": "MATH 1",
+      "target_school": "UC Berkeley",
+      "target_requirement_type": "major_prep",
+      "target_requirement_label": "Expected equivalent: MATH 1A (Calculus I)",
+      "agreement_year": "2024-2025",
+      "status": "likely",
+      "evidence_urls": ["https://assist.org/"],
+      "notes": "Not confirmed via official ASSIST articulation. Inferred from standard UC calculus sequence and cross-referencing other CCC-to-UCB articulations. Verify via ASSIST or UCB Admissions."
+    },
+    {
+      "source_course_code": "MATH 2",
+      "target_school": "UC Berkeley",
+      "target_requirement_type": "major_prep",
+      "target_requirement_label": "Expected equivalent: MATH 1B (Calculus II)",
+      "agreement_year": "2024-2025",
+      "status": "likely",
+      "evidence_urls": ["https://assist.org/"],
+      "notes": "Not confirmed via official ASSIST articulation. Inferred from standard UC calculus sequence. Verify via ASSIST or UCB Admissions."
+    },
+    {
+      "source_course_code": "CHEM 1A",
+      "target_school": "UC Berkeley",
+      "target_requirement_type": "major_prep",
+      "target_requirement_label": "Expected equivalent: CHEM 1A (General Chemistry I)",
+      "agreement_year": "2024-2025",
+      "status": "likely",
+      "evidence_urls": ["https://assist.org/"],
+      "notes": "Not confirmed via official ASSIST articulation. Inferred from standard UC chemistry sequence. Verify via ASSIST or UCB Admissions."
+    },
+    {
+      "source_course_code": "BIOL 1A",
+      "target_school": "UC Berkeley",
+      "target_requirement_type": "major_prep",
+      "target_requirement_label": "Expected equivalent: BIOL 1A (Principles of Biology)",
+      "agreement_year": "2024-2025",
+      "status": "likely",
+      "evidence_urls": ["https://assist.org/"],
+      "notes": "Not confirmed via official ASSIST articulation. Inferred from standard UC biology sequence. Verify via ASSIST or UCB Admissions."
+    },
+    {
+      "source_course_code": "ENGL C1000",
+      "target_school": "UC Berkeley",
+      "target_requirement_type": "ge",
+      "target_requirement_label": "Expected: English R1A (UC English requirement)",
+      "agreement_year": "2025-2026",
+      "status": "likely",
+      "evidence_urls": ["https://assist.org/"],
+      "notes": "Cal-GETC Area 1A is accepted for UC English requirement. Specific R1A equivalency not confirmed via ASSIST for Merritt. Verify via ASSIST."
+    },
+    {
+      "source_course_code": "STAT C1000",
+      "target_school": "UC Berkeley",
+      "target_requirement_type": "ge",
+      "target_requirement_label": "Expected equivalent: STAT 20 (Statistics for biological sciences)",
+      "agreement_year": "2025-2026",
+      "status": "likely",
+      "evidence_urls": ["https://assist.org/"],
+      "notes": "Cal-GETC Area 2 accepted at UC. Specific STAT 20 equivalency not confirmed via ASSIST for Merritt. Verify via ASSIST."
+    }
+  ],
+  "unresolved": [
+    {
+      "source_course_code": "ALL COURSES",
+      "target_school": "UC Berkeley",
+      "reason": "ASSIST uses JavaScript-heavy SPA rendering. The browse tool could not extract the dynamic left-column content listing agreement categories. The ASSIST public API (prod.assistng.org) returned empty results for Merritt College (ID=13) to UC Berkeley (ID=2) for years 71, 73, 74, and 75, suggesting institution IDs differ between the website and API, or UCB does not participate in the public API.",
+      "checked_urls": [
+        "https://assist.org/transfer/results?institution=13&year=75",
+        "https://assist.org/transfer/results?institution=13&year=75&type=UCTCA",
+        "https://prod.assistng.org/articulation/api/Agreements/Published/for/2/to/13/in/75",
+        "https://prod.assistng.org/articulation/api/Agreements/Published/for/2/to/13/in/74",
+        "https://prod.assistng.org/articulation/api/Agreements/Published/for/2/to/13/in/73",
+        "https://prod.assistng.org/articulation/api/Agreements/Published/for/2/to/13/in/71"
+      ]
+    },
+    {
+      "source_course_code": "ALL COURSES",
+      "target_school": "UC Davis",
+      "reason": "ASSIST JavaScript rendering blocked browse extraction. ASSIST public API returned empty for Merritt College (ID=13). No other confirmed articulation source found for Merritt→UCD.",
+      "checked_urls": [
+        "https://assist.org/transfer/results?institution=13&year=75",
+        "https://merritt.edu/transfer-center",
+        "https://prod.assistng.org/articulation/api/Agreements/Published/for/5/to/13/in/75"
+      ]
+    },
+    {
+      "source_course_code": "ALL COURSES",
+      "target_school": "UC Irvine",
+      "reason": "ASSIST JavaScript rendering blocked browse extraction. ASSIST public API returned empty for Merritt College. TAG exists (Merritt Transfer Center confirms 6 UC campuses have TAG, likely including UCI) but specific course mappings not confirmed.",
+      "checked_urls": [
+        "https://assist.org/transfer/results?institution=13&year=75",
+        "https://merritt.edu/transfer-center"
+      ]
+    },
+    {
+      "source_course_code": "ALL COURSES",
+      "target_school": "UC Los Angeles",
+      "reason": "Merritt College does NOT have a TAG agreement with UCLA (per Transfer Center TAG matrix). No major articulation found via ASSIST or other official sources.",
+      "checked_urls": [
+        "https://merritt.edu/transfer-center"
+      ]
+    },
+    {
+      "source_course_code": "ALL COURSES",
+      "target_school": "UC Merced",
+      "reason": "ASSIST JavaScript rendering blocked browse extraction. TAG likely exists (UCM is in Merritt's 6-campus TAG list). Specific course mappings not confirmed.",
+      "checked_urls": [
+        "https://assist.org/transfer/results?institution=13&year=75",
+        "https://merritt.edu/transfer-center"
+      ]
+    },
+    {
+      "source_course_code": "ALL COURSES",
+      "target_school": "UC Riverside",
+      "reason": "ASSIST JavaScript rendering blocked browse extraction. TAG likely exists (UCR is in Merritt's 6-campus TAG list). Specific course mappings not confirmed.",
+      "checked_urls": [
+        "https://assist.org/transfer/results?institution=13&year=75",
+        "https://merritt.edu/transfer-center"
+      ]
+    },
+    {
+      "source_course_code": "ALL COURSES",
+      "target_school": "UC San Diego",
+      "reason": "ASSIST JavaScript rendering blocked browse extraction. ASSIST public API returned empty for Merritt College. UCSD is NOT in Merritt's 6-campus TAG list (confirmed by Transfer Center), so admissions are competitive. No major articulation found.",
+      "checked_urls": [
+        "https://assist.org/transfer/results?institution=13&year=75",
+        "https://merritt.edu/transfer-center"
+      ]
+    },
+    {
+      "source_course_code": "ALL COURSES",
+      "target_school": "UC Santa Barbara",
+      "reason": "ASSIST JavaScript rendering blocked browse extraction. TAG likely exists (UCSB is in Merritt's 6-campus TAG list). Specific course mappings not confirmed.",
+      "checked_urls": [
+        "https://assist.org/transfer/results?institution=13&year=75",
+        "https://merritt.edu/transfer-center"
+      ]
+    },
+    {
+      "source_course_code": "ALL COURSES",
+      "target_school": "UC Santa Cruz",
+      "reason": "ASSIST JavaScript rendering blocked browse extraction. TAG likely exists (UCSC is in Merritt's 6-campus TAG list). Specific course mappings not confirmed.",
+      "checked_urls": [
+        "https://assist.org/transfer/results?institution=13&year=75",
+        "https://merritt.edu/transfer-center"
+      ]
+    },
+    {
+      "source_course_code": "ALL COURSES",
+      "target_school": "CSU (all campuses)",
+      "reason": "CSU East Bay Cal-GETC 2025-2026 confirmed for Merritt. However, campus-specific major preparation equivalencies were not individually scraped from ASSIST due to JavaScript rendering issues. The Cal-GETC GE pattern is confirmed; individual course-to-course major equivalencies need per-campus ASSIST verification.",
+      "checked_urls": [
+        "https://assist.org/transfer/results?institution=13&year=75",
+        "https://www.csueastbay.edu/aps/cccge2526/merritt-college-cal-getc-25-26.pdf"
+      ]
+    },
+    {
+      "source_course_code": "FULL CATALOG",
+      "target_school": "N/A",
+      "reason": "The 2024-2025 catalog PDF (2.3MB) returned raw binary bytes when fetched via webfetch. Full course listings (code, title, units, prerequisites, description) for all 52 departments were not extracted. The courses[] array in this artifact contains representative courses from Cal-GETC PDFs, course number change announcements, and Spring 2025 schedule highlights, but is NOT a complete catalog.",
+      "checked_urls": [
+        "https://6398505.fs1.hubspotusercontent-na1.net/hubfs/6398505/2024-2025%20Catalog%20with%20Supplement%20-%202024-12-09_153303.pdf"
+      ]
+    }
+  ]
+}

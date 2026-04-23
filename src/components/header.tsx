@@ -2,6 +2,7 @@
 
 import { signout } from "@/app/auth/actions";
 import ThemeToggle from "@/components/theme-toggle";
+import Inbox from "@/components/inbox";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
@@ -73,6 +74,7 @@ export default function Header({ userEmail }: HeaderProps) {
                 {userEmail}
               </span>
             )}
+            <Inbox />
             <ThemeToggle />
             <form action={signout}>
               <button

@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import CourseForm, { type CourseFormData } from "./course-form";
-import { notifyCockpitRefresh } from "@/lib/cockpit-events";
+import { notifyCockpitRefresh, COCKPIT_REFRESH_EVENT, COCKPIT_REFRESH_STORAGE_KEY } from "@/lib/cockpit-events";
 
 type UserCourse = {
   id: string;
@@ -46,6 +46,26 @@ export default function CoursesClient({ initialCourses }: CoursesClientProps) {
     const res = await fetch("/api/user-courses");
     if (res.ok) setCourses(await res.json());
   }, []);
+
+  useEffect(() => {
+    const refresh = () => {
+      void refreshCourses();
+    };
+
+    const onStorage = (event: StorageEvent) => {
+      if (event.key === COCKPIT_REFRESH_STORAGE_KEY) {
+        refresh();
+      }
+    };
+
+    window.addEventListener(COCKPIT_REFRESH_EVENT, refresh);
+    window.addEventListener("storage", onStorage);
+
+    return () => {
+      window.removeEventListener(COCKPIT_REFRESH_EVENT, refresh);
+      window.removeEventListener("storage", onStorage);
+    };
+  }, [refreshCourses]);
 
   const uploadTranscript = useCallback(async (file: File) => {
     setUploadError(null);
