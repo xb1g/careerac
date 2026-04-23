@@ -1,1 +1,2240 @@
-[]
+[
+  {
+    "department": "African-American Studies",
+    "courses": [
+      {
+        "code": "AFRAM 1",
+        "title": "Introduction to African-American Studies",
+        "calgetc": "4, 6",
+        "igetc": "4C, 7",
+        "units": "3.00",
+        "uc_areas": "UC-B"
+      },
+      {
+        "code": "AFRAM 31",
+        "title": "African American History: 1865-1945",
+        "calgetc": "",
+        "igetc": "",
+        "units": "3.00",
+        "uc_areas": "UC-B"
+      }
+    ]
+  },
+  {
+    "department": "American Sign Language",
+    "courses": [
+      {
+        "code": "ASL 50",
+        "title": "American Sign Language I",
+        "calgetc": "",
+        "igetc": "6A",
+        "units": "4.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "ASL 50A",
+        "title": "American Sign Language I (Module A)",
+        "calgetc": "",
+        "igetc": "6A",
+        "units": "2.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "ASL 51",
+        "title": "American Sign Language II",
+        "calgetc": "",
+        "igetc": "6A",
+        "units": "4.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "ASL 51A",
+        "title": "American Sign Language II (Module A)",
+        "calgetc": "",
+        "igetc": "6A",
+        "units": "2.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "ASL 51B",
+        "title": "American Sign Language II (Module B)",
+        "calgetc": "",
+        "igetc": "6A",
+        "units": "2.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "ASL 52",
+        "title": "American Sign Language III",
+        "calgetc": "",
+        "igetc": "6A",
+        "units": "4.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "ASL 52A",
+        "title": "American Sign Language III (Module A)",
+        "calgetc": "",
+        "igetc": "6A",
+        "units": "2.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "ASL 52B",
+        "title": "American Sign Language III (Module B)",
+        "calgetc": "",
+        "igetc": "6A",
+        "units": "2.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "ASL 53",
+        "title": "American Sign Language IV",
+        "calgetc": "",
+        "igetc": "6A",
+        "units": "4.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "ASL 53A",
+        "title": "American Sign Language IV (Module A)",
+        "calgetc": "",
+        "igetc": "6A",
+        "units": "2.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "ASL 53B",
+        "title": "American Sign Language IV (Module B)",
+        "calgetc": "",
+        "igetc": "6A",
+        "units": "2.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "ASL 55A",
+        "title": "History and Culture of Deaf People in America I",
+        "calgetc": "4",
+        "igetc": "4F",
+        "units": "3.00",
+        "uc_areas": "UC-B"
+      },
+      {
+        "code": "ASL 55B",
+        "title": "History and Culture of Deaf People in America II (taught in ASL)",
+        "calgetc": "",
+        "igetc": "",
+        "units": "3.00",
+        "uc_areas": "UC-H"
+      },
+      {
+        "code": "ASL 57",
+        "title": "Structure of American Sign Language",
+        "calgetc": "",
+        "igetc": "",
+        "units": "3.00",
+        "uc_areas": ""
+      }
+    ]
+  },
+  {
+    "department": "Anthropology",
+    "courses": [
+      {
+        "code": "ANTHR 1",
+        "title": "Introduction to Physical Anthropology",
+        "calgetc": "5B",
+        "igetc": "5B",
+        "units": "3.00",
+        "uc_areas": "UC-S"
+      },
+      {
+        "code": "ANTHR 1L",
+        "title": "Physical Anthropology Lab",
+        "calgetc": "5C",
+        "igetc": "5C",
+        "units": "1.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "ANTHR 2",
+        "title": "Introduction to Archaeology and Prehistory",
+        "calgetc": "4",
+        "igetc": "4A",
+        "units": "3.00",
+        "uc_areas": "UC-B"
+      },
+      {
+        "code": "ANTHR 3",
+        "title": "Introduction to Social and Cultural Anthropology",
+        "calgetc": "4",
+        "igetc": "4A",
+        "units": "3.00",
+        "uc_areas": "UC-B"
+      },
+      {
+        "code": "ANTHR 13",
+        "title": "Urban Anthropology",
+        "calgetc": "4",
+        "igetc": "4A",
+        "units": "3.00",
+        "uc_areas": "UC-B"
+      },
+      {
+        "code": "ANTHR 18",
+        "title": "Introduction to Anthropological Linguistics",
+        "calgetc": "4",
+        "igetc": "4A",
+        "units": "3.00",
+        "uc_areas": "UC-B"
+      },
+      {
+        "code": "ANTHR 55",
+        "title": "Native American Cultures",
+        "calgetc": "4",
+        "igetc": "4C",
+        "units": "3.00",
+        "uc_areas": "UC-B"
+      }
+    ]
+  },
+  {
+    "department": "Art",
+    "courses": [
+      {
+        "code": "ART 1",
+        "title": "Introduction to Art History",
+        "calgetc": "3A",
+        "igetc": "3A",
+        "units": "3.00",
+        "uc_areas": "UC-H"
+      },
+      {
+        "code": "ART 2",
+        "title": "History of Western Art: Prehistory through the Middle Ages",
+        "calgetc": "3A",
+        "igetc": "3A",
+        "units": "3.00",
+        "uc_areas": "UC-H"
+      },
+      {
+        "code": "ART 3",
+        "title": "History of Western Art: Renaissance to Contemporary Art",
+        "calgetc": "3A",
+        "igetc": "3A",
+        "units": "3.00",
+        "uc_areas": "UC-H"
+      },
+      {
+        "code": "ART 4",
+        "title": "History of Modern Art (1800 to Present)",
+        "calgetc": "3A",
+        "igetc": "3A",
+        "units": "3.00",
+        "uc_areas": "UC-H"
+      },
+      {
+        "code": "ART 13",
+        "title": "History of Women in Art History",
+        "calgetc": "3A",
+        "igetc": "3A",
+        "units": "3.00",
+        "uc_areas": "UC-H"
+      },
+      {
+        "code": "ART 16",
+        "title": "Introduction to Islamic Art",
+        "calgetc": "3A",
+        "igetc": "3A",
+        "units": "3.00",
+        "uc_areas": "UC-H"
+      },
+      {
+        "code": "ART 18",
+        "title": "Critique and the Creative Process",
+        "calgetc": "",
+        "igetc": "",
+        "units": "3.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "ART 20",
+        "title": "Beginning Drawing and Composition",
+        "calgetc": "",
+        "igetc": "",
+        "units": "3.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "ART 22",
+        "title": "Intermediate Drawing & Composition",
+        "calgetc": "",
+        "igetc": "",
+        "units": "3.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "ART 24",
+        "title": "Special Projects: Drawing",
+        "calgetc": "",
+        "igetc": "",
+        "units": "2.00 ea",
+        "uc_areas": ""
+      },
+      {
+        "code": "ART 27",
+        "title": "Intermediate Figure Drawing and Composition",
+        "calgetc": "",
+        "igetc": "",
+        "units": "3.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "ART 29",
+        "title": "Special Projects: Figure Drawing",
+        "calgetc": "",
+        "igetc": "",
+        "units": "2.00 ea",
+        "uc_areas": ""
+      },
+      {
+        "code": "ART 30",
+        "title": "Beginning Figure Drawing: Anatomy",
+        "calgetc": "",
+        "igetc": "",
+        "units": "2.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "ART 31",
+        "title": "Continuing Figure Drawing: Anatomy",
+        "calgetc": "",
+        "igetc": "",
+        "units": "2.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "ART 46",
+        "title": "2-D Visual Design",
+        "calgetc": "",
+        "igetc": "",
+        "units": "3.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "ART 47",
+        "title": "3-D Visual Design",
+        "calgetc": "",
+        "igetc": "",
+        "units": "3.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "ART 50",
+        "title": "Beginning Painting",
+        "calgetc": "",
+        "igetc": "",
+        "units": "3.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "ART 52",
+        "title": "Intermediate Painting",
+        "calgetc": "",
+        "igetc": "",
+        "units": "3.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "ART 54",
+        "title": "Special Projects: Painting",
+        "calgetc": "",
+        "igetc": "",
+        "units": "2.00 ea",
+        "uc_areas": ""
+      },
+      {
+        "code": "ART 119",
+        "title": "Figure Painting in Context",
+        "calgetc": "",
+        "igetc": "",
+        "units": "3.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "ART 133A",
+        "title": "Mural Design and Creation I",
+        "calgetc": "",
+        "igetc": "",
+        "units": "3.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "ART 133B",
+        "title": "Mural Design and Creation II",
+        "calgetc": "",
+        "igetc": "",
+        "units": "4.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "ART 137",
+        "title": "Beginning Figure Drawing and Composition",
+        "calgetc": "",
+        "igetc": "",
+        "units": "3.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "ART 182",
+        "title": "Introduction to Visual Culture",
+        "calgetc": "3A, 3B",
+        "igetc": "3A, 3B",
+        "units": "3.00",
+        "uc_areas": "UC-H"
+      }
+    ]
+  },
+  {
+    "department": "Asian and Asian-American Studies",
+    "courses": [
+      {
+        "code": "ASAME 11",
+        "title": "Introduction to Asian American and Pacific Islander Studies",
+        "calgetc": "4, 6",
+        "igetc": "4, 7",
+        "units": "3.00",
+        "uc_areas": "UC-B"
+      }
+    ]
+  },
+  {
+    "department": "Astronomy",
+    "courses": [
+      {
+        "code": "ASTR 10",
+        "title": "Descriptive Astronomy",
+        "calgetc": "5A",
+        "igetc": "5A",
+        "units": "3.00",
+        "uc_areas": "UC-S"
+      }
+    ]
+  },
+  {
+    "department": "Biology",
+    "courses": [
+      {
+        "code": "BIOL 1A",
+        "title": "General Biology",
+        "calgetc": "5B, 5C",
+        "igetc": "5B, 5C",
+        "units": "5.00",
+        "uc_areas": "UC-S"
+      },
+      {
+        "code": "BIOL 1B",
+        "title": "General Biology",
+        "calgetc": "5B, 5C",
+        "igetc": "5B, 5C",
+        "units": "5.00",
+        "uc_areas": "UC-S"
+      },
+      {
+        "code": "BIOL 3",
+        "title": "Microbiology",
+        "calgetc": "5B, 5C",
+        "igetc": "5B, 5C",
+        "units": "5.00",
+        "uc_areas": "UC-S"
+      },
+      {
+        "code": "BIOL 4",
+        "title": "Human Physiology",
+        "calgetc": "5B, 5C",
+        "igetc": "5B, 5C",
+        "units": "5.00",
+        "uc_areas": "UC-S"
+      },
+      {
+        "code": "BIOL 13",
+        "title": "Principles of Ecology",
+        "calgetc": "5B",
+        "igetc": "5B",
+        "units": "3.00",
+        "uc_areas": "UC-S"
+      },
+      {
+        "code": "BIOL 13L",
+        "title": "Principles of Ecology and Sustainable Systems Lab",
+        "calgetc": "5C",
+        "igetc": "5C",
+        "units": "1.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "BIOL 32",
+        "title": "Scientific Literature and Writing",
+        "calgetc": "1B",
+        "igetc": "1B",
+        "units": "3.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "BIOL 33",
+        "title": "Immunology",
+        "calgetc": "5B, 5C",
+        "igetc": "5B, 5C",
+        "units": "4.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "BIOL 34",
+        "title": "Genetics",
+        "calgetc": "5B",
+        "igetc": "5B",
+        "units": "3.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "BIOL 34L",
+        "title": "Genetics Laboratory",
+        "calgetc": "5C",
+        "igetc": "5C",
+        "units": "2.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "BIOL 50A",
+        "title": "Introductory Biotechnology with Laboratory",
+        "calgetc": "5B, 5C",
+        "igetc": "5B, 5C",
+        "units": "4.00",
+        "uc_areas": "UC-S"
+      },
+      {
+        "code": "BIOL 50B",
+        "title": "Protein Chemistry and Fermentation",
+        "calgetc": "5B, 5C",
+        "igetc": "5B, 5C",
+        "units": "3.00",
+        "uc_areas": "UC-S"
+      },
+      {
+        "code": "BIOL 50C",
+        "title": "Stem Cell Biology and Advanced Molecular Techniques",
+        "calgetc": "5B, 5C",
+        "igetc": "5B, 5C",
+        "units": "3.00",
+        "uc_areas": "UC-S"
+      },
+      {
+        "code": "BIOL 50D",
+        "title": "Cell and Tissue Culture",
+        "calgetc": "",
+        "igetc": "",
+        "units": "2.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "BIOL 51",
+        "title": "Introduction to Bioinformatics",
+        "calgetc": "",
+        "igetc": "",
+        "units": "4.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "BIOL 118",
+        "title": "Introduction to Environmental Science",
+        "calgetc": "5B",
+        "igetc": "",
+        "units": "3.00",
+        "uc_areas": ""
+      }
+    ]
+  },
+  {
+    "department": "Business",
+    "courses": [
+      {
+        "code": "BUS 1A",
+        "title": "Financial Accounting",
+        "calgetc": "",
+        "igetc": "",
+        "units": "4.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "BUS 1B",
+        "title": "Managerial Accounting",
+        "calgetc": "",
+        "igetc": "",
+        "units": "4.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "BUS 2",
+        "title": "Introduction to Business Law",
+        "calgetc": "",
+        "igetc": "",
+        "units": "3.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "BUS 6",
+        "title": "Principles in Finance and Investments",
+        "calgetc": "",
+        "igetc": "",
+        "units": "3.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "BUS 7",
+        "title": "Entrepreneurial Law",
+        "calgetc": "",
+        "igetc": "",
+        "units": "3.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "BUS 8",
+        "title": "Business Ethics and Leadership",
+        "calgetc": "",
+        "igetc": "",
+        "units": "3.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "BUS 9",
+        "title": "Introduction to Management",
+        "calgetc": "",
+        "igetc": "",
+        "units": "3.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "BUS 10",
+        "title": "Introduction to Business",
+        "calgetc": "",
+        "igetc": "",
+        "units": "3.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "BUS 19",
+        "title": "Business Communications",
+        "calgetc": "",
+        "igetc": "",
+        "units": "3.00",
+        "uc_areas": ""
+      }
+    ]
+  },
+  {
+    "department": "Chemistry",
+    "courses": [
+      {
+        "code": "CHEM 1A",
+        "title": "General Chemistry",
+        "calgetc": "5A, 5C",
+        "igetc": "5A, 5C",
+        "units": "5.00",
+        "uc_areas": "UC-S"
+      },
+      {
+        "code": "CHEM 1B",
+        "title": "General Chemistry",
+        "calgetc": "5A, 5C",
+        "igetc": "5A, 5C",
+        "units": "5.00",
+        "uc_areas": "UC-S"
+      },
+      {
+        "code": "CHEM 12A",
+        "title": "Organic Chemistry",
+        "calgetc": "5A, 5C",
+        "igetc": "5A, 5C",
+        "units": "5.00",
+        "uc_areas": "UC-S"
+      },
+      {
+        "code": "CHEM 12B",
+        "title": "Organic Chemistry",
+        "calgetc": "5A, 5C",
+        "igetc": "5A, 5C",
+        "units": "5.00",
+        "uc_areas": "UC-S"
+      },
+      {
+        "code": "CHEM 18",
+        "title": "Analytical Instrumentation",
+        "calgetc": "5A, 5C",
+        "igetc": "5A, 5C",
+        "units": "3.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "CHEM 30A",
+        "title": "Introductory General Chemistry",
+        "calgetc": "5A, 5C",
+        "igetc": "5A, 5C",
+        "units": "4.00",
+        "uc_areas": "UC-S"
+      },
+      {
+        "code": "CHEM 30B",
+        "title": "Introductory Organic and Biochemistry",
+        "calgetc": "5A, 5C",
+        "igetc": "5A, 5C",
+        "units": "4.00",
+        "uc_areas": "UC-S"
+      }
+    ]
+  },
+  {
+    "department": "Child Development",
+    "courses": [
+      {
+        "code": "CHDEV 51",
+        "title": "Child Growth and Development",
+        "calgetc": "4",
+        "igetc": "4G",
+        "units": "3.00",
+        "uc_areas": ""
+      }
+    ]
+  },
+  {
+    "department": "Communication",
+    "courses": [
+      {
+        "code": "COMM 3",
+        "title": "Introduction to Human Communication",
+        "calgetc": "",
+        "igetc": "1C",
+        "units": "3.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "COMM 4",
+        "title": "The Dynamics of Group Discussion",
+        "calgetc": "",
+        "igetc": "1C",
+        "units": "3.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "COMM 5",
+        "title": "Persuasion and Critical Thinking",
+        "calgetc": "1B",
+        "igetc": "1B",
+        "units": "3.00",
+        "uc_areas": "UC-E"
+      },
+      {
+        "code": "COMM 6",
+        "title": "Intercultural Communication",
+        "calgetc": "4",
+        "igetc": "4C",
+        "units": "3.00",
+        "uc_areas": "UC-B"
+      },
+      {
+        "code": "COMM 10",
+        "title": "Gender and Communication",
+        "calgetc": "4",
+        "igetc": "4D, 4G",
+        "units": "3.00",
+        "uc_areas": "UC-B"
+      },
+      {
+        "code": "COMM 19",
+        "title": "Survey of Mass Media",
+        "calgetc": "4",
+        "igetc": "4G",
+        "units": "3.00",
+        "uc_areas": "UC-B"
+      },
+      {
+        "code": "COMM 20",
+        "title": "Interpersonal Communication Skills",
+        "calgetc": "",
+        "igetc": "1C",
+        "units": "3.00",
+        "uc_areas": ""
+      }
+    ]
+  },
+  {
+    "department": "Computer Informational Systems",
+    "courses": [
+      {
+        "code": "CIS 1",
+        "title": "Introduction to Computer Information Systems",
+        "calgetc": "",
+        "igetc": "",
+        "units": "4.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "CIS 5",
+        "title": "Introduction to Computer Science",
+        "calgetc": "",
+        "igetc": "",
+        "units": "5.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "CIS 6",
+        "title": "Introduction to Computer Programming",
+        "calgetc": "",
+        "igetc": "",
+        "units": "5.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "CIS 20",
+        "title": "Microcomputer Assembly Language",
+        "calgetc": "",
+        "igetc": "",
+        "units": "4.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "CIS 23",
+        "title": "C# Programming",
+        "calgetc": "",
+        "igetc": "",
+        "units": "4.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "CIS 25",
+        "title": "Object-Orientated Programming Using C++",
+        "calgetc": "",
+        "igetc": "",
+        "units": "4.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "CIS 27",
+        "title": "Data Structure and Algorithms",
+        "calgetc": "",
+        "igetc": "",
+        "units": "4.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "CIS 36A",
+        "title": "Java Programming Language I",
+        "calgetc": "",
+        "igetc": "",
+        "units": "4.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "CIS 36B",
+        "title": "Java Programming Language II",
+        "calgetc": "",
+        "igetc": "",
+        "units": "4.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "CIS 82",
+        "title": "Design Patterns",
+        "calgetc": "",
+        "igetc": "",
+        "units": "4.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "CIS 84",
+        "title": "Databasee Programming for the Web",
+        "calgetc": "",
+        "igetc": "",
+        "units": "4.00",
+        "uc_areas": ""
+      }
+    ]
+  },
+  {
+    "department": "Counseling",
+    "courses": [
+      {
+        "code": "COUN 24",
+        "title": "College Success",
+        "calgetc": "",
+        "igetc": "",
+        "units": "3.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "COUN 57",
+        "title": "Career and Life Planning",
+        "calgetc": "",
+        "igetc": "",
+        "units": "3.00",
+        "uc_areas": ""
+      }
+    ]
+  },
+  {
+    "department": "Economics",
+    "courses": [
+      {
+        "code": "ECON 1",
+        "title": "Principles of Economics (Macro-Economics)",
+        "calgetc": "4",
+        "igetc": "4B",
+        "units": "3.00",
+        "uc_areas": "UC-B"
+      },
+      {
+        "code": "ECON 2",
+        "title": "Principles of Economics (Micro-Economics)",
+        "calgetc": "4",
+        "igetc": "4B",
+        "units": "3.00",
+        "uc_areas": "UC-B"
+      },
+      {
+        "code": "ECON 20",
+        "title": "Economic History of the United States",
+        "calgetc": "4",
+        "igetc": "4",
+        "units": "3.00",
+        "uc_areas": "UC-H"
+      }
+    ]
+  },
+  {
+    "department": "Education",
+    "courses": [
+      {
+        "code": "EDUC 1",
+        "title": "Introduction to the Field of Education",
+        "calgetc": "",
+        "igetc": "",
+        "units": "3.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "EDUC 18",
+        "title": "Mathematical Concepts for Teachers",
+        "calgetc": "",
+        "igetc": "",
+        "units": "3.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "EDUC 97",
+        "title": "Field Studies in Education",
+        "calgetc": "",
+        "igetc": "",
+        "units": "2.00 - 4.00 ea",
+        "uc_areas": ""
+      },
+      {
+        "code": "EDUC 98",
+        "title": "Pedagogy of Reading",
+        "calgetc": "",
+        "igetc": "",
+        "units": "3.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "EDUC 99",
+        "title": "Introduction to Special Needs Pedagogy",
+        "calgetc": "",
+        "igetc": "",
+        "units": "3.00",
+        "uc_areas": ""
+      }
+    ]
+  },
+  {
+    "department": "English",
+    "courses": [
+      {
+        "code": "ENGL 1B",
+        "title": "Composition and Reading",
+        "calgetc": "3B",
+        "igetc": "3B",
+        "units": "4.00",
+        "uc_areas": "UC-E, UC-H"
+      },
+      {
+        "code": "ENGL 10A",
+        "title": "Creative Writing I",
+        "calgetc": "",
+        "igetc": "",
+        "units": "3.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "ENGL 10B",
+        "title": "Creative Writing II",
+        "calgetc": "",
+        "igetc": "",
+        "units": "3.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "ENGL 17A",
+        "title": "Shakespeare",
+        "calgetc": "3B",
+        "igetc": "3B",
+        "units": "3.00",
+        "uc_areas": "UC-H"
+      },
+      {
+        "code": "ENGL 17B",
+        "title": "Shakespeare",
+        "calgetc": "3B",
+        "igetc": "3B",
+        "units": "3.00",
+        "uc_areas": "UC-H"
+      },
+      {
+        "code": "ENGL 20",
+        "title": "Introduction to Dramatic Literature",
+        "calgetc": "3B",
+        "igetc": "3B",
+        "units": "3.00",
+        "uc_areas": "UC-H"
+      },
+      {
+        "code": "ENGL 23",
+        "title": "Contemporary Queer Literature",
+        "calgetc": "3B",
+        "igetc": "",
+        "units": "3.00",
+        "uc_areas": "UC-H"
+      },
+      {
+        "code": "ENGL 44B",
+        "title": "Masterpieces of World Literature",
+        "calgetc": "3B",
+        "igetc": "3B",
+        "units": "3.00",
+        "uc_areas": "UC-H"
+      },
+      {
+        "code": "ENGL 47",
+        "title": "Children's Literature",
+        "calgetc": "3B",
+        "igetc": "3B",
+        "units": "3.00",
+        "uc_areas": "UC-H"
+      },
+      {
+        "code": "ENGL 50",
+        "title": "Multicultural American Literature",
+        "calgetc": "3B",
+        "igetc": "3B",
+        "units": "3.00",
+        "uc_areas": "UC-H"
+      },
+      {
+        "code": "ENGL 70A",
+        "title": "Transforming Autobiography Into Creative Writing",
+        "calgetc": "",
+        "igetc": "",
+        "units": "3.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "ENGL 70B",
+        "title": "Transforming Autobiography Into Creative Writing",
+        "calgetc": "",
+        "igetc": "",
+        "units": "3.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "ENGL 71A",
+        "title": "Introduction to Fiction Writing",
+        "calgetc": "",
+        "igetc": "",
+        "units": "3.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "ENGL 72A",
+        "title": "Intermediate Fiction Writing",
+        "calgetc": "",
+        "igetc": "",
+        "units": "3.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "ENGL 73A",
+        "title": "Intensive Fiction Writing",
+        "calgetc": "",
+        "igetc": "",
+        "units": "3.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "ENGL 85A",
+        "title": "Literature in English through Milton",
+        "calgetc": "3B",
+        "igetc": "3B",
+        "units": "4.00",
+        "uc_areas": "UC-H"
+      },
+      {
+        "code": "ENGL 85B",
+        "title": "Literature in English: Late 17th Century through Mid-19th Century",
+        "calgetc": "3B",
+        "igetc": "3B",
+        "units": "4.00",
+        "uc_areas": "UC-H"
+      },
+      {
+        "code": "ENGL 85C",
+        "title": "Literature in English: Mid-19th Century through the 20th Century",
+        "calgetc": "3B",
+        "igetc": "3B",
+        "units": "4.00",
+        "uc_areas": "UC-H"
+      },
+      {
+        "code": "ENGL 86",
+        "title": "Introduction to Playwriting and Screenwriting",
+        "calgetc": "",
+        "igetc": "",
+        "units": "3.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "ENGL 87",
+        "title": "Intermediate Playwriting and Screenwriting",
+        "calgetc": "",
+        "igetc": "",
+        "units": "3.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "ENGL 88",
+        "title": "Intensive Playwriting and Screenwriting",
+        "calgetc": "",
+        "igetc": "",
+        "units": "3.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "ENGL 89",
+        "title": "Playwriting and Screenwriting: Special Projects",
+        "calgetc": "",
+        "igetc": "",
+        "units": "3.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "ENGL 91A",
+        "title": "Introduction to Poetry Writing",
+        "calgetc": "",
+        "igetc": "",
+        "units": "3.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "ENGL 92A",
+        "title": "Intermediate Poetry Writing",
+        "calgetc": "",
+        "igetc": "",
+        "units": "3.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "ENGL 93A",
+        "title": "Intensive Poetry Writing",
+        "calgetc": "",
+        "igetc": "",
+        "units": "3.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "ENGL 130",
+        "title": "Introduction to English Syntax and Grammar",
+        "calgetc": "",
+        "igetc": "",
+        "units": "3.00",
+        "uc_areas": ""
+      }
+    ]
+  },
+  {
+    "department": "English as a Second Language",
+    "courses": [
+      {
+        "code": "ESOL 52",
+        "title": "Advanced Reading and Writing",
+        "calgetc": "",
+        "igetc": "",
+        "units": "6.00",
+        "uc_areas": ""
+      }
+    ]
+  },
+  {
+    "department": "Ethnic Studies",
+    "courses": [
+      {
+        "code": "ETHST 1",
+        "title": "Introduction to Ethnic Studies",
+        "calgetc": "4, 6",
+        "igetc": "4C, 7",
+        "units": "3.00",
+        "uc_areas": "UC-B"
+      }
+    ]
+  },
+  {
+    "department": "French",
+    "courses": [
+      {
+        "code": "FREN 1A",
+        "title": "Elementary French",
+        "calgetc": "",
+        "igetc": "6A",
+        "units": "5.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "FREN 1B",
+        "title": "Elementary French",
+        "calgetc": "3B",
+        "igetc": "3B, 6A",
+        "units": "5.00",
+        "uc_areas": "UC-H"
+      }
+    ]
+  },
+  {
+    "department": "Geography",
+    "courses": [
+      {
+        "code": "GEOG 1",
+        "title": "Physical Geography",
+        "calgetc": "5A",
+        "igetc": "5A",
+        "units": "3.00",
+        "uc_areas": "UC-S"
+      },
+      {
+        "code": "GEOG 1L",
+        "title": "Physical Geography Laboratory",
+        "calgetc": "5C",
+        "igetc": "5C",
+        "units": "1.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "GEOG 3",
+        "title": "World Regional Geography",
+        "calgetc": "4",
+        "igetc": "4E",
+        "units": "3.00",
+        "uc_areas": "UC-B"
+      },
+      {
+        "code": "GEOG 18",
+        "title": "California Geography",
+        "calgetc": "4",
+        "igetc": "4",
+        "units": "3.00",
+        "uc_areas": "UC-B"
+      },
+      {
+        "code": "GEOG 19",
+        "title": "Global Climate Change",
+        "calgetc": "5A",
+        "igetc": "5A",
+        "units": "3.00",
+        "uc_areas": "UC-S"
+      }
+    ]
+  },
+  {
+    "department": "Geology",
+    "courses": [
+      {
+        "code": "GEOL 10",
+        "title": "Introduction to Geology",
+        "calgetc": "5A",
+        "igetc": "5A",
+        "units": "3.00",
+        "uc_areas": "UC-S"
+      },
+      {
+        "code": "GEOL 10L",
+        "title": "Introduction to Geology Laboratory",
+        "calgetc": "5C",
+        "igetc": "5C",
+        "units": "1.00",
+        "uc_areas": ""
+      }
+    ]
+  },
+  {
+    "department": "Health Education",
+    "courses": [
+      {
+        "code": "HLTED 1",
+        "title": "Exploring Health Issues",
+        "calgetc": "",
+        "igetc": "",
+        "units": "3.00",
+        "uc_areas": ""
+      }
+    ]
+  },
+  {
+    "department": "History",
+    "courses": [
+      {
+        "code": "HIST 2A",
+        "title": "History of Europe to 1500",
+        "calgetc": "4",
+        "igetc": "4F",
+        "units": "3.00",
+        "uc_areas": "UC-B"
+      },
+      {
+        "code": "HIST 2B",
+        "title": "History of Europe Since 1500",
+        "calgetc": "4",
+        "igetc": "4F",
+        "units": "3.00",
+        "uc_areas": "UC-B"
+      },
+      {
+        "code": "HIST 3A",
+        "title": "World History to 1500",
+        "calgetc": "4",
+        "igetc": "4F",
+        "units": "3.00",
+        "uc_areas": "UC-B"
+      },
+      {
+        "code": "HIST 3B",
+        "title": "World History Since 1500",
+        "calgetc": "4",
+        "igetc": "4F",
+        "units": "3.00",
+        "uc_areas": "UC-B"
+      },
+      {
+        "code": "HIST 7A",
+        "title": "History of the United States to 1877",
+        "calgetc": "4",
+        "igetc": "4F",
+        "units": "3.00",
+        "uc_areas": "UC-B"
+      },
+      {
+        "code": "HIST 7B",
+        "title": "History of the United States Since 1865",
+        "calgetc": "4",
+        "igetc": "4F",
+        "units": "3.00",
+        "uc_areas": "UC-B"
+      },
+      {
+        "code": "HIST 19",
+        "title": "History of California",
+        "calgetc": "4",
+        "igetc": "4F",
+        "units": "3.00",
+        "uc_areas": "UC-B"
+      },
+      {
+        "code": "HIST 21",
+        "title": "U.S. Women: A Social History",
+        "calgetc": "4",
+        "igetc": "4F",
+        "units": "3.00",
+        "uc_areas": "UC-B"
+      },
+      {
+        "code": "HIST 31",
+        "title": "Contemporary Middle East: The Politics of Nationalism",
+        "calgetc": "4",
+        "igetc": "4H",
+        "units": "3.00",
+        "uc_areas": "UC-B"
+      }
+    ]
+  },
+  {
+    "department": "Human Services",
+    "courses": [
+      {
+        "code": "HUSV 121",
+        "title": "Introduction to Social Work and Human Services",
+        "calgetc": "",
+        "igetc": "",
+        "units": "3.00",
+        "uc_areas": ""
+      }
+    ]
+  },
+  {
+    "department": "Humanities",
+    "courses": [
+      {
+        "code": "HUMAN 1",
+        "title": "Introduction to Humanities",
+        "calgetc": "3B",
+        "igetc": "3B",
+        "units": "3.00",
+        "uc_areas": "UC-H"
+      },
+      {
+        "code": "HUMAN 5",
+        "title": "Storytelling in American Culture",
+        "calgetc": "3B",
+        "igetc": "3B",
+        "units": "3.00",
+        "uc_areas": "UC-H"
+      },
+      {
+        "code": "HUMAN 15",
+        "title": "Popular Culture",
+        "calgetc": "3B",
+        "igetc": "3B",
+        "units": "3.00",
+        "uc_areas": "UC-H"
+      },
+      {
+        "code": "HUMAN 21",
+        "title": "Film: Art and Communication",
+        "calgetc": "3A",
+        "igetc": "3A",
+        "units": "3.00",
+        "uc_areas": "UC-H"
+      },
+      {
+        "code": "HUMAN 26",
+        "title": "Global Cinema",
+        "calgetc": "3A",
+        "igetc": "3A",
+        "units": "4.00",
+        "uc_areas": "UC-H"
+      },
+      {
+        "code": "HUMAN 30B",
+        "title": "Human Values / Aesthetics",
+        "calgetc": "3B",
+        "igetc": "3B",
+        "units": "3.00",
+        "uc_areas": "UC-H"
+      },
+      {
+        "code": "HUMAN 40",
+        "title": "Religions of the World",
+        "calgetc": "3B",
+        "igetc": "3B",
+        "units": "3.00",
+        "uc_areas": "UC-H"
+      },
+      {
+        "code": "HUMAN 52",
+        "title": "Women and Cinema",
+        "calgetc": "3A",
+        "igetc": "3A",
+        "units": "4.00",
+        "uc_areas": "UC-H"
+      },
+      {
+        "code": "HUMAN 53",
+        "title": "Comparative Film Genres",
+        "calgetc": "3A",
+        "igetc": "3A",
+        "units": "4.00",
+        "uc_areas": "UC-H"
+      },
+      {
+        "code": "HUMAN 55",
+        "title": "The Representation of Immigration in Cinema and Television",
+        "calgetc": "3B, 4",
+        "igetc": "3B, 4C",
+        "units": "4.00",
+        "uc_areas": "UC-B, UC-H"
+      },
+      {
+        "code": "HUMAN 57",
+        "title": "Film Directors and Artists",
+        "calgetc": "3B",
+        "igetc": "3B",
+        "units": "4.00",
+        "uc_areas": "UC-H"
+      },
+      {
+        "code": "HUMAN 182",
+        "title": "Introduction to Visual Culture",
+        "calgetc": "3A, 3B",
+        "igetc": "3A, 3B",
+        "units": "3.00",
+        "uc_areas": "UC-H"
+      }
+    ]
+  },
+  {
+    "department": "Library Information Studies",
+    "courses": [
+      {
+        "code": "LIS 85",
+        "title": "Introduction to Information Resources",
+        "calgetc": "",
+        "igetc": "",
+        "units": "2.00",
+        "uc_areas": ""
+      }
+    ]
+  },
+  {
+    "department": "Mathematics",
+    "courses": [
+      {
+        "code": "MATH 1",
+        "title": "Pre-Calculus",
+        "calgetc": "2",
+        "igetc": "2A",
+        "units": "4.00",
+        "uc_areas": "UC-M"
+      },
+      {
+        "code": "MATH 2",
+        "title": "Pre-Calculus with Analytic Geometry",
+        "calgetc": "2",
+        "igetc": "2A",
+        "units": "5.00",
+        "uc_areas": "UC-M"
+      },
+      {
+        "code": "MATH 3A",
+        "title": "Calculus I",
+        "calgetc": "2",
+        "igetc": "2A",
+        "units": "5.00",
+        "uc_areas": "UC-M"
+      },
+      {
+        "code": "MATH 3B",
+        "title": "Calculus II",
+        "calgetc": "2",
+        "igetc": "2A",
+        "units": "5.00",
+        "uc_areas": "UC-M"
+      },
+      {
+        "code": "MATH 3C",
+        "title": "Calculus III",
+        "calgetc": "2",
+        "igetc": "2A",
+        "units": "5.00",
+        "uc_areas": "UC-M"
+      },
+      {
+        "code": "MATH 3E",
+        "title": "Linear Algebra",
+        "calgetc": "2",
+        "igetc": "2A",
+        "units": "3.00",
+        "uc_areas": "UC-M"
+      },
+      {
+        "code": "MATH 3F",
+        "title": "Differential Equations",
+        "calgetc": "2",
+        "igetc": "2A",
+        "units": "3.00",
+        "uc_areas": "UC-M"
+      },
+      {
+        "code": "MATH 11",
+        "title": "Discrete Mathematics",
+        "calgetc": "2",
+        "igetc": "2A",
+        "units": "4.00",
+        "uc_areas": "UC-M"
+      },
+      {
+        "code": "MATH 16A",
+        "title": "Calculus for Business and the Life and Social Sciences",
+        "calgetc": "2",
+        "igetc": "2A",
+        "units": "4.00",
+        "uc_areas": "UC-M"
+      },
+      {
+        "code": "MATH 16B",
+        "title": "Calculus for Business and the Life and Social Sciences",
+        "calgetc": "2",
+        "igetc": "2A",
+        "units": "3.00",
+        "uc_areas": "UC-M"
+      },
+      {
+        "code": "MATH 18",
+        "title": "Mathmatical Concepts for Teachers",
+        "calgetc": "",
+        "igetc": "",
+        "units": "3.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "MATH 118",
+        "title": "Foundations in Data Science",
+        "calgetc": "2",
+        "igetc": "",
+        "units": "4.00",
+        "uc_areas": "UC-M"
+      }
+    ]
+  },
+  {
+    "department": "Multimedia Arts",
+    "courses": [
+      {
+        "code": "MMART 1",
+        "title": "Design Thinking",
+        "calgetc": "",
+        "igetc": "",
+        "units": "3.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "MMART 3",
+        "title": "Introduction to Digital Art",
+        "calgetc": "",
+        "igetc": "",
+        "units": "3.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "MMART 5A",
+        "title": "Introduction to Motion Graphics",
+        "calgetc": "",
+        "igetc": "",
+        "units": "3.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "MMART 5B",
+        "title": "Intermediate Motion Graphics",
+        "calgetc": "",
+        "igetc": "",
+        "units": "3.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "MMART 110",
+        "title": "Scriptwriting and Storyboarding",
+        "calgetc": "",
+        "igetc": "",
+        "units": "3.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "MMART 114",
+        "title": "Data Design for Digital Media",
+        "calgetc": "",
+        "igetc": "",
+        "units": "2.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "MMART 114L",
+        "title": "Data Design for Digital Media Lab",
+        "calgetc": "",
+        "igetc": "",
+        "units": "1.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "MMART 122B",
+        "title": "From Movies to Multimedia",
+        "calgetc": "3A",
+        "igetc": "3A",
+        "units": "3.00",
+        "uc_areas": "UC-H"
+      },
+      {
+        "code": "MMART 123",
+        "title": "The Art of Documentary Film,",
+        "calgetc": "3A",
+        "igetc": "3A",
+        "units": "3.00",
+        "uc_areas": "UC-H"
+      },
+      {
+        "code": "MMART 162",
+        "title": "Contemporary Scripting for Games, Mobile and Web",
+        "calgetc": "",
+        "igetc": "",
+        "units": "2.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "MMART 162L",
+        "title": "Contemporary Scripting for Games, Mobile and Web Lab",
+        "calgetc": "",
+        "igetc": "",
+        "units": "1.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "MMART 166",
+        "title": "User Experience and Interface Design",
+        "calgetc": "",
+        "igetc": "",
+        "units": "2.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "MMART 166L",
+        "title": "User Experience and Interface Design Lab",
+        "calgetc": "",
+        "igetc": "",
+        "units": "1.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "MMART 167",
+        "title": "Mobile and Cross Platform Web Design",
+        "calgetc": "",
+        "igetc": "",
+        "units": "2.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "MMART 167L",
+        "title": "Mobile and Cross Platform Web Design",
+        "calgetc": "",
+        "igetc": "",
+        "units": "1.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "MMART 168",
+        "title": "Online Games & Interactivity",
+        "calgetc": "",
+        "igetc": "",
+        "units": "2.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "MMART 170",
+        "title": "Virtual Reality and Digital Spaces",
+        "calgetc": "",
+        "igetc": "",
+        "units": "2.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "MMART 170L",
+        "title": "Virtual Reality and Digital Spaces Lab",
+        "calgetc": "",
+        "igetc": "",
+        "units": "1.00",
+        "uc_areas": ""
+      }
+    ]
+  },
+  {
+    "department": "Music",
+    "courses": [
+      {
+        "code": "MUSIC 10",
+        "title": "Music Appreciation",
+        "calgetc": "3A",
+        "igetc": "3A",
+        "units": "3.00",
+        "uc_areas": "UC-H"
+      },
+      {
+        "code": "MUSIC 15A",
+        "title": "Jazz, Blues and Popular Music in American Culture",
+        "calgetc": "3A",
+        "igetc": "3A",
+        "units": "3.00",
+        "uc_areas": "UC-H"
+      },
+      {
+        "code": "MUSIC 15B",
+        "title": "Jazz, Blues and Popular Music in American Culture",
+        "calgetc": "3A",
+        "igetc": "3A",
+        "units": "3.00",
+        "uc_areas": "UC-H"
+      },
+      {
+        "code": "MUSIC 24",
+        "title": "Jazz History",
+        "calgetc": "3A",
+        "igetc": "3A",
+        "units": "3.00",
+        "uc_areas": "UC-H"
+      }
+    ]
+  },
+  {
+    "department": "Philosophy",
+    "courses": [
+      {
+        "code": "PHIL 1",
+        "title": "Introduction to Philosophy",
+        "calgetc": "3B",
+        "igetc": "3B",
+        "units": "3.00",
+        "uc_areas": "UC-H"
+      },
+      {
+        "code": "PHIL 2",
+        "title": "Social and Political Philosophy",
+        "calgetc": "3B",
+        "igetc": "3B",
+        "units": "3.00",
+        "uc_areas": "UC-H"
+      },
+      {
+        "code": "PHIL 10",
+        "title": "Logic",
+        "calgetc": "",
+        "igetc": "",
+        "units": "3.00",
+        "uc_areas": "UC-H"
+      },
+      {
+        "code": "PHIL 11",
+        "title": "Formal Logic",
+        "calgetc": "",
+        "igetc": "",
+        "units": "3.00",
+        "uc_areas": "UC-H"
+      },
+      {
+        "code": "PHIL 16",
+        "title": "Buddhist Philosophy",
+        "calgetc": "3B",
+        "igetc": "3B",
+        "units": "3.00",
+        "uc_areas": "UC-H"
+      },
+      {
+        "code": "PHIL 20A",
+        "title": "History of Ancient Greek Philosophy",
+        "calgetc": "3B",
+        "igetc": "3B",
+        "units": "3.00",
+        "uc_areas": "UC-H"
+      },
+      {
+        "code": "PHIL 20B",
+        "title": "History of Modern European Philosophy",
+        "calgetc": "3B",
+        "igetc": "3B",
+        "units": "3.00",
+        "uc_areas": "UC-H"
+      },
+      {
+        "code": "PHIL 31A",
+        "title": "Introduction to Ethics",
+        "calgetc": "3B",
+        "igetc": "3B",
+        "units": "3.00",
+        "uc_areas": "UC-H"
+      },
+      {
+        "code": "PHIL 35",
+        "title": "Feminist Philosophy",
+        "calgetc": "3B",
+        "igetc": "3B",
+        "units": "3.00",
+        "uc_areas": "UC-H"
+      },
+      {
+        "code": "PHIL 37",
+        "title": "Introduction to Asian Philosophy",
+        "calgetc": "3B",
+        "igetc": "3B",
+        "units": "3.00",
+        "uc_areas": "UC-H"
+      }
+    ]
+  },
+  {
+    "department": "Physical Science",
+    "courses": [
+      {
+        "code": "PHYSC 20",
+        "title": "Introduction to the Marine Environment",
+        "calgetc": "5A",
+        "igetc": "5A",
+        "units": "3.00",
+        "uc_areas": "UC-S"
+      }
+    ]
+  },
+  {
+    "department": "Physics",
+    "courses": [
+      {
+        "code": "PHYS 3A",
+        "title": "General Physics",
+        "calgetc": "5A, 5C",
+        "igetc": "5A, 5C",
+        "units": "5.00",
+        "uc_areas": "UC-S"
+      },
+      {
+        "code": "PHYS 3B",
+        "title": "General Physics",
+        "calgetc": "5A, 5C",
+        "igetc": "5A, 5C",
+        "units": "5.00",
+        "uc_areas": "UC-S"
+      },
+      {
+        "code": "PHYS 4A",
+        "title": "General Physics with Calculus",
+        "calgetc": "5A, 5C",
+        "igetc": "5A, 5C",
+        "units": "5.00",
+        "uc_areas": "UC-S"
+      },
+      {
+        "code": "PHYS 4B",
+        "title": "General Physics with Calculus",
+        "calgetc": "5A, 5C",
+        "igetc": "5A, 5C",
+        "units": "5.00",
+        "uc_areas": "UC-S"
+      },
+      {
+        "code": "PHYS 4C",
+        "title": "General Physics with Calculus",
+        "calgetc": "5A, 5C",
+        "igetc": "5A, 5C",
+        "units": "5.00",
+        "uc_areas": "UC-S"
+      },
+      {
+        "code": "PHYS 10",
+        "title": "Introduction to Physics",
+        "calgetc": "5A",
+        "igetc": "5A",
+        "units": "4.00",
+        "uc_areas": "UC-S"
+      }
+    ]
+  },
+  {
+    "department": "Political Science",
+    "courses": [
+      {
+        "code": "POSCI 2",
+        "title": "Comparative Government",
+        "calgetc": "4",
+        "igetc": "4H",
+        "units": "3.00",
+        "uc_areas": "UC-B"
+      },
+      {
+        "code": "POSCI 3",
+        "title": "International Relations",
+        "calgetc": "4",
+        "igetc": "4H",
+        "units": "3.00",
+        "uc_areas": "UC-B"
+      },
+      {
+        "code": "POSCI 4",
+        "title": "Political Theory",
+        "calgetc": "4",
+        "igetc": "4H",
+        "units": "3.00",
+        "uc_areas": "UC-B"
+      },
+      {
+        "code": "POSCI 6",
+        "title": "The U.S. Constitution and Criminal Due Process",
+        "calgetc": "4",
+        "igetc": "4H",
+        "units": "3.00",
+        "uc_areas": "UC-B"
+      },
+      {
+        "code": "POSCI 19",
+        "title": "Introduction to Global Studies",
+        "calgetc": "4",
+        "igetc": "4F, 4G, 4H",
+        "units": "3.00",
+        "uc_areas": "UC-B"
+      },
+      {
+        "code": "POSCI 20",
+        "title": "Global Issues",
+        "calgetc": "4",
+        "igetc": "4F, 4H",
+        "units": "3.00 ea",
+        "uc_areas": "UC-B"
+      }
+    ]
+  },
+  {
+    "department": "Psychology",
+    "courses": [
+      {
+        "code": "PSYCH 6",
+        "title": "Social Psychology",
+        "calgetc": "4",
+        "igetc": "4I",
+        "units": "3.00",
+        "uc_areas": "UC-B"
+      },
+      {
+        "code": "PSYCH 21",
+        "title": "Lifespan Human Development",
+        "calgetc": "4",
+        "igetc": "4I",
+        "units": "3.00",
+        "uc_areas": "UC-B"
+      },
+      {
+        "code": "PSYCH 28",
+        "title": "Introduction to Research Methods in Psychology",
+        "calgetc": "",
+        "igetc": "",
+        "units": "3.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "PSYCH 61",
+        "title": "Introduction to Biological Psychology",
+        "calgetc": "5B",
+        "igetc": "5B",
+        "units": "3.00",
+        "uc_areas": "UC-B"
+      }
+    ]
+  },
+  {
+    "department": "Social Science",
+    "courses": [
+      {
+        "code": "SOCSC 2",
+        "title": "Introduction to Diversity Issues",
+        "calgetc": "4",
+        "igetc": "4C, 4D",
+        "units": "3.00",
+        "uc_areas": "UC-B"
+      }
+    ]
+  },
+  {
+    "department": "Sociology",
+    "courses": [
+      {
+        "code": "SOC 1",
+        "title": "Introduction to Sociology",
+        "calgetc": "4",
+        "igetc": "4J",
+        "units": "3.00",
+        "uc_areas": "UC-B"
+      },
+      {
+        "code": "SOC 2",
+        "title": "Social Problems",
+        "calgetc": "4",
+        "igetc": "4J",
+        "units": "3.00",
+        "uc_areas": "UC-B"
+      },
+      {
+        "code": "SOC 5",
+        "title": "Minority Groups",
+        "calgetc": "4",
+        "igetc": "4C, 4J",
+        "units": "3.00",
+        "uc_areas": "UC-B"
+      },
+      {
+        "code": "SOC 7",
+        "title": "Sociology of Gender",
+        "calgetc": "4",
+        "igetc": "4J",
+        "units": "3.00",
+        "uc_areas": "UC-B"
+      },
+      {
+        "code": "SOC 8",
+        "title": "Crime and Deviance",
+        "calgetc": "4",
+        "igetc": "4J",
+        "units": "3.00",
+        "uc_areas": "UC-B"
+      },
+      {
+        "code": "SOC 13",
+        "title": "Sociology of the Family",
+        "calgetc": "4",
+        "igetc": "4J",
+        "units": "3.00",
+        "uc_areas": "UC-B"
+      },
+      {
+        "code": "SOC 18",
+        "title": "Sociology of Death and Dying",
+        "calgetc": "4",
+        "igetc": "4G",
+        "units": "3.00",
+        "uc_areas": "UC-B"
+      },
+      {
+        "code": "SOC 120",
+        "title": "Introduction to Research Methods",
+        "calgetc": "",
+        "igetc": "",
+        "units": "3.00",
+        "uc_areas": ""
+      }
+    ]
+  },
+  {
+    "department": "Spanish",
+    "courses": [
+      {
+        "code": "SPAN 1A",
+        "title": "Elementary Spanish",
+        "calgetc": "",
+        "igetc": "6A",
+        "units": "5.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "SPAN 1B",
+        "title": "Elementary Spanish",
+        "calgetc": "3B",
+        "igetc": "3B, 6A",
+        "units": "5.00",
+        "uc_areas": "UC-H"
+      },
+      {
+        "code": "SPAN 2A",
+        "title": "Intermediate Spanish",
+        "calgetc": "3B",
+        "igetc": "3B, 6A",
+        "units": "5.00",
+        "uc_areas": "UC-H"
+      },
+      {
+        "code": "SPAN 2B",
+        "title": "Intermediate Spanish",
+        "calgetc": "3B",
+        "igetc": "3B, 6A",
+        "units": "5.00",
+        "uc_areas": "UC-H"
+      },
+      {
+        "code": "SPAN 10A",
+        "title": "Advanced Spanish Conversation",
+        "calgetc": "3B",
+        "igetc": "3B",
+        "units": "3.00",
+        "uc_areas": "UC-H"
+      },
+      {
+        "code": "SPAN 10B",
+        "title": "Advanced Spanish Conversation",
+        "calgetc": "3B",
+        "igetc": "3B",
+        "units": "3.00",
+        "uc_areas": "UC-H"
+      },
+      {
+        "code": "SPAN 15",
+        "title": "Spanish Composition",
+        "calgetc": "",
+        "igetc": "",
+        "units": "3.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "SPAN 22A",
+        "title": "Spanish for Bilingual Speakers I",
+        "calgetc": "",
+        "igetc": "6A",
+        "units": "5.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "SPAN 22B",
+        "title": "Spanish for Bilingual Speakers II",
+        "calgetc": "",
+        "igetc": "6A",
+        "units": "5.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "SPAN 38",
+        "title": "Latin American Literature",
+        "calgetc": "3B",
+        "igetc": "3B",
+        "units": "3.00",
+        "uc_areas": "UC-H"
+      },
+      {
+        "code": "SPAN 39",
+        "title": "Latin American Novel",
+        "calgetc": "3B",
+        "igetc": "3B",
+        "units": "3.00",
+        "uc_areas": ""
+      },
+      {
+        "code": "SPAN 40",
+        "title": "Hispanic Civilization and Culture",
+        "calgetc": "3B",
+        "igetc": "3B",
+        "units": "3.00",
+        "uc_areas": "UC-H"
+      }
+    ]
+  },
+  {
+    "department": "Women's Studies",
+    "courses": [
+      {
+        "code": "WS 1",
+        "title": "Introduction to Women's Studies",
+        "calgetc": "4",
+        "igetc": "4D",
+        "units": "3.00",
+        "uc_areas": "UC-B"
+      },
+      {
+        "code": "WS 35",
+        "title": "Feminist Philosophy",
+        "calgetc": "3B",
+        "igetc": "3B",
+        "units": "3.00",
+        "uc_areas": "UC-H"
+      },
+      {
+        "code": "WS 52",
+        "title": "Women and Cinema",
+        "calgetc": "3A",
+        "igetc": "3A",
+        "units": "4.00",
+        "uc_areas": "UC-H"
+      }
+    ]
+  }
+]

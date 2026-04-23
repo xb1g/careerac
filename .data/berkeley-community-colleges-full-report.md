@@ -3,7 +3,7 @@
 **Scrape Date:** 2026-04-22
 **Scope:** All 4 Peralta Colleges → UC Berkeley, CSU system → Full Catalog
 **Sources:** ASSIST.org, College Websites, Web Search, Peralta District Sites
-**Status:** COMPLETE (partial — browser automation blocked by session conflicts, data gathered via exhaustive web search)
+**Status:** IN PROGRESS — BCC UCTCA data newly scraped (2025-2026). BCC major agreements next.
 
 ---
 
@@ -291,5 +291,56 @@ All 4 Peralta colleges support IGETC and Cal-GETC for UC/CSU transfer.
 
 ---
 
-*Report compiled: 2026-04-22 via exhaustive web search + institutional research*
-*Tool limitations: Browser automation blocked by session conflicts; subagent models unavailable*
+---
+
+## BCC → UC Berkeley: UC Transferable Course Agreement (UCTCA) 2025-2026
+
+**Source:** https://www.assist.org/transfer/results?year=76&institution=58&type=UCTCA&view=transferability&viewBy=dept
+**Scraped:** 2026-04-22 (via agent-browser)
+**Year:** 2025-2026
+**Status:** SCRAPED (38 departments, 256 courses)
+
+### Key CS Courses (Computer Informational Systems)
+
+| Course | Title | Units |
+|--------|-------|-------|
+| CIS 1 | Introduction to Computer Information Systems | 4.00 |
+| CIS 5 | Introduction to Computer Science | 5.00 |
+| CIS 6 | Introduction to Computer Programming | 5.00 |
+| CIS 20 | Microcomputer Assembly Language | 4.00 |
+| CIS 23 | C# Programming | 4.00 |
+| CIS 25 | Object-Orientated Programming Using C++ | 4.00 |
+| CIS 27 | Data Structure and Algorithms | 4.00 |
+| CIS 36A | Java Programming Language I | 4.00 |
+| CIS 36B | Java Programming Language II | 4.00 |
+| CIS 82 | Design Patterns | 4.00 |
+| CIS 84 | Database Programming for the Web | 4.00 |
+
+**Note:** CIS 5 + CIS 6 combined: max 1 course. CIS courses have no Cal-GETC/IGETC/UC area designations.
+
+### Key Math Courses
+
+| Course | Title | Cal-GETC | IGETC | Units | UC |
+|--------|-------|----------|-------|-------|-----|
+| MATH 1 | Pre-Calculus | 2 | 2A | 4.00 | UC-M |
+| MATH 2 | Pre-Calculus with Analytic Geometry | 2 | 2A | 5.00 | UC-M |
+| MATH 3A | Calculus I | 2 | 2A | 5.00 | UC-M |
+| MATH 3B | Calculus II | 2 | 2A | 5.00 | UC-M |
+| MATH 3C | Calculus III | 2 | 2A | 5.00 | UC-M |
+| MATH 13 | Introduction to Statistics | 2 | 2A | 4.00 | UC-M |
+
+### Full Data Files
+
+- `.data/bcc-uc-transferable-courses-2025-2026.json` — 38 departments, 256 courses
+- `.data/bcc-uc-transferable-courses-2025-2026.csv` — Full CSV
+- `.data/bcc-uctca-2025-2026.png` — Screenshot
+- `.data/bcc-uc-transferable-courses-2025-2026-summary.md` — Full summary
+
+### Department Summary
+
+African-American Studies (2), American Sign Language (15), Anthropology (7), Art (24), Asian and Asian-American Studies (1), Astronomy (1), Biology (19), Business (9), Chemistry (7), Child Development (1), Communication (7), Computer Informational Systems (11), Counseling (2), Economics (3), Education (5), English (26), English as a Second Language (1), Ethnic Studies (1), French (2), Geography (5), Geology (2), Health Education (1), History (9), Human Services (1), Humanities (12), Library Information Studies (1), Mathematics (12), Multimedia Arts (18), Music (4), Philosophy (10), Physical Science (1), Physics (6), Political Science (6), Psychology (4), Social Science (1), Sociology (8), Spanish (12), Women's Studies (3)
+
+---
+
+*Report compiled: 2026-04-22 via agent-browser + exhaustive web search*
+*Tool limitations: Subagent model unavailable in current environment*

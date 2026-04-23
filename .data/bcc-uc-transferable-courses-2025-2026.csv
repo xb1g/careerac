@@ -1,1 +1,257 @@
 Department,Course Code,Title,Cal-GETC,IGETC,Semester Units,UC Areas
+African-American Studies,AFRAM 1,Introduction to African-American Studies,"4, 6","4C, 7",3.00,UC-B
+African-American Studies,AFRAM 31,African American History: 1865-1945,,,3.00,UC-B
+American Sign Language,ASL 50,American Sign Language I,,6A,4.00,
+American Sign Language,ASL 50A,American Sign Language I (Module A),,6A,2.00,
+American Sign Language,ASL 51,American Sign Language II,,6A,4.00,
+American Sign Language,ASL 51A,American Sign Language II (Module A),,6A,2.00,
+American Sign Language,ASL 51B,American Sign Language II (Module B),,6A,2.00,
+American Sign Language,ASL 52,American Sign Language III,,6A,4.00,
+American Sign Language,ASL 52A,American Sign Language III (Module A),,6A,2.00,
+American Sign Language,ASL 52B,American Sign Language III (Module B),,6A,2.00,
+American Sign Language,ASL 53,American Sign Language IV,,6A,4.00,
+American Sign Language,ASL 53A,American Sign Language IV (Module A),,6A,2.00,
+American Sign Language,ASL 53B,American Sign Language IV (Module B),,6A,2.00,
+American Sign Language,ASL 55A,History and Culture of Deaf People in America I,4,4F,3.00,UC-B
+American Sign Language,ASL 55B,History and Culture of Deaf People in America II (taught in ASL),,,3.00,UC-H
+American Sign Language,ASL 57,Structure of American Sign Language,,,3.00,
+Anthropology,ANTHR 1,Introduction to Physical Anthropology,5B,5B,3.00,UC-S
+Anthropology,ANTHR 1L,Physical Anthropology Lab,5C,5C,1.00,
+Anthropology,ANTHR 2,Introduction to Archaeology and Prehistory,4,4A,3.00,UC-B
+Anthropology,ANTHR 3,Introduction to Social and Cultural Anthropology,4,4A,3.00,UC-B
+Anthropology,ANTHR 13,Urban Anthropology,4,4A,3.00,UC-B
+Anthropology,ANTHR 18,Introduction to Anthropological Linguistics,4,4A,3.00,UC-B
+Anthropology,ANTHR 55,Native American Cultures,4,4C,3.00,UC-B
+Art,ART 1,Introduction to Art History,3A,3A,3.00,UC-H
+Art,ART 2,History of Western Art: Prehistory through the Middle Ages,3A,3A,3.00,UC-H
+Art,ART 3,History of Western Art: Renaissance to Contemporary Art,3A,3A,3.00,UC-H
+Art,ART 4,History of Modern Art (1800 to Present),3A,3A,3.00,UC-H
+Art,ART 13,History of Women in Art History,3A,3A,3.00,UC-H
+Art,ART 16,Introduction to Islamic Art,3A,3A,3.00,UC-H
+Art,ART 18,Critique and the Creative Process,,,3.00,
+Art,ART 20,Beginning Drawing and Composition,,,3.00,
+Art,ART 22,Intermediate Drawing & Composition,,,3.00,
+Art,ART 24,Special Projects: Drawing,,,2.00 ea,
+Art,ART 27,Intermediate Figure Drawing and Composition,,,3.00,
+Art,ART 29,Special Projects: Figure Drawing,,,2.00 ea,
+Art,ART 30,Beginning Figure Drawing: Anatomy,,,2.00,
+Art,ART 31,Continuing Figure Drawing: Anatomy,,,2.00,
+Art,ART 46,2-D Visual Design,,,3.00,
+Art,ART 47,3-D Visual Design,,,3.00,
+Art,ART 50,Beginning Painting,,,3.00,
+Art,ART 52,Intermediate Painting,,,3.00,
+Art,ART 54,Special Projects: Painting,,,2.00 ea,
+Art,ART 119,Figure Painting in Context,,,3.00,
+Art,ART 133A,Mural Design and Creation I,,,3.00,
+Art,ART 133B,Mural Design and Creation II,,,4.00,
+Art,ART 137,Beginning Figure Drawing and Composition,,,3.00,
+Art,ART 182,Introduction to Visual Culture,"3A, 3B","3A, 3B",3.00,UC-H
+Asian and Asian-American Studies,ASAME 11,Introduction to Asian American and Pacific Islander Studies,"4, 6","4, 7",3.00,UC-B
+Astronomy,ASTR 10,Descriptive Astronomy,5A,5A,3.00,UC-S
+Biology,BIOL 1A,General Biology,"5B, 5C","5B, 5C",5.00,UC-S
+Biology,BIOL 1B,General Biology,"5B, 5C","5B, 5C",5.00,UC-S
+Biology,BIOL 3,Microbiology,"5B, 5C","5B, 5C",5.00,UC-S
+Biology,BIOL 4,Human Physiology,"5B, 5C","5B, 5C",5.00,UC-S
+Biology,BIOL 13,Principles of Ecology,5B,5B,3.00,UC-S
+Biology,BIOL 13L,Principles of Ecology and Sustainable Systems Lab,5C,5C,1.00,
+Biology,BIOL 32,Scientific Literature and Writing,1B,1B,3.00,
+Biology,BIOL 33,Immunology,"5B, 5C","5B, 5C",4.00,
+Biology,BIOL 34,Genetics,5B,5B,3.00,
+Biology,BIOL 34L,Genetics Laboratory,5C,5C,2.00,
+Biology,BIOL 50A,Introductory Biotechnology with Laboratory,"5B, 5C","5B, 5C",4.00,UC-S
+Biology,BIOL 50B,Protein Chemistry and Fermentation,"5B, 5C","5B, 5C",3.00,UC-S
+Biology,BIOL 50C,Stem Cell Biology and Advanced Molecular Techniques,"5B, 5C","5B, 5C",3.00,UC-S
+Biology,BIOL 50D,Cell and Tissue Culture,,,2.00,
+Biology,BIOL 51,Introduction to Bioinformatics,,,4.00,
+Biology,BIOL 118,Introduction to Environmental Science,5B,,3.00,
+Business,BUS 1A,Financial Accounting,,,4.00,
+Business,BUS 1B,Managerial Accounting,,,4.00,
+Business,BUS 2,Introduction to Business Law,,,3.00,
+Business,BUS 6,Principles in Finance and Investments,,,3.00,
+Business,BUS 7,Entrepreneurial Law,,,3.00,
+Business,BUS 8,Business Ethics and Leadership,,,3.00,
+Business,BUS 9,Introduction to Management,,,3.00,
+Business,BUS 10,Introduction to Business,,,3.00,
+Business,BUS 19,Business Communications,,,3.00,
+Chemistry,CHEM 1A,General Chemistry,"5A, 5C","5A, 5C",5.00,UC-S
+Chemistry,CHEM 1B,General Chemistry,"5A, 5C","5A, 5C",5.00,UC-S
+Chemistry,CHEM 12A,Organic Chemistry,"5A, 5C","5A, 5C",5.00,UC-S
+Chemistry,CHEM 12B,Organic Chemistry,"5A, 5C","5A, 5C",5.00,UC-S
+Chemistry,CHEM 18,Analytical Instrumentation,"5A, 5C","5A, 5C",3.00,
+Chemistry,CHEM 30A,Introductory General Chemistry,"5A, 5C","5A, 5C",4.00,UC-S
+Chemistry,CHEM 30B,Introductory Organic and Biochemistry,"5A, 5C","5A, 5C",4.00,UC-S
+Child Development,CHDEV 51,Child Growth and Development,4,4G,3.00,
+Communication,COMM 3,Introduction to Human Communication,,1C,3.00,
+Communication,COMM 4,The Dynamics of Group Discussion,,1C,3.00,
+Communication,COMM 5,Persuasion and Critical Thinking,1B,1B,3.00,UC-E
+Communication,COMM 6,Intercultural Communication,4,4C,3.00,UC-B
+Communication,COMM 10,Gender and Communication,4,"4D, 4G",3.00,UC-B
+Communication,COMM 19,Survey of Mass Media,4,4G,3.00,UC-B
+Communication,COMM 20,Interpersonal Communication Skills,,1C,3.00,
+Computer Informational Systems,CIS 1,Introduction to Computer Information Systems,,,4.00,
+Computer Informational Systems,CIS 5,Introduction to Computer Science,,,5.00,
+Computer Informational Systems,CIS 6,Introduction to Computer Programming,,,5.00,
+Computer Informational Systems,CIS 20,Microcomputer Assembly Language,,,4.00,
+Computer Informational Systems,CIS 23,C# Programming,,,4.00,
+Computer Informational Systems,CIS 25,Object-Orientated Programming Using C++,,,4.00,
+Computer Informational Systems,CIS 27,Data Structure and Algorithms,,,4.00,
+Computer Informational Systems,CIS 36A,Java Programming Language I,,,4.00,
+Computer Informational Systems,CIS 36B,Java Programming Language II,,,4.00,
+Computer Informational Systems,CIS 82,Design Patterns,,,4.00,
+Computer Informational Systems,CIS 84,Databasee Programming for the Web,,,4.00,
+Counseling,COUN 24,College Success,,,3.00,
+Counseling,COUN 57,Career and Life Planning,,,3.00,
+Economics,ECON 1,Principles of Economics (Macro-Economics),4,4B,3.00,UC-B
+Economics,ECON 2,Principles of Economics (Micro-Economics),4,4B,3.00,UC-B
+Economics,ECON 20,Economic History of the United States,4,4,3.00,UC-H
+Education,EDUC 1,Introduction to the Field of Education,,,3.00,
+Education,EDUC 18,Mathematical Concepts for Teachers,,,3.00,
+Education,EDUC 97,Field Studies in Education,,,2.00 - 4.00 ea,
+Education,EDUC 98,Pedagogy of Reading,,,3.00,
+Education,EDUC 99,Introduction to Special Needs Pedagogy,,,3.00,
+English,ENGL 1B,Composition and Reading,3B,3B,4.00,"UC-E, UC-H"
+English,ENGL 10A,Creative Writing I,,,3.00,
+English,ENGL 10B,Creative Writing II,,,3.00,
+English,ENGL 17A,Shakespeare,3B,3B,3.00,UC-H
+English,ENGL 17B,Shakespeare,3B,3B,3.00,UC-H
+English,ENGL 20,Introduction to Dramatic Literature,3B,3B,3.00,UC-H
+English,ENGL 23,Contemporary Queer Literature,3B,,3.00,UC-H
+English,ENGL 44B,Masterpieces of World Literature,3B,3B,3.00,UC-H
+English,ENGL 47,Children's Literature,3B,3B,3.00,UC-H
+English,ENGL 50,Multicultural American Literature,3B,3B,3.00,UC-H
+English,ENGL 70A,Transforming Autobiography Into Creative Writing,,,3.00,
+English,ENGL 70B,Transforming Autobiography Into Creative Writing,,,3.00,
+English,ENGL 71A,Introduction to Fiction Writing,,,3.00,
+English,ENGL 72A,Intermediate Fiction Writing,,,3.00,
+English,ENGL 73A,Intensive Fiction Writing,,,3.00,
+English,ENGL 85A,Literature in English through Milton,3B,3B,4.00,UC-H
+English,ENGL 85B,Literature in English: Late 17th Century through Mid-19th Century,3B,3B,4.00,UC-H
+English,ENGL 85C,Literature in English: Mid-19th Century through the 20th Century,3B,3B,4.00,UC-H
+English,ENGL 86,Introduction to Playwriting and Screenwriting,,,3.00,
+English,ENGL 87,Intermediate Playwriting and Screenwriting,,,3.00,
+English,ENGL 88,Intensive Playwriting and Screenwriting,,,3.00,
+English,ENGL 89,Playwriting and Screenwriting: Special Projects,,,3.00,
+English,ENGL 91A,Introduction to Poetry Writing,,,3.00,
+English,ENGL 92A,Intermediate Poetry Writing,,,3.00,
+English,ENGL 93A,Intensive Poetry Writing,,,3.00,
+English,ENGL 130,Introduction to English Syntax and Grammar,,,3.00,
+English as a Second Language,ESOL 52,Advanced Reading and Writing,,,6.00,
+Ethnic Studies,ETHST 1,Introduction to Ethnic Studies,"4, 6","4C, 7",3.00,UC-B
+French,FREN 1A,Elementary French,,6A,5.00,
+French,FREN 1B,Elementary French,3B,"3B, 6A",5.00,UC-H
+Geography,GEOG 1,Physical Geography,5A,5A,3.00,UC-S
+Geography,GEOG 1L,Physical Geography Laboratory,5C,5C,1.00,
+Geography,GEOG 3,World Regional Geography,4,4E,3.00,UC-B
+Geography,GEOG 18,California Geography,4,4,3.00,UC-B
+Geography,GEOG 19,Global Climate Change,5A,5A,3.00,UC-S
+Geology,GEOL 10,Introduction to Geology,5A,5A,3.00,UC-S
+Geology,GEOL 10L,Introduction to Geology Laboratory,5C,5C,1.00,
+Health Education,HLTED 1,Exploring Health Issues,,,3.00,
+History,HIST 2A,History of Europe to 1500,4,4F,3.00,UC-B
+History,HIST 2B,History of Europe Since 1500,4,4F,3.00,UC-B
+History,HIST 3A,World History to 1500,4,4F,3.00,UC-B
+History,HIST 3B,World History Since 1500,4,4F,3.00,UC-B
+History,HIST 7A,History of the United States to 1877,4,4F,3.00,UC-B
+History,HIST 7B,History of the United States Since 1865,4,4F,3.00,UC-B
+History,HIST 19,History of California,4,4F,3.00,UC-B
+History,HIST 21,U.S. Women: A Social History,4,4F,3.00,UC-B
+History,HIST 31,Contemporary Middle East: The Politics of Nationalism,4,4H,3.00,UC-B
+Human Services,HUSV 121,Introduction to Social Work and Human Services,,,3.00,
+Humanities,HUMAN 1,Introduction to Humanities,3B,3B,3.00,UC-H
+Humanities,HUMAN 5,Storytelling in American Culture,3B,3B,3.00,UC-H
+Humanities,HUMAN 15,Popular Culture,3B,3B,3.00,UC-H
+Humanities,HUMAN 21,Film: Art and Communication,3A,3A,3.00,UC-H
+Humanities,HUMAN 26,Global Cinema,3A,3A,4.00,UC-H
+Humanities,HUMAN 30B,Human Values / Aesthetics,3B,3B,3.00,UC-H
+Humanities,HUMAN 40,Religions of the World,3B,3B,3.00,UC-H
+Humanities,HUMAN 52,Women and Cinema,3A,3A,4.00,UC-H
+Humanities,HUMAN 53,Comparative Film Genres,3A,3A,4.00,UC-H
+Humanities,HUMAN 55,The Representation of Immigration in Cinema and Television,"3B, 4","3B, 4C",4.00,"UC-B, UC-H"
+Humanities,HUMAN 57,Film Directors and Artists,3B,3B,4.00,UC-H
+Humanities,HUMAN 182,Introduction to Visual Culture,"3A, 3B","3A, 3B",3.00,UC-H
+Library Information Studies,LIS 85,Introduction to Information Resources,,,2.00,
+Mathematics,MATH 1,Pre-Calculus,2,2A,4.00,UC-M
+Mathematics,MATH 2,Pre-Calculus with Analytic Geometry,2,2A,5.00,UC-M
+Mathematics,MATH 3A,Calculus I,2,2A,5.00,UC-M
+Mathematics,MATH 3B,Calculus II,2,2A,5.00,UC-M
+Mathematics,MATH 3C,Calculus III,2,2A,5.00,UC-M
+Mathematics,MATH 3E,Linear Algebra,2,2A,3.00,UC-M
+Mathematics,MATH 3F,Differential Equations,2,2A,3.00,UC-M
+Mathematics,MATH 11,Discrete Mathematics,2,2A,4.00,UC-M
+Mathematics,MATH 16A,Calculus for Business and the Life and Social Sciences,2,2A,4.00,UC-M
+Mathematics,MATH 16B,Calculus for Business and the Life and Social Sciences,2,2A,3.00,UC-M
+Mathematics,MATH 18,Mathmatical Concepts for Teachers,,,3.00,
+Mathematics,MATH 118,Foundations in Data Science,2,,4.00,UC-M
+Multimedia Arts,MMART 1,Design Thinking,,,3.00,
+Multimedia Arts,MMART 3,Introduction to Digital Art,,,3.00,
+Multimedia Arts,MMART 5A,Introduction to Motion Graphics,,,3.00,
+Multimedia Arts,MMART 5B,Intermediate Motion Graphics,,,3.00,
+Multimedia Arts,MMART 110,Scriptwriting and Storyboarding,,,3.00,
+Multimedia Arts,MMART 114,Data Design for Digital Media,,,2.00,
+Multimedia Arts,MMART 114L,Data Design for Digital Media Lab,,,1.00,
+Multimedia Arts,MMART 122B,From Movies to Multimedia,3A,3A,3.00,UC-H
+Multimedia Arts,MMART 123,"The Art of Documentary Film,",3A,3A,3.00,UC-H
+Multimedia Arts,MMART 162,"Contemporary Scripting for Games, Mobile and Web",,,2.00,
+Multimedia Arts,MMART 162L,"Contemporary Scripting for Games, Mobile and Web Lab",,,1.00,
+Multimedia Arts,MMART 166,User Experience and Interface Design,,,2.00,
+Multimedia Arts,MMART 166L,User Experience and Interface Design Lab,,,1.00,
+Multimedia Arts,MMART 167,Mobile and Cross Platform Web Design,,,2.00,
+Multimedia Arts,MMART 167L,Mobile and Cross Platform Web Design,,,1.00,
+Multimedia Arts,MMART 168,Online Games & Interactivity,,,2.00,
+Multimedia Arts,MMART 170,Virtual Reality and Digital Spaces,,,2.00,
+Multimedia Arts,MMART 170L,Virtual Reality and Digital Spaces Lab,,,1.00,
+Music,MUSIC 10,Music Appreciation,3A,3A,3.00,UC-H
+Music,MUSIC 15A,"Jazz, Blues and Popular Music in American Culture",3A,3A,3.00,UC-H
+Music,MUSIC 15B,"Jazz, Blues and Popular Music in American Culture",3A,3A,3.00,UC-H
+Music,MUSIC 24,Jazz History,3A,3A,3.00,UC-H
+Philosophy,PHIL 1,Introduction to Philosophy,3B,3B,3.00,UC-H
+Philosophy,PHIL 2,Social and Political Philosophy,3B,3B,3.00,UC-H
+Philosophy,PHIL 10,Logic,,,3.00,UC-H
+Philosophy,PHIL 11,Formal Logic,,,3.00,UC-H
+Philosophy,PHIL 16,Buddhist Philosophy,3B,3B,3.00,UC-H
+Philosophy,PHIL 20A,History of Ancient Greek Philosophy,3B,3B,3.00,UC-H
+Philosophy,PHIL 20B,History of Modern European Philosophy,3B,3B,3.00,UC-H
+Philosophy,PHIL 31A,Introduction to Ethics,3B,3B,3.00,UC-H
+Philosophy,PHIL 35,Feminist Philosophy,3B,3B,3.00,UC-H
+Philosophy,PHIL 37,Introduction to Asian Philosophy,3B,3B,3.00,UC-H
+Physical Science,PHYSC 20,Introduction to the Marine Environment,5A,5A,3.00,UC-S
+Physics,PHYS 3A,General Physics,"5A, 5C","5A, 5C",5.00,UC-S
+Physics,PHYS 3B,General Physics,"5A, 5C","5A, 5C",5.00,UC-S
+Physics,PHYS 4A,General Physics with Calculus,"5A, 5C","5A, 5C",5.00,UC-S
+Physics,PHYS 4B,General Physics with Calculus,"5A, 5C","5A, 5C",5.00,UC-S
+Physics,PHYS 4C,General Physics with Calculus,"5A, 5C","5A, 5C",5.00,UC-S
+Physics,PHYS 10,Introduction to Physics,5A,5A,4.00,UC-S
+Political Science,POSCI 2,Comparative Government,4,4H,3.00,UC-B
+Political Science,POSCI 3,International Relations,4,4H,3.00,UC-B
+Political Science,POSCI 4,Political Theory,4,4H,3.00,UC-B
+Political Science,POSCI 6,The U.S. Constitution and Criminal Due Process,4,4H,3.00,UC-B
+Political Science,POSCI 19,Introduction to Global Studies,4,"4F, 4G, 4H",3.00,UC-B
+Political Science,POSCI 20,Global Issues,4,"4F, 4H",3.00 ea,UC-B
+Psychology,PSYCH 6,Social Psychology,4,4I,3.00,UC-B
+Psychology,PSYCH 21,Lifespan Human Development,4,4I,3.00,UC-B
+Psychology,PSYCH 28,Introduction to Research Methods in Psychology,,,3.00,
+Psychology,PSYCH 61,Introduction to Biological Psychology,5B,5B,3.00,UC-B
+Social Science,SOCSC 2,Introduction to Diversity Issues,4,"4C, 4D",3.00,UC-B
+Sociology,SOC 1,Introduction to Sociology,4,4J,3.00,UC-B
+Sociology,SOC 2,Social Problems,4,4J,3.00,UC-B
+Sociology,SOC 5,Minority Groups,4,"4C, 4J",3.00,UC-B
+Sociology,SOC 7,Sociology of Gender,4,4J,3.00,UC-B
+Sociology,SOC 8,Crime and Deviance,4,4J,3.00,UC-B
+Sociology,SOC 13,Sociology of the Family,4,4J,3.00,UC-B
+Sociology,SOC 18,Sociology of Death and Dying,4,4G,3.00,UC-B
+Sociology,SOC 120,Introduction to Research Methods,,,3.00,
+Spanish,SPAN 1A,Elementary Spanish,,6A,5.00,
+Spanish,SPAN 1B,Elementary Spanish,3B,"3B, 6A",5.00,UC-H
+Spanish,SPAN 2A,Intermediate Spanish,3B,"3B, 6A",5.00,UC-H
+Spanish,SPAN 2B,Intermediate Spanish,3B,"3B, 6A",5.00,UC-H
+Spanish,SPAN 10A,Advanced Spanish Conversation,3B,3B,3.00,UC-H
+Spanish,SPAN 10B,Advanced Spanish Conversation,3B,3B,3.00,UC-H
+Spanish,SPAN 15,Spanish Composition,,,3.00,
+Spanish,SPAN 22A,Spanish for Bilingual Speakers I,,6A,5.00,
+Spanish,SPAN 22B,Spanish for Bilingual Speakers II,,6A,5.00,
+Spanish,SPAN 38,Latin American Literature,3B,3B,3.00,UC-H
+Spanish,SPAN 39,Latin American Novel,3B,3B,3.00,
+Spanish,SPAN 40,Hispanic Civilization and Culture,3B,3B,3.00,UC-H
+Women's Studies,WS 1,Introduction to Women's Studies,4,4D,3.00,UC-B
+Women's Studies,WS 35,Feminist Philosophy,3B,3B,3.00,UC-H
+Women's Studies,WS 52,Women and Cinema,3A,3A,4.00,UC-H

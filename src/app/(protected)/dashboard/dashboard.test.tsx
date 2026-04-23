@@ -1,5 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { EmptyState } from "./empty-state";
+import DashboardPage from "./page";
+import { vi } from "vitest";
 
 vi.mock("next/link", () => ({
   default: ({
@@ -14,6 +16,47 @@ vi.mock("next/link", () => ({
     <a href={href} className={className}>
       {children}
     </a>
+  ),
+}));
+
+// Mock Supabase and fetchPlanDetail
+vi.mock("@/utils/supabase/server", () => ({
+  createClient: vi.fn(() => ({
+    auth: {
+      getUser: vi.fn(() => Promise.resolve({ data: { user: { id: "test-user" } } })),
+    },
+    from: vi.fn(() => ({
+      select: vi.fn(() => ({
+        eq: vi.fn(() => ({
+          order: vi.fn(() => ({
+            limit: vi.fn(() => ({
+              single: vi.fn(() => Promise.resolve({ data: { id: "test-plan-id" } })),
+            })),
+          })),
+        })),
+      })),
+    })),
+  })),
+}));
+
+vi.mock("@/utils/fetch-plan-detail", () => ({
+  fetchPlanDetail: vi.fn(() => Promise.resolve({
+    plan: {
+      id: "test-plan-id",
+      title: "Test Plan",
+      target_major: "Computer Science",
+      plan_data: { semesters: [] },
+      chat_history: [],
+    },
+    transcript: null,
+  })),
+}));
+
+vi.mock("../plan/[id]/plan-detail-client", () => ({
+  default: ({ plan }: { plan: any }) => (
+    <div data-testid="plan-detail-client">
+      <h1>{plan.title}</h1>
+    </div>
   ),
 }));
 
@@ -39,5 +82,14 @@ describe("Dashboard Empty State", () => {
     render(<EmptyState />);
     const svg = document.querySelector("svg");
     expect(svg).toBeInTheDocument();
+  });
+});
+
+describe("DashboardPage", () => {
+  it("renders PlanDetailClient when plan exists", async () => {
+    const component = await DashboardPage();
+    render(component);
+    expect(screen.getByTestId("plan-detail-client")).toBeInTheDocument();
+    expect(screen.getByText("Test Plan")).toBeInTheDocument();
   });
 });

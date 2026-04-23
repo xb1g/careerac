@@ -1,10 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { deletePlan } from "./actions";
+import { deletePlan } from "@/app/(protected)/dashboard/actions";
+import { useRouter } from "next/navigation";
 
 export function DeletePlanButton({ planId }: { planId: string }) {
   const [isDeleting, setIsDeleting] = useState(false);
+  const router = useRouter();
 
   const handleDelete = async (e: React.MouseEvent) => {
     e.preventDefault();
@@ -13,6 +15,9 @@ export function DeletePlanButton({ planId }: { planId: string }) {
     setIsDeleting(true);
     try {
       await deletePlan(planId);
+      // Redirection is handled by revalidatePath for dashboard, 
+      // but if we are on /plan/[id] page, we should push to dashboard.
+      router.push("/dashboard");
     } catch (error) {
       console.error(error);
       alert("Failed to delete plan");

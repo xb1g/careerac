@@ -274,14 +274,17 @@ export default function PlanDetailClient({ plan, transcript }: PlanDetailClientP
       {/* Header */}
       <div className="px-6 lg:px-8 py-4 lg:py-5 border-b border-zinc-200/50 dark:border-zinc-800/50 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-xl relative z-20 shadow-[0_1px_2px_rgba(0,0,0,0.02)]">
         <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 flex items-center gap-3">
-              {plan.title}
-              {isChatLoading && (
-                <div className="inline-flex w-4 h-4 ml-2 border-[2.5px] border-blue-500/30 border-t-blue-600 rounded-full animate-spin" />
-              )}
-            </h1>
-            <p className="mt-1 text-[15px] font-medium text-zinc-500 dark:text-zinc-400">
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-3">
+              <h1 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 flex items-center gap-3 truncate">
+                {plan.title}
+                {isChatLoading && (
+                  <div className="inline-flex w-4 h-4 ml-2 border-[2.5px] border-blue-500/30 border-t-blue-600 rounded-full animate-spin flex-shrink-0" />
+                )}
+              </h1>
+              <DeletePlanButton planId={plan.id} />
+            </div>
+            <p className="mt-1 text-[15px] font-medium text-zinc-500 dark:text-zinc-400 truncate">
               {plan.target_major}
             </p>
           </div>
