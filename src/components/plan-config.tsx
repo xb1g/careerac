@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useMemo, useState } from "react";
 import type { TranscriptData } from "@/types/transcript";
 import { MajorAutocomplete } from "./major-autocomplete";
@@ -271,6 +272,12 @@ export default function PlanConfig({ transcriptData, onConfigured, onBack }: Pla
         >
           Skip → Use Defaults
         </button>
+        <Link
+          href="/courses"
+          className="rounded-lg border border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 px-6 py-2.5 text-sm font-medium hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors text-center"
+        >
+          Browse Available Courses
+        </Link>
         <button
           type="button"
           onClick={onBack}

@@ -46,6 +46,7 @@ describe("NewPlanPage", () => {
 
     expect(screen.getByText("Plan Settings")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Generate Plan" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Browse Available Courses" })).toHaveAttribute("href", "/courses");
   });
 
   it("goes straight to plan generation for best-fit mode", () => {
