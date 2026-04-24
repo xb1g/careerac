@@ -14,6 +14,7 @@ interface HeaderProps {
 const navLinks = [
   { href: "/dashboard", label: "Dashboard" },
   { href: "/plan/new", label: "New Plan" },
+  { href: "/courses", label: "Browse Courses" },
   { href: "/playbooks", label: "Playbooks" },
   { href: "/settings", label: "My Courses" },
 ];
@@ -30,6 +31,9 @@ function isActive(href: string, pathname: string | null): boolean {
   }
   if (href === "/playbooks") {
     return pathname === "/playbooks" || pathname.startsWith("/playbooks/");
+  }
+  if (href === "/courses") {
+    return pathname === "/courses";
   }
   if (href === "/settings") {
     return pathname === "/settings";

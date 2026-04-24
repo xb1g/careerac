@@ -49,6 +49,7 @@ describe("Header", () => {
     render(<Header userEmail={null} />);
     expect(screen.getByRole("link", { name: /dashboard/i })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /new plan/i })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /browse courses/i })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /playbooks/i })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /my courses/i })).toBeInTheDocument();
   });
@@ -75,6 +76,14 @@ describe("Header", () => {
     render(<Header userEmail={null} />);
     const playbooksLink = screen.getByRole("link", { name: /playbooks/i });
     expect(playbooksLink.className).toContain("text-zinc-900");
+  });
+
+  it("highlights the active route (Browse Courses)", () => {
+    mockUsePathname.mockReturnValue("/courses");
+
+    render(<Header userEmail={null} />);
+    const coursesLink = screen.getByRole("link", { name: /browse courses/i });
+    expect(coursesLink.className).toContain("text-zinc-900");
   });
 
   it("highlights playbooks for sub-routes", () => {
@@ -150,6 +159,7 @@ describe("Header", () => {
     const mobileNav = screen.getByRole("navigation", { name: /mobile navigation/i });
     expect(within(mobileNav).getByRole("link", { name: /dashboard/i })).toBeInTheDocument();
     expect(within(mobileNav).getByRole("link", { name: /new plan/i })).toBeInTheDocument();
+    expect(within(mobileNav).getByRole("link", { name: /browse courses/i })).toBeInTheDocument();
     expect(within(mobileNav).getByRole("link", { name: /playbooks/i })).toBeInTheDocument();
     expect(within(mobileNav).getByRole("link", { name: /my courses/i })).toBeInTheDocument();
   });
