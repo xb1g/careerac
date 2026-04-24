@@ -1,6 +1,8 @@
 import { createClient } from "@/utils/supabase/server";
 import CoursesClient from "./courses-client";
 
+const PAGE_SIZE = 30;
+
 interface Institution {
   id: string;
   name: string;
@@ -16,54 +18,80 @@ interface Course {
   description: string | null;
 }
 
-async function getColleges(): Promise<Institution[]> {
+export default async function CoursesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
+  const params = await searchParams;
+  const collegeId = typeof params.college === "string" ? params.college : "";
+  const subject = typeof params.subject === "string" ? params.subject : "";
+  const search = typeof params.q === "string" ? params.q : "";
+  const page = Math.max(1, parseInt(typeof params.page === "string" ? params.page : "1", 10) || 1);
+
   const supabase = await createClient();
 
-  const { data, error } = await supabase
+  // Always fetch colleges for the dropdown
+  const { data: collegesData } = await supabase
     .from("institutions")
     .select("id, name, abbreviation")
-    .eq("type", "cc")
+    .in("type", ["cc", "community_college"])
     .order("name");
 
-  if (error) {
-    console.error("Error fetching colleges:", error);
-    return [];
-  }
+  const colleges = (collegesData ?? []) as Institution[];
 
-  return (data ?? []) as Institution[];
-}
+  let courses: Course[] = [];
+  let totalCount = 0;
+  let subjects: string[] = [];
 
-async function getCoursesByCollege(collegeIds: string[]): Promise<Record<string, Course[]>> {
-  if (collegeIds.length === 0) return {};
+  if (collegeId) {
+    // Fetch distinct subject prefixes via RPC (migration 055).
+    // Cast needed because the generated types don't include this function yet.
+    const { data: subjectData } = await (supabase.rpc as Function)(
+      "distinct_course_prefixes",
+      { p_institution_id: collegeId },
+    );
 
-  const supabase = await createClient();
+    subjects = ((subjectData as { prefix: string }[] | null) ?? []).map((r) => r.prefix);
 
-  const { data, error } = await supabase
-    .from("courses")
-    .select("id, institution_id, code, title, units, description")
-    .in("institution_id", collegeIds)
-    .order("code");
+    // Build the courses query with filters
+    let query = supabase
+      .from("courses")
+      .select("id, institution_id, code, title, units, description", { count: "exact" })
+      .eq("institution_id", collegeId)
+      .order("code");
 
-  if (error) {
-    console.error("Error fetching courses:", error);
-    return {};
-  }
-
-  const courses = (data ?? []) as Course[];
-  const grouped: Record<string, Course[]> = {};
-  for (const course of courses) {
-    if (!grouped[course.institution_id]) {
-      grouped[course.institution_id] = [];
+    if (subject) {
+      // Filter by prefix: "MATH " matches "MATH 101", "MATH 200", etc.
+      query = query.like("code", `${subject} %`);
     }
-    grouped[course.institution_id].push(course);
+
+    if (search) {
+      query = query.or(`code.ilike.%${search}%,title.ilike.%${search}%`);
+    }
+
+    const from = (page - 1) * PAGE_SIZE;
+    query = query.range(from, from + PAGE_SIZE - 1);
+
+    const { data, count, error } = await query;
+
+    if (!error) {
+      courses = (data ?? []) as Course[];
+      totalCount = count ?? 0;
+    }
   }
 
-  return grouped;
-}
-
-export default async function CoursesPage() {
-  const colleges = await getColleges();
-  const coursesByCollege = await getCoursesByCollege(colleges.map((c) => c.id));
-
-  return <CoursesClient colleges={colleges} coursesByCollege={coursesByCollege} />;
+  return (
+    <CoursesClient
+      colleges={colleges}
+      courses={courses}
+      subjects={subjects}
+      totalCount={totalCount}
+      selectedCollege={collegeId}
+      selectedSubject={subject}
+      searchQuery={search}
+      page={page}
+      pageSize={PAGE_SIZE}
+    />
+  );
 }

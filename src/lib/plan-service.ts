@@ -146,7 +146,7 @@ export async function resolveInstitutionIdsByName(
         .from("institutions")
         .select("id")
         .or(`name.ilike.%${trimmedCcName}%,abbreviation.ilike.%${trimmedCcName}%`)
-        .eq("type", "cc")
+        .in("type", ["cc", "community_college"])
         .limit(1)
         .maybeSingle()
     : Promise.resolve({ data: null as { id: string } | null });
