@@ -1,4 +1,5 @@
 import { createServerClient } from "@supabase/ssr";
+import { isAuthApiError } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
 import type { Database } from "@/types/database";
 
@@ -26,4 +27,31 @@ export async function createClient() {
       },
     }
   );
+}
+
+export type SupabaseServerClient = Awaited<ReturnType<typeof createClient>>;
+
+/**
+ * Safely retrieve the current user from a server-side Supabase client.
+ * Handles expired/invalid refresh tokens gracefully instead of throwing.
+ */
+export async function getSafeUser(supabase: SupabaseServerClient) {
+  try {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    return user;
+  } catch (error) {
+    if (
+      isAuthApiError(error) ||
+      (error instanceof Error && error.message?.includes("Refresh Token"))
+    ) {
+      console.error(
+        "Auth refresh error in server client, treating as unauthenticated:",
+        error,
+      );
+      return null;
+    }
+    throw error;
+  }
 }

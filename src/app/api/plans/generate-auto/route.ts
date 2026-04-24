@@ -12,7 +12,7 @@ import {
 } from "@/lib/plan-service";
 import type { ParsedPlan, TransferPlan } from "@/types/plan";
 import type { TranscriptData } from "@/types/transcript";
-import { createClient } from "@/utils/supabase/server";
+import { createClient, getSafeUser } from "@/utils/supabase/server";
 import { computeNextRegistrationTerm, findLatestTerm } from "@/utils/term";
 
 export const runtime = "nodejs";
@@ -24,7 +24,8 @@ type GenerateAutoErrorCode =
   | "MAJOR_REQUIRED"
   | "AI_UPSTREAM_ERROR"
   | "PLAN_PARSE_FAILED"
-  | "PLAN_SAVE_FAILED";
+  | "PLAN_SAVE_FAILED"
+  | "INTERNAL_ERROR";
 
 interface GenerateAutoRequestBody {
   transcriptId?: string;
@@ -178,9 +179,7 @@ function isMiniMaxError(error: unknown): boolean {
 export async function POST(req: Request) {
   try {
     const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const user = await getSafeUser(supabase);
 
     if (!user) {
       return errorResponse(
@@ -306,7 +305,7 @@ export async function POST(req: Request) {
         Date.now() - generateStartedAt,
         error instanceof Error ? error.name : typeof error,
       );
-      if (isMiniMaxError(error)) {
+          if (isMiniMaxError(error)) {
         return errorResponse(
           502,
           "AI_UPSTREAM_ERROR",
@@ -316,6 +315,8 @@ export async function POST(req: Request) {
         );
       }
 
+      // Log unexpected generation errors for debugging before falling through
+      console.error("Unexpected plan generation error:", error);
       throw error;
     }
 
@@ -394,11 +395,23 @@ export async function POST(req: Request) {
       );
     }
   } catch (error) {
-    console.error("Auto plan generation error:", error);
+    console.error("Auto plan generation uncaught error:", error);
+
+    // Distinguish actual AI upstream failures from unexpected runtime errors
+    if (isMiniMaxError(error)) {
+      return errorResponse(
+        502,
+        "AI_UPSTREAM_ERROR",
+        "The AI provider failed while generating the plan. Please retry.",
+        true,
+        "retry",
+      );
+    }
+
     return errorResponse(
-      502,
-      "AI_UPSTREAM_ERROR",
-      "Automatic plan generation failed. Please retry.",
+      500,
+      "INTERNAL_ERROR",
+      "An unexpected error occurred during plan generation. Please retry.",
       true,
       "retry",
     );

@@ -108,11 +108,13 @@ export async function resolveUniversityIdsByNames(
   supabase: SupabaseServerClient,
   names: string[],
 ): Promise<ResolvedUniversity[]> {
-  const queries = names.map(async (name): Promise<ResolvedUniversity> => {
-    const trimmed = name.trim().replace(/,/g, " ");
-    if (!trimmed) {
-      return { name, institutionId: null, abbreviation: null };
-    }
+  const queries = names
+    .filter((name): name is string => typeof name === "string")
+    .map(async (name): Promise<ResolvedUniversity> => {
+      const trimmed = name.trim().replace(/,/g, " ");
+      if (!trimmed) {
+        return { name, institutionId: null, abbreviation: null };
+      }
 
     const { data } = await supabase
       .from("institutions")

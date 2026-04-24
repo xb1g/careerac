@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter, usePathname } from "next/navigation";
-import { useCallback, useTransition } from "react";
+import { useCallback, useTransition, useState, useRef, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
@@ -47,6 +47,9 @@ export default function CoursesClient({
   const pathname = usePathname();
   const [isPending, startTransition] = useTransition();
 
+  const [liveQuery, setLiveQuery] = useState(searchQuery);
+  const searchTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   const navigate = useCallback(
     (overrides: Record<string, string>) => {
       const params = new URLSearchParams();
@@ -67,8 +70,29 @@ export default function CoursesClient({
     [selectedCollege, selectedSubject, searchQuery, page, pathname, router],
   );
 
+  const handleSearchChange = useCallback(
+    (value: string) => {
+      setLiveQuery(value);
+      if (searchTimer.current) clearTimeout(searchTimer.current);
+      searchTimer.current = setTimeout(() => {
+        navigate({ q: value, page: "1" });
+      }, 300);
+    },
+    [navigate],
+  );
+
+  useEffect(() => {
+    return () => {
+      if (searchTimer.current) clearTimeout(searchTimer.current);
+    };
+  }, []);
+
   const totalPages = Math.ceil(totalCount / pageSize);
   const collegeName = colleges.find((c) => c.id === selectedCollege);
+  const activeFilterCount =
+    (selectedCollege ? 1 : 0) +
+    (selectedSubject ? 1 : 0) +
+    (searchQuery ? 1 : 0);
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-zinc-950 pb-20">
@@ -82,63 +106,83 @@ export default function CoursesClient({
           </p>
         </div>
 
-        <div className="mb-8 flex flex-wrap gap-4">
-          {/* College selector */}
-          <div className="flex-1 min-w-[200px]">
-            <label htmlFor="college-select" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+        {/* Filters */}
+        <div className="mb-8 space-y-4">
+          {/* College pills */}
+          <div>
+            <span className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               College
-            </label>
-            <select
-              id="college-select"
-              value={selectedCollege}
-              onChange={(e) => navigate({ college: e.target.value, subject: "", q: "", page: "1" })}
-              className="w-full rounded-lg border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-4 py-2.5 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
-            >
-              <option value="">Select a college...</option>
-              {colleges.map((college) => (
-                <option key={college.id} value={college.id}>
-                  {college.name}
-                </option>
-              ))}
-            </select>
+            </span>
+            <div className="flex flex-wrap gap-2">
+              {colleges.map((college) => {
+                const active = selectedCollege === college.id;
+                return (
+                  <button
+                    key={college.id}
+                    onClick={() => navigate({ college: active ? "" : college.id, subject: "", q: "", page: "1" })}
+                    className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-sm font-medium transition-colors cursor-pointer ${
+                      active
+                        ? "bg-blue-600 text-white shadow-sm"
+                        : "bg-white dark:bg-zinc-900 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-zinc-700 hover:bg-gray-50 dark:hover:bg-zinc-800"
+                    }`}
+                  >
+                    {active && (
+                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                      </svg>
+                    )}
+                    {college.abbreviation ?? college.name}
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
-          {/* Subject selector — only when a college is selected */}
-          {selectedCollege && subjects.length > 0 && (
-            <div className="flex-1 min-w-[200px]">
-              <label htmlFor="subject-select" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Subject Area
-              </label>
-              <select
-                id="subject-select"
-                value={selectedSubject}
-                onChange={(e) => navigate({ subject: e.target.value, page: "1" })}
-                className="w-full rounded-lg border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-4 py-2.5 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
-              >
-                <option value="">All Subjects</option>
-                {subjects.map((s) => (
-                  <option key={s} value={s}>{s}</option>
-                ))}
-              </select>
-            </div>
-          )}
-
-          {/* Search */}
+          {/* Subject pills + Search row */}
           {selectedCollege && (
-            <div className="w-full">
-              <label htmlFor="course-search" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Search
-              </label>
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  const fd = new FormData(e.currentTarget);
-                  navigate({ q: (fd.get("q") as string) || "", page: "1" });
-                }}
-              >
+            <div className="flex flex-col sm:flex-row gap-4 items-start">
+              {/* Subject pills */}
+              {subjects.length > 0 && (
+                <div className="flex-1 min-w-0">
+                  <span className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Subject
+                  </span>
+                  <div className="flex flex-wrap gap-1.5 max-h-28 overflow-y-auto">
+                    <button
+                      onClick={() => navigate({ subject: "", page: "1" })}
+                      className={`rounded-full px-3 py-1 text-xs font-medium transition-colors cursor-pointer ${
+                        !selectedSubject
+                          ? "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 border border-blue-200 dark:border-blue-800"
+                          : "bg-white dark:bg-zinc-900 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-zinc-700 hover:bg-gray-50 dark:hover:bg-zinc-800"
+                      }`}
+                    >
+                      All
+                    </button>
+                    {subjects.map((s) => (
+                      <button
+                        key={s}
+                        onClick={() => navigate({ subject: selectedSubject === s ? "" : s, page: "1" })}
+                        className={`rounded-full px-3 py-1 text-xs font-medium transition-colors cursor-pointer ${
+                          selectedSubject === s
+                            ? "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 border border-blue-200 dark:border-blue-800"
+                            : "bg-white dark:bg-zinc-900 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-zinc-700 hover:bg-gray-50 dark:hover:bg-zinc-800"
+                        }`}
+                      >
+                        {s}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Search */}
+              <div className="w-full sm:w-72 shrink-0">
+                <span className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Search
+                </span>
                 <div className="relative">
                   <svg
-                    className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
+                    className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -147,23 +191,39 @@ export default function CoursesClient({
                     <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                   </svg>
                   <input
-                    id="course-search"
-                    name="q"
                     type="text"
-                    defaultValue={searchQuery}
-                    placeholder="Search by course code or title, then press Enter..."
-                    className="w-full pl-10 rounded-lg border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-4 py-2.5 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                    value={liveQuery}
+                    onChange={(e) => handleSearchChange(e.target.value)}
+                    placeholder="Code or title..."
+                    className="w-full pl-9 rounded-lg border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
                   />
+                  {liveQuery && (
+                    <button
+                      onClick={() => handleSearchChange("")}
+                      className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 cursor-pointer"
+                    >
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  )}
                 </div>
-              </form>
-            </div>
-          )}
+              </div>
 
-          {selectedCollege && (
-            <div className="flex items-end">
-              <Badge variant="default" className="px-4 py-2.5 text-sm font-medium">
-                {totalCount.toLocaleString()} courses
-              </Badge>
+              {/* Count + Clear */}
+              <div className="flex items-end gap-2 shrink-0">
+                <Badge variant="default" className="px-3 py-2 text-sm font-medium">
+                  {totalCount.toLocaleString()}
+                </Badge>
+                {activeFilterCount > 0 && (
+                  <button
+                    onClick={() => navigate({ college: "", subject: "", q: "", page: "1" })}
+                    className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 font-medium cursor-pointer"
+                  >
+                    Clear all
+                  </button>
+                )}
+              </div>
             </div>
           )}
         </div>

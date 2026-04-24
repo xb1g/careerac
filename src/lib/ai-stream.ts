@@ -264,7 +264,7 @@ export async function generateTextFromMiniMax(
     .join("");
 
   if (!text.trim()) {
-    throw new Error("No content returned from MiniMax");
+    throw new MiniMaxApiError("No content returned from MiniMax", 502);
   }
 
   return text;
