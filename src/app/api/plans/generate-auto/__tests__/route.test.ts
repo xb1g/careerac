@@ -2,18 +2,12 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const {
   mockGetUser,
-  mockGenerate,
-  mockResolveInstitutionIdsByName,
-  mockResolveUniversityIdsByNames,
-  mockRankBestFitUniversityIds,
-  mockSavePlanRecord,
+  mockCreatePlanGenerationJob,
+  mockNormalizeAutoPlanRequest,
 } = vi.hoisted(() => ({
   mockGetUser: vi.fn(),
-  mockGenerate: vi.fn(),
-  mockResolveInstitutionIdsByName: vi.fn(),
-  mockResolveUniversityIdsByNames: vi.fn(),
-  mockRankBestFitUniversityIds: vi.fn(),
-  mockSavePlanRecord: vi.fn(),
+  mockCreatePlanGenerationJob: vi.fn(),
+  mockNormalizeAutoPlanRequest: vi.fn(),
 }));
 
 vi.mock("@/utils/supabase/server", () => ({
@@ -21,33 +15,27 @@ vi.mock("@/utils/supabase/server", () => ({
     auth: {
       getUser: mockGetUser,
     },
-    from: vi.fn(() => ({
-      select: vi.fn(() => ({
-        eq: vi.fn(() => ({
-          neq: vi.fn(() => ({
-            returns: vi.fn(async () => ({ data: [], error: null })),
-          })),
-        })),
-      })),
-    })),
   })),
 }));
 
-vi.mock("@/lib/plan-pipeline", () => ({
-  PlanGenerationPipeline: {
-    generate: mockGenerate,
-  },
-}));
+vi.mock("@/lib/auto-plan-generation-job", () => {
+  class MockAutoPlanGenerationError extends Error {
+    details: unknown;
+    status: number;
 
-vi.mock("@/lib/plan-service", () => ({
-  resolveInstitutionIdsByName: mockResolveInstitutionIdsByName,
-  resolveUniversityIdsByNames: mockResolveUniversityIdsByNames,
-  savePlanRecord: mockSavePlanRecord,
-}));
+    constructor(details: unknown, status: number) {
+      super((details as { message?: string })?.message ?? "error");
+      this.details = details;
+      this.status = status;
+    }
+  }
 
-vi.mock("@/lib/context/articulation", () => ({
-  rankBestFitUniversityIds: mockRankBestFitUniversityIds,
-}));
+  return {
+    AutoPlanGenerationError: MockAutoPlanGenerationError,
+    createPlanGenerationJob: mockCreatePlanGenerationJob,
+    normalizeAutoPlanRequest: mockNormalizeAutoPlanRequest,
+  };
+});
 
 function buildRequest(body: Record<string, unknown>): Request {
   return new Request("http://localhost/api/plans/generate-auto", {
@@ -56,39 +44,6 @@ function buildRequest(body: Record<string, unknown>): Request {
     body: JSON.stringify(body),
   });
 }
-
-const transcriptData = {
-  institution: "De Anza College",
-  courses: [
-    {
-      code: "MATH 1A",
-      title: "Calculus",
-      units: 5,
-      grade: "A",
-      status: "completed" as const,
-      semester: "Fall 2025",
-    },
-  ],
-  totalUnitsCompleted: 5,
-  totalUnitsInProgress: 0,
-};
-
-const parsedPlan = {
-  ccName: "De Anza College",
-  targetUniversity: "UCLA",
-  targetMajor: "Computer Science",
-  semesters: [
-    {
-      number: 1,
-      label: "Fall 2026",
-      courses: [
-        { code: "CS 1A", title: "Intro to Programming", units: 4 },
-      ],
-      totalUnits: 4,
-    },
-  ],
-  totalUnits: 4,
-};
 
 describe("POST /api/plans/generate-auto", () => {
   beforeEach(() => {
@@ -99,146 +54,52 @@ describe("POST /api/plans/generate-auto", () => {
       error: null,
     });
 
-    mockResolveInstitutionIdsByName.mockResolvedValue({
-      ccInstitutionId: "cc-1",
-      targetInstitutionId: "uni-1",
-    });
-
-    mockResolveUniversityIdsByNames.mockResolvedValue([]);
-    mockRankBestFitUniversityIds.mockResolvedValue([]);
-
-    mockGenerate.mockResolvedValue({
-      rawText: "```json\n{\"targetUniversity\":\"UCLA\"}\n```",
-      parsedPlan,
-    });
-
-    mockSavePlanRecord.mockResolvedValue({ id: "plan-123" });
-  });
-
-  it("returns a saved auto-generated plan with synthetic chat history", async () => {
-    const { POST } = await import("../route");
-    const response = await POST(
-      buildRequest({
-        transcriptId: "transcript-1",
-        transcriptData,
-        detectedMajor: "Computer Science",
-        targetSchool: "UCLA",
-      }),
-    );
-
-    expect(response.status).toBe(201);
-
-    const body = await response.json();
-    expect(body.planId).toBe("plan-123");
-    expect(body.plan).toEqual(parsedPlan);
-    expect(body.detectedMajor).toBe("Computer Science");
-    expect(body.chatHistory).toHaveLength(3);
-    expect(body.chatHistory[0]).toMatchObject({ role: "assistant" });
-    expect(body.chatHistory[0].parts[0].text).toContain("De Anza College");
-    expect(body.chatHistory[1]).toMatchObject({ role: "user" });
-    expect(body.chatHistory[2]).toMatchObject({ role: "assistant" });
-
-    expect(mockGenerate).toHaveBeenCalledWith(
-      expect.objectContaining({
-        messages: expect.arrayContaining([
-          expect.objectContaining({ role: "user" }),
-        ]),
-        planContext: {
-          ccInstitutionId: "cc-1",
-          targetInstitutionId: "uni-1",
-          targetMajor: "Computer Science",
-        },
-      }),
-      expect.objectContaining({
-        transcriptData,
-        maxCreditsPerSemester: 15,
-        hasTargetSchool: true,
-        startTerm: expect.any(String),
-      }),
-    );
-
-    expect(mockSavePlanRecord).toHaveBeenCalledWith(
-      expect.anything(),
-      expect.objectContaining({
-        userId: "user-123",
-        targetMajor: "Computer Science",
-        targetInstitutionId: "uni-1",
-        transcriptId: "transcript-1",
-        maxCreditsPerSemester: 15,
-      }),
-    );
-  });
-
-  it("persists all ranked institutions in comparison_targets even when AI returns fewer coveredSchools", async () => {
-    mockRankBestFitUniversityIds.mockResolvedValue([
-      { id: "uni-1", name: "UCLA", abbreviation: "UCLA" },
-      { id: "uni-2", name: "UC Berkeley", abbreviation: "UCB" },
-      { id: "uni-3", name: "UC San Diego", abbreviation: "UCSD" },
-      { id: "uni-4", name: "UC Irvine", abbreviation: "UCI" },
-      { id: "uni-5", name: "UC Davis", abbreviation: "UCD" },
-    ]);
-    mockResolveUniversityIdsByNames.mockImplementation(async (_client, names: string[]) => {
-      const byName: Record<string, { institutionId: string; name: string; abbreviation: string | null }> = {
-        UCLA: { institutionId: "uni-1", name: "UCLA", abbreviation: "UCLA" },
-        "UC Berkeley": { institutionId: "uni-2", name: "UC Berkeley", abbreviation: "UCB" },
-        "UC San Diego": { institutionId: "uni-3", name: "UC San Diego", abbreviation: "UCSD" },
-      };
-      return names.map((n) => byName[n]).filter(Boolean);
-    });
-    mockGenerate.mockResolvedValue({
-      rawText: "```json\n{}\n```",
-      parsedPlan: {
-        ...parsedPlan,
-        coveredSchools: [
-          { name: "UCLA", institutionId: null, fitScore: 90, articulatedUnits: 40, totalRequiredUnits: 60 },
-          { name: "UC Berkeley", institutionId: null, fitScore: 82, articulatedUnits: 38, totalRequiredUnits: 60 },
-          { name: "UC San Diego", institutionId: null, fitScore: 75, articulatedUnits: 34, totalRequiredUnits: 60 },
-        ],
+    mockNormalizeAutoPlanRequest.mockReturnValue({
+      transcriptId: "transcript-1",
+      transcriptData: {
+        institution: "De Anza College",
+        courses: [],
+        totalUnitsCompleted: 0,
+        totalUnitsInProgress: 0,
       },
+      detectedMajor: "Computer Science",
+      targetSchool: null,
+      maxCreditsPerSemester: 15,
     });
 
-    const { POST } = await import("../route");
-    const response = await POST(
-      buildRequest({
-        transcriptData,
-        detectedMajor: "Computer Science",
-        targetSchool: null,
-      }),
-    );
-
-    expect(response.status).toBe(201);
-    const call = mockSavePlanRecord.mock.calls[0][1];
-    expect(call.comparisonTargets).toHaveLength(5);
-    const ids = call.comparisonTargets.map((t: { institution_id: string }) => t.institution_id);
-    expect(ids).toEqual(["uni-1", "uni-2", "uni-3", "uni-4", "uni-5"]);
-    call.comparisonTargets.forEach((t: { priority_order: number }, idx: number) => {
-      expect(t.priority_order).toBe(idx + 1);
+    mockCreatePlanGenerationJob.mockResolvedValue({
+      id: "job-123",
+      status: "pending",
     });
   });
 
-  it("uses best-fit mode when targetSchool is null", async () => {
+  it("returns a new pending plan generation job", async () => {
     const { POST } = await import("../route");
     const response = await POST(
       buildRequest({
-        transcriptData,
+        transcriptId: "transcript-1",
+        transcriptData: {
+          institution: "De Anza College",
+          courses: [],
+          totalUnitsCompleted: 0,
+          totalUnitsInProgress: 0,
+        },
         detectedMajor: "Computer Science",
-        targetSchool: null,
       }),
     );
 
-    expect(response.status).toBe(201);
-    expect(mockGenerate).toHaveBeenCalledWith(
+    expect(response.status).toBe(202);
+    await expect(response.json()).resolves.toEqual({
+      jobId: "job-123",
+      status: "pending",
+    });
+
+    expect(mockNormalizeAutoPlanRequest).toHaveBeenCalledTimes(1);
+    expect(mockCreatePlanGenerationJob).toHaveBeenCalledWith(
       expect.anything(),
+      "user-123",
       expect.objectContaining({
-        maxCreditsPerSemester: 15,
-        hasTargetSchool: false,
-      }),
-    );
-    expect(mockSavePlanRecord).toHaveBeenCalledWith(
-      expect.anything(),
-      expect.objectContaining({
-        hasTargetSchool: false,
-        targetInstitutionId: null,
+        detectedMajor: "Computer Science",
       }),
     );
   });
@@ -247,9 +108,7 @@ describe("POST /api/plans/generate-auto", () => {
     mockGetUser.mockResolvedValue({ data: { user: null }, error: null });
 
     const { POST } = await import("../route");
-    const response = await POST(
-      buildRequest({ transcriptData, detectedMajor: "Computer Science" }),
-    );
+    const response = await POST(buildRequest({ detectedMajor: "Computer Science" }));
 
     expect(response.status).toBe(401);
     await expect(response.json()).resolves.toEqual({
@@ -258,98 +117,6 @@ describe("POST /api/plans/generate-auto", () => {
         message: expect.stringMatching(/sign in/i),
         retryable: false,
         fallback: "manual_chat",
-      },
-    });
-  });
-
-  it("returns INVALID_INPUT when transcriptData is missing", async () => {
-    const { POST } = await import("../route");
-    const response = await POST(buildRequest({ detectedMajor: "Computer Science" }));
-
-    expect(response.status).toBe(400);
-    await expect(response.json()).resolves.toEqual({
-      error: {
-        code: "INVALID_INPUT",
-        message: expect.stringMatching(/transcriptData/i),
-        retryable: false,
-        fallback: "manual_chat",
-      },
-    });
-  });
-
-  it("returns MAJOR_REQUIRED when detectedMajor is blank", async () => {
-    const { POST } = await import("../route");
-    const response = await POST(
-      buildRequest({ transcriptData, detectedMajor: "   " }),
-    );
-
-    expect(response.status).toBe(400);
-    await expect(response.json()).resolves.toEqual({
-      error: {
-        code: "MAJOR_REQUIRED",
-        message: expect.stringMatching(/major/i),
-        retryable: false,
-        fallback: "manual_chat",
-      },
-    });
-  });
-
-  it("returns AI_UPSTREAM_ERROR when generation throws", async () => {
-    mockGenerate.mockRejectedValue(new Error("MiniMax API error: 503 - unavailable"));
-
-    const { POST } = await import("../route");
-    const response = await POST(
-      buildRequest({ transcriptData, detectedMajor: "Computer Science" }),
-    );
-
-    expect(response.status).toBe(502);
-    await expect(response.json()).resolves.toEqual({
-      error: {
-        code: "AI_UPSTREAM_ERROR",
-        message: expect.stringMatching(/AI/i),
-        retryable: true,
-        fallback: "retry",
-      },
-    });
-  });
-
-  it("returns PLAN_PARSE_FAILED when the AI response cannot be parsed into a savable plan", async () => {
-    mockGenerate.mockResolvedValue({
-      rawText: "No valid plan",
-      parsedPlan: { isNoData: true, message: "No data" },
-    });
-
-    const { POST } = await import("../route");
-    const response = await POST(
-      buildRequest({ transcriptData, detectedMajor: "Computer Science" }),
-    );
-
-    expect(response.status).toBe(502);
-    await expect(response.json()).resolves.toEqual({
-      error: {
-        code: "PLAN_PARSE_FAILED",
-        message: expect.stringMatching(/parse|saveable/i),
-        retryable: true,
-        fallback: "retry",
-      },
-    });
-  });
-
-  it("returns PLAN_SAVE_FAILED when persistence fails", async () => {
-    mockSavePlanRecord.mockRejectedValue(new Error("database offline"));
-
-    const { POST } = await import("../route");
-    const response = await POST(
-      buildRequest({ transcriptData, detectedMajor: "Computer Science" }),
-    );
-
-    expect(response.status).toBe(500);
-    await expect(response.json()).resolves.toEqual({
-      error: {
-        code: "PLAN_SAVE_FAILED",
-        message: expect.stringMatching(/save/i),
-        retryable: true,
-        fallback: "retry",
       },
     });
   });

@@ -256,6 +256,41 @@ export interface Database {
           updated_at?: string
         }
       }
+      plan_generation_jobs: {
+        Row: {
+          id: string
+          user_id: string
+          transcript_id: string | null
+          request_payload: Json
+          status: "pending" | "generating" | "completed" | "failed"
+          error_message: string | null
+          plan_id: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          transcript_id?: string | null
+          request_payload: Json
+          status?: "pending" | "generating" | "completed" | "failed"
+          error_message?: string | null
+          plan_id?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          transcript_id?: string | null
+          request_payload?: Json
+          status?: "pending" | "generating" | "completed" | "failed"
+          error_message?: string | null
+          plan_id?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+      }
       user_targets: {
         Row: {
           id: string
@@ -352,7 +387,7 @@ export interface Database {
           parsed_data: Json | null
           parse_status: "pending" | "parsing" | "completed" | "failed"
           parse_error: string | null
-           parse_method: "ai" | "regex" | "manual" | null
+          parse_method: "ai" | "regex" | "manual" | null
           created_at: string
           updated_at: string
         }
@@ -364,7 +399,7 @@ export interface Database {
           parsed_data?: Json | null
           parse_status?: "pending" | "parsing" | "completed" | "failed"
           parse_error?: string | null
-           parse_method?: "ai" | "regex" | "manual" | null
+          parse_method?: "ai" | "regex" | "manual" | null
           created_at?: string
           updated_at?: string
         }
@@ -376,7 +411,7 @@ export interface Database {
           parsed_data?: Json | null
           parse_status?: "pending" | "parsing" | "completed" | "failed"
           parse_error?: string | null
-           parse_method?: "ai" | "regex" | "manual" | null
+          parse_method?: "ai" | "regex" | "manual" | null
           created_at?: string
           updated_at?: string
         }

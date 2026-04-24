@@ -14,6 +14,7 @@ import {
   MajorConfirmationModal,
   MajorSelectionFallback,
   type GenerationError,
+  type LoadingStep,
 } from "@/components/auto-plan-generation";
 import { detectMajorFromTranscript } from "@/lib/major-detector";
 import { buildSyntheticUserPrompt } from "@/lib/plan-prompts";
@@ -29,6 +30,7 @@ interface PersistedAutoGenerationState {
   transcriptId: string | null;
   detectedMajor: string | null;
   detectionConfidence: number;
+  jobId: string | null;
 }
 
 interface UniversityOption {
@@ -91,6 +93,8 @@ export default function NewPlanPage() {
   const [detectedMajor, setDetectedMajor] = useState<string | null>(null);
   const [detectionConfidence, setDetectionConfidence] = useState(0);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [autoGenerationJobId, setAutoGenerationJobId] = useState<string | null>(null);
+  const [autoGenerationLoadingStep, setAutoGenerationLoadingStep] = useState<LoadingStep>("creating");
   const [generationError, setGenerationError] = useState<GenerationError | null>(null);
   const [hasCheckedRecoveryState, setHasCheckedRecoveryState] = useState(false);
   const [majorSuggestions, setMajorSuggestions] = useState<string[]>([]);
@@ -159,13 +163,17 @@ export default function NewPlanPage() {
       setTranscriptId(recovered.transcriptId);
       setDetectedMajor(recovered.detectedMajor);
       setDetectionConfidence(recovered.detectionConfidence);
-      setGenerationError({
-        code: "RECOVERY_REQUIRED",
-        message: "We restored your pending auto-generation request. Retry to continue or switch to customized settings.",
-        retryable: true,
-        fallback: "retry_or_customize",
-      });
+      setAutoGenerationJobId(recovered.jobId);
       setStep("auto-generating");
+      setIsGenerating(Boolean(recovered.jobId));
+      if (!recovered.jobId) {
+        setGenerationError({
+          code: "RECOVERY_REQUIRED",
+          message: "We restored your pending auto-generation request. Retry to continue or switch to customized settings.",
+          retryable: true,
+          fallback: "retry_or_customize",
+        });
+      }
     } catch {
       clearPersistedAutoGeneration();
     } finally {
@@ -184,6 +192,7 @@ export default function NewPlanPage() {
         transcriptId,
         detectedMajor,
         detectionConfidence,
+        jobId: autoGenerationJobId,
       };
 
       window.sessionStorage.setItem(AUTO_GENERATION_SESSION_KEY, JSON.stringify(persistedState));
@@ -191,7 +200,16 @@ export default function NewPlanPage() {
     }
 
     clearPersistedAutoGeneration();
-  }, [clearPersistedAutoGeneration, detectedMajor, detectionConfidence, hasCheckedRecoveryState, step, transcriptData, transcriptId]);
+  }, [
+    autoGenerationJobId,
+    clearPersistedAutoGeneration,
+    detectedMajor,
+    detectionConfidence,
+    hasCheckedRecoveryState,
+    step,
+    transcriptData,
+    transcriptId,
+  ]);
 
   useEffect(() => {
     if (!isGenerating || typeof window === "undefined") return;
@@ -204,6 +222,66 @@ export default function NewPlanPage() {
     window.addEventListener("beforeunload", handleBeforeUnload);
     return () => window.removeEventListener("beforeunload", handleBeforeUnload);
   }, [isGenerating]);
+
+  useEffect(() => {
+    if (step !== "auto-generating" || !autoGenerationJobId || generationError) {
+      return;
+    }
+
+    let cancelled = false;
+    let timeoutId: ReturnType<typeof setTimeout> | null = null;
+
+    const poll = async () => {
+      try {
+        const response = await fetch(`/api/plans/generate-auto/${autoGenerationJobId}`, {
+          method: "GET",
+          cache: "no-store",
+        });
+        const payload = await response.json().catch(() => ({}));
+
+        if (!response.ok) {
+          throw new Error(payload.error?.message || payload.error || "Failed to fetch generation status.");
+        }
+
+        if (cancelled) return;
+
+        if (payload.status === "pending") {
+          setAutoGenerationLoadingStep("analyzing");
+        } else if (payload.status === "generating") {
+          setAutoGenerationLoadingStep("creating");
+        }
+
+        if (payload.status === "completed" && payload.planId) {
+          setIsGenerating(false);
+          clearPersistedAutoGeneration();
+          router.push(`/plan/${payload.planId}`);
+          return;
+        }
+
+        if (payload.status === "failed") {
+          setIsGenerating(false);
+          setGenerationError(normalizeGenerationError(payload.error ?? payload));
+          return;
+        }
+
+        timeoutId = setTimeout(poll, 1500);
+      } catch (error) {
+        if (cancelled) return;
+        setIsGenerating(false);
+        setGenerationError(normalizeGenerationError(error));
+      }
+    };
+
+    setIsGenerating(true);
+    void poll();
+
+    return () => {
+      cancelled = true;
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+    };
+  }, [autoGenerationJobId, clearPersistedAutoGeneration, generationError, router, step]);
 
   useEffect(() => {
     fetch("/api/institutions")
@@ -233,6 +311,7 @@ export default function NewPlanPage() {
     setTranscriptId(id || null);
     setDetectedMajor(null);
     setDetectionConfidence(0);
+    setAutoGenerationJobId(null);
     setGenerationError(null);
     setStep("choice");
   }, []);
@@ -242,6 +321,7 @@ export default function NewPlanPage() {
     setTranscriptId(null);
     setDetectedMajor(null);
     setDetectionConfidence(0);
+    setAutoGenerationJobId(null);
     setGenerationError(null);
     setStep("choice");
   }, []);
@@ -249,6 +329,7 @@ export default function NewPlanPage() {
   const handleSkipTranscript = useCallback(() => {
     setDetectedMajor(null);
     setDetectionConfidence(0);
+    setAutoGenerationJobId(null);
     setGenerationError(null);
     setStep("config");
   }, []);
@@ -261,8 +342,10 @@ export default function NewPlanPage() {
     setShowMajorConfirmation(false);
     setShowMajorSelection(false);
     setGenerationError(null);
+    setAutoGenerationJobId(null);
     setStep("auto-generating");
     setIsGenerating(true);
+    setAutoGenerationLoadingStep("analyzing");
 
     try {
       const response = await fetch("/api/plans/generate-auto", {
@@ -284,11 +367,27 @@ export default function NewPlanPage() {
 
       if (!response.ok) {
         setGenerationError(normalizeGenerationError(data.error ?? data));
+        setAutoGenerationJobId(null);
         return;
       }
 
-      clearPersistedAutoGeneration();
-      router.push(`/plan/${data.planId}`);
+      if (!data.jobId || typeof data.jobId !== "string") {
+        setGenerationError({
+          code: "GENERATION_FAILED",
+          message: "Plan generation started, but no job id was returned.",
+          retryable: true,
+          fallback: "retry_or_customize",
+        });
+        setAutoGenerationJobId(null);
+        return;
+      }
+
+      setAutoGenerationJobId(data.jobId);
+      void fetch(`/api/plans/generate-auto/${data.jobId}/process`, {
+        method: "POST",
+      }).catch(() => {
+        // Polling surfaces any persisted job failure state to the user.
+      });
     } catch {
       setGenerationError({
         code: "NETWORK_ERROR",
@@ -296,10 +395,11 @@ export default function NewPlanPage() {
         retryable: true,
         fallback: "retry_or_customize",
       });
+      setAutoGenerationJobId(null);
     } finally {
       setIsGenerating(false);
     }
-  }, [clearPersistedAutoGeneration, router, transcriptData, transcriptId]);
+  }, [transcriptData, transcriptId]);
 
   const handleAutoGenerateClick = useCallback(async () => {
     if (!transcriptData) {
@@ -337,6 +437,8 @@ export default function NewPlanPage() {
     setGenerationError(null);
     setShowMajorConfirmation(false);
     setShowMajorSelection(false);
+    setAutoGenerationJobId(null);
+    setIsGenerating(false);
     setStep("config");
   }, []);
 
@@ -354,11 +456,15 @@ export default function NewPlanPage() {
 
   const handleBackToUpload = useCallback(() => {
     setGenerationError(null);
+    setAutoGenerationJobId(null);
+    setIsGenerating(false);
     setStep("upload");
   }, []);
 
   const handleBackToConfig = useCallback(() => {
     setGenerationError(null);
+    setAutoGenerationJobId(null);
+    setIsGenerating(false);
     setStep(transcriptData ? "choice" : "upload");
   }, [transcriptData]);
 
@@ -709,7 +815,7 @@ export default function NewPlanPage() {
               onCustomize={handleOpenCustomizeSettings}
             />
           ) : (
-            <AutoGenerationLoading major={detectedMajor} />
+            <AutoGenerationLoading major={detectedMajor} currentStep={autoGenerationLoadingStep} />
           )
         )}
 
