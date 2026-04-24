@@ -40,7 +40,7 @@ async function extractTextFromPdf(buffer: Buffer): Promise<string> {
       const page = await pdf.getPage(i);
       const textContent = await page.getTextContent();
       const pageText = textContent.items
-        .map((item: { str?: string }) => ("str" in item ? item.str : ""))
+        .map((item) => ("str" in item ? (item as { str: string }).str : ""))
         .join(" ");
       fullText += pageText + "\n\n";
     }
