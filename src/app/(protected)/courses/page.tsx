@@ -19,16 +19,10 @@ interface Course {
 async function getColleges(): Promise<Institution[]> {
   const supabase = await createClient();
 
-  const smcccdIds = [
-    "c0000000-0000-0000-0000-000000000001",
-    "c0000000-0000-0000-0000-000000000002",
-    "c0000000-0000-0000-0000-000000000003",
-  ];
-
   const { data, error } = await supabase
     .from("institutions")
     .select("id, name, abbreviation")
-    .in("id", smcccdIds)
+    .eq("type", "cc")
     .order("name");
 
   if (error) {

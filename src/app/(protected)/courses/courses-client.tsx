@@ -74,7 +74,7 @@ export default function CoursesClient({ colleges, coursesByCollege }: Props) {
             Course Browser
           </h1>
           <p className="mt-2 text-[15px] text-gray-600 dark:text-gray-400 font-medium">
-            Browse SMCCCD courses by college and subject area
+            Browse California Community College courses by college and subject area
           </p>
         </div>
 
