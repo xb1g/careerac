@@ -22,16 +22,10 @@ const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 export const runtime = "nodejs";
 
 async function extractTextFromPdf(buffer: Buffer): Promise<string> {
-  // Import worker first to ensure it's available in the bundle
-  // This fixes "Cannot find module pdf.worker.mjs" error in serverless environments
-  await import("pdfjs-dist/legacy/build/pdf.worker.mjs");
-  
-  // Use the legacy build in Node.js to avoid browser-only globals.
-  // The specifier is held in a variable + `/* @vite-ignore */` so Vite's
-  // import-analysis plugin (used by Vitest) does not try to statically
-  // resolve it at transform time — resolution happens at runtime only.
-  const pdfjsSpecifier = "pdfjs-dist/legacy/build/pdf.mjs";
-  const pdfjsLib = await import(/* webpackIgnore: true */ /* @vite-ignore */ pdfjsSpecifier);
+  // Static imports so Next.js file tracing includes these in the serverless bundle.
+  // pdfjs-dist is in serverExternalPackages so it won't be webpack-bundled,
+  // but the tracer needs to see the paths to copy them into the deployment.
+  const pdfjsLib = await import(/* webpackIgnore: true */ "pdfjs-dist/legacy/build/pdf.mjs");
 
   const loadingTask = pdfjsLib.getDocument({
     data: new Uint8Array(buffer),
