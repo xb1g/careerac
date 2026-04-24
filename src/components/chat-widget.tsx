@@ -41,7 +41,7 @@ export default function ChatWidget({
         aria-controls="chat-widget-panel"
         onClick={() => setOpen((v) => !v)}
         className={cn(
-          "fixed bottom-6 right-6 z-40 h-14 w-14 rounded-full shadow-lg",
+          "fixed bottom-6 right-6 z-40 h-14 w-14 rounded-full shadow-lg cursor-pointer",
           "bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white",
           "flex items-center justify-center transition-transform hover:scale-105",
           "focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2",
@@ -92,7 +92,7 @@ export default function ChatWidget({
             aria-label="Minimize chat"
             onClick={() => setOpen(false)}
             data-testid="chat-widget-minimize"
-            className="h-8 w-8 rounded-md text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100 dark:hover:text-zinc-100 dark:hover:bg-zinc-800 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className="h-8 w-8 rounded-md text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100 dark:hover:text-zinc-100 dark:hover:bg-zinc-800 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-blue-400 cursor-pointer"
           >
             <svg
               width="16"

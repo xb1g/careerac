@@ -104,7 +104,7 @@ export default function CourseStatusMenu({
                   onSelect(option.value);
                   onClose();
                 }}
-                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left transition-colors ${option.bgColor} ${
+                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left transition-colors cursor-pointer ${option.bgColor} ${
                   isSelected ? `ring-2 ring-offset-1 ring-blue-500 dark:ring-offset-zinc-900` : ""
                 }`}
                 data-testid={`status-option-${option.value}`}

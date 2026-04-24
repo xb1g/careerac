@@ -70,9 +70,9 @@ export default function Inbox() {
         type="button"
         onClick={() => setIsOpen(!isOpen)}
         className={cn(
-          "relative flex h-10 w-10 items-center justify-center rounded-full transition-all duration-200",
-          isOpen 
-            ? "bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400" 
+          "relative flex h-10 w-10 items-center justify-center rounded-full transition-all duration-200 cursor-pointer",
+          isOpen
+            ? "bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400"
             : "text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-white"
         )}
         aria-label="Notifications"

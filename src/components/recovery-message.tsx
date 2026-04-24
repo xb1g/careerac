@@ -109,7 +109,7 @@ export default function RecoveryMessage({
                   <button
                     onClick={() => handleAccept(alt)}
                     disabled={isAccepting}
-                    className="shrink-0 px-3 py-1.5 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    className="shrink-0 px-3 py-1.5 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                     data-testid={`accept-${alt.code}`}
                   >
                     {isAccepting ? "Adding..." : "Accept"}
