@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from "react";
 import { TransferPlan, NoDataResponse, ParsedPlan, CourseStatus, PlanCourse } from "@/types/plan";
 import CourseCard from "./course-card";
 
@@ -13,14 +14,49 @@ function isTransferPlan(plan: ParsedPlan): plan is TransferPlan {
 }
 
 function SemesterGrid({ plan, onCourseClick }: { plan: TransferPlan; onCourseClick?: SemesterPlanProps["onCourseClick"] }) {
+  const scrollRef = useRef<HTMLDivElement | null>(null);
+  const gridRef = useRef<HTMLDivElement | null>(null);
+  const [hasRightOverflow, setHasRightOverflow] = useState(false);
+
+  useEffect(() => {
+    const scrollEl = scrollRef.current;
+    const gridEl = gridRef.current;
+    if (!scrollEl) return;
+
+    const update = () => {
+      setHasRightOverflow(
+        scrollEl.scrollLeft + scrollEl.clientWidth < scrollEl.scrollWidth - 4,
+      );
+    };
+
+    update();
+    scrollEl.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    const observer = gridEl && typeof ResizeObserver !== "undefined"
+      ? new ResizeObserver(update)
+      : null;
+    if (observer && gridEl) observer.observe(gridEl);
+
+    return () => {
+      scrollEl.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+      observer?.disconnect();
+    };
+  }, [plan.semesters.length]);
+
   return (
     <div className="flex h-full min-h-0 flex-col bg-[#FAFAFA] dark:bg-zinc-900/50">
-      <div
-        className="min-h-0 flex-1 overflow-x-auto overflow-y-auto"
-        data-testid="semester-grid"
-        role="list"
-      >
-        <div className="flex h-full min-h-0 gap-4 px-4 py-6 md:px-6 lg:px-8 snap-x snap-mandatory items-stretch">
+      <div className="relative min-h-0 flex-1">
+        <div
+          ref={scrollRef}
+          className="h-full overflow-x-auto overflow-y-auto"
+          data-testid="semester-grid"
+          role="list"
+        >
+          <div
+            ref={gridRef}
+            className="flex h-full min-h-0 gap-4 px-4 py-6 md:px-6 lg:px-6 snap-x snap-mandatory items-stretch"
+          >
           {plan.semesters.map((semester) => {
             const semesterRemainingUnits = semester.courses.reduce((total, course) => {
               return course.status === "completed" ? total : total + course.units;
@@ -31,7 +67,7 @@ function SemesterGrid({ plan, onCourseClick }: { plan: TransferPlan; onCourseCli
                 key={semester.number}
                 role="listitem"
                 aria-label={semester.label}
-                className="flex h-full min-h-0 w-[85vw] shrink-0 snap-start flex-col rounded-xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900/50 sm:w-[320px] lg:w-75"
+                className="flex h-full min-h-0 w-[85vw] shrink-0 snap-start flex-col rounded-xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900/50 sm:w-[320px] lg:w-[calc((100%-3rem)/4)] lg:min-w-[260px]"
               >
                 <header
                   className="sticky top-0 z-1 px-4 py-3 border-b border-zinc-200 dark:border-zinc-800 bg-white/90 dark:bg-zinc-900/80 backdrop-blur-sm rounded-t-xl flex items-center justify-between gap-2"
@@ -67,7 +103,13 @@ function SemesterGrid({ plan, onCourseClick }: { plan: TransferPlan; onCourseCli
               </section>
             );
           })}
+          </div>
         </div>
+        <div
+          className={`pointer-events-none absolute inset-y-0 right-0 w-12 bg-gradient-to-l from-white/90 to-transparent dark:from-zinc-950/90 transition-opacity duration-200 ${hasRightOverflow ? "opacity-100" : "opacity-0"}`}
+          data-testid="semester-grid-overflow-fade"
+          aria-hidden="true"
+        />
       </div>
     </div>
   );

@@ -91,6 +91,11 @@ describe("SemesterPlan", () => {
       expect(semesterLabels[1]).toHaveTextContent("Spring 2025");
     });
 
+    it("renders a right-edge overflow fade overlay", () => {
+      render(<SemesterPlan plan={mockTransferPlan} />);
+      expect(screen.getByTestId("semester-grid-overflow-fade")).toBeInTheDocument();
+    });
+
     it("displays per-semester unit totals", () => {
       render(<SemesterPlan plan={mockTransferPlan} />);
 
