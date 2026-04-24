@@ -79,30 +79,31 @@ describe("CourseCard", () => {
     expect(container.textContent).not.toContain("Offered Fall and Spring only");
   });
 
-  describe("requiredBy asterisk", () => {
-    it("renders an asterisk when requiredBy is a proper subset of covered schools", () => {
-      const course: PlanCourse = { ...baseCourse, requiredBy: ["UCLA"] };
+  describe("requiredBy pills", () => {
+    it("renders school-name pills when requiredBy is a proper subset of covered schools", () => {
+      const course: PlanCourse = { ...baseCourse, requiredBy: ["UCLA", "UCSD"] };
       render(<CourseCard course={course} coveredSchoolCount={3} />);
-      const asterisk = screen.getByTestId("course-required-by-asterisk");
-      expect(asterisk).toBeInTheDocument();
-      expect(asterisk).toHaveAttribute("title", expect.stringContaining("UCLA"));
+      const pills = screen.getByTestId("course-required-by-pills");
+      expect(pills).toBeInTheDocument();
+      expect(pills).toHaveTextContent("UCLA");
+      expect(pills).toHaveTextContent("UCSD");
     });
 
-    it("does not render an asterisk when requiredBy covers every school", () => {
+    it("does not render pills when requiredBy covers every school", () => {
       const course: PlanCourse = { ...baseCourse, requiredBy: ["UCLA", "UC Berkeley", "UC San Diego"] };
       render(<CourseCard course={course} coveredSchoolCount={3} />);
-      expect(screen.queryByTestId("course-required-by-asterisk")).not.toBeInTheDocument();
+      expect(screen.queryByTestId("course-required-by-pills")).not.toBeInTheDocument();
     });
 
-    it("does not render an asterisk when coveredSchoolCount <= 1", () => {
+    it("does not render pills when coveredSchoolCount <= 1", () => {
       const course: PlanCourse = { ...baseCourse, requiredBy: ["UCLA"] };
       render(<CourseCard course={course} coveredSchoolCount={1} />);
-      expect(screen.queryByTestId("course-required-by-asterisk")).not.toBeInTheDocument();
+      expect(screen.queryByTestId("course-required-by-pills")).not.toBeInTheDocument();
     });
 
-    it("does not render an asterisk when requiredBy is omitted", () => {
+    it("does not render pills when requiredBy is omitted", () => {
       render(<CourseCard course={baseCourse} coveredSchoolCount={3} />);
-      expect(screen.queryByTestId("course-required-by-asterisk")).not.toBeInTheDocument();
+      expect(screen.queryByTestId("course-required-by-pills")).not.toBeInTheDocument();
     });
   });
 });

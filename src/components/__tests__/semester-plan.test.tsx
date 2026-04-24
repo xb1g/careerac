@@ -149,14 +149,14 @@ describe("SemesterPlan", () => {
   });
 
   describe("multi-school rendering", () => {
-    it("does not show the asterisk legend when some courses are school-specific", () => {
+    it("does not show the school-pill legend when some courses are school-specific", () => {
       render(<SemesterPlan plan={mockMultiSchoolPlan} />);
-      expect(screen.queryByTestId("asterisk-legend")).not.toBeInTheDocument();
+      expect(screen.queryByTestId("school-pill-legend")).not.toBeInTheDocument();
     });
 
-    it("renders an asterisk next to school-specific course codes", () => {
+    it("renders school-name pills next to school-specific course codes", () => {
       render(<SemesterPlan plan={mockMultiSchoolPlan} />);
-      expect(screen.getByTestId("course-required-by-asterisk")).toBeInTheDocument();
+      expect(screen.getByTestId("course-required-by-pills")).toBeInTheDocument();
     });
   });
 

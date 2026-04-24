@@ -53,9 +53,6 @@ export default function CourseCard({ course, onClick, coveredSchoolCount = 0 }: 
     Array.isArray(course.requiredBy) &&
     course.requiredBy.length > 0 &&
     course.requiredBy.length < coveredSchoolCount;
-  const requiredByTooltip = isSchoolSpecific
-    ? `Required by: ${course.requiredBy!.join(", ")}`
-    : undefined;
 
   const handleClick = () => {
     onClick?.(course);
@@ -80,20 +77,22 @@ export default function CourseCard({ course, onClick, coveredSchoolCount = 0 }: 
     >
       <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2">
         <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             <h4 className="text-[13px] font-semibold text-zinc-900 dark:text-zinc-100 uppercase tracking-wider" data-testid="course-code">
               {course.code}
-              {isSchoolSpecific && (
-                <span
-                  className="ml-0.5 text-amber-600 dark:text-amber-400"
-                  data-testid="course-required-by-asterisk"
-                  title={requiredByTooltip}
-                  aria-label={requiredByTooltip}
-                >
-                  *
-                </span>
-              )}
             </h4>
+            {isSchoolSpecific && (
+              <span className="flex flex-wrap gap-1" data-testid="course-required-by-pills">
+                {course.requiredBy!.map((school) => (
+                  <span
+                    key={school}
+                    className="inline-flex items-center rounded-full bg-amber-50 dark:bg-amber-500/10 px-1.5 py-0.5 text-[10px] font-medium text-amber-700 dark:text-amber-300 border border-amber-200/70 dark:border-amber-500/30"
+                  >
+                    {school}
+                  </span>
+                ))}
+              </span>
+            )}
             {status !== "planned" && (
               <span className="text-[10px] uppercase font-bold tracking-widest text-zinc-500 dark:text-zinc-400">
                 {status.replace("_", " ")}
