@@ -12,66 +12,9 @@ function isTransferPlan(plan: ParsedPlan): plan is TransferPlan {
   return !(plan as NoDataResponse).isNoData;
 }
 
-function AsteriskLegend({ plan }: { plan: TransferPlan }) {
-  const covered = plan.coveredSchools ?? [];
-  if (covered.length <= 1) return null;
-
-  const hasSchoolSpecific = plan.semesters.some((s) =>
-    s.courses.some((c) => Array.isArray(c.requiredBy) && c.requiredBy.length > 0 && c.requiredBy.length < covered.length),
-  );
-  if (!hasSchoolSpecific) return null;
-
-  return (
-    <p
-      className="mt-2 text-[11px] font-medium text-zinc-500 dark:text-zinc-400"
-      data-testid="asterisk-legend"
-    >
-      * indicates a course required by a subset of covered schools — hover a course to see which.
-    </p>
-  );
-}
-
 function SemesterGrid({ plan, onCourseClick }: { plan: TransferPlan; onCourseClick?: SemesterPlanProps["onCourseClick"] }) {
-  // Calculate remaining units (excluding completed courses)
-  const remainingUnits = plan.semesters.reduce((total, semester) => {
-    return total + semester.courses.reduce((semTotal, course) => {
-      return course.status === "completed" ? semTotal : semTotal + course.units;
-    }, 0);
-  }, 0);
-
-  const completedUnits = plan.totalUnits - remainingUnits;
-
   return (
     <div className="flex h-full min-h-0 flex-col bg-[#FAFAFA] dark:bg-zinc-900/50">
-      {/* Plan Header */}
-      <div className="px-6 py-5 border-b border-zinc-200/80 dark:border-zinc-800/80 bg-white/50 dark:bg-zinc-900/50 backdrop-blur-md sticky top-0 z-10">
-        <div className="flex items-start justify-between">
-          <div>
-            <AsteriskLegend plan={plan} />
-          </div>
-          <div className="text-right flex flex-col items-end">
-            <div className="flex items-baseline gap-1.5">
-              <span className="text-3xl font-bold tracking-tighter text-blue-600 dark:text-blue-500" data-testid="overall-remaining-units">
-                {remainingUnits}
-              </span>
-              <span className="text-xs font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500">Units Left</span>
-            </div>
-            <div className="flex gap-3 text-[11px] font-medium text-zinc-500 dark:text-zinc-400 mt-1 uppercase tracking-wider">
-              {completedUnits > 0 && (
-                <div className="flex items-center gap-1 text-emerald-600 dark:text-emerald-500" data-testid="overall-completed-units">
-                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                  <span>{completedUnits} Done</span>
-                </div>
-              )}
-              <div data-testid="overall-total-units">
-                {plan.totalUnits} Total
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Semester Columns */}
       <div
         className="min-h-0 flex-1 overflow-x-auto overflow-y-auto"
         data-testid="semester-grid"
@@ -90,7 +33,6 @@ function SemesterGrid({ plan, onCourseClick }: { plan: TransferPlan; onCourseCli
                 aria-label={semester.label}
                 className="flex h-full min-h-0 w-[85vw] shrink-0 snap-start flex-col rounded-xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900/50 sm:w-[320px] lg:w-75"
               >
-                {/* Column header */}
                 <header
                   className="sticky top-0 z-1 px-4 py-3 border-b border-zinc-200 dark:border-zinc-800 bg-white/90 dark:bg-zinc-900/80 backdrop-blur-sm rounded-t-xl flex items-center justify-between gap-2"
                   data-testid="semester-header"
@@ -109,7 +51,6 @@ function SemesterGrid({ plan, onCourseClick }: { plan: TransferPlan; onCourseCli
                   </span>
                 </header>
 
-                {/* Column body */}
                 <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto p-3" data-testid="semester-column-body">
                   {semester.courses.map((course, idx) => (
                     <CourseCard

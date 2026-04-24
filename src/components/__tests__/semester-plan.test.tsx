@@ -78,7 +78,7 @@ describe("SemesterPlan", () => {
     it("displays overall total units", () => {
       render(<SemesterPlan plan={mockTransferPlan} />);
 
-    expect(screen.getByTestId("overall-total-units")).toHaveTextContent("13 Total");
+      expect(screen.queryByTestId("overall-total-units")).not.toBeInTheDocument();
     });
 
     it("renders semester grid with all semesters", () => {
@@ -144,9 +144,9 @@ describe("SemesterPlan", () => {
   });
 
   describe("multi-school rendering", () => {
-    it("shows asterisk legend when some courses are school-specific", () => {
+    it("does not show the asterisk legend when some courses are school-specific", () => {
       render(<SemesterPlan plan={mockMultiSchoolPlan} />);
-      expect(screen.getByTestId("asterisk-legend")).toBeInTheDocument();
+      expect(screen.queryByTestId("asterisk-legend")).not.toBeInTheDocument();
     });
 
     it("renders an asterisk next to school-specific course codes", () => {
@@ -167,8 +167,7 @@ describe("SemesterPlan", () => {
     it("overall total matches sum of semester totals", () => {
       render(<SemesterPlan plan={mockTransferPlan} />);
 
-      // 9 + 4 = 13
-    expect(screen.getByTestId("overall-total-units")).toHaveTextContent("13 Total");
+      expect(screen.queryByTestId("overall-total-units")).not.toBeInTheDocument();
     });
   });
 });

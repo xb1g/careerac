@@ -288,13 +288,10 @@ describe("Unit Calculations with Failed/Completed Courses", () => {
 
     render(<SemesterPlan plan={plan} />);
 
-    // Remaining units should exclude completed CS 1 (4 units)
-    const remainingUnits = screen.getByTestId("overall-remaining-units");
-    expect(remainingUnits).toHaveTextContent("4");
-
-    // Completed units should show CS 1's units
-    const completedUnits = screen.getByTestId("overall-completed-units");
-    expect(completedUnits).toHaveTextContent("4 Done");
+    const semesterUnits = screen.getByTestId("semester-units");
+    expect(semesterUnits).toHaveTextContent("4 units remaining");
+    expect(screen.queryByTestId("overall-remaining-units")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("overall-completed-units")).not.toBeInTheDocument();
   });
 
   it("includes failed courses in remaining units (they need to be retaken)", () => {
@@ -315,9 +312,9 @@ describe("Unit Calculations with Failed/Completed Courses", () => {
 
     render(<SemesterPlan plan={plan} />);
 
-    // Remaining units should include failed CS 1 (8 units total - 0 completed)
-    const remainingUnits = screen.getByTestId("overall-remaining-units");
-    expect(remainingUnits).toHaveTextContent("8");
+    const semesterUnits = screen.getByTestId("semester-units");
+    expect(semesterUnits).toHaveTextContent("8 units remaining");
+    expect(screen.queryByTestId("overall-remaining-units")).not.toBeInTheDocument();
   });
 
   it("includes cancelled courses in remaining units", () => {
@@ -338,9 +335,9 @@ describe("Unit Calculations with Failed/Completed Courses", () => {
 
     render(<SemesterPlan plan={plan} />);
 
-    // Remaining units should include cancelled CS 1
-    const remainingUnits = screen.getByTestId("overall-remaining-units");
-    expect(remainingUnits).toHaveTextContent("8");
+    const semesterUnits = screen.getByTestId("semester-units");
+    expect(semesterUnits).toHaveTextContent("8 units remaining");
+    expect(screen.queryByTestId("overall-remaining-units")).not.toBeInTheDocument();
   });
 });
 

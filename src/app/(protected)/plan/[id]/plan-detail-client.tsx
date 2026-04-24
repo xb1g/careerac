@@ -80,6 +80,13 @@ export default function PlanDetailClient({ plan, transcript }: PlanDetailClientP
           ? [{ name: transferPlan.targetUniversity }]
           : [])
     : [];
+  const remainingUnits = transferPlan
+    ? transferPlan.semesters.reduce((total, semester) => (
+        total + semester.courses.reduce((semesterTotal, course) => (
+          course.status === "completed" ? semesterTotal : semesterTotal + course.units
+        ), 0)
+      ), 0)
+    : null;
 
   // Course status menu state
   const [selectedCourse, setSelectedCourse] = useState<{
@@ -301,37 +308,50 @@ export default function PlanDetailClient({ plan, transcript }: PlanDetailClientP
     <div className="flex h-full min-h-0 flex-col">
       {/* Header */}
       <div className="px-6 lg:px-8 py-4 lg:py-5 border-b border-zinc-200/50 dark:border-zinc-800/50 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-xl relative z-20 shadow-[0_1px_2px_rgba(0,0,0,0.02)]">
-        <div className="flex items-center justify-between">
+        <div className="flex items-start justify-between gap-6">
           <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-3 flex-wrap">
+            <div className="flex items-center gap-3">
               <h1 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 flex items-center gap-3">
                 {headerTitle}
                 {isChatLoading && (
                   <div className="inline-flex w-4 h-4 ml-2 border-[2.5px] border-blue-500/30 border-t-blue-600 rounded-full animate-spin flex-shrink-0" />
                 )}
               </h1>
-              {headerSchools.length > 0 && (
-                <ul className="flex flex-wrap items-center gap-1.5" data-testid="plan-header-schools">
-                  {headerSchools.map((school) => (
-                    <li
-                      key={school.name}
-                      className="inline-flex items-center gap-1.5 rounded-full bg-zinc-100 dark:bg-zinc-800 px-2.5 py-1 text-[13px] font-semibold text-zinc-800 dark:text-zinc-200"
-                      data-testid={`plan-header-school-${school.name}`}
-                    >
-                      <span>{school.name}</span>
-                      {typeof school.fitScore === "number" && (
-                        <span className="text-zinc-500 dark:text-zinc-400 font-medium">{Math.round(school.fitScore)}</span>
-                      )}
-                    </li>
-                  ))}
-                </ul>
-              )}
               <DeletePlanButton planId={plan.id} />
             </div>
+            {headerSchools.length > 0 && (
+              <ul className="mt-2 flex flex-wrap items-center gap-1.5" data-testid="plan-header-schools">
+                {headerSchools.map((school) => (
+                  <li
+                    key={school.name}
+                    className="inline-flex items-center gap-1.5 rounded-full bg-zinc-100 dark:bg-zinc-800 px-2.5 py-1 text-[13px] font-semibold text-zinc-800 dark:text-zinc-200"
+                    data-testid={`plan-header-school-${school.name}`}
+                  >
+                    <span>{school.name}</span>
+                    {typeof school.fitScore === "number" && (
+                      <span className="text-zinc-500 dark:text-zinc-400 font-medium">{Math.round(school.fitScore)}</span>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            )}
             <p className="mt-1 text-[15px] font-medium text-zinc-500 dark:text-zinc-400 truncate">
               {plan.target_major}
             </p>
           </div>
+          {remainingUnits !== null && (
+            <div
+              className="flex shrink-0 flex-col items-end rounded-2xl border border-zinc-200/70 bg-zinc-50/80 px-4 py-3 text-right dark:border-zinc-800/80 dark:bg-zinc-900/80"
+              data-testid="plan-header-remaining-units"
+            >
+              <span className="text-3xl font-bold tracking-tighter text-blue-600 dark:text-blue-500">
+                {remainingUnits}
+              </span>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-zinc-500 dark:text-zinc-400">
+                Units Left
+              </span>
+            </div>
+          )}
         </div>
       </div>
 

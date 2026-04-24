@@ -70,13 +70,13 @@ describe("SemesterPlan", () => {
   it("shows total units in header", () => {
     renderSemesterPlan(mockPlan);
 
-    expect(screen.getByTestId("overall-total-units")).toHaveTextContent("21 Total");
+    expect(screen.queryByTestId("overall-total-units")).not.toBeInTheDocument();
   });
 
   it("shows remaining units equal to total when no courses are completed", () => {
     renderSemesterPlan(mockPlan);
 
-    expect(screen.getByTestId("overall-remaining-units")).toHaveTextContent("21");
+    expect(screen.queryByTestId("overall-remaining-units")).not.toBeInTheDocument();
   });
 
   it("decreases remaining units when a course is marked as completed", () => {
@@ -92,9 +92,8 @@ describe("SemesterPlan", () => {
 
     renderSemesterPlan(planWithCompleted);
 
-    // CS 101 is 3 units, so remaining should be 21 - 3 = 18
-    expect(screen.getByTestId("overall-remaining-units")).toHaveTextContent("18");
-    expect(screen.getByTestId("overall-completed-units")).toHaveTextContent("3 Done");
+    expect(screen.queryByTestId("overall-remaining-units")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("overall-completed-units")).not.toBeInTheDocument();
   });
 
   it("shows semester units excluding completed courses", () => {
