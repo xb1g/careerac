@@ -36,6 +36,15 @@ interface PlanDetailClientProps {
   } | null;
 }
 
+function getSchoolFitLabel(rank: number, schoolCount: number, fitScore?: number) {
+  if (schoolCount <= 1) return "Target school";
+  if (rank === 0) return "Best fit";
+  if (typeof fitScore !== "number") return "Matched";
+  if (fitScore >= 85) return "Strong fit";
+  if (fitScore >= 70) return "Good fit";
+  return "Matched";
+}
+
 export default function PlanDetailClient({ plan, transcript }: PlanDetailClientProps) {
   const searchParams = useSearchParams();
   const resolveRisk = searchParams?.get("resolveRisk") ?? undefined;
@@ -73,11 +82,15 @@ export default function PlanDetailClient({ plan, transcript }: PlanDetailClientP
     ? (currentPlan as TransferPlan)
     : null;
   const headerTitle = transferPlan?.ccName || plan.title;
-  const headerSchools: Array<{ name: string; fitScore?: number }> = transferPlan
+  const headerSchools: Array<{ name: string; fitScore?: number; fitLabel: string }> = transferPlan
     ? (transferPlan.coveredSchools && transferPlan.coveredSchools.length > 0
-        ? transferPlan.coveredSchools.map((s) => ({ name: s.name, fitScore: s.fitScore }))
+        ? transferPlan.coveredSchools.map((s, index, schools) => ({
+            name: s.name,
+            fitScore: s.fitScore,
+            fitLabel: getSchoolFitLabel(index, schools.length, s.fitScore),
+          }))
         : transferPlan.targetUniversity
-          ? [{ name: transferPlan.targetUniversity }]
+          ? [{ name: transferPlan.targetUniversity, fitLabel: "Target school" }]
           : [])
     : [];
   const remainingUnits = transferPlan
@@ -324,13 +337,13 @@ export default function PlanDetailClient({ plan, transcript }: PlanDetailClientP
                 {headerSchools.map((school) => (
                   <li
                     key={school.name}
-                    className="inline-flex items-center gap-1.5 rounded-full bg-zinc-100 dark:bg-zinc-800 px-2.5 py-1 text-[13px] font-semibold text-zinc-800 dark:text-zinc-200"
+                    className="inline-flex items-center gap-2 rounded-full bg-zinc-100 dark:bg-zinc-800 px-2.5 py-1 text-[13px] font-semibold text-zinc-800 dark:text-zinc-200"
                     data-testid={`plan-header-school-${school.name}`}
                   >
                     <span>{school.name}</span>
-                    {typeof school.fitScore === "number" && (
-                      <span className="text-zinc-500 dark:text-zinc-400 font-medium">{Math.round(school.fitScore)}</span>
-                    )}
+                    <span className="rounded-full bg-white/80 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-zinc-500 dark:bg-zinc-700/80 dark:text-zinc-300">
+                      {school.fitLabel}
+                    </span>
                   </li>
                 ))}
               </ul>
