@@ -418,6 +418,8 @@ Let me know if you have any questions!`;
 
       expect(prompt).toContain("Stay on topic");
       expect(prompt).toContain("Don't fabricate");
+      expect(prompt).toContain("Use exact CC courses only");
+      expect(prompt).toContain("Require articulation proof");
       expect(prompt).toContain("Admit when no data");
       expect(prompt).toContain("Prerequisite ordering");
     });

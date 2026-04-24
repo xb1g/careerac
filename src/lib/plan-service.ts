@@ -1,5 +1,6 @@
 import { createClient } from "@/utils/supabase/server";
 import type { Database, Json } from "@/types/database";
+import { verifyPlanDataAgainstArticulation } from "@/lib/plan-verification";
 
 type SupabaseServerClient = Awaited<ReturnType<typeof createClient>>;
 type TransferPlanInsert = Database["public"]["Tables"]["transfer_plans"]["Insert"];
@@ -172,13 +173,22 @@ export async function savePlanRecord(
   supabase: SupabaseServerClient,
   input: SavePlanRecordInput,
 ): Promise<TransferPlanRow> {
+  const verifiedPlanData = await verifyPlanDataAgainstArticulation({
+    supabase,
+    planData: input.planData,
+    ccInstitutionId: input.ccInstitutionId,
+    targetInstitutionId: input.targetInstitutionId,
+    targetMajor: input.targetMajor,
+    comparisonTargets: input.comparisonTargets,
+  });
+
   const insertData: TransferPlanInsert = {
     user_id: input.userId,
     title: input.title,
     cc_institution_id: input.ccInstitutionId,
     target_institution_id: input.targetInstitutionId,
     target_major: input.targetMajor,
-    plan_data: serializeJson(input.planData),
+    plan_data: serializeJson(verifiedPlanData),
     chat_history: serializeJson(input.chatHistory),
     status: input.status ?? "active",
     max_credits_per_semester: input.maxCreditsPerSemester ?? null,
