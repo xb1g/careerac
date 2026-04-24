@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { UIMessage } from "@ai-sdk/react";
 import { RecoveryContext } from "@/components/chat";
@@ -17,6 +17,12 @@ import type { Json } from "@/types/database";
 import { TranscriptData } from "@/types/transcript";
 import { shouldShowComparisonSection } from "@/utils/comparison-visibility";
 import { createClient } from "@/utils/supabase/client";
+
+interface Institution {
+  id: string;
+  name: string;
+  abbreviation: string | null;
+}
 
 interface PlanDetailClientProps {
   plan: {
@@ -120,6 +126,80 @@ export default function PlanDetailClient({ plan, transcript }: PlanDetailClientP
   const transcriptData = transcriptEditorData;
   const latestMessagesRef = useRef<UIMessage[]>(initialMessages);
   const [isChatLoading, setIsChatLoading] = useState(false);
+
+  // Target school editing state
+  const [isEditingTargets, setIsEditingTargets] = useState(false);
+  const [universities, setUniversities] = useState<Institution[]>([]);
+  const [selectedTargetIds, setSelectedTargetIds] = useState<string[]>([]);
+  const [targetsChanged, setTargetsChanged] = useState(false);
+  const [isSavingTargets, setIsSavingTargets] = useState(false);
+
+  // Load universities for target editing
+  useEffect(() => {
+    if (!isEditingTargets) return;
+    fetch("/api/institutions")
+      .then((res) => res.json())
+      .then((data) => {
+        setUniversities(data.universities ?? []);
+      })
+      .catch(console.error);
+  }, [isEditingTargets]);
+
+  // Initialize selected targets from current plan
+  useEffect(() => {
+    const ids: string[] = [];
+    if (plan.target_institution_id) ids.push(plan.target_institution_id);
+    const comparison = plan.comparison_targets;
+    if (Array.isArray(comparison)) {
+      for (const t of comparison) {
+        if (t && typeof t === "object" && "institution_id" in t && typeof t.institution_id === "string") {
+          if (!ids.includes(t.institution_id)) ids.push(t.institution_id);
+        }
+      }
+    }
+    setSelectedTargetIds(ids);
+  }, [plan.target_institution_id, plan.comparison_targets]);
+
+  const handleToggleTarget = useCallback((id: string) => {
+    setSelectedTargetIds((prev) => {
+      const next = prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id];
+      return next;
+    });
+    setTargetsChanged(true);
+  }, []);
+
+  const handleSaveTargets = useCallback(async () => {
+    setIsSavingTargets(true);
+    try {
+      const primaryId = selectedTargetIds[0] ?? null;
+      const comparison_targets = selectedTargetIds.slice(1).map((id, index) => ({
+        institution_id: id,
+        priority_order: index + 1,
+      }));
+
+      const res = await fetch(`/api/plans/${plan.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          target_institution_id: primaryId,
+          comparison_targets,
+        }),
+      });
+
+      if (!res.ok) throw new Error("Failed to update targets");
+
+      setIsEditingTargets(false);
+      setTargetsChanged(true); // triggers regeneration banner
+    } catch (err) {
+      console.error("Error saving targets:", err);
+    } finally {
+      setIsSavingTargets(false);
+    }
+  }, [plan.id, selectedTargetIds]);
+
+  const handleDismissRegenBanner = useCallback(() => {
+    setTargetsChanged(false);
+  }, []);
 
   // Save plan to database - called via Chat's onSavePlan callback
   const handleSavePlan = useCallback(async (planData: ParsedPlan, chatMessages: unknown[]) => {
@@ -332,22 +412,105 @@ export default function PlanDetailClient({ plan, transcript }: PlanDetailClientP
               </h1>
               <DeletePlanButton planId={plan.id} />
             </div>
-            {headerSchools.length > 0 && (
-              <ul className="mt-2 flex flex-wrap items-center gap-1.5" data-testid="plan-header-schools">
-                {headerSchools.map((school) => (
-                  <li
-                    key={school.name}
-                    className="inline-flex items-center gap-2 rounded-full bg-zinc-100 dark:bg-zinc-800 px-2.5 py-1 text-[13px] font-semibold text-zinc-800 dark:text-zinc-200"
-                    data-testid={`plan-header-school-${school.name}`}
+            <div className="mt-2 flex flex-wrap items-center gap-2">
+              {headerSchools.length > 0 && (
+                <ul className="flex flex-wrap items-center gap-1.5" data-testid="plan-header-schools">
+                  {headerSchools.map((school) => (
+                    <li
+                      key={school.name}
+                      className="inline-flex items-center gap-2 rounded-full bg-zinc-100 dark:bg-zinc-800 px-2.5 py-1 text-[13px] font-semibold text-zinc-800 dark:text-zinc-200"
+                      data-testid={`plan-header-school-${school.name}`}
+                    >
+                      <span>{school.name}</span>
+                      <span className="rounded-full bg-white/80 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-zinc-500 dark:bg-zinc-700/80 dark:text-zinc-300">
+                        {school.fitLabel}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+              <button
+                onClick={() => setIsEditingTargets((p) => !p)}
+                className="inline-flex items-center gap-1 rounded-full border border-dashed border-zinc-300 dark:border-zinc-600 px-2.5 py-1 text-[13px] font-medium text-zinc-500 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
+                data-testid="edit-targets-button"
+              >
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+                </svg>
+                {isEditingTargets ? "Done" : "Edit targets"}
+              </button>
+            </div>
+
+            {/* Target editing panel */}
+            {isEditingTargets && (
+              <div className="mt-3 p-3 rounded-lg border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-900">
+                <p className="text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-2">
+                  Select target universities (first = primary):
+                </p>
+                <div className="flex flex-wrap gap-1.5 max-h-40 overflow-y-auto">
+                  {universities.map((uni) => {
+                    const isSelected = selectedTargetIds.includes(uni.id);
+                    return (
+                      <button
+                        key={uni.id}
+                        onClick={() => handleToggleTarget(uni.id)}
+                        className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium transition-colors cursor-pointer ${
+                          isSelected
+                            ? "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 border border-blue-200 dark:border-blue-800"
+                            : "bg-white dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-700"
+                        }`}
+                      >
+                        {isSelected && (
+                          <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                          </svg>
+                        )}
+                        {uni.abbreviation ?? uni.name}
+                      </button>
+                    );
+                  })}
+                </div>
+                <div className="mt-2 flex items-center gap-2">
+                  <button
+                    onClick={handleSaveTargets}
+                    disabled={isSavingTargets}
+                    className="px-3 py-1.5 text-xs font-medium bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 cursor-pointer"
                   >
-                    <span>{school.name}</span>
-                    <span className="rounded-full bg-white/80 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-zinc-500 dark:bg-zinc-700/80 dark:text-zinc-300">
-                      {school.fitLabel}
-                    </span>
-                  </li>
-                ))}
-              </ul>
+                    {isSavingTargets ? "Saving..." : "Save targets"}
+                  </button>
+                  <button
+                    onClick={() => setIsEditingTargets(false)}
+                    className="px-3 py-1.5 text-xs font-medium text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-md cursor-pointer"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
             )}
+
+            {/* Regeneration prompt */}
+            {targetsChanged && !isEditingTargets && (
+              <div className="mt-3 flex items-center gap-3 p-3 rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800">
+                <svg className="w-5 h-5 text-amber-600 dark:text-amber-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-amber-800 dark:text-amber-200">
+                    Your target schools changed
+                  </p>
+                  <p className="text-xs text-amber-700 dark:text-amber-300">
+                    Chat with the AI to regenerate your plan with updated articulation data.
+                  </p>
+                </div>
+                <button
+                  onClick={handleDismissRegenBanner}
+                  className="text-xs text-amber-600 dark:text-amber-400 hover:text-amber-800 dark:hover:text-amber-200 font-medium cursor-pointer"
+                >
+                  Dismiss
+                </button>
+              </div>
+            )}
+
             <p className="mt-1 text-[15px] font-medium text-zinc-500 dark:text-zinc-400 truncate">
               {plan.target_major}
             </p>

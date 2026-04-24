@@ -16,6 +16,10 @@ vi.mock("@/utils/supabase/server", () => ({
       getUser: mockGetUser,
     },
   })),
+  getSafeUser: vi.fn(async () => {
+    const result = await mockGetUser();
+    return result.data?.user ?? null;
+  }),
 }));
 
 vi.mock("@/lib/auto-plan-generation-job", () => {

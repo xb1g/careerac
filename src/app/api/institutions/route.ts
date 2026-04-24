@@ -7,7 +7,7 @@ export async function GET() {
   const { data: ccs, error: ccError } = await supabase
     .from("institutions")
     .select("id, name, abbreviation")
-    .eq("type", "cc")
+    .in("type", ["cc", "community_college"])
     .order("name");
 
   const { data: universities, error: uniError } = await supabase

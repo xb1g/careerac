@@ -5,7 +5,7 @@ import {
   normalizeAutoPlanRequest,
   type GenerateAutoErrorShape,
 } from "@/lib/auto-plan-generation-job";
-import { createClient } from "@/utils/supabase/server";
+import { createClient, getSafeUser } from "@/utils/supabase/server";
 
 export const runtime = "nodejs";
 export const maxDuration = 30;
@@ -17,9 +17,7 @@ function errorResponse(status: number, error: GenerateAutoErrorShape) {
 export async function POST(req: Request) {
   try {
     const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const user = await getSafeUser(supabase);
 
     if (!user) {
       return errorResponse(401, {

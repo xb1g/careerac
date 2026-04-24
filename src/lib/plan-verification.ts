@@ -249,8 +249,7 @@ async function resolvePlanTargets(
       const coveredLabel =
         plan.coveredSchools?.find((school) => school.name === target.label)?.name ??
         plan.coveredSchools?.find((school) => school.institutionId === target.id)?.name ??
-        target.label ||
-        institution.name;
+        (target.label || institution.name);
 
       return {
         id: target.id,

@@ -18,7 +18,7 @@ export async function resolveInstitutionIds(
     .from("institutions")
     .select("id")
     .or(`name.ilike.%${ccName}%,abbreviation.ilike.%${ccName}%`)
-    .eq("type", "cc")
+    .in("type", ["cc", "community_college"])
     .limit(1)
     .maybeSingle();
 

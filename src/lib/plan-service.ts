@@ -108,11 +108,13 @@ export async function resolveUniversityIdsByNames(
   supabase: SupabaseServerClient,
   names: string[],
 ): Promise<ResolvedUniversity[]> {
-  const queries = names.map(async (name): Promise<ResolvedUniversity> => {
-    const trimmed = name.trim().replace(/,/g, " ");
-    if (!trimmed) {
-      return { name, institutionId: null, abbreviation: null };
-    }
+  const queries = names
+    .filter((name): name is string => typeof name === "string")
+    .map(async (name): Promise<ResolvedUniversity> => {
+      const trimmed = name.trim().replace(/,/g, " ");
+      if (!trimmed) {
+        return { name, institutionId: null, abbreviation: null };
+      }
 
     const { data } = await supabase
       .from("institutions")
@@ -146,7 +148,7 @@ export async function resolveInstitutionIdsByName(
         .from("institutions")
         .select("id")
         .or(`name.ilike.%${trimmedCcName}%,abbreviation.ilike.%${trimmedCcName}%`)
-        .eq("type", "cc")
+        .in("type", ["cc", "community_college"])
         .limit(1)
         .maybeSingle()
     : Promise.resolve({ data: null as { id: string } | null });
