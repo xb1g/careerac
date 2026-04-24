@@ -75,16 +75,17 @@ describe("POST /api/transcript/upload", () => {
     expect(mockInsert).not.toHaveBeenCalled();
   });
 
-  it("returns 200 with transcript id when storage upload and DB insert both succeed", async () => {
+  it("returns 202 with a pending transcript id when storage upload and DB insert both succeed", async () => {
     mockStorageUpload.mockResolvedValue({ data: { path: "ok" }, error: null });
 
     const { POST } = await import("../route");
     const response = await POST(buildPdfRequest());
 
-    expect(response.status).toBe(200);
+    expect(response.status).toBe(202);
 
     const body = await response.json();
     expect(body.id).toBe("transcript-xyz");
+    expect(body.parseStatus).toBe("pending");
     expect(mockStorageUpload).toHaveBeenCalledTimes(1);
     expect(mockInsert).toHaveBeenCalledTimes(1);
   });

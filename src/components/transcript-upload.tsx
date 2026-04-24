@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useCallback } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { TranscriptData, TranscriptCourse } from "@/types/transcript";
 
 interface TranscriptUploadProps {
@@ -8,8 +8,36 @@ interface TranscriptUploadProps {
   onSkip: () => void;
 }
 
+type ProcessingStage = "idle" | "uploading" | "extracting" | "parsing" | "syncing";
+
+const POLL_INTERVAL_MS = 1500;
+const MAX_POLL_ATTEMPTS = 80;
+
+function getProcessingMessage(stage: ProcessingStage) {
+  switch (stage) {
+    case "uploading":
+      return "Uploading transcript...";
+    case "extracting":
+      return "Extracting transcript text...";
+    case "parsing":
+      return "Parsing transcript...";
+    case "syncing":
+      return "Syncing your courses...";
+    default:
+      return "Uploading and parsing transcript...";
+  }
+}
+
+function getProcessingStage(attempt: number): ProcessingStage {
+  if (attempt < 2) return "extracting";
+  if (attempt < 8) return "parsing";
+  return "syncing";
+}
+
 export default function TranscriptUpload({ onTranscriptParsed, onSkip }: TranscriptUploadProps) {
   const [isUploading, setIsUploading] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [processingStage, setProcessingStage] = useState<ProcessingStage>("idle");
   const [isSavingManual, setIsSavingManual] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [parsedData, setParsedData] = useState<TranscriptData | null>(null);
@@ -17,20 +45,86 @@ export default function TranscriptUpload({ onTranscriptParsed, onSkip }: Transcr
   const [isDragging, setIsDragging] = useState(false);
   const [showManualEntry, setShowManualEntry] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const activePollTokenRef = useRef(0);
+
+  useEffect(() => {
+    return () => {
+      activePollTokenRef.current += 1;
+    };
+  }, []);
+
+  const pollTranscriptStatus = useCallback(async (id: string, pollToken: number) => {
+    for (let attempt = 0; attempt < MAX_POLL_ATTEMPTS; attempt += 1) {
+      if (activePollTokenRef.current !== pollToken) {
+        return;
+      }
+
+      setProcessingStage(getProcessingStage(attempt));
+
+      try {
+        const response = await fetch(`/api/transcript/${id}`, {
+          method: "GET",
+          cache: "no-store",
+        });
+        const payload = await response.json().catch(() => ({}));
+
+        if (!response.ok) {
+          throw new Error(payload.error || "Failed to fetch transcript status.");
+        }
+
+        if (payload.parse_status === "completed" && payload.parsed_data) {
+          setParsedData(payload.parsed_data as TranscriptData);
+          setTranscriptId(id);
+          setIsProcessing(false);
+          setProcessingStage("idle");
+          return;
+        }
+
+        if (payload.parse_status === "failed") {
+          setError(payload.parse_error || "Could not parse transcript.");
+          setShowManualEntry(true);
+          setIsProcessing(false);
+          setProcessingStage("idle");
+          return;
+        }
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Failed to fetch transcript status.");
+        setIsProcessing(false);
+        setProcessingStage("idle");
+        return;
+      }
+
+      await new Promise((resolve) => setTimeout(resolve, POLL_INTERVAL_MS));
+    }
+
+    if (activePollTokenRef.current === pollToken) {
+      setError("Transcript parsing took too long. Please retry or enter courses manually.");
+      setShowManualEntry(true);
+      setIsProcessing(false);
+      setProcessingStage("idle");
+    }
+  }, []);
 
   const uploadFile = useCallback(async (file: File) => {
+    activePollTokenRef.current += 1;
+    const pollToken = activePollTokenRef.current;
+
     setIsUploading(true);
+    setIsProcessing(false);
+    setProcessingStage("uploading");
     setError(null);
 
     if (!file.type.includes("pdf")) {
       setError("Please upload a PDF file.");
       setIsUploading(false);
+      setProcessingStage("idle");
       return;
     }
 
     if (file.size > 5 * 1024 * 1024) {
       setError("File must be under 5MB.");
       setIsUploading(false);
+      setProcessingStage("idle");
       return;
     }
 
@@ -38,34 +132,49 @@ export default function TranscriptUpload({ onTranscriptParsed, onSkip }: Transcr
       const formData = new FormData();
       formData.append("file", file);
 
-      const res = await fetch("/api/transcript/upload", {
+      const response = await fetch("/api/transcript/upload", {
         method: "POST",
         body: formData,
       });
+      const payload = await response.json().catch(() => ({}));
 
-      const data = await res.json();
-
-      if (!res.ok) {
-        setError(data.error || "Upload failed.");
+      if (!response.ok) {
+        setError(payload.error || "Upload failed.");
         setIsUploading(false);
+        setProcessingStage("idle");
         return;
       }
 
-      if (data.parseStatus === "failed") {
-        setError(data.parseError || "Could not parse transcript.");
-        setShowManualEntry(true);
+      const nextTranscriptId = payload.id as string | undefined;
+      if (!nextTranscriptId) {
+        setError("Transcript upload succeeded, but no transcript id was returned.");
         setIsUploading(false);
+        setProcessingStage("idle");
         return;
       }
 
-      setParsedData(data.parsedData);
-      setTranscriptId(data.id);
+      setTranscriptId(nextTranscriptId);
+      setIsUploading(false);
+      setIsProcessing(true);
+      setProcessingStage("extracting");
+
+      void fetch(`/api/transcript/${nextTranscriptId}/process`, {
+        method: "POST",
+      }).catch((err) => {
+        if (activePollTokenRef.current !== pollToken) return;
+        setError(err instanceof Error ? err.message : "Failed to start transcript parsing.");
+        setIsProcessing(false);
+        setProcessingStage("idle");
+      });
+
+      void pollTranscriptStatus(nextTranscriptId, pollToken);
     } catch {
       setError("Failed to upload. Please try again.");
-    } finally {
       setIsUploading(false);
+      setIsProcessing(false);
+      setProcessingStage("idle");
     }
-  }, []);
+  }, [pollTranscriptStatus]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -100,7 +209,6 @@ export default function TranscriptUpload({ onTranscriptParsed, onSkip }: Transcr
     }
   };
 
-  // Manual entry state
   const [manualCourse, setManualCourse] = useState({ code: "", title: "", units: "", grade: "", semester: "" });
   const [manualCourses, setManualCourses] = useState<TranscriptCourse[]>([]);
   const [manualInstitution, setManualInstitution] = useState("");
@@ -110,8 +218,11 @@ export default function TranscriptUpload({ onTranscriptParsed, onSkip }: Transcr
 
     const grade = manualCourse.grade.toUpperCase();
     const status: TranscriptCourse["status"] =
-      grade === "IP" || grade === "I" ? "in_progress" :
-        grade === "W" || grade === "EW" ? "withdrawn" : "completed";
+      grade === "IP" || grade === "I"
+        ? "in_progress"
+        : grade === "W" || grade === "EW"
+          ? "withdrawn"
+          : "completed";
 
     setManualCourses((prev) => [
       ...prev,
@@ -358,12 +469,13 @@ export default function TranscriptUpload({ onTranscriptParsed, onSkip }: Transcr
                   <td className="px-3 py-2 text-zinc-700 dark:text-zinc-300">{course.grade}</td>
                   <td className="px-3 py-2">
                     <span
-                      className={`inline-block rounded-full px-2 py-0.5 text-xs font-medium ${course.status === "completed"
+                      className={`inline-block rounded-full px-2 py-0.5 text-xs font-medium ${
+                        course.status === "completed"
                           ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300"
                           : course.status === "in_progress"
                             ? "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300"
                             : "bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400"
-                        }`}
+                      }`}
                     >
                       {course.status === "in_progress" ? "In Progress" : course.status === "completed" ? "Completed" : "Withdrawn"}
                     </span>
@@ -392,7 +504,12 @@ export default function TranscriptUpload({ onTranscriptParsed, onSkip }: Transcr
             Looks Good, Continue
           </button>
           <button
-            onClick={() => { setParsedData(null); setTranscriptId(null); }}
+            onClick={() => {
+              activePollTokenRef.current += 1;
+              setParsedData(null);
+              setTranscriptId(null);
+              setProcessingStage("idle");
+            }}
             className="rounded-lg border border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 px-6 py-2.5 text-sm font-medium hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
           >
             Upload Different File
@@ -401,6 +518,8 @@ export default function TranscriptUpload({ onTranscriptParsed, onSkip }: Transcr
       </div>
     );
   }
+
+  const isBusy = isUploading || isProcessing;
 
   return (
     <div className="space-y-6">
@@ -420,15 +539,24 @@ export default function TranscriptUpload({ onTranscriptParsed, onSkip }: Transcr
       <div
         role="button"
         tabIndex={0}
-        onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
+        onDragOver={(e) => {
+          e.preventDefault();
+          setIsDragging(true);
+        }}
         onDragLeave={() => setIsDragging(false)}
         onDrop={handleDrop}
         onClick={() => fileInputRef.current?.click()}
-        onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); fileInputRef.current?.click(); } }}
-        className={`cursor-pointer rounded-xl border-2 border-dashed p-12 text-center transition-all ${isDragging
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            fileInputRef.current?.click();
+          }
+        }}
+        className={`cursor-pointer rounded-xl border-2 border-dashed p-12 text-center transition-all ${
+          isDragging
             ? "border-blue-500 bg-blue-50 dark:bg-blue-900/10"
             : "border-zinc-300 dark:border-zinc-700 hover:border-zinc-400 dark:hover:border-zinc-600"
-          } ${isUploading ? "opacity-50 pointer-events-none" : ""}`}
+        } ${isBusy ? "opacity-50 pointer-events-none" : ""}`}
       >
         <input
           ref={fileInputRef}
@@ -438,10 +566,10 @@ export default function TranscriptUpload({ onTranscriptParsed, onSkip }: Transcr
           className="hidden"
         />
 
-        {isUploading ? (
+        {isBusy ? (
           <div className="flex flex-col items-center gap-3">
             <div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
-            <p className="text-sm text-zinc-600 dark:text-zinc-400">Uploading and parsing transcript...</p>
+            <p className="text-sm text-zinc-600 dark:text-zinc-400">{getProcessingMessage(processingStage)}</p>
           </div>
         ) : (
           <div className="flex flex-col items-center gap-3">

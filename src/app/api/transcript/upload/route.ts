@@ -1,60 +1,18 @@
-import { createClient } from "@/utils/supabase/server";
-import { parseTranscriptText } from "@/utils/transcript-parser";
-import { parseTranscriptWithAI as parseWithMiniMax } from "@/utils/transcript-ai-parser";
-import { parseTranscriptWithGemini } from "@/utils/transcript-gemini-parser";
-import { syncTranscriptToUserCourses } from "@/utils/sync-transcript-courses";
 import type { Database } from "@/types/database";
+import { createClient } from "@/utils/supabase/server";
 
-// Polyfill browser globals for pdfjs-dist in Node.js environment
-// @napi-rs/canvas provides DOMMatrix, Path2D, ImageData that pdfjs-dist requires
-import { DOMMatrix, Path2D, ImageData } from "@napi-rs/canvas";
-if (typeof globalThis.DOMMatrix === "undefined") {
-  (globalThis as unknown as { DOMMatrix: typeof DOMMatrix }).DOMMatrix = DOMMatrix;
-}
-if (typeof globalThis.Path2D === "undefined") {
-  (globalThis as unknown as { Path2D: typeof Path2D }).Path2D = Path2D;
-}
-if (typeof globalThis.ImageData === "undefined") {
-  (globalThis as unknown as { ImageData: typeof ImageData }).ImageData = ImageData;
-}
+const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 export const runtime = "nodejs";
-
-async function extractTextFromPdf(buffer: Buffer): Promise<string> {
-  // Static imports so Next.js file tracing includes these in the serverless bundle.
-  // pdfjs-dist is in serverExternalPackages so it won't be webpack-bundled,
-  // but the tracer needs to see the paths to copy them into the deployment.
-  const pdfjsLib = await import(/* webpackIgnore: true */ "pdfjs-dist/legacy/build/pdf.mjs");
-
-  const loadingTask = pdfjsLib.getDocument({
-    data: new Uint8Array(buffer),
-    useSystemFonts: true,
-  });
-  const pdf = await loadingTask.promise;
-
-  try {
-    let fullText = "";
-
-    for (let i = 1; i <= pdf.numPages; i++) {
-      const page = await pdf.getPage(i);
-      const textContent = await page.getTextContent();
-      const pageText = textContent.items
-        .map((item) => ("str" in item ? (item as { str: string }).str : ""))
-        .join(" ");
-      fullText += pageText + "\n\n";
-    }
-
-    return fullText.trim();
-  } finally {
-    await pdf.destroy();
-  }
-}
+export const maxDuration = 30;
 
 export async function POST(req: Request) {
   try {
     const supabase = await createClient();
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
 
     if (authError || !user) {
       return Response.json({ error: "Unauthorized" }, { status: 401 });
@@ -75,13 +33,9 @@ export async function POST(req: Request) {
       return Response.json({ error: "File must be under 5MB" }, { status: 400 });
     }
 
-    // Read file buffer
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
-
-    // Upload to Supabase Storage
-    const timestamp = Date.now();
-    const filePath = `${user.id}/${timestamp}_${file.name}`;
+    const filePath = `${user.id}/${Date.now()}_${file.name}`;
 
     const { error: uploadError } = await supabase.storage
       .from("transcripts")
@@ -97,8 +51,7 @@ export async function POST(req: Request) {
       const errorPayload = isRlsViolation
         ? {
             error:
-              "Failed to upload to the 'transcripts' storage bucket: row-level security policy violation. " +
-              "Verify the bucket exists and migration 011_storage_transcripts_bucket_policies.sql has been applied to the Supabase project.",
+              "Failed to upload to the 'transcripts' storage bucket: row-level security policy violation. Verify the bucket exists and migration 011_storage_transcripts_bucket_policies.sql has been applied to the Supabase project.",
             details: message,
           }
         : {
@@ -108,72 +61,27 @@ export async function POST(req: Request) {
       return Response.json(errorPayload, { status: 500 });
     }
 
-    // Parse PDF text
-    let parsedData;
-    let parseStatus: "completed" | "failed" = "completed";
-    let parseError: string | null = null;
-    let parseMethod: "gemini" | "minimax" | "regex" = "regex";
-
-    try {
-      const pdfData = { text: await extractTextFromPdf(buffer) };
-
-      // 1. Try Gemini first (most robust)
-      if (process.env.GEMINI_API_KEY) {
-        try {
-          parsedData = await parseTranscriptWithGemini(pdfData.text);
-          parseMethod = "gemini";
-        } catch (geminiError) {
-          console.warn("Gemini parsing failed, falling back:", geminiError);
-        }
-      }
-
-      // 2. Try MiniMax second
-      if (!parsedData && process.env.MINIMAX_API_KEY) {
-        try {
-          parsedData = await parseWithMiniMax(pdfData.text);
-          parseMethod = "minimax";
-        } catch (miniMaxError) {
-          console.warn("MiniMax parsing failed, falling back:", miniMaxError);
-        }
-      }
-
-      // 3. Fallback to regex
-      if (!parsedData) {
-        parsedData = parseTranscriptText(pdfData.text);
-        parseMethod = "regex";
-        if (parsedData.courses.length === 0) {
-          parseStatus = "failed";
-          parseError = "Could not extract any courses from the transcript. The format may not be supported. Please use manual entry.";
-        }
-      }
-    } catch (err) {
-      parseStatus = "failed";
-      parseError = "Failed to read the PDF file. It may be scanned or corrupted. Please use manual entry.";
-      console.error("PDF parse error:", err);
-    }
-
-    // Save transcript record to database
     const insertPayload: Database["public"]["Tables"]["transcripts"]["Insert"] = {
       user_id: user.id,
       file_path: filePath,
       file_name: file.name,
-      parsed_data: parsedData ? JSON.parse(JSON.stringify(parsedData)) : null,
-      parse_status: parseStatus,
-      parse_error: parseError,
-      parse_method: parseMethod === "regex" ? "regex" : "ai",
+      parsed_data: null,
+      parse_status: "pending",
+      parse_error: null,
+      parse_method: null,
       updated_at: new Date().toISOString(),
     };
 
     const { data: transcript, error: dbError } = await supabase
       .from("transcripts")
       .insert(insertPayload as never)
-      .select("id")
+      .select("id, parse_status")
       .single();
 
-    if (dbError) {
+    if (dbError || !transcript) {
       console.error("Database insert error:", dbError);
 
-      if (dbError.code === "PGRST205") {
+      if (dbError?.code === "PGRST205") {
         return Response.json(
           { error: "Transcript schema is not deployed. Please run pending Supabase migrations." },
           { status: 500 },
@@ -183,30 +91,15 @@ export async function POST(req: Request) {
       return Response.json({ error: "Failed to save transcript record" }, { status: 500 });
     }
 
-    // After transcript is saved to DB, sync courses to user_courses (best-effort)
-    let sync: { created: number; updated: number } | null = null;
-    if (parsedData && parsedData.courses.length > 0) {
-      try {
-        const syncResult = await syncTranscriptToUserCourses(supabase, user.id, parsedData.courses);
-        sync = { created: syncResult.created, updated: syncResult.updated };
-        if (syncResult.errors.length > 0) {
-          console.warn("Transcript course sync partial errors:", syncResult.errors);
-        }
-      } catch (syncErr) {
-        console.error("Transcript course sync failed (non-blocking):", syncErr);
-      }
-    }
-
-    return Response.json({
-      id: (transcript as { id: string }).id,
-      parsedData,
-      parseStatus,
-      parseError,
-      parseMethod,
-      sync,
-    });
+    return Response.json(
+      {
+        id: (transcript as { id: string }).id,
+        parseStatus: "pending",
+      },
+      { status: 202 },
+    );
   } catch (error) {
     console.error("Transcript upload error:", error);
-    return Response.json({ error: "Failed to process transcript" }, { status: 500 });
+    return Response.json({ error: "Failed to upload transcript" }, { status: 500 });
   }
 }
