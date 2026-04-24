@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import type { UIMessage } from "ai";
 import { MiniMaxApiError } from "@/lib/ai-stream";
-import { rankBestFitUniversityIds } from "@/lib/context/articulation";
+import { rankBestFitUniversityIds, type RankedUniversity } from "@/lib/context/articulation";
 import { PlanGenerationPipeline } from "@/lib/plan-pipeline";
 import { buildSyntheticUserPrompt } from "@/lib/plan-prompts";
 import {
@@ -115,31 +115,48 @@ function buildPlanTitle(plan: TransferPlan): string {
   return `${plan.ccName} → ${plan.targetUniversity}`;
 }
 
-async function buildComparisonTargetsFromPlan(
+const MAX_COMPARISON_TARGETS = 10;
+
+async function buildComparisonTargets(
   supabase: Awaited<ReturnType<typeof createClient>>,
   plan: ParsedPlan | null,
+  rankedInstitutions: RankedUniversity[],
 ): Promise<ComparisonTargetPayload[] | null> {
   if (!plan || "isNoData" in plan) return null;
   const covered = plan.coveredSchools ?? [];
-  if (covered.length <= 1) return null;
+  const hasMultiSchool = covered.length > 1 || rankedInstitutions.length > 1;
+  if (!hasMultiSchool) return null;
+
+  const payload: ComparisonTargetPayload[] = [];
+  const seen = new Set<string>();
 
   const names = covered
     .map((s) => s.name)
     .filter((name): name is string => typeof name === "string" && name.trim().length > 0);
 
-  if (names.length === 0) return null;
+  if (names.length > 0) {
+    const resolved = await resolveUniversityIdsByNames(supabase, names);
+    resolved.forEach((entry) => {
+      if (!entry.institutionId || seen.has(entry.institutionId)) return;
+      if (payload.length >= MAX_COMPARISON_TARGETS) return;
+      seen.add(entry.institutionId);
+      payload.push({
+        institution_id: entry.institutionId,
+        name: entry.name,
+        abbreviation: entry.abbreviation,
+        priority_order: payload.length + 1,
+      });
+    });
+  }
 
-  const resolved = await resolveUniversityIdsByNames(supabase, names);
-
-  const payload: ComparisonTargetPayload[] = [];
-  const seen = new Set<string>();
-  resolved.forEach((entry) => {
-    if (!entry.institutionId || seen.has(entry.institutionId)) return;
-    seen.add(entry.institutionId);
+  rankedInstitutions.forEach((ranked) => {
+    if (!ranked.id || seen.has(ranked.id)) return;
+    if (payload.length >= MAX_COMPARISON_TARGETS) return;
+    seen.add(ranked.id);
     payload.push({
-      institution_id: entry.institutionId,
-      name: entry.name,
-      abbreviation: entry.abbreviation,
+      institution_id: ranked.id,
+      name: ranked.name,
+      abbreviation: ranked.abbreviation,
       priority_order: payload.length + 1,
     });
   });
@@ -319,9 +336,10 @@ export async function POST(req: Request) {
       generated.rawText,
     );
 
-    const comparisonTargets = await buildComparisonTargetsFromPlan(
+    const comparisonTargets = await buildComparisonTargets(
       supabase,
       generated.parsedPlan,
+      coveredInstitutions,
     );
 
     // For unified multi-school plans, anchor target_institution_id to the

@@ -4,11 +4,15 @@ const {
   mockGetUser,
   mockGenerate,
   mockResolveInstitutionIdsByName,
+  mockResolveUniversityIdsByNames,
+  mockRankBestFitUniversityIds,
   mockSavePlanRecord,
 } = vi.hoisted(() => ({
   mockGetUser: vi.fn(),
   mockGenerate: vi.fn(),
   mockResolveInstitutionIdsByName: vi.fn(),
+  mockResolveUniversityIdsByNames: vi.fn(),
+  mockRankBestFitUniversityIds: vi.fn(),
   mockSavePlanRecord: vi.fn(),
 }));
 
@@ -37,7 +41,12 @@ vi.mock("@/lib/plan-pipeline", () => ({
 
 vi.mock("@/lib/plan-service", () => ({
   resolveInstitutionIdsByName: mockResolveInstitutionIdsByName,
+  resolveUniversityIdsByNames: mockResolveUniversityIdsByNames,
   savePlanRecord: mockSavePlanRecord,
+}));
+
+vi.mock("@/lib/context/articulation", () => ({
+  rankBestFitUniversityIds: mockRankBestFitUniversityIds,
 }));
 
 function buildRequest(body: Record<string, unknown>): Request {
@@ -94,6 +103,9 @@ describe("POST /api/plans/generate-auto", () => {
       ccInstitutionId: "cc-1",
       targetInstitutionId: "uni-1",
     });
+
+    mockResolveUniversityIdsByNames.mockResolvedValue([]);
+    mockRankBestFitUniversityIds.mockResolvedValue([]);
 
     mockGenerate.mockResolvedValue({
       rawText: "```json\n{\"targetUniversity\":\"UCLA\"}\n```",
@@ -155,6 +167,53 @@ describe("POST /api/plans/generate-auto", () => {
         maxCreditsPerSemester: 15,
       }),
     );
+  });
+
+  it("persists all ranked institutions in comparison_targets even when AI returns fewer coveredSchools", async () => {
+    mockRankBestFitUniversityIds.mockResolvedValue([
+      { id: "uni-1", name: "UCLA", abbreviation: "UCLA" },
+      { id: "uni-2", name: "UC Berkeley", abbreviation: "UCB" },
+      { id: "uni-3", name: "UC San Diego", abbreviation: "UCSD" },
+      { id: "uni-4", name: "UC Irvine", abbreviation: "UCI" },
+      { id: "uni-5", name: "UC Davis", abbreviation: "UCD" },
+    ]);
+    mockResolveUniversityIdsByNames.mockImplementation(async (_client, names: string[]) => {
+      const byName: Record<string, { institutionId: string; name: string; abbreviation: string | null }> = {
+        UCLA: { institutionId: "uni-1", name: "UCLA", abbreviation: "UCLA" },
+        "UC Berkeley": { institutionId: "uni-2", name: "UC Berkeley", abbreviation: "UCB" },
+        "UC San Diego": { institutionId: "uni-3", name: "UC San Diego", abbreviation: "UCSD" },
+      };
+      return names.map((n) => byName[n]).filter(Boolean);
+    });
+    mockGenerate.mockResolvedValue({
+      rawText: "```json\n{}\n```",
+      parsedPlan: {
+        ...parsedPlan,
+        coveredSchools: [
+          { name: "UCLA", institutionId: null, fitScore: 90, articulatedUnits: 40, totalRequiredUnits: 60 },
+          { name: "UC Berkeley", institutionId: null, fitScore: 82, articulatedUnits: 38, totalRequiredUnits: 60 },
+          { name: "UC San Diego", institutionId: null, fitScore: 75, articulatedUnits: 34, totalRequiredUnits: 60 },
+        ],
+      },
+    });
+
+    const { POST } = await import("../route");
+    const response = await POST(
+      buildRequest({
+        transcriptData,
+        detectedMajor: "Computer Science",
+        targetSchool: null,
+      }),
+    );
+
+    expect(response.status).toBe(201);
+    const call = mockSavePlanRecord.mock.calls[0][1];
+    expect(call.comparisonTargets).toHaveLength(5);
+    const ids = call.comparisonTargets.map((t: { institution_id: string }) => t.institution_id);
+    expect(ids).toEqual(["uni-1", "uni-2", "uni-3", "uni-4", "uni-5"]);
+    call.comparisonTargets.forEach((t: { priority_order: number }, idx: number) => {
+      expect(t.priority_order).toBe(idx + 1);
+    });
   });
 
   it("uses best-fit mode when targetSchool is null", async () => {

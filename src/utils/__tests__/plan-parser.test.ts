@@ -430,7 +430,9 @@ Let me know if you have any questions!`;
       });
 
       expect(prompt).toContain('selected major is "Computer Science"');
-      expect(prompt).toContain("ONLY use these selected universities: UCLA, UC Berkeley");
+      expect(prompt).toContain(
+        "exactly one coveredSchools entry for each of these 2 selected universities: UCLA, UC Berkeley",
+      );
     });
 
     it("engages unified multi-school mode when hasTargetSchool=false", () => {

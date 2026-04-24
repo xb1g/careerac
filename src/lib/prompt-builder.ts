@@ -222,7 +222,7 @@ function buildUnifiedMultiSchoolSection(
 ): string {
   const explicit = selectedUniversityNames.length > 0;
   const schoolList = explicit
-    ? `ONLY use these selected universities: ${selectedUniversityNames.join(", ")}. Plan across all of them in a SINGLE unified plan — do NOT produce one plan per school, and do not add universities outside this list.`
+    ? `You MUST produce exactly one coveredSchools entry for each of these ${selectedUniversityNames.length} selected universities: ${selectedUniversityNames.join(", ")}. Do NOT drop any. Do NOT add universities outside this list. Sort coveredSchools by fitScore descending, but include every school even if its fitScore is low. Plan across all of them in a SINGLE unified plan — do NOT produce one plan per school.`
     : `The student has NOT selected target schools. From the articulation data, pick the 3–5 universities with the BEST articulation coverage for their major and cover all of them in a single unified plan.`;
 
   return `
