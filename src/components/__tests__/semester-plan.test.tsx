@@ -75,13 +75,6 @@ const mockMultiSchoolPlan: ParsedPlan = {
 
 describe("SemesterPlan", () => {
   describe("transfer plan rendering", () => {
-    it("renders plan header with CC, target university, and major", () => {
-      render(<SemesterPlan plan={mockTransferPlan} />);
-
-    expect(screen.getByTestId("plan-header")).toHaveTextContent("Santa Monica CollegeUCLA");
-      expect(screen.getByText("Computer Science")).toBeInTheDocument();
-    });
-
     it("displays overall total units", () => {
       render(<SemesterPlan plan={mockTransferPlan} />);
 
@@ -147,24 +140,10 @@ describe("SemesterPlan", () => {
       render(<SemesterPlan plan={mockNoDataPlan} />);
 
       expect(screen.queryByTestId("semester-grid")).not.toBeInTheDocument();
-      expect(screen.queryByTestId("plan-header")).not.toBeInTheDocument();
     });
   });
 
   describe("multi-school rendering", () => {
-    it("renders covered-school badges when coveredSchools.length > 1", () => {
-      render(<SemesterPlan plan={mockMultiSchoolPlan} />);
-
-      const header = screen.getByTestId("plan-header");
-      expect(header).toHaveAttribute("data-multi-school", "true");
-      expect(header).toHaveTextContent("3 schools");
-
-      expect(screen.getByTestId("covered-schools")).toBeInTheDocument();
-      expect(screen.getByTestId("covered-school-UCLA")).toBeInTheDocument();
-      expect(screen.getByTestId("covered-school-UC Berkeley")).toBeInTheDocument();
-      expect(screen.getByTestId("covered-school-UC San Diego")).toBeInTheDocument();
-    });
-
     it("shows asterisk legend when some courses are school-specific", () => {
       render(<SemesterPlan plan={mockMultiSchoolPlan} />);
       expect(screen.getByTestId("asterisk-legend")).toBeInTheDocument();

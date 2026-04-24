@@ -67,6 +67,20 @@ export default function PlanDetailClient({ plan, transcript }: PlanDetailClientP
       : null
   );
 
+  // Derive header bits: ccName as the anchor title, covered universities as chips.
+  // Falls back to the DB title when no parsed plan is available yet.
+  const transferPlan = currentPlan && !("isNoData" in currentPlan && currentPlan.isNoData)
+    ? (currentPlan as TransferPlan)
+    : null;
+  const headerTitle = transferPlan?.ccName || plan.title;
+  const headerSchools: Array<{ name: string; fitScore?: number }> = transferPlan
+    ? (transferPlan.coveredSchools && transferPlan.coveredSchools.length > 0
+        ? transferPlan.coveredSchools.map((s) => ({ name: s.name, fitScore: s.fitScore }))
+        : transferPlan.targetUniversity
+          ? [{ name: transferPlan.targetUniversity }]
+          : [])
+    : [];
+
   // Course status menu state
   const [selectedCourse, setSelectedCourse] = useState<{
     course: PlanCourse & { semesterNumber: number };
@@ -289,13 +303,29 @@ export default function PlanDetailClient({ plan, transcript }: PlanDetailClientP
       <div className="px-6 lg:px-8 py-4 lg:py-5 border-b border-zinc-200/50 dark:border-zinc-800/50 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-xl relative z-20 shadow-[0_1px_2px_rgba(0,0,0,0.02)]">
         <div className="flex items-center justify-between">
           <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-3">
-              <h1 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 flex items-center gap-3 truncate">
-                {plan.title}
+            <div className="flex items-center gap-3 flex-wrap">
+              <h1 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 flex items-center gap-3">
+                {headerTitle}
                 {isChatLoading && (
                   <div className="inline-flex w-4 h-4 ml-2 border-[2.5px] border-blue-500/30 border-t-blue-600 rounded-full animate-spin flex-shrink-0" />
                 )}
               </h1>
+              {headerSchools.length > 0 && (
+                <ul className="flex flex-wrap items-center gap-1.5" data-testid="plan-header-schools">
+                  {headerSchools.map((school) => (
+                    <li
+                      key={school.name}
+                      className="inline-flex items-center gap-1.5 rounded-full bg-zinc-100 dark:bg-zinc-800 px-2.5 py-1 text-[13px] font-semibold text-zinc-800 dark:text-zinc-200"
+                      data-testid={`plan-header-school-${school.name}`}
+                    >
+                      <span>{school.name}</span>
+                      {typeof school.fitScore === "number" && (
+                        <span className="text-zinc-500 dark:text-zinc-400 font-medium">{Math.round(school.fitScore)}</span>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              )}
               <DeletePlanButton planId={plan.id} />
             </div>
             <p className="mt-1 text-[15px] font-medium text-zinc-500 dark:text-zinc-400 truncate">
