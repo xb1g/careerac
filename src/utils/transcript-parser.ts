@@ -10,11 +10,16 @@ const GRADE_POINTS: Record<string, number> = {
 
 const SEMESTER_PATTERN = /\b(Fall|Spring|Summer|Winter)\s+(\d{4})\b/i;
 
-const COURSE_PATTERN = /^([A-Z]{2,6}\s+\d+\w{0,2})\s+(.+?)\s+(\d+\.?\d*)\s+([A-F][+-]?|IP|W|CR|NC|P|NP|EW|I)\s*$/;
+// Pattern to match course entries - handles concatenated courses (columnar PDF layout)
+// Format: COURSE_CODE LEVEL TITLE UNITS GRADE POINTS (repeated)
+// e.g.: MUS. 202   2   Music   Appreciation   3.00 A   12.00 OCEN 100...
+const COURSE_BLOCK_PATTERN = /([A-Z]{2,6}[.\s-]*\d+[A-Z]?)\s+(\d+)\s+([A-Za-z][A-Za-z\s]*?)\s+(\d+\.?\d*)\s+([A-F][+-]?|IP|W|CR|NC|P|NP|EW|I|AUD|DR)\s+(\d+\.?\d*)/gi;
 
 function classifyGrade(grade: string): TranscriptCourse["status"] {
-  if (grade === "IP" || grade === "I") return "in_progress";
-  if (grade === "W" || grade === "EW") return "withdrawn";
+  const g = grade.toUpperCase();
+  if (g === "IP" || g === "I") return "in_progress";
+  if (g === "W" || g === "EW") return "withdrawn";
+  if (g === "P" || g === "CR" || g === "NP" || g === "NC" || g === "AUD" || g === "DR") return "completed";
   return "completed";
 }
 
@@ -37,42 +42,51 @@ function calculateGPA(courses: TranscriptCourse[]): number | undefined {
 /**
  * Parses raw text extracted from a transcript PDF into structured data.
  * Best-effort parser — transcript formats vary between institutions.
+ * Handles both line-by-line and concatenated course formats.
  */
 export function parseTranscriptText(rawText: string): TranscriptData {
-  const lines = rawText.split("\n").map((l) => l.trim()).filter(Boolean);
   const courses: TranscriptCourse[] = [];
   let currentSemester = "Unknown";
   let institution = "";
 
-  // Try to detect institution name from the first few lines
-  for (const line of lines.slice(0, 10)) {
-    if (/college|university|institute/i.test(line) && !institution) {
-      institution = line.replace(/^\s*official\s+transcript\s*/i, "").trim();
-      break;
+  // Try to detect institution name from the first portion of text
+  const firstPart = rawText.slice(0, 2000);
+  const institutionMatch = firstPart.match(/(Cañada College|College of San Mateo|Skyline College|San Mateo County Community College District)/i);
+  if (institutionMatch) {
+    institution = institutionMatch[1].trim();
+  } else {
+    const fallbackMatch = firstPart.match(/([A-Z][A-Za-z\s']+(?:College|University))/);
+    if (fallbackMatch) {
+      institution = fallbackMatch[1].trim();
     }
   }
 
-  for (const line of lines) {
-    // Check for semester headers
-    const semMatch = line.match(SEMESTER_PATTERN);
-    if (semMatch) {
-      currentSemester = `${semMatch[1]} ${semMatch[2]}`;
-      continue;
-    }
+  // Detect semester - look for pattern like "Summer 2025" or "Fall 2024"
+  const semMatch = rawText.match(SEMESTER_PATTERN);
+  if (semMatch) {
+    currentSemester = `${semMatch[1]} ${semMatch[2]}`;
+  }
 
-    // Try to match a course line
-    const courseMatch = line.match(COURSE_PATTERN);
-    if (courseMatch) {
-      const grade = courseMatch[4].toUpperCase();
-      courses.push({
-        code: courseMatch[1].trim(),
-        title: courseMatch[2].trim(),
-        units: parseFloat(courseMatch[3]),
-        grade,
-        status: classifyGrade(grade),
-        semester: currentSemester,
-      });
-    }
+  // Match course entries using global pattern (handles concatenated courses)
+  let match;
+  while ((match = COURSE_BLOCK_PATTERN.exec(rawText)) !== null) {
+    const code = match[1].trim().replace(/\s+/g, " ");
+    const title = match[3].trim().replace(/\s+/g, " ");
+    const units = parseFloat(match[4]);
+    const grade = match[5].toUpperCase();
+
+    // Skip if title is too short or looks like a header
+    if (title.length < 3) continue;
+    if (/^(Course|Level|Undergrad|SUBJ|TITLE|CREDIT|INST)/i.test(title)) continue;
+
+    courses.push({
+      code,
+      title,
+      units,
+      grade,
+      status: classifyGrade(grade),
+      semester: currentSemester,
+    });
   }
 
   const totalUnitsCompleted = courses
