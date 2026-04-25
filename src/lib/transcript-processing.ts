@@ -23,6 +23,8 @@ type TranscriptUpdate = Database["public"]["Tables"]["transcripts"]["Update"];
 
 const GEMINI_TIMEOUT_MS = Number(process.env.GEMINI_TRANSCRIPT_TIMEOUT_MS ?? 25_000);
 const MINIMAX_TIMEOUT_MS = Number(process.env.MINIMAX_TRANSCRIPT_TIMEOUT_MS ?? 25_000);
+const TRANSCRIPT_DOWNLOAD_RETRY_COUNT = Number(process.env.TRANSCRIPT_DOWNLOAD_RETRY_COUNT ?? 3);
+const TRANSCRIPT_DOWNLOAD_RETRY_DELAY_MS = Number(process.env.TRANSCRIPT_DOWNLOAD_RETRY_DELAY_MS ?? 750);
 
 export interface TranscriptProcessingResult {
   parsedData: TranscriptData | null;
@@ -34,6 +36,57 @@ export interface TranscriptProcessingResult {
 
 function isValidTimeout(value: number) {
   return Number.isFinite(value) && value > 0;
+}
+
+function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function looksLikePdfBuffer(buffer: Buffer) {
+  return buffer.length >= 4 && buffer.subarray(0, 4).toString("utf8") === "%PDF";
+}
+
+async function downloadTranscriptBuffer(
+  supabase: SupabaseServerClient,
+  filePath: string,
+): Promise<Buffer | null> {
+  const attempts = isValidTimeout(TRANSCRIPT_DOWNLOAD_RETRY_COUNT)
+    ? Math.max(1, Math.floor(TRANSCRIPT_DOWNLOAD_RETRY_COUNT))
+    : 3;
+  const retryDelayMs = isValidTimeout(TRANSCRIPT_DOWNLOAD_RETRY_DELAY_MS)
+    ? TRANSCRIPT_DOWNLOAD_RETRY_DELAY_MS
+    : 750;
+
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
+    const { data: downloaded, error: downloadError } = await supabase.storage
+      .from("transcripts")
+      .download(filePath);
+
+    if (!downloadError && downloaded) {
+      const buffer = Buffer.from(await downloaded.arrayBuffer());
+      if (buffer.length > 0 && looksLikePdfBuffer(buffer)) {
+        return buffer;
+      }
+
+      console.warn("Downloaded transcript did not look like a valid PDF", {
+        attempt,
+        size: buffer.length,
+        header: buffer.subarray(0, 8).toString("utf8"),
+      });
+    } else {
+      console.warn("Transcript storage download attempt failed", {
+        attempt,
+        filePath,
+        error: downloadError?.message,
+      });
+    }
+
+    if (attempt < attempts) {
+      await sleep(retryDelayMs * attempt);
+    }
+  }
+
+  return null;
 }
 
 async function withTimeout<T>(promise: Promise<T>, timeoutMs: number, label: string): Promise<T> {
@@ -151,23 +204,51 @@ export async function finalizeTranscriptProcessing(
   supabase: SupabaseServerClient,
   transcript: Pick<TranscriptRow, "id" | "user_id" | "file_path">,
 ): Promise<TranscriptProcessingResult> {
-  const { data: downloaded, error: downloadError } = await supabase.storage
-    .from("transcripts")
-    .download(transcript.file_path);
+  const attempts = isValidTimeout(TRANSCRIPT_DOWNLOAD_RETRY_COUNT)
+    ? Math.max(1, Math.floor(TRANSCRIPT_DOWNLOAD_RETRY_COUNT))
+    : 3;
+  const retryDelayMs = isValidTimeout(TRANSCRIPT_DOWNLOAD_RETRY_DELAY_MS)
+    ? TRANSCRIPT_DOWNLOAD_RETRY_DELAY_MS
+    : 750;
+  let parsed: Omit<TranscriptProcessingResult, "sync"> | null = null;
+  let buffer: Buffer | null = null;
 
-  if (downloadError || !downloaded) {
-    console.error("Transcript storage download error:", downloadError);
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
+    buffer = await downloadTranscriptBuffer(supabase, transcript.file_path);
+
+    if (!buffer) {
+      continue;
+    }
+
+    parsed = await parseTranscriptBuffer(buffer);
+    if (
+      parsed.parseStatus === "completed" ||
+      parsed.parseError !== "Failed to read the PDF file. It may be scanned or corrupted. Please use manual entry."
+    ) {
+      break;
+    }
+
+    console.warn("Transcript PDF parse failed after download; retrying", {
+      attempt,
+      filePath: transcript.file_path,
+      size: buffer.length,
+    });
+
+    if (attempt < attempts) {
+      await sleep(retryDelayMs * attempt);
+    }
+  }
+
+  if (!buffer || !parsed) {
+    console.error("Transcript storage download validation failed:", transcript.file_path);
     return {
       parsedData: null,
       parseStatus: "failed",
-      parseError: "Failed to download the uploaded transcript for parsing. Please retry the upload.",
+      parseError: "We uploaded your transcript, but could not read back a valid PDF from storage. Please retry the upload.",
       parseMethod: "regex",
       sync: null,
     };
   }
-
-  const buffer = Buffer.from(await downloaded.arrayBuffer());
-  const parsed = await parseTranscriptBuffer(buffer);
 
   let sync: { created: number; updated: number } | null = null;
   if (parsed.parseStatus === "completed" && parsed.parsedData && parsed.parsedData.courses.length > 0) {
