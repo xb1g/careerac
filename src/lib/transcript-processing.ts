@@ -110,7 +110,7 @@ async function withTimeout<T>(promise: Promise<T>, timeoutMs: number, label: str
 }
 
 export async function extractTextFromPdf(buffer: Buffer): Promise<string> {
-  const pdfjsLib = await import(/* webpackIgnore: true */ "pdfjs-dist/legacy/build/pdf.mjs");
+  const pdfjsLib = await import("pdfjs-dist/legacy/build/pdf.mjs");
 
   const loadingTask = pdfjsLib.getDocument({
     data: new Uint8Array(buffer),
