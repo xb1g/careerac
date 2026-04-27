@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { parseTranscriptWithGemini } from "../transcript-gemini-parser";
+import { parseTranscriptWithGeminiText } from "../transcript-gemini-parser";
 
 // Mock the @google/genai SDK
 vi.mock("@google/genai", () => {
@@ -48,7 +48,7 @@ vi.mock("@google/genai", () => {
   };
 });
 
-describe("parseTranscriptWithGemini", () => {
+describe("parseTranscriptWithGeminiText", () => {
   const originalKey = process.env.GEMINI_API_KEY;
 
   beforeEach(() => {
@@ -61,7 +61,7 @@ describe("parseTranscriptWithGemini", () => {
   });
 
   it("successfully parses transcript text into TranscriptData", async () => {
-    const result = await parseTranscriptWithGemini("Some raw transcript text");
+    const result = await parseTranscriptWithGeminiText("Some raw transcript text");
 
     expect(result.institution).toBe("De Anza College");
     expect(result.courses).toHaveLength(2);
@@ -73,10 +73,10 @@ describe("parseTranscriptWithGemini", () => {
 
   it("throws error when GEMINI_API_KEY is missing", async () => {
     delete process.env.GEMINI_API_KEY;
-    await expect(parseTranscriptWithGemini("text")).rejects.toThrow(/GEMINI_API_KEY is not configured/);
+    await expect(parseTranscriptWithGeminiText("text")).rejects.toThrow(/GEMINI_API_KEY is not configured/);
   });
 
   it("throws error when rawText is empty", async () => {
-    await expect(parseTranscriptWithGemini("  ")).rejects.toThrow(/No readable text found/);
+    await expect(parseTranscriptWithGeminiText("  ")).rejects.toThrow(/No readable text found/);
   });
 });
