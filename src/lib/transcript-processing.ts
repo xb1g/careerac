@@ -1,4 +1,3 @@
-import { DOMMatrix, ImageData, Path2D } from "@napi-rs/canvas";
 import type { Database } from "@/types/database";
 import type { TranscriptData } from "@/types/transcript";
 import { createClient } from "@/utils/supabase/server";
@@ -6,16 +5,7 @@ import { parseTranscriptWithAI as parseWithMiniMax } from "@/utils/transcript-ai
 import { parseTranscriptWithGemini } from "@/utils/transcript-gemini-parser";
 import { parseTranscriptText } from "@/utils/transcript-parser";
 import { syncTranscriptToUserCourses } from "@/utils/sync-transcript-courses";
-
-if (typeof globalThis.DOMMatrix === "undefined") {
-  (globalThis as unknown as { DOMMatrix: typeof DOMMatrix }).DOMMatrix = DOMMatrix;
-}
-if (typeof globalThis.Path2D === "undefined") {
-  (globalThis as unknown as { Path2D: typeof Path2D }).Path2D = Path2D;
-}
-if (typeof globalThis.ImageData === "undefined") {
-  (globalThis as unknown as { ImageData: typeof ImageData }).ImageData = ImageData;
-}
+import { PDFParse } from "pdf-parse";
 
 type SupabaseServerClient = Awaited<ReturnType<typeof createClient>>;
 type TranscriptRow = Database["public"]["Tables"]["transcripts"]["Row"];
@@ -110,30 +100,9 @@ async function withTimeout<T>(promise: Promise<T>, timeoutMs: number, label: str
 }
 
 export async function extractTextFromPdf(buffer: Buffer): Promise<string> {
-  const pdfjsLib = await import("pdfjs-dist/legacy/build/pdf.mjs");
-
-  const loadingTask = pdfjsLib.getDocument({
-    data: new Uint8Array(buffer),
-    useSystemFonts: true,
-  });
-  const pdf = await loadingTask.promise;
-
-  try {
-    let fullText = "";
-
-    for (let i = 1; i <= pdf.numPages; i++) {
-      const page = await pdf.getPage(i);
-      const textContent = await page.getTextContent();
-      const pageText = textContent.items
-        .map((item) => ("str" in item ? (item as { str: string }).str : ""))
-        .join(" ");
-      fullText += `${pageText}\n\n`;
-    }
-
-    return fullText.trim();
-  } finally {
-    await pdf.destroy();
-  }
+  const parser = new PDFParse({ data: buffer });
+  const result = await parser.getText();
+  return result.text.trim();
 }
 
 export async function parseTranscriptBuffer(buffer: Buffer): Promise<Omit<TranscriptProcessingResult, "sync">> {
