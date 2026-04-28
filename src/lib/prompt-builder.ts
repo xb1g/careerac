@@ -23,6 +23,44 @@ export interface PromptInputs {
 }
 
 /**
+ * Extracts 1-2 sample course examples from the articulation context for the prompt.
+ * These are real CC course patterns from our database, NOT made-up codes.
+ */
+function extractExampleCourses(articulationContext: string): { code: string; title: string }[] {
+  // Real CC course patterns found in our database (e.g., Evergreen Valley, SMCCCD)
+  const realPatterns = [
+    { code: "CS 181", title: "Introduction to C++ Programming" },
+    { code: "CS 182", title: "Introduction to JAVA Programming" },
+    { code: "MATH 071", title: "Calculus I with Analytic Geometry" },
+    { code: "MATH 072", title: "Calculus II with Analytic Geometry" },
+    { code: "MATH 176", title: "Precalculus: Functions and Graphs" },
+    { code: "ENGL 001B", title: "English Composition" },
+    { code: "CHEM 001A", title: "General Chemistry" },
+    { code: "PHYS 004A", title: "General Physics" },
+  ];
+
+  // If articulation context is rich, try to extract actual codes from it
+  const lines = articulationContext.split("\n").filter((line) => line.includes("→"));
+  if (lines.length >= 2) {
+    // Extract CC course codes from articulation lines like:
+    // "- EVERGREENVALLE: CS 181 (Introduction to C++ Programming, 4 units) → UCLA: CS 31..."
+    const examples: { code: string; title: string }[] = [];
+    for (const line of lines.slice(0, 3)) {
+      const match = line.match(/:\s+([A-Z]+\s+\d+[A-Z]*)\s+\(([^,]+)/);
+      if (match) {
+        examples.push({ code: match[1], title: match[2].trim() });
+      }
+    }
+    if (examples.length >= 2) {
+      return examples.slice(0, 2);
+    }
+  }
+
+  // Fallback to real CC course patterns (NOT generic "CS 1")
+  return realPatterns.slice(0, 2);
+}
+
+/**
  * Assembles the full system prompt from pre-fetched context.
  * The JSON output format is derived from PLAN_JSON_SCHEMA so the prompt
  * and the parser always agree on the expected shape.
@@ -42,26 +80,52 @@ export function buildSystemPrompt(inputs: PromptInputs): string {
     startTerm,
   } = inputs;
 
-  // Build the example JSON from the schema constant
+  // Extract real CC course examples from articulation data
+  const exampleCourses = extractExampleCourses(articulationContext);
+  const hasRealExamples = exampleCourses.length === 2;
+
+  // Build a realistic example using actual CC course patterns
+  // IMPORTANT: These must be real course codes from our database, not generic "CS 1"
   const planExample = JSON.stringify(
     {
-      ccName: "Community College Name",
-      targetUniversity: "Target University Name",
-      targetMajor: "Target Major",
+      ccName: "Your Community College",
+      targetUniversity: "Target University",
+      targetMajor: selectedMajor ?? "Your Major",
       semesters: [
         {
           number: 1,
           label: startTerm ?? "Fall 2026",
-          courses: [
-            {
-              code: "CS 1",
-              title: "Introduction to Computer Science I",
-              units: 4,
-              transferEquivalency: "UCLA CS 31",
-              prerequisites: [],
-              notes: "",
-            },
-          ],
+          courses: hasRealExamples
+            ? [
+                {
+                  code: exampleCourses[0].code,
+                  title: exampleCourses[0].title,
+                  units: 4,
+                  transferEquivalency: exampleCourses[0].code.includes("CS") ? "Target CS 31" : "Target Course",
+                  prerequisites: [],
+                  notes: "",
+                },
+                {
+                  code: exampleCourses[1].code,
+                  title: exampleCourses[1].title,
+                  units: 4,
+                  transferEquivalency: "Target Course",
+                  prerequisites: [],
+                  notes: "",
+                },
+              ]
+            : [
+                // Fallback only when absolutely no articulation data exists
+                // Use real course codes from actual CCC catalogs, NOT made-up codes
+                {
+                  code: "CS 181",
+                  title: "Introduction to C++ Programming",
+                  units: 4,
+                  transferEquivalency: "Target CS 31",
+                  prerequisites: [],
+                  notes: "",
+                },
+              ],
         },
       ],
       totalUnits: 60,
@@ -109,6 +173,7 @@ CRITICAL OUTPUT RULES:
 2a. **Use exact CC courses only**: Every scheduled course MUST use the exact community-college course code and title from the articulation data. Do NOT paraphrase, rename, or generalize course names.
 2b. **Require articulation proof**: Never include a course unless the articulation data explicitly shows that CC course mapping to at least one selected university. If there is no matching articulation row, omit the course.
 2c. **Use canonical equivalencies**: \`transferEquivalency\` must match the articulated university course code(s) from the data. Do not invent equivalent courses or requirements from general knowledge.
+2d. **NEVER use generic codes like "CS 1", "MATH 1"**: These do not exist in any California community college. Real CCC courses use codes like "CS 181", "MATH 071", "ENGL 001B", "CHEM 001A". If you cannot find an articulated course, output isNoData=true instead.
 3. **Admit when no data (strict)**: You may output isNoData=true ONLY when both values are 0:
   - Exact path major matches
   - Institution-scoped matches
@@ -128,12 +193,15 @@ ${selectedMajor
       ? `8. **Lock the major**: The student's selected major is "${selectedMajor}". In every JSON response, the output major MUST stay exactly "${selectedMajor}". Never replace it with a different major.`
       : ""}
 
-## AVAILABLE ARTICULATION DATA
-The following are the articulation agreements in our database. Use ONLY these courses when generating plans:
+## AVAILABLE ARTICULATION DATA FOR ${transcriptData?.institution ?? "YOUR COMMUNITY COLLEGE"}
+The following are the articulation agreements in our database for courses at ${transcriptData?.institution ?? "the student's community college"}. Use ONLY these courses when generating plans:
 
 ${articulationContext}
 
 ${buildAvailableMajorsSection(availableMajors)}
+
+## CRITICAL: COURSE ORIGIN RULE
+Every course in the plan MUST be from ${transcriptData?.institution ?? "the student's community college"}. Do NOT include courses from other community colleges, even if they appear in similar format (e.g., do not use "CS 1" from Santa Monica College if the student is at Evergreen Valley College).
 
 ## PREREQUISITE RELATIONSHIPS
 ${prerequisiteData || "No prerequisite data is currently available. Use your knowledge of typical course sequences."}
@@ -276,18 +344,18 @@ You MUST output a SINGLE TransferPlan JSON block (same shape as the standard pla
       "label": "Fall 2026",
       "courses": [
         {
-          "code": "CS 1",
-          "title": "Intro to CS I",
+          "code": "CS 181",
+          "title": "Introduction to C++ Programming",
           "units": 4,
           "transferEquivalency": "UCLA CS 31 / UCB CS 61A",
           "requiredBy": ["UCLA", "UC Berkeley"]
         },
         {
-          "code": "CS 17",
-          "title": "Discrete Structures",
-          "units": 3,
-          "transferEquivalency": "UCLA CS 180 equiv",
-          "requiredBy": ["UCLA"]
+          "code": "MATH 071",
+          "title": "Calculus I with Analytic Geometry",
+          "units": 5,
+          "transferEquivalency": "UCLA MATH 31A",
+          "requiredBy": ["UCLA", "UC Berkeley"]
         }
       ]
     }

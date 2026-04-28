@@ -23,6 +23,7 @@ export type GenerateAutoErrorCode =
   | "UNAUTHORIZED"
   | "INVALID_INPUT"
   | "MAJOR_REQUIRED"
+  | "CC_INSTITUTION_NOT_FOUND"
   | "AI_UPSTREAM_ERROR"
   | "PLAN_PARSE_FAILED"
   | "PLAN_SAVE_FAILED";
@@ -293,6 +294,20 @@ export async function runPlanGenerationJob(
       .neq("status", "planned")
       .returns<{ term: string | null }[]>(),
   ]);
+
+  // CRITICAL: Validate that the CC institution was found in our database
+  // If not found, we cannot generate courses from the correct CC
+  if (!ccInstitutionId) {
+    throw new AutoPlanGenerationError(
+      {
+        code: "CC_INSTITUTION_NOT_FOUND",
+        message: `We couldn't find "${request.transcriptData.institution}" in our community college database. Please ensure your transcript is from a supported California community college, or try entering your courses manually.`,
+        retryable: false,
+        fallback: "manual_chat",
+      },
+      400,
+    );
+  }
 
   const latestTerm = findLatestTerm((userCourseTerms ?? []).map((row) => row.term));
   const startTerm = computeNextRegistrationTerm(new Date(), latestTerm).label;

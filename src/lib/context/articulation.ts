@@ -255,7 +255,13 @@ export async function getArticulationContext(
       .filter(Boolean)
       .join("\n");
 
+    // Get the CC institution name to include in the context
+    const ccInstitutionName = ccInstIds.length === 1
+      ? instMap.get(ccInstIds[0])?.name || instMap.get(ccInstIds[0])?.abbreviation || null
+      : null;
+
     const contextPrefix = [
+      ccInstitutionName ? `Community College: ${ccInstitutionName}` : "Community College: (multiple or unknown)",
       `Exact path major matches: ${exactMatchCount}`,
       `Institution-scoped matches: ${institutionMatchCount}`,
       availableMajorsLine,
