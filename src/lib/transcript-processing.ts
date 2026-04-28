@@ -5,7 +5,7 @@ import { parseTranscriptWithAI as parseWithMiniMax } from "@/utils/transcript-ai
 import { parseTranscriptWithGemini } from "@/utils/transcript-gemini-parser";
 import { parseTranscriptText } from "@/utils/transcript-parser";
 import { syncTranscriptToUserCourses } from "@/utils/sync-transcript-courses";
-import { PDFParse } from "pdf-parse";
+import { getDocument } from "pdfjs-dist/legacy/build/pdf.mjs";
 
 type SupabaseServerClient = Awaited<ReturnType<typeof createClient>>;
 type TranscriptRow = Database["public"]["Tables"]["transcripts"]["Row"];
@@ -100,9 +100,19 @@ async function withTimeout<T>(promise: Promise<T>, timeoutMs: number, label: str
 }
 
 export async function extractTextFromPdf(buffer: Buffer): Promise<string> {
-  const parser = new PDFParse({ data: buffer });
-  const result = await parser.getText();
-  return result.text.trim();
+  const doc = await getDocument({ data: buffer }).promise;
+  const textParts: string[] = [];
+
+  for (let pageNum = 1; pageNum <= doc.numPages; pageNum++) {
+    const page = await doc.getPage(pageNum);
+    const content = await page.getTextContent();
+    const pageText = content.items
+      .map((item) => ("text" in item ? item.text : ""))
+      .join(" ");
+    textParts.push(pageText);
+  }
+
+  return textParts.join("\n").trim();
 }
 
 export async function parseTranscriptBuffer(buffer: Buffer): Promise<Omit<TranscriptProcessingResult, "sync">> {
