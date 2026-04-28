@@ -10,6 +10,7 @@ import { DeletePlanButton } from "@/components/delete-plan-button";
 import { RecoveryAlternative } from "@/components/recovery-message";
 import SemesterPlan from "@/components/semester-plan";
 import CourseStatusMenu from "@/components/course-status-menu";
+import PreviousCoursesPanel from "@/components/previous-courses-panel";
 import { notifyCockpitRefresh } from "@/lib/cockpit-events";
 import TranscriptEditor from "@/components/transcript-editor";
 import { ParsedPlan, TransferPlan, PlanCourse, CourseStatus } from "@/types/plan";
@@ -123,9 +124,18 @@ export default function PlanDetailClient({ plan, transcript }: PlanDetailClientP
   const [transcriptEditorData, setTranscriptEditorData] = useState<TranscriptData | null>(
     transcript?.parsed_data ?? null
   );
+  const [isPreviousCoursesCollapsed, setIsPreviousCoursesCollapsed] = useState(false);
   const transcriptData = transcriptEditorData;
   const latestMessagesRef = useRef<UIMessage[]>(initialMessages);
   const [isChatLoading, setIsChatLoading] = useState(false);
+
+  useEffect(() => {
+    if (!transcript?.id) return;
+    try {
+      const stored = localStorage.getItem(`prev-courses-collapsed-${transcript.id}`);
+      if (stored === "true") setIsPreviousCoursesCollapsed(true);
+    } catch {}
+  }, [transcript?.id]);
 
   // Target school editing state
   const [isEditingTargets, setIsEditingTargets] = useState(false);
@@ -585,7 +595,15 @@ export default function PlanDetailClient({ plan, transcript }: PlanDetailClientP
       {/* Full-width plan display; chat lives in a floating widget */}
       <div className="relative min-h-0 flex-1 overflow-hidden bg-[#FAFAFA] dark:bg-zinc-900/50">
         {currentPlan ? (
-          <SemesterPlan plan={currentPlan} onCourseClick={handleCourseClick} planId={plan.id} />
+          <div className="flex h-full min-h-0 flex-1 overflow-hidden">
+            <PreviousCoursesPanel
+              transcriptId={transcript?.id}
+              courses={transcriptData?.courses.filter(c => c.status === "completed") ?? []}
+              isCollapsed={isPreviousCoursesCollapsed}
+              onToggleCollapse={() => setIsPreviousCoursesCollapsed(p => !p)}
+            />
+            <SemesterPlan plan={currentPlan} onCourseClick={handleCourseClick} planId={plan.id} />
+          </div>
         ) : (
           <div className="h-full flex items-center justify-center p-8">
             <div className="text-center">

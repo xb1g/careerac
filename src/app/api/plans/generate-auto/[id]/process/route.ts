@@ -8,7 +8,7 @@ import {
 import { createClient } from "@/utils/supabase/server";
 
 export const runtime = "nodejs";
-export const maxDuration = 120;
+export const maxDuration = 180;
 
 export async function POST(
   _req: Request,
@@ -16,6 +16,8 @@ export async function POST(
 ) {
   let jobId: string | null = null;
   let userId: string | null = null;
+
+  console.log("[process] Starting plan generation job");
 
   try {
     const supabase = await createClient();
@@ -65,6 +67,8 @@ export async function POST(
 
     const request = normalizeAutoPlanRequest(job.request_payload);
 
+    console.log("[process] Updating job status to generating");
+
     await supabase
       .from("plan_generation_jobs")
       .update({
@@ -75,7 +79,9 @@ export async function POST(
       .eq("id", id)
       .eq("user_id", user.id);
 
+    console.log("[process] Running plan generation job");
     const result = await runPlanGenerationJob(supabase, user.id, request);
+    console.log("[process] Plan generation complete");
 
     await supabase
       .from("plan_generation_jobs")

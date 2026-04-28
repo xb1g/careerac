@@ -327,7 +327,11 @@ export async function runPlanGenerationJob(
   );
 
   let generated;
+  console.log("[process] Preparing AI prompt, transcript courses:", request.transcriptData.courses.length);
+  console.log("[process] CC institution:", ccInstitutionId, "target major:", request.detectedMajor);
+
   try {
+    console.log("[process] Calling AI to generate plan...");
     generated = await PlanGenerationPipeline.generate(
       {
         messages: [
@@ -353,7 +357,9 @@ export async function runPlanGenerationJob(
         startTerm,
       },
     );
+    console.log("[process] AI generation complete, parsing plan...");
   } catch (error) {
+    console.error("[process] AI generation failed:", error);
     if (isMiniMaxError(error)) {
       throw new AutoPlanGenerationError(
         {
