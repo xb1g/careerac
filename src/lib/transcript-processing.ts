@@ -5,7 +5,7 @@ import { parseTranscriptWithAI as parseWithMiniMax } from "@/utils/transcript-ai
 import { parseTranscriptWithGemini } from "@/utils/transcript-gemini-parser";
 import { parseTranscriptText } from "@/utils/transcript-parser";
 import { syncTranscriptToUserCourses } from "@/utils/sync-transcript-courses";
-import { getDocument } from "pdfjs-dist/legacy/build/pdf.mjs";
+import { PdfReader } from "pdfreader";
 
 type SupabaseServerClient = Awaited<ReturnType<typeof createClient>>;
 type TranscriptRow = Database["public"]["Tables"]["transcripts"]["Row"];
@@ -100,19 +100,24 @@ async function withTimeout<T>(promise: Promise<T>, timeoutMs: number, label: str
 }
 
 export async function extractTextFromPdf(buffer: Buffer): Promise<string> {
-  const doc = await getDocument({ data: buffer }).promise;
-  const textParts: string[] = [];
-
-  for (let pageNum = 1; pageNum <= doc.numPages; pageNum++) {
-    const page = await doc.getPage(pageNum);
-    const content = await page.getTextContent();
-    const pageText = content.items
-      .map((item) => ("text" in item ? item.text : ""))
-      .join(" ");
-    textParts.push(pageText);
-  }
-
-  return textParts.join("\n").trim();
+  return new Promise((resolve, reject) => {
+    const textParts: string[] = [];
+    const reader = new PdfReader();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    reader.parseBuffer(buffer, (err: any, item: any) => {
+      if (err) {
+        reject(err);
+        return;
+      }
+      if (!item) {
+        resolve(textParts.join("\n").trim());
+        return;
+      }
+      if (item.text) {
+        textParts.push(item.text);
+      }
+    });
+  });
 }
 
 export async function parseTranscriptBuffer(buffer: Buffer): Promise<Omit<TranscriptProcessingResult, "sync">> {
