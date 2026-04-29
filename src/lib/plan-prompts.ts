@@ -1,5 +1,7 @@
 import type { TranscriptData } from "@/types/transcript";
 
+export const DEFAULT_PLAN_SEMESTERS = 4;
+
 export function buildSyntheticUserPrompt(
   transcriptData: TranscriptData,
   major: string,
@@ -7,6 +9,7 @@ export function buildSyntheticUserPrompt(
   maxCreditsPerSemester: number,
   startTerm?: string,
   selectedSchools: string[] = [],
+  targetSemesters: number = DEFAULT_PLAN_SEMESTERS,
 ): string {
   const destination = targetSchool
     ? `transfer to ${targetSchool}`
@@ -16,6 +19,7 @@ export function buildSyntheticUserPrompt(
     `Generate a complete transfer plan for a ${transcriptData.institution} student who wants to ${destination}.`,
     `The student's intended major is ${major}.`,
     `Use the transcript to account for completed and in-progress coursework.`,
+    `The plan MUST contain exactly ${targetSemesters} semesters in the \`semesters\` array (numbered 1 through ${targetSemesters}). Do not produce fewer than ${targetSemesters} semesters even if you believe coursework could fit in less time — distribute the load across all ${targetSemesters} semesters.`,
     `Keep every semester at or below ${maxCreditsPerSemester} units.`,
   ];
 
