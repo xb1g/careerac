@@ -215,12 +215,23 @@ export class PlanGenerationPipeline {
     console.log("[Pipeline] Raw text received, length:", rawText.length);
 
     console.log("[Pipeline] Parsing plan from AI response...");
-    const parsedPlan = parsePlanFromAIResponse(
-      rawText,
-      options.startTerm,
-      request.planContext?.targetMajor,
-    );
-    console.log("[Pipeline] Plan parsed:", parsedPlan ? "success" : "null");
+    console.log("[Pipeline] Raw text preview:", rawText.substring(0, 500));
+
+    let parsedPlan: ReturnType<typeof parsePlanFromAIResponse> = null;
+    try {
+      parsedPlan = parsePlanFromAIResponse(
+        rawText,
+        options.startTerm,
+        request.planContext?.targetMajor,
+      );
+      console.log("[Pipeline] Plan parsed:", parsedPlan ? "success" : "null");
+      if (parsedPlan && "isNoData" in parsedPlan) {
+        console.log("[Pipeline] Plan is no-data response:", parsedPlan.message);
+      }
+    } catch (parseError) {
+      console.error("[Pipeline] Plan parsing threw error:", parseError);
+      console.error("[Pipeline] Raw text that failed to parse:", rawText.substring(0, 1000));
+    }
 
     return {
       rawText,

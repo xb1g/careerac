@@ -36,16 +36,22 @@ export function parsePlanFromAIResponse(
 ): ParsedPlan | null {
   // Try to find JSON block in the response
   const jsonMatch = text.match(/```(?:json)?\s*\n?([\s\S]*?)\n?\s*```/);
+  console.log("[Parser] JSON match found:", !!jsonMatch, jsonMatch ? "length: " + jsonMatch[1].length : "");
+
   if (!jsonMatch) {
     // Check if the response indicates no data
     if (hasNoDataIndicators(text)) {
+      console.log("[Parser] No JSON match, has no-data indicators");
       return extractNoDataMessage(text);
     }
+    console.log("[Parser] No JSON match and no no-data indicators, returning null");
     return null;
   }
 
   try {
+    console.log("[Parser] Attempting to parse JSON...");
     const parsed = JSON.parse(jsonMatch[1].trim());
+    console.log("[Parser] JSON parsed successfully");
 
     // Legacy guard: old plans used `isMultiUniversity: true` with a
     // `universities[]` wrapper. The unified schema replaces that with
