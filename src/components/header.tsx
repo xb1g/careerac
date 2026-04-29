@@ -16,9 +16,7 @@ const navLinks = [
   { href: "/dashboard", label: "Dashboard" },
   { href: "/plan/new", label: "New Plan" },
   { href: "/courses", label: "Browse Courses" },
-  { href: "/playbooks", label: "Playbooks" },
   { href: "/settings", label: "My Courses" },
-  { href: "/counselor", label: "Counselor" },
 ];
 
 function isActive(href: string, pathname: string | null): boolean {
@@ -40,9 +38,6 @@ function isActive(href: string, pathname: string | null): boolean {
   if (href === "/settings") {
     return pathname === "/settings";
   }
-  if (href === "/counselor") {
-    return pathname === "/counselor";
-  }
   return pathname === href;
 }
 
@@ -56,17 +51,14 @@ export default function Header({ userEmail }: HeaderProps) {
         <div className="flex h-16 items-center justify-between">
           {/* Logo and desktop nav */}
           <div className="flex items-center gap-8">
-            <Link href="/dashboard" className="flex items-center gap-2">
+            <Link href="/dashboard" className="flex items-center">
               <Image
                 src="/logos/careerac-logo-icon.svg"
                 alt="CareerAC"
-                width={32}
-                height={32}
-                className="w-8 h-8"
+                width={168}
+                height={34}
+                className="h-8 w-auto"
               />
-              <span className="text-xl font-bold text-zinc-900 dark:text-white">
-                CareerAC
-              </span>
             </Link>
             <nav className="hidden sm:flex items-center gap-6" aria-label="Main navigation">
               {navLinks.map((link) => (
