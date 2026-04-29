@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+    <rect width="100" height="100" rx="22" fill="#4C1D95" />
+    <g transform="translate(45, 75) skewX(-10)" stroke-linecap="round" fill="none">
+      <!-- Forward moving arch -->
+      <path d="M -30, 0 Q 5,-40 40, 0" stroke="#A78BFA" stroke-width="8" />
+      <!-- Central person / dot -->
+      <circle cx="5" cy="5" r="7" fill="#FCD34D" stroke="none" />
+      <!-- Projecting waves -->
+      <path d="M -10,-20 A 25 25 0 0 1 20,-20" stroke="#FDE68A" stroke-width="6" />
+      <path d="M -25,-35 A 45 45 0 0 1 35,-35" stroke="#FEF3C7" stroke-width="6" />
+      <path d="M -40,-50 A 65 65 0 0 1 50,-50" stroke="#FFFBEB" stroke-width="6" />
+    </g>
+  </svg>

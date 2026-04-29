@@ -13,8 +13,17 @@ export default function HomePage() {
       <header className="fixed top-0 w-full px-6 py-5 sm:px-8 lg:px-12 z-50">
         <div className="max-w-7xl mx-auto flex items-center justify-between bg-white/70 dark:bg-zinc-900/70 backdrop-blur-xl px-6 py-3.5 rounded-full border border-white/50 dark:border-zinc-800/50 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)]">
           <div className="flex items-center gap-8">
-            <Link href="/" className="text-[18px] font-bold tracking-tight text-zinc-900 dark:text-white">
-              CareerAC
+            <Link href="/" className="flex items-center gap-2">
+              <Image
+                src="/logos/careerac-logo-icon.svg"
+                alt="CareerAC"
+                width={24}
+                height={24}
+                className="w-6 h-6"
+              />
+              <span className="text-[18px] font-bold tracking-tight text-zinc-900 dark:text-white">
+                CareerAC
+              </span>
             </Link>
             <nav className="hidden md:flex items-center gap-6">
               <Link href="#how-it-works" className="text-[13px] font-semibold text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white transition-colors">How it Works</Link>
@@ -495,8 +504,17 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row justify-between gap-12">
             <div className="max-w-xs">
-              <Link href="/" className="text-xl font-bold text-zinc-900 dark:text-white mb-4 block">
-                CareerAC
+              <Link href="/" className="flex items-center gap-2 mb-4">
+                <Image
+                  src="/logos/careerac-logo-icon.svg"
+                  alt="CareerAC"
+                  width={24}
+                  height={24}
+                  className="w-6 h-6"
+                />
+                <span className="text-xl font-bold text-zinc-900 dark:text-white">
+                  CareerAC
+                </span>
               </Link>
               <p className="text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed">
                 Building the premium transfer experience for students everywhere. AI-powered roadmaps to your dream university.

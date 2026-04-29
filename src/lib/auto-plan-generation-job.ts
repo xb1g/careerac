@@ -376,6 +376,46 @@ export async function runPlanGenerationJob(
 
   console.log("[process] Checking if plan is savable...");
   if (!isSavablePlan(generated.parsedPlan)) {
+    // If the AI returned a structured no-data response, save it as a plan
+    // so the user lands on the plan page and can chat to try alternatives.
+    if (generated.parsedPlan && "isNoData" in generated.parsedPlan) {
+      console.log("[process] No-data response, saving as draft plan...");
+      const chatHistory = buildSyntheticChatHistory(
+        request.transcriptData,
+        request.detectedMajor,
+        targetSchool,
+        generated.rawText,
+      );
+      let savedPlan;
+      try {
+        savedPlan = await savePlanRecord(supabase, {
+          userId,
+          title: `${request.detectedMajor} — No articulation data`,
+          ccInstitutionId,
+          targetInstitutionId,
+          targetMajor: request.detectedMajor,
+          planData: generated.parsedPlan,
+          chatHistory,
+          maxCreditsPerSemester,
+          transcriptId,
+          hasTargetSchool,
+          status: "draft",
+        });
+      } catch (error) {
+        console.error("Auto plan save error (no-data):", error);
+        throw new AutoPlanGenerationError(
+          { code: "PLAN_SAVE_FAILED", message: "Could not save the plan. Please retry.", retryable: true, fallback: "retry" },
+          500,
+        );
+      }
+      return {
+        planId: savedPlan.id,
+        plan: generated.parsedPlan,
+        detectedMajor: request.detectedMajor,
+        chatHistory,
+      };
+    }
+
     throw new AutoPlanGenerationError(
       {
         code: "PLAN_PARSE_FAILED",

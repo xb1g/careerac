@@ -28,7 +28,7 @@ export default async function PlanDetail({ params }: PlanDetailProps) {
 
   return (
     <Suspense fallback={<div className="flex-1 animate-pulse bg-zinc-50 dark:bg-zinc-900" />}>
-      <PlanDetailPage plan={detail.plan} transcript={detail.transcript} />
+      <PlanDetailPage plan={detail.plan} transcript={detail.transcript} userCourses={detail.userCourses} />
     </Suspense>
   );
 }

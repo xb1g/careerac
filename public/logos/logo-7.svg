@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+    <rect width="100" height="100" rx="22" fill="#1E293B" />
+    <g transform="translate(50, 75)" fill="none">
+      <!-- Arch -->
+      <path d="M -40, 5 Q 0,-45 40, 5" stroke="#38BDF8" stroke-width="12" opacity="0.8" stroke-linecap="round" />
+      <!-- Waves -->
+      <path d="M -25,-15 A 35 35 0 0 1 25,-15" stroke="#C084FC" stroke-width="10" opacity="0.8" stroke-linecap="round" />
+      <path d="M -45,-30 A 60 60 0 0 1 45,-30" stroke="#F472B6" stroke-width="10" opacity="0.8" stroke-linecap="round" />
+      <circle cx="0" cy="15" r="10" fill="#E2E8F0" opacity="0.9" />
+    </g>
+  </svg>

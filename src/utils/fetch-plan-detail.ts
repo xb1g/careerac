@@ -19,8 +19,8 @@ export async function fetchPlanDetail(id: string, userId: string) {
     return null;
   }
 
-  // Fetch plan_courses and transcript in parallel
-  const [coursesResult, transcriptResult] = await Promise.allSettled([
+  // Fetch plan_courses, transcript, and user_courses in parallel
+  const [coursesResult, transcriptResult, userCoursesResult] = await Promise.allSettled([
     supabase
       .from("plan_courses")
       .select("id, semester_number, status, alternative_for")
@@ -34,6 +34,10 @@ export async function fetchPlanDetail(id: string, userId: string) {
           .eq("user_id", userId)
           .single()
       : Promise.resolve({ data: null, error: null }),
+    supabase
+      .from("user_courses")
+      .select("course_code, course_title, units, grade, term, status")
+      .eq("user_id", userId),
   ]);
 
   let planCourses = null;
@@ -48,6 +52,11 @@ export async function fetchPlanDetail(id: string, userId: string) {
   let transcript = null;
   if (transcriptResult.status === "fulfilled" && !transcriptResult.value.error) {
     transcript = transcriptResult.value.data;
+  }
+
+  let userCourses: Array<{ course_code: string; course_title: string; units: number; grade: string | null; term: string | null; status: string }> = [];
+  if (userCoursesResult.status === "fulfilled" && !userCoursesResult.value.error) {
+    userCourses = (userCoursesResult.value.data ?? []) as typeof userCourses;
   }
 
   // Merge plan_courses status into plan_data for persistence
@@ -70,5 +79,6 @@ export async function fetchPlanDetail(id: string, userId: string) {
   return {
     plan: planWithMergedData,
     transcript: transcript as any,
+    userCourses,
   };
 }

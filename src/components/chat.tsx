@@ -58,6 +58,8 @@ export interface ChatProps {
   autoStartPrompt?: string;
   /** If set, fires a risk-resolution system message on mount for the given risk title. */
   resolveRisk?: string;
+  /** When changed to a non-empty string, sends it as a user message to trigger regeneration. */
+  regeneratePrompt?: string | null;
 }
 
 export default function Chat({
@@ -78,6 +80,7 @@ export default function Chat({
   selectedUniversityNames,
   autoStartPrompt,
   resolveRisk,
+  regeneratePrompt,
 }: ChatProps) {
   const [input, setInput] = useState("");
   const lastProcessedMessageId = useRef<string | null>(null);
@@ -165,6 +168,14 @@ export default function Chat({
     autoStartSentRef.current = true;
     sendMessage({ text: autoStartPrompt });
   }, [autoStartPrompt, isLoading, recoveryContext, sendMessage]);
+
+  // Fire a regeneration prompt when targets change
+  const lastRegenPromptRef = useRef<string | null>(null);
+  useEffect(() => {
+    if (!regeneratePrompt || isLoading || regeneratePrompt === lastRegenPromptRef.current) return;
+    lastRegenPromptRef.current = regeneratePrompt;
+    sendMessage({ text: regeneratePrompt });
+  }, [regeneratePrompt, isLoading, sendMessage]);
 
   // Check the latest assistant message for a plan
   const lastAssistantMessage = messages.filter((m) => m.role === "assistant").pop();

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+    <defs>
+      <linearGradient id="bg9" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#ffffff"/>
+        <stop offset="100%" stop-color="#F3F4F6"/>
+      </linearGradient>
+    </defs>
+    <rect width="100" height="100" rx="22" fill="url(#bg9)" />
+    <g transform="translate(50, 50)" fill="none">
+      <path d="M -40, 20 L 0, -20 L 40, 20" stroke="#2563EB" stroke-width="8" stroke-linejoin="miter" />
+      <path d="M -20, 20 L 0, 0 L 20, 20" stroke="#3B82F6" stroke-width="8" stroke-linejoin="miter" />
+      <!-- Angular Airdrop signals -->
+      <path d="M -20, -10 L 0, -30 L 20, -10" stroke="#8B5CF6" stroke-width="6" stroke-linecap="square" />
+      <path d="M -35, -25 L 0, -60 L 35, -25" stroke="#C4B5FD" stroke-width="6" stroke-linecap="square" />
+    </g>
+  </svg>

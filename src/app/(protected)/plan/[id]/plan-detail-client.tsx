@@ -41,6 +41,7 @@ interface PlanDetailClientProps {
     parsed_data: TranscriptData;
     parse_status: string;
   } | null;
+  userCourses?: Array<{ course_code: string; course_title: string; units: number; grade: string | null; term: string | null; status: string }>;
 }
 
 function getSchoolFitLabel(rank: number, schoolCount: number, fitScore?: number) {
@@ -52,7 +53,7 @@ function getSchoolFitLabel(rank: number, schoolCount: number, fitScore?: number)
   return "Matched";
 }
 
-export default function PlanDetailClient({ plan, transcript }: PlanDetailClientProps) {
+export default function PlanDetailClient({ plan, transcript, userCourses }: PlanDetailClientProps) {
   const searchParams = useSearchParams();
   const resolveRisk = searchParams?.get("resolveRisk") ?? undefined;
 
@@ -139,10 +140,12 @@ export default function PlanDetailClient({ plan, transcript }: PlanDetailClientP
 
   // Target school editing state
   const [isEditingTargets, setIsEditingTargets] = useState(false);
+  const [selectedSchool, setSelectedSchool] = useState<string | null>(null);
   const [universities, setUniversities] = useState<Institution[]>([]);
   const [selectedTargetIds, setSelectedTargetIds] = useState<string[]>([]);
   const [targetsChanged, setTargetsChanged] = useState(false);
   const [isSavingTargets, setIsSavingTargets] = useState(false);
+  const [regeneratePrompt, setRegeneratePrompt] = useState<string | null>(null);
 
   // Load universities for target editing
   useEffect(() => {
@@ -198,8 +201,17 @@ export default function PlanDetailClient({ plan, transcript }: PlanDetailClientP
 
       if (!res.ok) throw new Error("Failed to update targets");
 
+      // Build school names for the prompt
+      const selectedNames = selectedTargetIds
+        .map(id => universities.find(u => u.id === id))
+        .filter(Boolean)
+        .map(u => u!.abbreviation ?? u!.name);
+
       setIsEditingTargets(false);
-      setTargetsChanged(true); // triggers regeneration banner
+      setTargetsChanged(false);
+      setRegeneratePrompt(
+        `My target schools have changed to: ${selectedNames.join(", ")}. Please regenerate my transfer plan using the updated articulation data for these schools.`
+      );
     } catch (err) {
       console.error("Error saving targets:", err);
     } finally {
@@ -428,7 +440,15 @@ export default function PlanDetailClient({ plan, transcript }: PlanDetailClientP
                   {headerSchools.map((school) => (
                     <li
                       key={school.name}
-                      className="inline-flex items-center gap-2 rounded-full bg-zinc-100 dark:bg-zinc-800 px-2.5 py-1 text-[13px] font-semibold text-zinc-800 dark:text-zinc-200"
+                      role="button"
+                      tabIndex={0}
+                      onClick={() => setSelectedSchool((prev) => prev === school.name ? null : school.name)}
+                      onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setSelectedSchool((prev) => prev === school.name ? null : school.name); } }}
+                      className={`inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-[13px] font-semibold cursor-pointer transition-colors ${
+                        selectedSchool === school.name
+                          ? "bg-blue-100 dark:bg-blue-900/40 text-blue-800 dark:text-blue-200 ring-1 ring-blue-300 dark:ring-blue-700"
+                          : "bg-zinc-100 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 hover:bg-zinc-200 dark:hover:bg-zinc-700"
+                      }`}
                       data-testid={`plan-header-school-${school.name}`}
                     >
                       <span>{school.name}</span>
@@ -498,28 +518,104 @@ export default function PlanDetailClient({ plan, transcript }: PlanDetailClientP
               </div>
             )}
 
-            {/* Regeneration prompt */}
-            {targetsChanged && !isEditingTargets && (
-              <div className="mt-3 flex items-center gap-3 p-3 rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800">
-                <svg className="w-5 h-5 text-amber-600 dark:text-amber-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                </svg>
-                <div className="flex-1">
-                  <p className="text-sm font-medium text-amber-800 dark:text-amber-200">
-                    Your target schools changed
-                  </p>
-                  <p className="text-xs text-amber-700 dark:text-amber-300">
-                    Chat with the AI to regenerate your plan with updated articulation data.
-                  </p>
+            {/* Regeneration auto-triggered when targets change */}
+
+            {/* School delta panel */}
+            {selectedSchool && transferPlan && (() => {
+              const school = transferPlan.coveredSchools?.find((s) => s.name === selectedSchool);
+              const allCourses = transferPlan.semesters.flatMap((sem) =>
+                sem.courses.map((c) => ({ ...c, semesterLabel: sem.label }))
+              );
+              const forSchool = allCourses.filter(
+                (c) => !c.requiredBy || c.requiredBy.length === 0 || c.requiredBy.includes(selectedSchool)
+              );
+              const completed = forSchool.filter((c) => c.status === "completed");
+              const remaining = forSchool.filter((c) => c.status !== "completed");
+              const completedUnits = completed.reduce((s, c) => s + c.units, 0);
+              const remainingUnits = remaining.reduce((s, c) => s + c.units, 0);
+
+              return (
+                <div className="mt-3 rounded-lg border border-blue-200 dark:border-blue-800 bg-blue-50/50 dark:bg-blue-900/10 p-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="text-sm font-bold text-zinc-900 dark:text-zinc-100">
+                      {selectedSchool} — Transfer Delta
+                    </h3>
+                    <button onClick={() => setSelectedSchool(null)} className="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 cursor-pointer" aria-label="Close delta panel">
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                    </button>
+                  </div>
+
+                  {/* Progress bar */}
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="flex-1 h-2.5 rounded-full bg-zinc-200 dark:bg-zinc-700">
+                      <div className="h-2.5 rounded-full bg-emerald-500 transition-all" style={{ width: `${completedUnits + remainingUnits > 0 ? (completedUnits / (completedUnits + remainingUnits)) * 100 : 0}%` }} />
+                    </div>
+                    <span className="text-xs font-semibold text-zinc-600 dark:text-zinc-300 whitespace-nowrap">
+                      {completedUnits}/{completedUnits + remainingUnits} units
+                    </span>
+                    {school && (
+                      <span className="text-xs font-medium text-zinc-500">
+                        ({school.fitScore}% fit)
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    {/* Completed */}
+                    <div>
+                      <h4 className="text-xs font-semibold uppercase tracking-wide text-emerald-700 dark:text-emerald-400 mb-2">
+                        ✓ Completed ({completed.length})
+                      </h4>
+                      {completed.length === 0 ? (
+                        <p className="text-xs text-zinc-500 italic">No courses completed yet</p>
+                      ) : (
+                        <ul className="space-y-1.5">
+                          {completed.map((c) => (
+                            <li key={c.code} className="text-xs">
+                              <div className="flex items-center justify-between">
+                                <span className="text-zinc-600 dark:text-zinc-300 truncate mr-2">
+                                  <span className="font-medium">{c.code}</span> {c.title}
+                                </span>
+                                <span className="text-zinc-400 shrink-0">{c.units}u</span>
+                              </div>
+                              {c.transferEquivalency && (
+                                <div className="text-[11px] text-emerald-600 dark:text-emerald-400 mt-0.5 pl-1">→ {c.transferEquivalency}</div>
+                              )}
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+
+                    {/* Remaining */}
+                    <div>
+                      <h4 className="text-xs font-semibold uppercase tracking-wide text-amber-700 dark:text-amber-400 mb-2">
+                        ○ Still Needed ({remaining.length})
+                      </h4>
+                      {remaining.length === 0 ? (
+                        <p className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">All done! 🎉</p>
+                      ) : (
+                        <ul className="space-y-1.5">
+                          {remaining.map((c) => (
+                            <li key={c.code} className="text-xs">
+                              <div className="flex items-center justify-between">
+                                <span className="text-zinc-600 dark:text-zinc-300 truncate mr-2">
+                                  <span className="font-medium">{c.code}</span> {c.title}
+                                </span>
+                                <span className="text-zinc-400 shrink-0">{c.units}u · {c.semesterLabel}</span>
+                              </div>
+                              {c.transferEquivalency && (
+                                <div className="text-[11px] text-blue-600 dark:text-blue-400 mt-0.5 pl-1">→ {c.transferEquivalency}</div>
+                              )}
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+                  </div>
                 </div>
-                <button
-                  onClick={handleDismissRegenBanner}
-                  className="text-xs text-amber-600 dark:text-amber-400 hover:text-amber-800 dark:hover:text-amber-200 font-medium cursor-pointer"
-                >
-                  Dismiss
-                </button>
-              </div>
-            )}
+              );
+            })()}
 
             <p className="mt-1 text-[15px] font-medium text-zinc-500 dark:text-zinc-400 truncate">
               {plan.target_major}
@@ -598,7 +694,22 @@ export default function PlanDetailClient({ plan, transcript }: PlanDetailClientP
           <div className="flex h-full min-h-0 flex-1 overflow-hidden">
             <PreviousCoursesPanel
               transcriptId={transcript?.id}
-              courses={transcriptData?.courses.filter(c => c.status === "completed") ?? []}
+              courses={(() => {
+                const transcriptCourses = transcriptData?.courses.filter(c => c.status === "completed") ?? [];
+                if (!userCourses?.length) return transcriptCourses;
+                const existingCodes = new Set(transcriptCourses.map(c => c.code));
+                const mapped = userCourses
+                  .filter(uc => !existingCodes.has(uc.course_code))
+                  .map(uc => ({
+                    code: uc.course_code,
+                    title: uc.course_title,
+                    units: uc.units,
+                    grade: uc.grade ?? "",
+                    status: (uc.status === "completed" ? "completed" : uc.status === "in_progress" ? "in_progress" : "completed") as "completed" | "in_progress" | "withdrawn",
+                    semester: uc.term ?? "My Courses",
+                  }));
+                return [...transcriptCourses, ...mapped];
+              })()}
               isCollapsed={isPreviousCoursesCollapsed}
               onToggleCollapse={() => setIsPreviousCoursesCollapsed(p => !p)}
             />
@@ -647,6 +758,7 @@ export default function PlanDetailClient({ plan, transcript }: PlanDetailClientP
         planId={plan.id}
         transcriptData={transcriptData ?? undefined}
         resolveRisk={resolveRisk}
+        regeneratePrompt={regeneratePrompt}
       />
 
       {/* Course Status Menu */}

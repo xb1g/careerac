@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+    <defs>
+      <linearGradient id="titanium" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#D1D1D6" />
+        <stop offset="50%" stop-color="#AEAEB2" />
+        <stop offset="100%" stop-color="#8E8E93" />
+      </linearGradient>
+    </defs>
+    <rect width="100" height="100" rx="22.5" fill="url(#titanium)" />
+    <g transform="translate(50, 55)" fill="none" stroke="#FFFFFF" stroke-width="2.5" opacity="0.8" stroke-linecap="round">
+      <path d="M -30, 15 C -15, -15 15, -15 30, 15" />
+      <path d="M -15, -5 A 25 25 0 0 1 15, -5" />
+      <path d="M -25, -18 A 38 38 0 0 1 25, -18" />
+    </g>
+  </svg>
