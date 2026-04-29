@@ -256,16 +256,33 @@ export async function generateTextFromMiniMax(
   systemPrompt: string,
   messages: AnthropicMessage[],
 ): Promise<string> {
+  console.log("[MiniMax] Calling API...");
   const minimaxResponse = await callMiniMax(systemPrompt, messages, false);
-  const data = (await minimaxResponse.json()) as MiniMaxMessageResponse;
+  console.log("[MiniMax] Response received, status:", minimaxResponse.status);
+
+  let data: MiniMaxMessageResponse;
+  try {
+    data = (await minimaxResponse.json()) as MiniMaxMessageResponse;
+    console.log("[MiniMax] JSON parsed, content blocks:", data.content?.length ?? 0);
+  } catch (parseError) {
+    console.error("[MiniMax] JSON parse error:", parseError);
+    const text = await minimaxResponse.text();
+    console.error("[MiniMax] Raw response:", text.substring(0, 500));
+    throw new MiniMaxApiError("Failed to parse AI response", 502);
+  }
+
   const text = (data.content ?? [])
     .filter((block) => block.type === "text" && typeof block.text === "string")
     .map((block) => block.text ?? "")
     .join("");
 
+  console.log("[MiniMax] Text extracted, length:", text.length);
+
   if (!text.trim()) {
+    console.error("[MiniMax] No text content in response");
     throw new MiniMaxApiError("No content returned from MiniMax", 502);
   }
 
+  console.log("[MiniMax] Returning text, first 200 chars:", text.substring(0, 200));
   return text;
 }

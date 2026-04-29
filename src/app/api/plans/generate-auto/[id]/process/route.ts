@@ -81,8 +81,9 @@ export async function POST(
 
     console.log("[process] Running plan generation job");
     const result = await runPlanGenerationJob(supabase, user.id, request);
-    console.log("[process] Plan generation complete");
+    console.log("[process] Plan generation complete, result:", result.planId);
 
+    console.log("[process] Updating job status to completed...");
     await supabase
       .from("plan_generation_jobs")
       .update({
@@ -94,6 +95,7 @@ export async function POST(
       .eq("id", id)
       .eq("user_id", user.id);
 
+    console.log("[process] Returning success response");
     return NextResponse.json({
       id,
       status: "completed",
@@ -101,6 +103,11 @@ export async function POST(
       error: null,
     });
   } catch (error) {
+    console.error("[process] Error caught:", error);
+    console.error("[process] Error name:", error instanceof Error ? error.name : "unknown");
+    console.error("[process] Error message:", error instanceof Error ? error.message : String(error));
+    console.error("[process] Error stack:", error instanceof Error ? error.stack : "no stack");
+
     const normalized =
       error instanceof AutoPlanGenerationError
         ? error.details
@@ -127,6 +134,7 @@ export async function POST(
       console.error("Plan generation processing error:", error);
     }
 
+    console.log("[process] Returning error response");
     return NextResponse.json(
       {
         id: jobId,

@@ -203,19 +203,28 @@ export class PlanGenerationPipeline {
     request: PlanRequest,
     options: PlanRequestOptions = {},
   ): Promise<GeneratedPlanResult> {
+    console.log("[Pipeline] Preparing prompt...");
     const prepared = await this.prepare(request, options);
+    console.log("[Pipeline] Prompt prepared, system prompt length:", prepared.systemPrompt.length);
+
+    console.log("[Pipeline] Calling generateTextFromMiniMax...");
     const rawText = await generateTextFromMiniMax(
       prepared.systemPrompt,
       prepared.messages,
     );
+    console.log("[Pipeline] Raw text received, length:", rawText.length);
+
+    console.log("[Pipeline] Parsing plan from AI response...");
+    const parsedPlan = parsePlanFromAIResponse(
+      rawText,
+      options.startTerm,
+      request.planContext?.targetMajor,
+    );
+    console.log("[Pipeline] Plan parsed:", parsedPlan ? "success" : "null");
 
     return {
       rawText,
-      parsedPlan: parsePlanFromAIResponse(
-        rawText,
-        options.startTerm,
-        request.planContext?.targetMajor,
-      ),
+      parsedPlan,
     };
   }
 }

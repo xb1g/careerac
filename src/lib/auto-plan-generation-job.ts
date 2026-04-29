@@ -374,6 +374,7 @@ export async function runPlanGenerationJob(
     throw error;
   }
 
+  console.log("[process] Checking if plan is savable...");
   if (!isSavablePlan(generated.parsedPlan)) {
     throw new AutoPlanGenerationError(
       {
@@ -386,6 +387,7 @@ export async function runPlanGenerationJob(
     );
   }
 
+  console.log("[process] Plan is savable, building chat history...");
   const chatHistory = buildSyntheticChatHistory(
     request.transcriptData,
     request.detectedMajor,
@@ -393,6 +395,7 @@ export async function runPlanGenerationJob(
     generated.rawText,
   );
 
+  console.log("[process] Building comparison targets...");
   const comparisonTargets = await buildComparisonTargets(
     supabase,
     generated.parsedPlan,
@@ -401,6 +404,8 @@ export async function runPlanGenerationJob(
 
   const plan = generated.parsedPlan;
   const topFitName = plan.coveredSchools?.[0]?.name;
+  console.log("[process] Top fit school:", topFitName);
+
   let resolvedTopFitId: string | null = null;
   if (topFitName) {
     const match = coveredInstitutions.find((institution) => institution.name === topFitName);
@@ -411,7 +416,9 @@ export async function runPlanGenerationJob(
   }
 
   const finalTargetInstitutionId = hasTargetSchool ? targetInstitutionId : resolvedTopFitId;
+  console.log("[process] Final target institution:", finalTargetInstitutionId);
 
+  console.log("[process] Saving plan record...");
   let savedPlan;
   try {
     savedPlan = await savePlanRecord(supabase, {
@@ -427,6 +434,7 @@ export async function runPlanGenerationJob(
       hasTargetSchool,
       comparisonTargets,
     });
+    console.log("[process] Plan saved, ID:", savedPlan.id);
   } catch (error) {
     console.error("Auto plan save error:", error);
     throw new AutoPlanGenerationError(
@@ -440,6 +448,7 @@ export async function runPlanGenerationJob(
     );
   }
 
+  console.log("[process] Returning result");
   return {
     planId: savedPlan.id,
     plan: generated.parsedPlan,
