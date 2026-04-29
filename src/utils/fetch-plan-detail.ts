@@ -69,6 +69,7 @@ export async function fetchPlanDetail(id: string, userId: string) {
   const planWithMergedData = {
     id: plan.id,
     title: plan.title,
+    cc_institution_id: plan.cc_institution_id,
     target_institution_id: plan.target_institution_id,
     target_major: plan.target_major,
     comparison_targets: plan.comparison_targets,

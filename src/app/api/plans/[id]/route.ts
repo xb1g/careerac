@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
+import { createCheckpoint } from "@/lib/checkpoint";
 
 interface ComparisonTargetPayload {
   institution_id: string;
@@ -127,6 +128,14 @@ export async function PUT(req: NextRequest, { params }: RouteParams) {
     if (status !== undefined) updateData.status = status;
     if (target_institution_id !== undefined) updateData.target_institution_id = target_institution_id;
     if (comparison_targets !== undefined) updateData.comparison_targets = comparison_targets;
+
+    // Snapshot current state before mutation (only for plan_data or target changes)
+    if (plan_data !== undefined || target_institution_id !== undefined || comparison_targets !== undefined) {
+      const label = plan_data !== undefined
+        ? "AI updated plan"
+        : "Changed target schools";
+      await createCheckpoint(supabase, id, label);
+    }
 
     const { data, error } = await supabase
       .from("transfer_plans")

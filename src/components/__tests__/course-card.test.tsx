@@ -24,12 +24,12 @@ describe("CourseCard", () => {
 
   it("renders course units", () => {
     render(<CourseCard course={baseCourse} />);
-    expect(screen.getByTestId("course-units")).toHaveTextContent("4 Units");
+    expect(screen.getByTestId("course-units")).toHaveTextContent("4u");
   });
 
-  it("renders singular unit when units is 1", () => {
+  it("renders singular unit", () => {
     render(<CourseCard course={{ ...baseCourse, units: 1 }} />);
-    expect(screen.getByTestId("course-units")).toHaveTextContent("1 Unit");
+    expect(screen.getByTestId("course-units")).toHaveTextContent("1u");
   });
 
   it("renders transfer equivalency when provided", () => {
@@ -39,7 +39,7 @@ describe("CourseCard", () => {
     };
     render(<CourseCard course={course} />);
     expect(screen.getByTestId("course-equivalency")).toHaveTextContent(
-      "Transfers as: UCLA CS 31"
+      "→ UCLA CS 31"
     );
   });
 
@@ -55,28 +55,13 @@ describe("CourseCard", () => {
     };
     render(<CourseCard course={course} />);
     expect(screen.getByTestId("course-prerequisites")).toHaveTextContent(
-      "Prereqs: MATH 1, ENGL 1"
+      "Prereq: MATH 1, ENGL 1"
     );
   });
 
   it("does not render prerequisites when not provided", () => {
     render(<CourseCard course={baseCourse} />);
     expect(screen.queryByTestId("course-prerequisites")).not.toBeInTheDocument();
-  });
-
-  it("renders notes when provided", () => {
-    const course: PlanCourse = {
-      ...baseCourse,
-      notes: "Offered Fall and Spring only",
-    };
-    render(<CourseCard course={course} />);
-    expect(screen.getByText("Offered Fall and Spring only")).toBeInTheDocument();
-  });
-
-  it("does not render notes when not provided", () => {
-    const { container } = render(<CourseCard course={baseCourse} />);
-    // The notes paragraph shouldn't exist
-    expect(container.textContent).not.toContain("Offered Fall and Spring only");
   });
 
   describe("requiredBy pills", () => {

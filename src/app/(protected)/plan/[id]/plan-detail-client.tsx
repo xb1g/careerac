@@ -7,10 +7,10 @@ import { RecoveryContext } from "@/components/chat";
 import ChatWidget from "@/components/chat-widget";
 import ComparisonDashboard from "@/components/comparison-dashboard";
 import { DeletePlanButton } from "@/components/delete-plan-button";
+import CheckpointTimeline from "@/components/checkpoint-timeline";
 import { RecoveryAlternative } from "@/components/recovery-message";
 import SemesterPlan from "@/components/semester-plan";
 import CourseStatusMenu from "@/components/course-status-menu";
-import PreviousCoursesPanel from "@/components/previous-courses-panel";
 import { notifyCockpitRefresh } from "@/lib/cockpit-events";
 import TranscriptEditor from "@/components/transcript-editor";
 import { ParsedPlan, TransferPlan, PlanCourse, CourseStatus } from "@/types/plan";
@@ -29,6 +29,7 @@ interface PlanDetailClientProps {
   plan: {
     id: string;
     title: string;
+    cc_institution_id: string | null;
     target_institution_id: string | null;
     target_major: string;
     comparison_targets: Json | null;
@@ -116,6 +117,7 @@ export default function PlanDetailClient({ plan, transcript, userCourses }: Plan
     planCourseId?: string;
   } | null>(null);
   const [isStatusMenuOpen, setIsStatusMenuOpen] = useState(false);
+  const [menuPosition, setMenuPosition] = useState<{ x: number; y: number } | null>(null);
 
   // Recovery state
   const [recoveryContext, setRecoveryContext] = useState<RecoveryContext | null>(null);
@@ -125,18 +127,9 @@ export default function PlanDetailClient({ plan, transcript, userCourses }: Plan
   const [transcriptEditorData, setTranscriptEditorData] = useState<TranscriptData | null>(
     transcript?.parsed_data ?? null
   );
-  const [isPreviousCoursesCollapsed, setIsPreviousCoursesCollapsed] = useState(false);
   const transcriptData = transcriptEditorData;
   const latestMessagesRef = useRef<UIMessage[]>(initialMessages);
   const [isChatLoading, setIsChatLoading] = useState(false);
-
-  useEffect(() => {
-    if (!transcript?.id) return;
-    try {
-      const stored = localStorage.getItem(`prev-courses-collapsed-${transcript.id}`);
-      if (stored === "true") setIsPreviousCoursesCollapsed(true);
-    } catch {}
-  }, [transcript?.id]);
 
   // Target school editing state
   const [isEditingTargets, setIsEditingTargets] = useState(false);
@@ -258,13 +251,34 @@ export default function PlanDetailClient({ plan, transcript, userCourses }: Plan
   }, [plan.id]);
 
   const handlePlanGenerated = useCallback((newPlan: ParsedPlan) => {
+    // Carry over course statuses from the current plan into the new one
+    if (currentPlan && !("isNoData" in currentPlan) && !("isNoData" in newPlan)) {
+      const oldStatuses = new Map<string, CourseStatus>();
+      for (const sem of (currentPlan as TransferPlan).semesters) {
+        for (const c of sem.courses) {
+          if (c.status && c.status !== "planned") {
+            oldStatuses.set(c.code, c.status);
+          }
+        }
+      }
+      if (oldStatuses.size > 0) {
+        for (const sem of (newPlan as TransferPlan).semesters) {
+          for (const c of sem.courses) {
+            const prev = oldStatuses.get(c.code);
+            if (prev && (!c.status || c.status === "planned")) {
+              c.status = prev;
+            }
+          }
+        }
+      }
+    }
     setCurrentPlan(newPlan);
-    // Save will be triggered by Chat's onSavePlan callback
-  }, []);
+  }, [currentPlan]);
 
   // Handle course click - opens status menu
-  const handleCourseClick = useCallback((course: PlanCourse & { semesterNumber: number }, currentStatus: CourseStatus) => {
+  const handleCourseClick = useCallback((course: PlanCourse & { semesterNumber: number }, currentStatus: CourseStatus, position?: { x: number; y: number }) => {
     setSelectedCourse({ course, currentStatus });
+    setMenuPosition(position ?? null);
     setIsStatusMenuOpen(true);
   }, []);
 
@@ -419,6 +433,13 @@ export default function PlanDetailClient({ plan, transcript, userCourses }: Plan
     setTranscriptExpanded(false);
   }, []);
 
+  const handleCheckpointRestore = useCallback((planData: unknown) => {
+    const restored = planData as ParsedPlan;
+    if (restored && !("isNoData" in restored)) {
+      setCurrentPlan(restored);
+    }
+  }, []);
+
   return (
     <div className="flex h-full min-h-0 flex-col">
       {/* Header */}
@@ -433,6 +454,9 @@ export default function PlanDetailClient({ plan, transcript, userCourses }: Plan
                 )}
               </h1>
               <DeletePlanButton planId={plan.id} />
+              <div className="relative">
+                <CheckpointTimeline planId={plan.id} onRestore={handleCheckpointRestore} />
+              </div>
             </div>
             <div className="mt-2 flex flex-wrap items-center gap-2">
               {headerSchools.length > 0 && (
@@ -692,9 +716,11 @@ export default function PlanDetailClient({ plan, transcript, userCourses }: Plan
       <div className="relative min-h-0 flex-1 overflow-hidden bg-[#FAFAFA] dark:bg-zinc-900/50">
         {currentPlan ? (
           <div className="flex h-full min-h-0 flex-1 overflow-hidden">
-            <PreviousCoursesPanel
-              transcriptId={transcript?.id}
-              courses={(() => {
+            <SemesterPlan
+              plan={currentPlan}
+              onCourseClick={handleCourseClick}
+              planId={plan.id}
+              previousCourses={(() => {
                 const transcriptCourses = transcriptData?.courses.filter(c => c.status === "completed") ?? [];
                 if (!userCourses?.length) return transcriptCourses;
                 const existingCodes = new Set(transcriptCourses.map(c => c.code));
@@ -710,10 +736,7 @@ export default function PlanDetailClient({ plan, transcript, userCourses }: Plan
                   }));
                 return [...transcriptCourses, ...mapped];
               })()}
-              isCollapsed={isPreviousCoursesCollapsed}
-              onToggleCollapse={() => setIsPreviousCoursesCollapsed(p => !p)}
             />
-            <SemesterPlan plan={currentPlan} onCourseClick={handleCourseClick} planId={plan.id} />
           </div>
         ) : (
           <div className="h-full flex items-center justify-center p-8">
@@ -756,6 +779,18 @@ export default function PlanDetailClient({ plan, transcript, userCourses }: Plan
         recoveryContext={recoveryContext}
         onAcceptAlternative={handleAcceptAlternative}
         planId={plan.id}
+        planContext={{
+          ccInstitutionId: plan.cc_institution_id ?? undefined,
+          targetInstitutionId: plan.target_institution_id ?? undefined,
+          targetMajor: plan.target_major,
+          selectedTargetInstitutionIds: selectedTargetIds,
+        }}
+        selectedUniversityNames={
+          universities.length > 0
+            ? selectedTargetIds.map(id => universities.find(u => u.id === id)?.name).filter(Boolean) as string[]
+            : headerSchools.map(s => s.name)
+        }
+        hasTargetSchool={!!plan.target_institution_id}
         transcriptData={transcriptData ?? undefined}
         resolveRisk={resolveRisk}
         regeneratePrompt={regeneratePrompt}
@@ -771,6 +806,7 @@ export default function PlanDetailClient({ plan, transcript, userCourses }: Plan
             setIsStatusMenuOpen(false);
             setSelectedCourse(null);
           }}
+          position={menuPosition}
         />
       )}
     </div>

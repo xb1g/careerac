@@ -457,6 +457,32 @@ export interface Database {
           updated_at?: string
         }
       }
+      plan_checkpoints: {
+        Row: {
+          id: string
+          plan_id: string
+          plan_data: Json
+          course_statuses: Json
+          action_label: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          plan_id: string
+          plan_data: Json
+          course_statuses?: Json
+          action_label: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          plan_id?: string
+          plan_data?: Json
+          course_statuses?: Json
+          action_label?: string
+          created_at?: string
+        }
+      }
       playbooks: {
         Row: {
           id: string

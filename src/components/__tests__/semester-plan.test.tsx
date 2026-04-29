@@ -128,7 +128,7 @@ describe("SemesterPlan", () => {
 
       const prereqElements = screen.getAllByTestId("course-prerequisites");
       expect(prereqElements.length).toBeGreaterThan(0);
-    expect(prereqElements[0]).toHaveTextContent("Prereqs: CS 1");
+    expect(prereqElements[0]).toHaveTextContent("Prereq: CS 1");
     });
   });
 

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
+import { createCheckpoint } from "@/lib/checkpoint";
 import type { CourseStatus } from "@/types/plan";
 
 interface PlanCourseRow {
@@ -50,6 +51,9 @@ export async function PATCH(
     if (planError || !plan) {
       return NextResponse.json({ error: "Plan not found" }, { status: 404 });
     }
+
+    // Snapshot current state before mutation
+    await createCheckpoint(supabase, planId, `Changed ${courseCode} to ${status}`);
 
     // Attempt to update plan_courses status if it exists
     let updatedCourse: PlanCourseRow | null = null;

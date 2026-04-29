@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
+import { createCheckpoint } from "@/lib/checkpoint";
 
 interface AcceptAlternativeRequest {
   alternative: {
@@ -52,6 +53,9 @@ export async function POST(
     if (planError || !plan) {
       return NextResponse.json({ error: "Plan not found" }, { status: 404 });
     }
+
+    // Snapshot current state before mutation
+    await createCheckpoint(supabase, planId, `Accepted ${alternative.code} for ${failedCourseCode}`);
 
     const planData = plan.plan_data as Record<string, unknown> | null;
     if (!planData || !("semesters" in planData) || !Array.isArray(planData.semesters)) {
