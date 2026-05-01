@@ -28,6 +28,13 @@ export interface ComparisonTarget {
   userGpa?: number | null;
   playbookCount?: number;
   requiredCourses: ComparisonTargetCourse[];
+  tuition?: {
+    tuitionAndFees: number;
+    livingExpenses: number;
+    totalCost: number;
+    studentType: "international" | "resident";
+    academicYear: number;
+  };
 }
 
 export interface ComparisonResult {
@@ -49,6 +56,13 @@ export interface ComparisonResult {
   missingCourses: ComparisonTargetCourse[];
   recommendationScore: number;
   isBestOption: boolean;
+  tuition?: {
+    tuitionAndFees: number;
+    livingExpenses: number;
+    totalCost: number;
+    studentType: "international" | "resident";
+    academicYear: number;
+  };
 }
 
 function normalizeCourseCode(value: string): string {
@@ -84,7 +98,14 @@ function inferSchoolType(name: string, explicitType?: string): "cc" | "universit
   return "university";
 }
 
-function estimateSemesterCost(type: "cc" | "university" | "private", schoolName: string): number {
+function estimateSemesterCost(
+  type: "cc" | "university" | "private",
+  schoolName: string,
+  realTuition?: ComparisonTarget["tuition"],
+): number {
+  if (realTuition) {
+    return Math.round(realTuition.totalCost / 2);
+  }
   const lower = schoolName.toLowerCase();
   if (type === "private") return 32000;
   if (lower.includes("state") || lower.includes("csu") || lower.includes("cal poly")) return 14000;
@@ -166,7 +187,7 @@ export function generateComparison(
     const remainingSemesters = remainingUnits === 0 ? 0 : Math.ceil(remainingUnits / maxCreditsPerSemester);
     const acceptanceChance = calculateAcceptanceChance(target, prepProgressPercent);
     const schoolType = inferSchoolType(target.schoolName, target.schoolType);
-    const totalEstimatedCost = remainingSemesters * estimateSemesterCost(schoolType, target.schoolName);
+    const totalEstimatedCost = remainingSemesters * estimateSemesterCost(schoolType, target.schoolName, target.tuition);
 
     const recommendationScore = Math.round(
       prepProgressPercent * 0.4 +
@@ -191,6 +212,7 @@ export function generateComparison(
       missingCourses,
       recommendationScore,
       isBestOption: false,
+      tuition: target.tuition,
     };
   });
 

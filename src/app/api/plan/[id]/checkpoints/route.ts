@@ -31,7 +31,7 @@ export async function GET(
 
     const { data: checkpoints, error } = await supabase
       .from("plan_checkpoints")
-      .select("id, action_label, created_at")
+      .select("id, action_label, plan_data, created_at")
       .eq("plan_id", planId)
       .order("created_at", { ascending: false });
 

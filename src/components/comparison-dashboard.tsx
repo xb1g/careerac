@@ -16,6 +16,13 @@ function formatCurrency(value: number): string {
   }).format(value);
 }
 
+function formatCurrencyCompact(value: number): string {
+  if (value >= 1000) {
+    return `$${Math.round(value / 1000)}k`;
+  }
+  return formatCurrency(value);
+}
+
 function acceptanceClasses(label: ComparisonResult["acceptanceChance"]["label"]): string {
   switch (label) {
     case "safety":
@@ -33,6 +40,7 @@ export default function ComparisonDashboard({ planId, className = "" }: Comparis
   const [error, setError] = useState<string | null>(null);
   const [results, setResults] = useState<ComparisonResult[]>([]);
   const [selectedInstitutionId, setSelectedInstitutionId] = useState<string | null>(null);
+  const [detailTab, setDetailTab] = useState<"prep" | "cost">("prep");
 
   useEffect(() => {
     if (!expanded || !loading || results.length > 0) return;
@@ -181,8 +189,12 @@ export default function ComparisonDashboard({ planId, className = "" }: Comparis
                             <div className="mt-1 font-semibold text-zinc-900 dark:text-zinc-100">{result.acceptanceChance.score}/100</div>
                           </div>
                           <div className="rounded-xl bg-zinc-50 dark:bg-zinc-950/70 p-3">
-                            <div className="text-[11px] uppercase tracking-wide text-zinc-400 dark:text-zinc-500">Estimated cost</div>
-                            <div className="mt-1 font-semibold text-zinc-900 dark:text-zinc-100">{formatCurrency(result.totalEstimatedCost)}</div>
+                            <div className="text-[11px] uppercase tracking-wide text-zinc-400 dark:text-zinc-500">
+                              {result.tuition ? "Total cost/yr" : "Est. cost"}
+                            </div>
+                            <div className={`mt-1 font-semibold ${result.tuition ? "text-blue-600 dark:text-blue-400" : "text-zinc-900 dark:text-zinc-100"}`}>
+                              {result.tuition ? formatCurrencyCompact(result.tuition.totalCost) : formatCurrency(result.totalEstimatedCost)}
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -199,46 +211,159 @@ export default function ComparisonDashboard({ planId, className = "" }: Comparis
                           {selected.matchedCourses.length} matched courses · {selected.missingCourses.length} still missing
                         </p>
                       </div>
-                      {selected.acceptanceChance.baselineGpa !== null && (
-                        <div className="text-sm text-zinc-500 dark:text-zinc-400">
-                          Competitive GPA benchmark: <span className="font-semibold text-zinc-900 dark:text-zinc-100">{selected.acceptanceChance.baselineGpa.toFixed(2)}</span>
+                      <div className="flex items-center gap-2">
+                        {selected.tuition && (
+                          // Tab switcher
+                          <div className="flex rounded-xl border border-zinc-200 dark:border-zinc-700 p-0.5 bg-white dark:bg-zinc-950">
+                            <button
+                              type="button"
+                              onClick={() => setDetailTab("prep")}
+                              className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-colors cursor-pointer ${
+                                detailTab === "prep"
+                                  ? "bg-zinc-900 text-white dark:bg-white dark:text-zinc-900"
+                                  : "text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
+                              }`}
+                            >
+                              Prep
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setDetailTab("cost")}
+                              className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-colors cursor-pointer ${
+                                detailTab === "cost"
+                                  ? "bg-zinc-900 text-white dark:bg-white dark:text-zinc-900"
+                                  : "text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
+                              }`}
+                            >
+                              Cost
+                            </button>
+                          </div>
+                        )}
+                        {selected.acceptanceChance.baselineGpa !== null && (
+                          <div className="text-sm text-zinc-500 dark:text-zinc-400">
+                            GPA: <span className="font-semibold text-zinc-900 dark:text-zinc-100">{selected.acceptanceChance.baselineGpa.toFixed(2)}</span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {detailTab === "prep" && (
+                      <div className="mt-4 grid gap-4 lg:grid-cols-2">
+                        <div className="rounded-2xl bg-white dark:bg-zinc-950 p-4 border border-zinc-200 dark:border-zinc-800">
+                          <h4 className="text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">Already satisfied</h4>
+                          <ul className="mt-3 space-y-2 text-sm text-zinc-700 dark:text-zinc-300">
+                            {selected.matchedCourses.length === 0 ? (
+                              <li className="text-zinc-500 dark:text-zinc-400">No articulated prep completed yet.</li>
+                            ) : (
+                              selected.matchedCourses.slice(0, 8).map((course) => (
+                                <li key={`${course.ccCourseCode}-${course.universityCourseCode}`} className="flex items-start justify-between gap-3">
+                                  <span>{course.ccCourseCode} → {course.universityCourseCode}</span>
+                                  <span className="text-zinc-400 dark:text-zinc-500">{course.ccUnits}u</span>
+                                </li>
+                              ))
+                            )}
+                          </ul>
                         </div>
-                      )}
-                    </div>
 
-                    <div className="mt-4 grid gap-4 lg:grid-cols-2">
-                      <div className="rounded-2xl bg-white dark:bg-zinc-950 p-4 border border-zinc-200 dark:border-zinc-800">
-                        <h4 className="text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">Already satisfied</h4>
-                        <ul className="mt-3 space-y-2 text-sm text-zinc-700 dark:text-zinc-300">
-                          {selected.matchedCourses.length === 0 ? (
-                            <li className="text-zinc-500 dark:text-zinc-400">No articulated prep completed yet.</li>
-                          ) : (
-                            selected.matchedCourses.slice(0, 8).map((course) => (
-                              <li key={`${course.ccCourseCode}-${course.universityCourseCode}`} className="flex items-start justify-between gap-3">
-                                <span>{course.ccCourseCode} → {course.universityCourseCode}</span>
-                                <span className="text-zinc-400 dark:text-zinc-500">{course.ccUnits}u</span>
-                              </li>
-                            ))
-                          )}
-                        </ul>
+                        <div className="rounded-2xl bg-white dark:bg-zinc-950 p-4 border border-zinc-200 dark:border-zinc-800">
+                          <h4 className="text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">Still missing</h4>
+                          <ul className="mt-3 space-y-2 text-sm text-zinc-700 dark:text-zinc-300">
+                            {selected.missingCourses.length === 0 ? (
+                              <li className="text-emerald-600 dark:text-emerald-400">All currently tracked major prep appears satisfied.</li>
+                            ) : (
+                              selected.missingCourses.slice(0, 8).map((course) => (
+                                <li key={`${course.ccCourseCode}-${course.universityCourseCode}`} className="flex items-start justify-between gap-3">
+                                  <span>{course.ccCourseCode} → {course.universityCourseCode}</span>
+                                  <span className="text-zinc-400 dark:text-zinc-500">{course.ccUnits}u</span>
+                                </li>
+                              ))
+                            )}
+                          </ul>
+                        </div>
                       </div>
+                    )}
 
-                      <div className="rounded-2xl bg-white dark:bg-zinc-950 p-4 border border-zinc-200 dark:border-zinc-800">
-                        <h4 className="text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">Still missing</h4>
-                        <ul className="mt-3 space-y-2 text-sm text-zinc-700 dark:text-zinc-300">
-                          {selected.missingCourses.length === 0 ? (
-                            <li className="text-emerald-600 dark:text-emerald-400">All currently tracked major prep appears satisfied.</li>
-                          ) : (
-                            selected.missingCourses.slice(0, 8).map((course) => (
-                              <li key={`${course.ccCourseCode}-${course.universityCourseCode}`} className="flex items-start justify-between gap-3">
-                                <span>{course.ccCourseCode} → {course.universityCourseCode}</span>
-                                <span className="text-zinc-400 dark:text-zinc-500">{course.ccUnits}u</span>
-                              </li>
-                            ))
-                          )}
-                        </ul>
+                    {detailTab === "cost" && selected.tuition && (
+                      <div className="mt-4 grid gap-4 lg:grid-cols-2">
+                        <div className="rounded-2xl bg-white dark:bg-zinc-950 p-4 border border-zinc-200 dark:border-zinc-800 lg:col-span-2">
+                          <div className="flex items-center justify-between">
+                            <h4 className="text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+                              Cost breakdown ({selected.tuition.studentType === "international" ? "International Student" : "Resident"}, AY {selected.tuition.academicYear}-{selected.tuition.academicYear + 1})
+                            </h4>
+                          </div>
+                          <div className="mt-3 grid gap-3 sm:grid-cols-3">
+                            <div className="rounded-xl bg-zinc-50 dark:bg-zinc-900 p-3">
+                              <div className="text-[11px] uppercase tracking-wide text-zinc-400 dark:text-zinc-500">Tuition &amp; Fees</div>
+                              <div className="mt-1 text-lg font-semibold text-zinc-900 dark:text-white">{formatCurrency(selected.tuition.tuitionAndFees)}</div>
+                            </div>
+                            <div className="rounded-xl bg-zinc-50 dark:bg-zinc-900 p-3">
+                              <div className="text-[11px] uppercase tracking-wide text-zinc-400 dark:text-zinc-500">Living Expenses</div>
+                              <div className="mt-1 text-lg font-semibold text-zinc-900 dark:text-white">{formatCurrency(selected.tuition.livingExpenses)}</div>
+                            </div>
+                            <div className="rounded-xl bg-blue-50 dark:bg-blue-950/30 p-3">
+                              <div className="text-[11px] uppercase tracking-wide text-blue-600 dark:text-blue-400">Total / Year</div>
+                              <div className="mt-1 text-lg font-semibold text-blue-700 dark:text-blue-300">{formatCurrency(selected.tuition.totalCost)}</div>
+                            </div>
+                          </div>
+                          <div className="mt-3 flex flex-wrap gap-4 text-xs text-zinc-500 dark:text-zinc-400">
+                            <div>
+                              Semesters remaining:{" "}
+                              <span className="font-semibold text-zinc-700 dark:text-zinc-200">{selected.remainingSemesters}</span>
+                            </div>
+                            <div>
+                              Estimated total:{" "}
+                              <span className="font-semibold text-blue-600 dark:text-blue-300">
+                                {formatCurrency(selected.remainingSemesters * selected.tuition.totalCost / 2)}
+                              </span>{" "}
+                              <span className="text-zinc-400 dark:text-zinc-500">(~{selected.remainingSemesters} semesters)</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Comparison with all schools' tuition */}
+                        {results.length > 1 && (
+                          <div className="rounded-2xl bg-white dark:bg-zinc-950 p-4 border border-zinc-200 dark:border-zinc-800 lg:col-span-2">
+                            <h4 className="text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">Tuition comparison</h4>
+                            <div className="mt-3 space-y-2">
+                              {results
+                                .filter((r) => r.tuition)
+                                .sort((a, b) => (a.tuition?.totalCost ?? 0) - (b.tuition?.totalCost ?? 0))
+                                .map((r) => {
+                                  const maxCost = Math.max(...results.filter((x) => x.tuition).map((x) => x.tuition!.totalCost));
+                                  const barWidth = maxCost > 0 ? ((r.tuition?.totalCost ?? 0) / maxCost) * 100 : 0;
+                                  return (
+                                    <div key={r.institutionId} className="flex items-center gap-3">
+                                      <div className="w-32 shrink-0 truncate text-xs text-zinc-600 dark:text-zinc-300">
+                                        {r.schoolName}
+                                      </div>
+                                      <div className="flex-1 h-5 rounded-full bg-zinc-100 dark:bg-zinc-800 overflow-hidden">
+                                        <div
+                                          className={`h-5 rounded-full ${r.institutionId === selectedInstitutionId ? "bg-blue-500" : "bg-zinc-300 dark:bg-zinc-600"}`}
+                                          style={{ width: `${barWidth}%` }}
+                                        />
+                                      </div>
+                                      <div className="w-20 shrink-0 text-right text-xs font-semibold text-zinc-700 dark:text-zinc-200">
+                                        {formatCurrencyCompact(r.tuition!.totalCost)}/yr
+                                      </div>
+                                    </div>
+                                  );
+                                })}
+                              {results.filter((r) => !r.tuition).length > 0 && (
+                                <p className="text-xs text-zinc-400 dark:text-zinc-500">
+                                  {results.filter((r) => !r.tuition).map((r) => r.schoolName).join(", ")} — tuition data unavailable
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                        )}
                       </div>
-                    </div>
+                    )}
+
+                    {detailTab === "cost" && !selected.tuition && (
+                      <div className="mt-4 flex items-center justify-center rounded-2xl border border-dashed border-zinc-300 dark:border-zinc-700 p-8 text-sm text-zinc-500 dark:text-zinc-400">
+                        No tuition data available for this school.
+                      </div>
+                    )}
                   </div>
                 )}
               </>

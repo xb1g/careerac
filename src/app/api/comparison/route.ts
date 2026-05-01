@@ -245,8 +245,23 @@ export async function POST(req: NextRequest) {
       playbookCounts.set(row.target_institution_id, (playbookCounts.get(row.target_institution_id) ?? 0) + 1);
     }
 
+    // Load tuition data for all target institutions
+    const { data: tuitionRows } = await supabase
+      .from("institution_tuition")
+      .select("institution_id, tuition_and_fees, living_expenses, total_cost, student_type, academic_year")
+      .in("institution_id", targetIds)
+      .eq("student_type", "international")
+      .eq("student_level", "undergraduate")
+      .eq("academic_year", 2025) as { data: Array<{ institution_id: string; tuition_and_fees: number; living_expenses: number; total_cost: number; student_type: string; academic_year: number }> | null; error: unknown };
+
+    const tuitionMap = new Map<string, NonNullable<typeof tuitionRows>[number]>();
+    for (const row of tuitionRows ?? []) {
+      tuitionMap.set(row.institution_id, row);
+    }
+
     const comparisonInputs: ComparisonTarget[] = institutions.map((institution) => {
       const schoolAgreements = scopedArticulation.filter((row) => row.university_institution_id === institution.id);
+      const tuition = tuitionMap.get(institution.id);
 
       return {
         institutionId: institution.id,
@@ -273,6 +288,17 @@ export async function POST(req: NextRequest) {
             };
           })
           .filter((course): course is NonNullable<typeof course> => course !== null),
+        ...(tuition
+          ? {
+              tuition: {
+                tuitionAndFees: tuition.tuition_and_fees,
+                livingExpenses: tuition.living_expenses,
+                totalCost: tuition.total_cost,
+                studentType: tuition.student_type as "international" | "resident",
+                academicYear: tuition.academic_year,
+              },
+            }
+          : {}),
       };
     });
 
