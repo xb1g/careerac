@@ -35,7 +35,7 @@ export function MajorSelectionFallback({
 
   return (
     <div className="w-full max-w-lg mx-auto py-10 px-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <div className="bg-white dark:bg-zinc-900 rounded-2xl shadow-xl border border-zinc-200 dark:border-zinc-800 overflow-hidden">
+      <div className="bg-white dark:bg-zinc-900 rounded-2xl shadow-xl border border-zinc-200 dark:border-zinc-800 overflow-visible">
         <div className="p-8">
           <div className="w-12 h-12 rounded-xl bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center mb-6">
             <svg
