@@ -9,19 +9,63 @@ interface SchoolOption {
 }
 
 const DEFAULT_SCHOOLS: SchoolOption[] = [
-  { name: "University of California, Los Angeles", abbreviation: "UCLA", category: "UC" },
-  { name: "University of California, Berkeley", abbreviation: "UC Berkeley", category: "UC" },
-  { name: "University of California, San Diego", abbreviation: "UCSD", category: "UC" },
-  { name: "University of California, Santa Barbara", abbreviation: "UCSB", category: "UC" },
-  { name: "University of California, Irvine", abbreviation: "UCI", category: "UC" },
-  { name: "University of California, Davis", abbreviation: "UC Davis", category: "UC" },
+  {
+    name: "University of California, Los Angeles",
+    abbreviation: "UCLA",
+    category: "UC",
+  },
+  {
+    name: "University of California, Berkeley",
+    abbreviation: "UC Berkeley",
+    category: "UC",
+  },
+  {
+    name: "University of California, San Diego",
+    abbreviation: "UCSD",
+    category: "UC",
+  },
+  {
+    name: "University of California, Santa Barbara",
+    abbreviation: "UCSB",
+    category: "UC",
+  },
+  {
+    name: "University of California, Irvine",
+    abbreviation: "UCI",
+    category: "UC",
+  },
+  {
+    name: "University of California, Davis",
+    abbreviation: "UC Davis",
+    category: "UC",
+  },
   { name: "San José State University", abbreviation: "SJSU", category: "CSU" },
-  { name: "California State University, Long Beach", abbreviation: "CSULB", category: "CSU" },
-  { name: "California State University, Northridge", abbreviation: "CSUN", category: "CSU" },
+  {
+    name: "California State University, Long Beach",
+    abbreviation: "CSULB",
+    category: "CSU",
+  },
+  {
+    name: "California State University, Northridge",
+    abbreviation: "CSUN",
+    category: "CSU",
+  },
   { name: "San Diego State University", abbreviation: "SDSU", category: "CSU" },
-  { name: "California State University, Fullerton", abbreviation: "CSUF", category: "CSU" },
-  { name: "Sacramento State University", abbreviation: "Sac State", category: "CSU" },
-  { name: "University of Southern California", abbreviation: "USC", category: "Private" },
+  {
+    name: "California State University, Fullerton",
+    abbreviation: "CSUF",
+    category: "CSU",
+  },
+  {
+    name: "Sacramento State University",
+    abbreviation: "Sac State",
+    category: "CSU",
+  },
+  {
+    name: "University of Southern California",
+    abbreviation: "USC",
+    category: "Private",
+  },
 ];
 
 interface SchoolAutocompleteProps {
@@ -49,7 +93,9 @@ export function SchoolAutocomplete({
     if (!value.trim()) return [];
     const q = value.toLowerCase();
     return DEFAULT_SCHOOLS.filter(
-      (s) => s.name.toLowerCase().includes(q) || s.abbreviation.toLowerCase().includes(q)
+      (s) =>
+        s.name.toLowerCase().includes(q) ||
+        s.abbreviation.toLowerCase().includes(q),
     ).slice(0, 8);
   }, [value]);
 
@@ -71,7 +117,10 @@ export function SchoolAutocomplete({
 
   useEffect(() => {
     function handleClick(e: MouseEvent) {
-      if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) {
+      if (
+        wrapperRef.current &&
+        !wrapperRef.current.contains(e.target as Node)
+      ) {
         setIsOpen(false);
       }
     }
@@ -81,7 +130,9 @@ export function SchoolAutocomplete({
 
   useEffect(() => {
     if (highlightIndex < 0 || !listboxRef.current) return;
-    const el = listboxRef.current.querySelector(`[data-index="${highlightIndex}"]`);
+    const el = listboxRef.current.querySelector(
+      `[data-index="${highlightIndex}"]`,
+    );
     el?.scrollIntoView({ block: "nearest" });
   }, [highlightIndex]);
 
@@ -91,7 +142,7 @@ export function SchoolAutocomplete({
       setIsOpen(false);
       setHighlightIndex(-1);
     },
-    [onChange]
+    [onChange],
   );
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -116,6 +167,8 @@ export function SchoolAutocomplete({
         e.preventDefault();
         if (highlightIndex >= 0 && highlightIndex < flatList.length) {
           select(flatList[highlightIndex].name);
+        } else if (flatList.length > 0) {
+          select(flatList[0].name);
         }
         break;
       case "Escape":
@@ -169,7 +222,9 @@ export function SchoolAutocomplete({
         value={value}
         onChange={handleChange}
         onKeyDown={handleKeyDown}
-        onFocus={() => { if (value.trim() && filtered.length > 0) setIsOpen(true); }}
+        onFocus={() => {
+          if (value.trim() && filtered.length > 0) setIsOpen(true);
+        }}
         placeholder={placeholder}
         /* eslint-disable-next-line jsx-a11y/no-autofocus */
         autoFocus={autoFocus}

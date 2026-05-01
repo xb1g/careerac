@@ -1,7 +1,15 @@
 "use client";
 
 import { useRouter, usePathname } from "next/navigation";
-import { useCallback, useTransition, useState, useRef, useEffect, useId, useMemo } from "react";
+import {
+  useCallback,
+  useTransition,
+  useState,
+  useRef,
+  useEffect,
+  useId,
+  useMemo,
+} from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
@@ -20,7 +28,14 @@ interface ComboboxProps {
   emptyText?: string;
 }
 
-function Combobox({ options, value, onChange, placeholder, disabled, emptyText }: ComboboxProps) {
+function Combobox({
+  options,
+  value,
+  onChange,
+  placeholder,
+  disabled,
+  emptyText,
+}: ComboboxProps) {
   const selected = options.find((o) => o.value === value);
   const selectedLabel = selected?.label ?? "";
   const [query, setQuery] = useState(selectedLabel);
@@ -50,7 +65,8 @@ function Combobox({ options, value, onChange, placeholder, disabled, emptyText }
     const q = query.trim().toLowerCase();
     if (!q || q === selectedLabel.toLowerCase()) return options;
     return options.filter(
-      (o) => o.label.toLowerCase().includes(q) || o.hint?.toLowerCase().includes(q),
+      (o) =>
+        o.label.toLowerCase().includes(q) || o.hint?.toLowerCase().includes(q),
     );
   }, [options, query, selectedLabel]);
 
@@ -74,7 +90,9 @@ function Combobox({ options, value, onChange, placeholder, disabled, emptyText }
         role="combobox"
         aria-expanded={open}
         aria-controls={listboxId}
-        aria-activedescendant={highlight >= 0 ? `${listboxId}-${highlight}` : undefined}
+        aria-activedescendant={
+          highlight >= 0 ? `${listboxId}-${highlight}` : undefined
+        }
         aria-autocomplete="list"
         value={query}
         disabled={disabled}
@@ -92,9 +110,13 @@ function Combobox({ options, value, onChange, placeholder, disabled, emptyText }
           } else if (e.key === "ArrowUp") {
             e.preventDefault();
             setHighlight((h) => Math.max(h - 1, 0));
-          } else if (e.key === "Enter" && open && highlight >= 0 && highlight < filtered.length) {
+          } else if (e.key === "Enter" && open) {
             e.preventDefault();
-            select(filtered[highlight]);
+            if (highlight >= 0 && highlight < filtered.length) {
+              select(filtered[highlight]);
+            } else if (filtered.length > 0) {
+              select(filtered[0]);
+            }
           } else if (e.key === "Escape") {
             e.preventDefault();
             setOpen(false);
@@ -112,8 +134,18 @@ function Combobox({ options, value, onChange, placeholder, disabled, emptyText }
           aria-label="Clear"
           className="absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
         >
-          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+          <svg
+            className="h-4 w-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M6 18L18 6M6 6l12 12"
+            />
           </svg>
         </button>
       ) : (
@@ -124,7 +156,11 @@ function Combobox({ options, value, onChange, placeholder, disabled, emptyText }
           stroke="currentColor"
           strokeWidth={2}
         >
-          <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M19 9l-7 7-7-7"
+          />
         </svg>
       )}
       {open && !disabled && (
@@ -157,7 +193,9 @@ function Combobox({ options, value, onChange, placeholder, disabled, emptyText }
               >
                 <span className="font-medium">{opt.label}</span>
                 {opt.hint && (
-                  <span className="ml-2 text-gray-500 dark:text-gray-400">{opt.hint}</span>
+                  <span className="ml-2 text-gray-500 dark:text-gray-400">
+                    {opt.hint}
+                  </span>
                 )}
               </li>
             ))
@@ -279,7 +317,8 @@ export default function CoursesClient({
             Course Browser
           </h1>
           <p className="mt-2 text-[15px] text-gray-600 dark:text-gray-400 font-medium">
-            Browse California Community College courses by college and subject area
+            Browse California Community College courses by college and subject
+            area
           </p>
         </div>
 
@@ -335,7 +374,11 @@ export default function CoursesClient({
                     stroke="currentColor"
                     strokeWidth={2}
                   >
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                    />
                   </svg>
                   <input
                     type="text"
@@ -349,19 +392,34 @@ export default function CoursesClient({
                       onClick={() => handleSearchChange("")}
                       className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
                     >
-                      <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                      <svg
+                        className="h-5 w-5"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth={2}
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M6 18L18 6M6 6l12 12"
+                        />
                       </svg>
                     </button>
                   )}
                 </div>
                 <div className="flex shrink-0 items-center gap-3">
-                  <Badge variant="default" className="px-3 py-2 text-sm font-medium">
+                  <Badge
+                    variant="default"
+                    className="px-3 py-2 text-sm font-medium"
+                  >
                     {totalCount.toLocaleString()}
                   </Badge>
                   {activeFilterCount > 0 && (
                     <button
-                      onClick={() => navigate({ college: "", subject: "", q: "", page: "1" })}
+                      onClick={() =>
+                        navigate({ college: "", subject: "", q: "", page: "1" })
+                      }
                       className="cursor-pointer text-sm font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
                     >
                       Clear all
@@ -374,7 +432,9 @@ export default function CoursesClient({
         </div>
 
         {isPending && (
-          <div className="text-center py-8 text-gray-500 dark:text-gray-400">Loading...</div>
+          <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+            Loading...
+          </div>
         )}
 
         {!selectedCollege && !isPending && (
@@ -409,7 +469,10 @@ export default function CoursesClient({
 
               <div className="grid gap-4 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3">
                 {courses.map((course) => (
-                  <Card key={course.id} className="p-5 hover:shadow-md transition-shadow">
+                  <Card
+                    key={course.id}
+                    className="p-5 hover:shadow-md transition-shadow"
+                  >
                     <div className="flex items-start justify-between gap-3 mb-2">
                       <span className="font-mono text-sm font-semibold text-blue-600 dark:text-blue-400">
                         {course.code}

@@ -59,15 +59,38 @@ export function MajorAutocomplete({
 }: MajorAutocompleteProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [highlightIndex, setHighlightIndex] = useState(-1);
+  const [majors, setMajors] = useState<MajorOption[]>([]);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const listboxRef = useRef<HTMLUListElement>(null);
   const listboxId = id ? `${id}-listbox` : "major-listbox";
 
+  useEffect(() => {
+    async function fetchMajors() {
+      try {
+        const res = await fetch("/api/majors");
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.length > 0) {
+            setMajors(data);
+          } else {
+            setMajors(DEFAULT_MAJORS);
+          }
+        } else {
+          setMajors(DEFAULT_MAJORS);
+        }
+      } catch (err) {
+        console.error("Failed to fetch majors:", err);
+        setMajors(DEFAULT_MAJORS);
+      }
+    }
+    fetchMajors();
+  }, []);
+
   const filtered = useMemo(() => {
     if (!value.trim()) return [];
     const q = value.toLowerCase();
-    return DEFAULT_MAJORS.filter((m) => m.name.toLowerCase().includes(q)).slice(0, 8);
-  }, [value]);
+    return majors.filter((m) => m.name.toLowerCase().includes(q)).slice(0, 8);
+  }, [value, majors]);
 
   // Group filtered results by category
   const grouped = useMemo(() => {
@@ -90,7 +113,10 @@ export function MajorAutocomplete({
   // Close on click outside
   useEffect(() => {
     function handleClick(e: MouseEvent) {
-      if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) {
+      if (
+        wrapperRef.current &&
+        !wrapperRef.current.contains(e.target as Node)
+      ) {
         setIsOpen(false);
       }
     }
@@ -101,7 +127,9 @@ export function MajorAutocomplete({
   // Auto-scroll highlighted item into view
   useEffect(() => {
     if (highlightIndex < 0 || !listboxRef.current) return;
-    const el = listboxRef.current.querySelector(`[data-index="${highlightIndex}"]`);
+    const el = listboxRef.current.querySelector(
+      `[data-index="${highlightIndex}"]`,
+    );
     el?.scrollIntoView({ block: "nearest" });
   }, [highlightIndex]);
 
@@ -111,7 +139,7 @@ export function MajorAutocomplete({
       setIsOpen(false);
       setHighlightIndex(-1);
     },
-    [onChange]
+    [onChange],
   );
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -136,6 +164,8 @@ export function MajorAutocomplete({
         e.preventDefault();
         if (highlightIndex >= 0 && highlightIndex < flatList.length) {
           select(flatList[highlightIndex].name);
+        } else if (flatList.length > 0) {
+          select(flatList[0].name);
         }
         break;
       case "Escape":
@@ -189,7 +219,9 @@ export function MajorAutocomplete({
         value={value}
         onChange={handleChange}
         onKeyDown={handleKeyDown}
-        onFocus={() => { if (value.trim() && filtered.length > 0) setIsOpen(true); }}
+        onFocus={() => {
+          if (value.trim() && filtered.length > 0) setIsOpen(true);
+        }}
         placeholder={placeholder}
         // eslint-disable-next-line jsx-a11y/no-autofocus
         autoFocus={autoFocus}
