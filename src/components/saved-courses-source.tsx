@@ -20,11 +20,15 @@ interface CommunityCollegeOption {
   abbreviation: string | null;
 }
 
-export default function SavedCoursesSource({ onUseSavedCourses }: SavedCoursesSourceProps) {
+export default function SavedCoursesSource({
+  onUseSavedCourses,
+}: SavedCoursesSourceProps) {
   const [data, setData] = useState<AsTranscriptResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [manualInstitution, setManualInstitution] = useState("");
-  const [communityColleges, setCommunityColleges] = useState<CommunityCollegeOption[]>([]);
+  const [communityColleges, setCommunityColleges] = useState<
+    CommunityCollegeOption[]
+  >([]);
   const [isCollegeMenuOpen, setIsCollegeMenuOpen] = useState(false);
   const [highlightIndex, setHighlightIndex] = useState(-1);
   const [error, setError] = useState<string | null>(null);
@@ -47,7 +51,9 @@ export default function SavedCoursesSource({ onUseSavedCourses }: SavedCoursesSo
         }
 
         if (institutionsRes.ok) {
-          const payload = (await institutionsRes.json()) as { ccs?: CommunityCollegeOption[] };
+          const payload = (await institutionsRes.json()) as {
+            ccs?: CommunityCollegeOption[];
+          };
           if (!cancelled) {
             setCommunityColleges(Array.isArray(payload.ccs) ? payload.ccs : []);
           }
@@ -66,7 +72,10 @@ export default function SavedCoursesSource({ onUseSavedCourses }: SavedCoursesSo
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (collegeFieldRef.current && !collegeFieldRef.current.contains(event.target as Node)) {
+      if (
+        collegeFieldRef.current &&
+        !collegeFieldRef.current.contains(event.target as Node)
+      ) {
         setIsCollegeMenuOpen(false);
         setHighlightIndex(-1);
       }
@@ -89,7 +98,8 @@ export default function SavedCoursesSource({ onUseSavedCourses }: SavedCoursesSo
       .slice(0, 8);
   }, [communityColleges, manualInstitution]);
 
-  const showCollegeSuggestions = isCollegeMenuOpen && collegeSuggestions.length > 0;
+  const showCollegeSuggestions =
+    isCollegeMenuOpen && collegeSuggestions.length > 0;
 
   const selectCollege = (collegeName: string) => {
     setManualInstitution(collegeName);
@@ -126,8 +136,9 @@ export default function SavedCoursesSource({ onUseSavedCourses }: SavedCoursesSo
               No saved courses yet
             </h3>
             <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
-              Upload your transcript below to save your courses. Next time, you can skip the upload and
-              generate plans directly from your saved courses.
+              Upload your transcript below to save your courses. Next time, you
+              can skip the upload and generate plans directly from your saved
+              courses.
             </p>
           </div>
         </div>
@@ -143,7 +154,9 @@ export default function SavedCoursesSource({ onUseSavedCourses }: SavedCoursesSo
     const institution = transcript.institution || manualInstitution.trim();
 
     if (!institution) {
-      setError("Please enter your community college so we know your articulation agreements.");
+      setError(
+        "Please enter your community college so we know your articulation agreements.",
+      );
       return;
     }
 
@@ -161,11 +174,16 @@ export default function SavedCoursesSource({ onUseSavedCourses }: SavedCoursesSo
             Use your saved courses
           </h3>
           <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
-            You have <span className="font-medium text-zinc-900 dark:text-white">{data.courseCount}</span>{" "}
+            You have{" "}
+            <span className="font-medium text-zinc-900 dark:text-white">
+              {data.courseCount}
+            </span>{" "}
             course{data.courseCount === 1 ? "" : "s"} in your profile
             {transcript.institution ? ` from ${transcript.institution}` : ""}
-            {transcript.gpa !== undefined ? ` · GPA ${transcript.gpa}` : ""}.
-            {" "}Skip the upload and generate a plan from your existing courses.
+            {transcript.gpa !== undefined
+              ? ` · GPA ${transcript.gpa}`
+              : ""}. Skip the upload and generate a plan from your existing
+            courses.
           </p>
 
           {needsInstitution && (
@@ -184,7 +202,9 @@ export default function SavedCoursesSource({ onUseSavedCourses }: SavedCoursesSo
                   aria-expanded={showCollegeSuggestions}
                   aria-controls={collegeListboxId}
                   aria-activedescendant={
-                    highlightIndex >= 0 ? `${collegeListboxId}-option-${highlightIndex}` : undefined
+                    highlightIndex >= 0
+                      ? `${collegeListboxId}-option-${highlightIndex}`
+                      : undefined
                   }
                   aria-autocomplete="list"
                   value={manualInstitution}
@@ -201,7 +221,10 @@ export default function SavedCoursesSource({ onUseSavedCourses }: SavedCoursesSo
                   }}
                   onKeyDown={(e) => {
                     if (!showCollegeSuggestions) {
-                      if (e.key === "ArrowDown" && collegeSuggestions.length > 0) {
+                      if (
+                        e.key === "ArrowDown" &&
+                        collegeSuggestions.length > 0
+                      ) {
                         e.preventDefault();
                         setIsCollegeMenuOpen(true);
                         setHighlightIndex(0);
@@ -211,16 +234,25 @@ export default function SavedCoursesSource({ onUseSavedCourses }: SavedCoursesSo
 
                     if (e.key === "ArrowDown") {
                       e.preventDefault();
-                      setHighlightIndex((current) => (current + 1) % collegeSuggestions.length);
+                      setHighlightIndex(
+                        (current) => (current + 1) % collegeSuggestions.length,
+                      );
                     } else if (e.key === "ArrowUp") {
                       e.preventDefault();
                       setHighlightIndex(
-                        (current) => (current - 1 + collegeSuggestions.length) % collegeSuggestions.length,
+                        (current) =>
+                          (current - 1 + collegeSuggestions.length) %
+                          collegeSuggestions.length,
                       );
                     } else if (e.key === "Enter") {
-                      if (highlightIndex >= 0 && highlightIndex < collegeSuggestions.length) {
-                        e.preventDefault();
+                      e.preventDefault();
+                      if (
+                        highlightIndex >= 0 &&
+                        highlightIndex < collegeSuggestions.length
+                      ) {
                         selectCollege(collegeSuggestions[highlightIndex].name);
+                      } else if (collegeSuggestions.length > 0) {
+                        selectCollege(collegeSuggestions[0].name);
                       }
                     } else if (e.key === "Escape") {
                       e.preventDefault();
@@ -257,7 +289,9 @@ export default function SavedCoursesSource({ onUseSavedCourses }: SavedCoursesSo
                       >
                         <span className="font-medium">{college.name}</span>
                         {college.abbreviation && (
-                          <span className="ml-2 text-zinc-500 dark:text-zinc-400">{college.abbreviation}</span>
+                          <span className="ml-2 text-zinc-500 dark:text-zinc-400">
+                            {college.abbreviation}
+                          </span>
                         )}
                       </li>
                     ))}
@@ -268,7 +302,9 @@ export default function SavedCoursesSource({ onUseSavedCourses }: SavedCoursesSo
           )}
 
           {error && (
-            <p className="mt-2 text-xs text-red-600 dark:text-red-400">{error}</p>
+            <p className="mt-2 text-xs text-red-600 dark:text-red-400">
+              {error}
+            </p>
           )}
 
           <button
