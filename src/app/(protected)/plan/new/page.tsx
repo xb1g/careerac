@@ -729,9 +729,12 @@ export default function NewPlanPage() {
     <div className="min-h-[calc(100dvh-4rem)] bg-white dark:bg-zinc-950">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         {/* Step indicator */}
-        <div className="mb-8 flex items-center gap-2 overflow-x-auto pb-1">
+        <div
+          data-testid="new-plan-step-indicator"
+          className="mb-8 grid grid-cols-2 gap-x-3 gap-y-4 sm:flex sm:items-center sm:gap-2"
+        >
           {steps.map((s, i) => (
-            <div key={s.key} className="flex shrink-0 items-center gap-2">
+            <div key={s.key} className="flex min-w-0 items-center gap-2 sm:shrink-0">
               <div
                 className={`flex items-center justify-center w-7 h-7 rounded-md border text-xs font-medium ${s.key === step
                     ? "border-zinc-900 bg-zinc-900 text-white dark:border-white dark:bg-white dark:text-zinc-950"
@@ -749,7 +752,7 @@ export default function NewPlanPage() {
                 )}
               </div>
               <span
-                className={`text-sm ${s.key === step
+                className={`min-w-0 truncate text-[13px] sm:text-sm ${s.key === step
                     ? "font-medium text-zinc-900 dark:text-white"
                     : "text-zinc-500 dark:text-zinc-400"
                   }`}
@@ -757,7 +760,7 @@ export default function NewPlanPage() {
                 {s.label}
               </span>
               {i < steps.length - 1 && (
-                <div className="mx-1 h-px w-6 shrink-0 bg-zinc-200 dark:bg-zinc-700 sm:w-8" />
+                <div className="mx-1 hidden h-px w-6 shrink-0 bg-zinc-200 dark:bg-zinc-700 sm:block sm:w-8" />
               )}
             </div>
           ))}

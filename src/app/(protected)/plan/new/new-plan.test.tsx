@@ -39,6 +39,14 @@ describe("NewPlanPage", () => {
     expect(screen.getByRole("button", { name: "Skip This Step" })).toBeInTheDocument();
   });
 
+  it("uses a wrapping mobile step grid instead of horizontal scrolling", () => {
+    render(<NewPlanPage />);
+
+    const stepIndicator = screen.getByTestId("new-plan-step-indicator");
+    expect(stepIndicator).toHaveClass("grid", "grid-cols-2", "sm:flex");
+    expect(stepIndicator).not.toHaveClass("overflow-x-auto");
+  });
+
   it("shows the config step after skipping upload", () => {
     render(<NewPlanPage />);
 
