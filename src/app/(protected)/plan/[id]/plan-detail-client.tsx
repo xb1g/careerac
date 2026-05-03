@@ -560,7 +560,8 @@ export default function PlanDetailClient({
                             prev === school.name ? null : school.name,
                           )
                         }
-                        className={`inline-flex max-w-full items-center gap-1.5 rounded-md border px-2 py-1 text-[10px] font-semibold transition-[background-color,border-color,color,box-shadow,transform] duration-200 hover:-translate-y-px ${
+                        style={{ fontSize: 9, lineHeight: "9px" }}
+                        className={`inline-flex max-w-full items-center gap-1 rounded-md border px-1.5 py-1 text-[9px] font-semibold leading-none transition-[background-color,border-color,color,box-shadow,transform] duration-200 hover:-translate-y-px ${
                           selectedSchool === school.name
                             ? "border-zinc-900 bg-zinc-50 text-zinc-900 shadow-[0_1px_2px_rgba(24,24,27,0.06)] dark:border-white dark:bg-zinc-900 dark:text-white"
                             : "border-zinc-200 bg-white text-zinc-700 hover:border-zinc-300 hover:bg-zinc-50 hover:shadow-[0_8px_18px_rgba(24,24,27,0.07)] dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-200 dark:hover:border-zinc-700 dark:hover:bg-zinc-900"
@@ -568,7 +569,10 @@ export default function PlanDetailClient({
                         data-testid={`plan-header-school-${school.name}`}
                       >
                         <span className="truncate">{school.name}</span>
-                        <span className="rounded-md bg-zinc-100 px-1.5 py-0.5 text-[8px] font-semibold uppercase tracking-wide text-zinc-500 dark:bg-zinc-800 dark:text-zinc-300">
+                        <span
+                          className="rounded-md bg-zinc-100 px-1 py-0.5 text-[7px] font-semibold uppercase leading-none tracking-wide text-zinc-500 dark:bg-zinc-800 dark:text-zinc-300"
+                          style={{ fontSize: 7, lineHeight: "7px" }}
+                        >
                           {school.fitLabel}
                         </span>
                       </button>
@@ -578,11 +582,12 @@ export default function PlanDetailClient({
               )}
               <button
                 onClick={() => setIsEditingTargets((p) => !p)}
-                className="inline-flex items-center gap-1 rounded-md border border-dashed border-zinc-300 px-2 py-1 text-[11px] font-medium text-zinc-500 transition-colors hover:border-zinc-400 hover:bg-white hover:text-zinc-900 dark:border-zinc-700 dark:text-zinc-400 dark:hover:border-zinc-600 dark:hover:bg-zinc-900 dark:hover:text-white cursor-pointer"
+                style={{ fontSize: 9, lineHeight: "9px" }}
+                className="inline-flex items-center gap-1 rounded-md border border-dashed border-zinc-300 px-1.5 py-1 text-[9px] font-medium leading-none text-zinc-500 transition-colors hover:border-zinc-400 hover:bg-white hover:text-zinc-900 dark:border-zinc-700 dark:text-zinc-400 dark:hover:border-zinc-600 dark:hover:bg-zinc-900 dark:hover:text-white cursor-pointer"
                 data-testid="edit-targets-button"
               >
                 <svg
-                  className="w-3.5 h-3.5"
+                  className="w-3 h-3"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -601,7 +606,7 @@ export default function PlanDetailClient({
             {/* Target editing panel */}
             {isEditingTargets && (
               <div className="mt-3 p-3 rounded-lg border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-900">
-                <p className="text-[11px] font-medium text-zinc-500 dark:text-zinc-400 mb-2">
+                <p className="text-[10px] font-medium leading-none text-zinc-500 dark:text-zinc-400 mb-2">
                   Select target universities (first = primary):
                 </p>
                 <div className="flex flex-wrap gap-1.5 max-h-40 overflow-y-auto">
@@ -611,7 +616,8 @@ export default function PlanDetailClient({
                       <button
                         key={uni.id}
                         onClick={() => handleToggleTarget(uni.id)}
-                        className={`inline-flex items-center gap-1 rounded-md border px-2 py-1 text-[10px] font-medium transition-colors cursor-pointer ${
+                        style={{ fontSize: 9, lineHeight: "9px" }}
+                        className={`inline-flex items-center gap-1 rounded-md border px-1.5 py-1 text-[9px] font-medium leading-none transition-colors cursor-pointer ${
                           isSelected
                             ? "border-zinc-900 bg-zinc-50 text-zinc-900 dark:border-white dark:bg-zinc-900 dark:text-white"
                             : "border-zinc-200 bg-white text-zinc-600 hover:border-zinc-300 hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:border-zinc-600 dark:hover:bg-zinc-700"
@@ -619,7 +625,7 @@ export default function PlanDetailClient({
                       >
                         {isSelected && (
                           <svg
-                            className="w-3 h-3"
+                            className="w-2.5 h-2.5"
                             fill="none"
                             viewBox="0 0 24 24"
                             stroke="currentColor"
