@@ -29,7 +29,7 @@ export function DeletePlanButton({ planId }: { planId: string }) {
     <button
       onClick={handleDelete}
       disabled={isDeleting}
-      className="p-1.5 rounded-full text-zinc-400 hover:text-red-600 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all duration-300 pointer-events-auto cursor-pointer"
+      className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-transparent text-zinc-400 transition-[background-color,border-color,color,box-shadow,transform] duration-200 hover:-translate-y-px hover:border-red-200 hover:bg-red-50 hover:text-red-600 hover:shadow-[0_8px_18px_rgba(190,18,60,0.08)] dark:hover:border-red-900/70 dark:hover:bg-red-950/30 dark:hover:text-red-300 pointer-events-auto cursor-pointer"
       title="Delete plan"
     >
       {isDeleting ? (

@@ -19,7 +19,7 @@ export default async function SettingsPage() {
     .order("created_at", { ascending: false });
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+    <div className="mx-auto max-w-4xl px-4 py-6 sm:px-6 sm:py-12 lg:px-8">
       <div className="mb-8">
         <h1 className="text-2xl sm:text-3xl font-bold text-zinc-900 dark:text-white">
           My Courses

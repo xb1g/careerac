@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import CareerAcLogo from "@/components/careerac-logo";
 
 export default function HomePage() {
   return (
@@ -10,17 +11,11 @@ export default function HomePage() {
       <div className="absolute top-[20%] right-[10%] w-[30%] h-[30%] rounded-full bg-cyan-400/20 blur-[100px] pointer-events-none mix-blend-multiply dark:mix-blend-overlay dark:bg-cyan-900/20"></div>
 
       {/* Floating Glass Header */}
-      <header className="fixed top-0 w-full px-6 py-5 sm:px-8 lg:px-12 z-50">
-        <div className="max-w-7xl mx-auto flex items-center justify-between bg-white/70 dark:bg-zinc-900/70 backdrop-blur-xl px-6 py-3.5 rounded-full border border-white/50 dark:border-zinc-800/50 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)]">
-          <div className="flex items-center gap-8">
+      <header className="fixed top-0 z-50 w-full px-3 py-3 sm:px-8 sm:py-5 lg:px-12">
+        <div className="mx-auto flex max-w-7xl items-center justify-between rounded-2xl border border-white/50 bg-white/70 px-4 py-3 shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-xl dark:border-zinc-800/50 dark:bg-zinc-900/70 dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] sm:rounded-full sm:px-6 sm:py-3.5">
+          <div className="flex items-center gap-4 lg:gap-8">
             <Link href="/" className="flex items-center">
-              <Image
-                src="/logos/careerac-logo-icon.svg"
-                alt="CareerAC"
-                width={168}
-                height={34}
-                className="h-7 w-auto"
-              />
+              <CareerAcLogo width={168} height={34} className="h-6 sm:h-7" priority />
             </Link>
             <nav className="hidden md:flex items-center gap-6">
               <Link href="#how-it-works" className="text-[13px] font-semibold text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white transition-colors">How it Works</Link>
@@ -28,10 +23,10 @@ export default function HomePage() {
               <Link href="#community" className="text-[13px] font-semibold text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white transition-colors">Community</Link>
             </nav>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex shrink-0 items-center gap-1 sm:gap-4">
             <Link 
               href="/auth/signin" 
-              className="text-[14px] font-semibold text-zinc-600 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white transition-colors px-4 py-2"
+              className="rounded-full px-3 py-2 text-[14px] font-semibold text-zinc-600 transition-colors hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-white sm:px-4"
             >
               Sign In
             </Link>
@@ -46,17 +41,17 @@ export default function HomePage() {
       </header>
 
       {/* Hero section */}
-      <main className="relative z-10 flex-1 px-6 sm:px-8 lg:px-12 pt-24">
-        <div className="max-w-5xl mx-auto text-center py-24 sm:py-32 lg:py-40 relative">
+      <main className="relative z-10 flex-1 px-4 pt-20 sm:px-8 sm:pt-24 lg:px-12">
+        <div className="relative mx-auto max-w-5xl py-16 text-center sm:py-32 lg:py-40">
           
-          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-zinc-900 dark:text-white leading-[1.1] mb-8">
+          <h1 className="mb-6 text-4xl font-extrabold leading-[1.08] tracking-tight text-zinc-900 dark:text-white sm:mb-8 sm:text-6xl lg:text-7xl">
             Your Transfer Path, <br className="hidden sm:inline" />
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-500 dark:from-blue-400 dark:to-indigo-400">
               Perfectly Clear
             </span>
           </h1>
           
-          <p className="text-lg sm:text-xl leading-relaxed text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto font-medium mb-12">
+          <p className="mx-auto mb-10 max-w-2xl text-base font-medium leading-relaxed text-zinc-600 dark:text-zinc-400 sm:mb-12 sm:text-xl">
             Chat with an intelligent AI to build a seamless semester-by-semester transfer plan. 
             When life gets in the way, get smart recovery suggestions and stay perfectly on track.
           </p>
@@ -64,7 +59,7 @@ export default function HomePage() {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-5">
             <Link
               href="/auth/signup"
-              className="group relative inline-flex items-center justify-center px-10 py-5 text-[16px] font-bold text-white transition-all duration-300 ease-in-out w-full sm:w-auto overflow-hidden rounded-full bg-blue-600"
+              className="group relative inline-flex w-full items-center justify-center overflow-hidden rounded-full bg-blue-600 px-6 py-4 text-[16px] font-bold text-white transition-all duration-300 ease-in-out sm:w-auto sm:px-10 sm:py-5"
             >
               <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-indigo-600 opacity-100 group-hover:opacity-90 transition-opacity"></div>
               <span className="relative flex items-center gap-2">
@@ -76,18 +71,18 @@ export default function HomePage() {
             </Link>
             <Link
               href="/playbooks"
-              className="inline-flex items-center justify-center px-10 py-5 text-[16px] font-bold text-zinc-700 dark:text-zinc-300 bg-white/50 dark:bg-zinc-900/50 backdrop-blur-md border border-white/50 dark:border-zinc-800 rounded-full hover:bg-white/80 dark:hover:bg-zinc-900/80 transition-all duration-300 w-full sm:w-auto"
+              className="inline-flex w-full items-center justify-center rounded-full border border-white/50 bg-white/50 px-6 py-4 text-[16px] font-bold text-zinc-700 backdrop-blur-md transition-all duration-300 hover:bg-white/80 dark:border-zinc-800 dark:bg-zinc-900/50 dark:text-zinc-300 dark:hover:bg-zinc-900/80 sm:w-auto sm:px-10 sm:py-5"
             >
               Browse Playbooks
             </Link>
           </div>
 
           {/* Computer Science Demo Section */}
-          <div className="mt-20 relative max-w-5xl mx-auto group">
+          <div className="group relative mx-auto mt-14 max-w-5xl sm:mt-20">
             {/* Subtle App Frame */}
             <div className="relative rounded-[1.5rem] border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 shadow-[0_32px_64px_-12px_rgba(0,0,0,0.1)] overflow-hidden flex flex-col md:flex-row ring-1 ring-zinc-200/50 dark:ring-zinc-800/50">
               {/* Sidebar / Context */}
-              <div className="w-full md:w-72 border-b md:border-b-0 md:border-r border-zinc-100 dark:border-zinc-900 bg-zinc-50/50 dark:bg-zinc-900/30 p-6 flex flex-col gap-6">
+              <div className="flex w-full flex-col gap-4 border-b border-zinc-100 bg-zinc-50/50 p-4 dark:border-zinc-900 dark:bg-zinc-900/30 sm:gap-6 sm:p-6 md:w-72 md:border-b-0 md:border-r">
                 <div>
                   <div className="text-[10px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-3">Current School</div>
                   <div className="flex items-center gap-3 p-2.5 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200/60 dark:border-zinc-800/60 shadow-sm">
@@ -122,8 +117,8 @@ export default function HomePage() {
               </div>
 
               {/* Plan View */}
-              <div className="flex-1 p-6 md:p-8 flex flex-col">
-                <div className="flex items-center justify-between mb-8 pb-4 border-b border-zinc-100 dark:border-zinc-900">
+              <div className="flex flex-1 flex-col p-4 sm:p-6 md:p-8">
+                <div className="mb-6 flex flex-col gap-3 border-b border-zinc-100 pb-4 text-left dark:border-zinc-900 sm:mb-8 sm:flex-row sm:items-center sm:justify-between">
                    <div>
                      <h3 className="text-lg font-bold text-zinc-900 dark:text-white">Academic Roadmap</h3>
                      <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">Personalized for Fall 2024 Start</p>
@@ -213,7 +208,7 @@ export default function HomePage() {
       </main>
 
       {/* How It Works Section */}
-      <section id="how-it-works" className="relative z-10 px-6 sm:px-8 lg:px-12 py-20 lg:py-28 bg-white/30 dark:bg-zinc-900/30">
+      <section id="how-it-works" className="relative z-10 bg-white/30 px-4 py-16 dark:bg-zinc-900/30 sm:px-8 sm:py-20 lg:px-12 lg:py-28">
         <div className="max-w-6xl mx-auto">
           {/* Section Header */}
           <div className="text-center mb-16">
@@ -282,7 +277,7 @@ export default function HomePage() {
       </section>
 
       {/* Features Section */}
-      <section id="features" className="relative z-10 px-6 sm:px-8 lg:px-12 py-20 lg:py-28">
+      <section id="features" className="relative z-10 px-4 py-16 sm:px-8 sm:py-20 lg:px-12 lg:py-28">
         <div className="max-w-6xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <div>
@@ -353,7 +348,7 @@ export default function HomePage() {
       </section>
 
       {/* Playbooks Preview Section */}
-      <section id="community" className="relative z-10 px-6 sm:px-8 lg:px-12 py-20 lg:py-28 bg-white/30 dark:bg-zinc-900/30">
+      <section id="community" className="relative z-10 bg-white/30 px-4 py-16 dark:bg-zinc-900/30 sm:px-8 sm:py-20 lg:px-12 lg:py-28">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <span className="inline-block px-4 py-1.5 rounded-full bg-indigo-100 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 text-xs font-bold uppercase tracking-wider mb-4">
@@ -397,9 +392,9 @@ export default function HomePage() {
       </section>
 
       {/* Time Saved Stats / CTA */}
-      <section className="relative z-10 px-6 sm:px-8 lg:px-12 py-24 bg-white dark:bg-zinc-950">
+      <section className="relative z-10 bg-white px-4 py-16 dark:bg-zinc-950 sm:px-8 sm:py-24 lg:px-12">
         <div className="max-w-6xl mx-auto">
-          <div className="bg-zinc-900 dark:bg-zinc-900/50 rounded-[2.5rem] p-8 lg:p-16 relative overflow-hidden border border-zinc-800 shadow-2xl ring-1 ring-zinc-700/30">
+          <div className="relative overflow-hidden rounded-3xl border border-zinc-800 bg-zinc-900 p-5 shadow-2xl ring-1 ring-zinc-700/30 dark:bg-zinc-900/50 sm:p-8 lg:rounded-[2.5rem] lg:p-16">
             {/* Professional Grid Pattern */}
             <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05] pointer-events-none" style={{ backgroundImage: "radial-gradient(circle at 2px 2px, white 1px, transparent 0)", backgroundSize: "32px 32px" }}></div>
             
@@ -447,7 +442,7 @@ export default function HomePage() {
       </section>
 
       {/* Founders Section */}
-      <section className="relative z-10 px-6 sm:px-8 lg:px-12 py-20 lg:py-28">
+      <section className="relative z-10 px-4 py-16 sm:px-8 sm:py-20 lg:px-12 lg:py-28">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-12">
             <span className="inline-block px-4 py-1.5 rounded-full bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 text-xs font-bold uppercase tracking-wider mb-4">
@@ -458,11 +453,11 @@ export default function HomePage() {
             </h2>
           </div>
 
-          <div className="flex flex-wrap items-center justify-center gap-12 lg:gap-20">
+          <div className="flex flex-wrap items-center justify-center gap-8 sm:gap-12 lg:gap-20">
             <div className="flex flex-col items-center group">
               <div className="relative">
                 <div className="absolute inset-0 bg-blue-500 rounded-full blur-2xl opacity-0 group-hover:opacity-20 transition-opacity"></div>
-                <div className="w-40 h-40 rounded-full overflow-hidden border-4 border-white dark:border-zinc-800 shadow-xl relative z-10 grayscale group-hover:grayscale-0 transition-all duration-500 scale-100 group-hover:scale-110">
+                <div className="relative z-10 h-32 w-32 overflow-hidden rounded-full border-4 border-white grayscale shadow-xl transition-all duration-500 group-hover:scale-110 group-hover:grayscale-0 dark:border-zinc-800 sm:h-40 sm:w-40">
                   <Image
                     src="/founders/ali.png"
                     alt="Ali"
@@ -479,7 +474,7 @@ export default function HomePage() {
             <div className="flex flex-col items-center group">
               <div className="relative">
                 <div className="absolute inset-0 bg-indigo-500 rounded-full blur-2xl opacity-0 group-hover:opacity-20 transition-opacity"></div>
-                <div className="w-40 h-40 rounded-full overflow-hidden border-4 border-white dark:border-zinc-800 shadow-xl relative z-10 grayscale group-hover:grayscale-0 transition-all duration-500 scale-100 group-hover:scale-110">
+                <div className="relative z-10 h-32 w-32 overflow-hidden rounded-full border-4 border-white grayscale shadow-xl transition-all duration-500 group-hover:scale-110 group-hover:grayscale-0 dark:border-zinc-800 sm:h-40 sm:w-40">
                   <Image
                     src="/founders/big.jpg"
                     alt="Big"
@@ -497,18 +492,12 @@ export default function HomePage() {
       </section>
 
       {/* Footer */}
-      <footer className="relative z-10 px-6 sm:px-8 lg:px-12 py-12 border-t border-zinc-200 dark:border-zinc-800 bg-white/50 dark:bg-zinc-950/50">
+      <footer className="relative z-10 border-t border-zinc-200 bg-white/50 px-4 py-12 dark:border-zinc-800 dark:bg-zinc-950/50 sm:px-8 lg:px-12">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row justify-between gap-12">
             <div className="max-w-xs">
               <Link href="/" className="flex items-center mb-4">
-                <Image
-                  src="/logos/careerac-logo-icon.svg"
-                  alt="CareerAC"
-                  width={140}
-                  height={28}
-                  className="h-6 w-auto"
-                />
+                <CareerAcLogo width={140} height={28} className="h-6" />
               </Link>
               <p className="text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed">
                 Building the premium transfer experience for students everywhere. AI-powered roadmaps to your dream university.

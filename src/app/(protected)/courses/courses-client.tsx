@@ -310,9 +310,9 @@ export default function CoursesClient({
   );
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-zinc-950 pb-20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="mb-10">
+    <div className="min-h-screen bg-gray-50 pb-20 dark:bg-zinc-950">
+      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
+        <div className="mb-8 sm:mb-10">
           <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-gray-900 dark:text-white">
             Course Browser
           </h1>
@@ -408,7 +408,7 @@ export default function CoursesClient({
                     </button>
                   )}
                 </div>
-                <div className="flex shrink-0 items-center gap-3">
+                <div className="flex shrink-0 flex-wrap items-center gap-3">
                   <Badge
                     variant="default"
                     className="px-3 py-2 text-sm font-medium"
@@ -457,7 +457,7 @@ export default function CoursesClient({
           <>
             <section>
               {collegeName && (
-                <div className="mb-6 flex items-center gap-4">
+                <div className="mb-6 flex flex-wrap items-center gap-3 sm:gap-4">
                   <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
                     {collegeName.name}
                   </h2>
@@ -496,21 +496,21 @@ export default function CoursesClient({
 
             {/* Pagination */}
             {totalPages > 1 && (
-              <div className="mt-10 flex items-center justify-center gap-4">
+              <div className="mt-10 flex flex-wrap items-center justify-center gap-3 sm:gap-4">
                 <button
                   disabled={page <= 1}
                   onClick={() => navigate({ page: String(page - 1) })}
-                  className="px-4 py-2 text-sm font-medium rounded-lg border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 disabled:opacity-40 hover:bg-gray-50 dark:hover:bg-zinc-800 transition-colors"
+                  className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium transition-colors hover:bg-gray-50 disabled:opacity-40 dark:border-zinc-700 dark:bg-zinc-900 dark:hover:bg-zinc-800"
                 >
                   Previous
                 </button>
-                <span className="text-sm text-gray-600 dark:text-gray-400">
+                <span className="order-first w-full text-center text-sm text-gray-600 dark:text-gray-400 sm:order-none sm:w-auto">
                   Page {page} of {totalPages}
                 </span>
                 <button
                   disabled={page >= totalPages}
                   onClick={() => navigate({ page: String(page + 1) })}
-                  className="px-4 py-2 text-sm font-medium rounded-lg border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 disabled:opacity-40 hover:bg-gray-50 dark:hover:bg-zinc-800 transition-colors"
+                  className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium transition-colors hover:bg-gray-50 disabled:opacity-40 dark:border-zinc-700 dark:bg-zinc-900 dark:hover:bg-zinc-800"
                 >
                   Next
                 </button>

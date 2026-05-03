@@ -59,7 +59,7 @@ export default function SignupForm() {
       {serverError && (
         <div
           role="alert"
-          className="rounded-md bg-red-50 p-4 text-sm text-red-700 border border-red-200"
+          className="rounded-md border border-red-200 bg-red-50 p-4 text-sm text-red-700 dark:border-red-800 dark:bg-red-900/20 dark:text-red-200"
           data-testid="server-error"
         >
           {serverError}
@@ -69,7 +69,7 @@ export default function SignupForm() {
       {serverSuccess && (
         <div
           role="status"
-          className="rounded-md bg-green-50 p-4 text-sm text-green-700 border border-green-200"
+          className="rounded-md border border-green-200 bg-green-50 p-4 text-sm text-green-700 dark:border-green-800 dark:bg-green-900/20 dark:text-green-200"
           data-testid="server-success"
         >
           {serverSuccess}
@@ -101,7 +101,7 @@ export default function SignupForm() {
           disabled={isPending}
         />
         {emailError && (
-          <p id="email-error" className="mt-1 text-sm text-red-600" role="alert">
+          <p id="email-error" className="mt-1 text-sm text-red-600 dark:text-red-400" role="alert">
             {emailError}
           </p>
         )}
@@ -132,7 +132,7 @@ export default function SignupForm() {
           disabled={isPending}
         />
         {passwordError && (
-          <p id="password-error" className="mt-1 text-sm text-red-600" role="alert">
+          <p id="password-error" className="mt-1 text-sm text-red-600 dark:text-red-400" role="alert">
             {passwordError}
           </p>
         )}

@@ -533,12 +533,12 @@ export default function PlanDetailClient({
   return (
     <div className="flex h-full min-h-0 flex-col">
       {/* Header */}
-      <div className="px-6 lg:px-8 py-4 lg:py-5 border-b border-zinc-200/50 dark:border-zinc-800/50 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-xl relative z-20 shadow-[0_1px_2px_rgba(0,0,0,0.02)]">
-        <div className="flex items-start justify-between gap-6">
+      <div className="relative z-20 border-b border-zinc-200/50 bg-white/80 px-3 py-4 shadow-[0_1px_2px_rgba(0,0,0,0.02)] backdrop-blur-xl dark:border-zinc-800/50 dark:bg-zinc-950/80 sm:px-6 lg:px-8 lg:py-5">
+        <div className="flex flex-col items-stretch gap-4 sm:flex-row sm:items-start sm:justify-between sm:gap-6">
           <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-3">
-              <h1 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 flex items-center gap-3">
-                {headerTitle}
+            <div className="flex items-start gap-2 sm:items-center sm:gap-3">
+              <h1 className="flex min-w-0 flex-1 items-center gap-2 text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-2xl">
+                <span className="truncate">{headerTitle}</span>
                 {isChatLoading && (
                   <div className="inline-flex w-4 h-4 ml-2 border-[2.5px] border-blue-500/30 border-t-blue-600 rounded-full animate-spin flex-shrink-0" />
                 )}
@@ -575,15 +575,15 @@ export default function PlanDetailClient({
                           );
                         }
                       }}
-                      className={`inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-[13px] font-semibold cursor-pointer transition-colors ${
+                      className={`inline-flex max-w-full items-center gap-2 rounded-md border px-2.5 py-1 text-[13px] font-semibold transition-[background-color,border-color,color,box-shadow,transform] duration-200 cursor-pointer hover:-translate-y-px ${
                         selectedSchool === school.name
-                          ? "bg-blue-100 dark:bg-blue-900/40 text-blue-800 dark:text-blue-200 ring-1 ring-blue-300 dark:ring-blue-700"
-                          : "bg-zinc-100 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 hover:bg-zinc-200 dark:hover:bg-zinc-700"
+                          ? "border-zinc-900 bg-zinc-50 text-zinc-900 shadow-[0_1px_2px_rgba(24,24,27,0.06)] dark:border-white dark:bg-zinc-900 dark:text-white"
+                          : "border-zinc-200 bg-white text-zinc-700 hover:border-zinc-300 hover:bg-zinc-50 hover:shadow-[0_8px_18px_rgba(24,24,27,0.07)] dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-200 dark:hover:border-zinc-700 dark:hover:bg-zinc-900"
                       }`}
                       data-testid={`plan-header-school-${school.name}`}
                     >
-                      <span>{school.name}</span>
-                      <span className="rounded-full bg-white/80 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-zinc-500 dark:bg-zinc-700/80 dark:text-zinc-300">
+                      <span className="truncate">{school.name}</span>
+                      <span className="rounded-md bg-zinc-100 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-zinc-500 dark:bg-zinc-800 dark:text-zinc-300">
                         {school.fitLabel}
                       </span>
                     </li>
@@ -592,7 +592,7 @@ export default function PlanDetailClient({
               )}
               <button
                 onClick={() => setIsEditingTargets((p) => !p)}
-                className="inline-flex items-center gap-1 rounded-full border border-dashed border-zinc-300 dark:border-zinc-600 px-2.5 py-1 text-[13px] font-medium text-zinc-500 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
+                className="inline-flex items-center gap-1 rounded-md border border-dashed border-zinc-300 px-2.5 py-1 text-[13px] font-medium text-zinc-500 transition-colors hover:border-zinc-400 hover:bg-white hover:text-zinc-900 dark:border-zinc-700 dark:text-zinc-400 dark:hover:border-zinc-600 dark:hover:bg-zinc-900 dark:hover:text-white cursor-pointer"
                 data-testid="edit-targets-button"
               >
                 <svg
@@ -625,10 +625,10 @@ export default function PlanDetailClient({
                       <button
                         key={uni.id}
                         onClick={() => handleToggleTarget(uni.id)}
-                        className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium transition-colors cursor-pointer ${
+                        className={`inline-flex items-center gap-1 rounded-md border px-2.5 py-1 text-xs font-medium transition-colors cursor-pointer ${
                           isSelected
-                            ? "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 border border-blue-200 dark:border-blue-800"
-                            : "bg-white dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-700"
+                            ? "border-zinc-900 bg-zinc-50 text-zinc-900 dark:border-white dark:bg-zinc-900 dark:text-white"
+                            : "border-zinc-200 bg-white text-zinc-600 hover:border-zinc-300 hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:border-zinc-600 dark:hover:bg-zinc-700"
                         }`}
                       >
                         {isSelected && (
@@ -655,13 +655,13 @@ export default function PlanDetailClient({
                   <button
                     onClick={handleSaveTargets}
                     disabled={isSavingTargets}
-                    className="px-3 py-1.5 text-xs font-medium bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 cursor-pointer"
+                    className="inline-flex h-8 items-center rounded-md border border-zinc-900 bg-zinc-900 px-3 text-xs font-semibold text-white transition-[background-color,box-shadow,transform] hover:-translate-y-px hover:bg-zinc-800 disabled:translate-y-0 disabled:opacity-50 dark:border-white dark:bg-white dark:text-zinc-950 dark:hover:bg-zinc-200 cursor-pointer"
                   >
                     {isSavingTargets ? "Saving..." : "Save targets"}
                   </button>
                   <button
                     onClick={() => setIsEditingTargets(false)}
-                    className="px-3 py-1.5 text-xs font-medium text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-md cursor-pointer"
+                    className="inline-flex h-8 items-center rounded-md border border-transparent px-3 text-xs font-semibold text-zinc-600 transition-colors hover:border-zinc-200 hover:bg-white hover:text-zinc-900 dark:text-zinc-300 dark:hover:border-zinc-800 dark:hover:bg-zinc-900 dark:hover:text-white cursor-pointer"
                   >
                     Cancel
                   </button>
@@ -703,14 +703,14 @@ export default function PlanDetailClient({
                 );
 
                 return (
-                  <div className="mt-3 rounded-lg border border-blue-200 dark:border-blue-800 bg-blue-50/50 dark:bg-blue-900/10 p-4">
-                    <div className="flex items-center justify-between mb-3">
+                  <div className="mt-3 rounded-lg border border-zinc-200 bg-white p-4 shadow-[0_1px_2px_rgba(24,24,27,0.04)] dark:border-zinc-800 dark:bg-zinc-950">
+                    <div className="mb-3 flex items-start justify-between gap-3">
                       <h3 className="text-sm font-bold text-zinc-900 dark:text-zinc-100">
                         {selectedSchool} — Transfer Delta
                       </h3>
                       <button
                         onClick={() => setSelectedSchool(null)}
-                        className="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 cursor-pointer"
+                        className="inline-flex h-7 w-7 items-center justify-center rounded-md border border-transparent text-zinc-400 transition-colors hover:border-zinc-200 hover:bg-zinc-50 hover:text-zinc-700 dark:hover:border-zinc-800 dark:hover:bg-zinc-900 dark:hover:text-zinc-200 cursor-pointer"
                         aria-label="Close delta panel"
                       >
                         <svg
@@ -730,7 +730,7 @@ export default function PlanDetailClient({
                     </div>
 
                     {/* Progress bar */}
-                    <div className="flex items-center gap-3 mb-4">
+                    <div className="mb-4 flex flex-wrap items-center gap-3">
                       <div className="flex-1 h-2.5 rounded-full bg-zinc-200 dark:bg-zinc-700">
                         <div
                           className="h-2.5 rounded-full bg-emerald-500 transition-all"
@@ -830,10 +830,10 @@ export default function PlanDetailClient({
           </div>
           {remainingUnits !== null && (
             <div
-              className="flex shrink-0 flex-col items-end rounded-2xl border border-zinc-200/70 bg-zinc-50/80 px-4 py-3 text-right dark:border-zinc-800/80 dark:bg-zinc-900/80"
+              className="flex w-full shrink-0 flex-row items-center justify-between rounded-lg border border-zinc-200/70 bg-zinc-50/80 px-4 py-3 text-left dark:border-zinc-800/80 dark:bg-zinc-900/80 sm:w-auto sm:flex-col sm:items-end sm:text-right"
               data-testid="plan-header-remaining-units"
             >
-              <span className="text-3xl font-bold tracking-tighter text-blue-600 dark:text-blue-500">
+              <span className="text-3xl font-bold tracking-tighter text-zinc-900 dark:text-white">
                 {remainingUnits}
               </span>
               <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-zinc-500 dark:text-zinc-400">
@@ -846,9 +846,9 @@ export default function PlanDetailClient({
 
       {/* Transcript Summary */}
       {transcript && transcriptData && (
-        <div className="px-6 lg:px-8 py-3 border-b border-zinc-200/50 dark:border-zinc-800/50 bg-zinc-50/50 dark:bg-zinc-900/50">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
+        <div className="border-b border-zinc-200/50 bg-zinc-50/50 px-3 py-3 dark:border-zinc-800/50 dark:bg-zinc-900/50 sm:px-6 lg:px-8">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
               <div className="flex items-center gap-2">
                 <svg
                   className="w-4 h-4 text-zinc-400"
@@ -863,7 +863,7 @@ export default function PlanDetailClient({
                     d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
                   />
                 </svg>
-                <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                <span className="max-w-full truncate text-sm font-medium text-zinc-700 dark:text-zinc-300 sm:max-w-xs">
                   {transcriptData.institution || transcript.file_name}
                 </span>
               </div>
@@ -881,7 +881,7 @@ export default function PlanDetailClient({
             </div>
             <button
               onClick={() => setTranscriptExpanded((prev) => !prev)}
-              className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors cursor-pointer"
+              className="flex w-full items-center justify-center gap-1.5 rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm font-medium text-zinc-600 transition-[background-color,border-color,color,box-shadow,transform] duration-200 hover:-translate-y-px hover:border-zinc-300 hover:bg-zinc-50 hover:text-zinc-900 hover:shadow-[0_8px_18px_rgba(24,24,27,0.08)] dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-300 dark:hover:border-zinc-700 dark:hover:bg-zinc-900 dark:hover:text-white sm:w-auto sm:py-1.5"
             >
               <svg
                 className="w-4 h-4"

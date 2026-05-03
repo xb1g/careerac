@@ -43,10 +43,11 @@ export default function CourseStatusMenu({
   if (!isOpen) return null;
 
   // Position near click, clamped to viewport
+  const menuWidth = window.innerWidth < 640 ? Math.min(window.innerWidth - 16, 192) : 160;
   const style: React.CSSProperties = position
     ? {
-        top: Math.min(position.y, window.innerHeight - 250),
-        left: Math.min(position.x, window.innerWidth - 160),
+        top: Math.max(72, Math.min(position.y, window.innerHeight - 250)),
+        left: Math.max(8, Math.min(position.x, window.innerWidth - menuWidth - 8)),
       }
     : { top: "50%", left: "50%", transform: "translate(-50%, -50%)" };
 
@@ -55,7 +56,7 @@ export default function CourseStatusMenu({
   return (
     <div
       ref={menuRef}
-      className="fixed z-50 w-40 rounded-lg border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 shadow-lg py-1"
+      className="fixed z-50 w-[calc(100vw-1rem)] max-w-48 rounded-lg border border-zinc-200 bg-white py-1 shadow-lg dark:border-zinc-700 dark:bg-zinc-900 sm:w-40"
       style={style}
       role="listbox"
       aria-label="Course status"

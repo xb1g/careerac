@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import type { CockpitData } from "@/types/cockpit";
 import { COCKPIT_REFRESH_EVENT, COCKPIT_REFRESH_STORAGE_KEY } from "@/lib/cockpit-events";
@@ -47,7 +47,7 @@ export default function Inbox() {
 
     window.addEventListener(COCKPIT_REFRESH_EVENT, refresh);
     window.addEventListener("storage", onStorage);
-    
+
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsOpen(false);
@@ -70,10 +70,10 @@ export default function Inbox() {
         type="button"
         onClick={() => setIsOpen(!isOpen)}
         className={cn(
-          "relative flex h-10 w-10 items-center justify-center rounded-full transition-all duration-200 cursor-pointer",
+          "relative flex h-9 w-9 items-center justify-center rounded-lg border shadow-[0_1px_2px_rgba(24,24,27,0.05)] transition-[background-color,border-color,color,box-shadow,transform] duration-200 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900/15 dark:focus-visible:ring-white/20",
           isOpen
-            ? "bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400"
-            : "text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-white"
+            ? "border-zinc-300 bg-zinc-100 text-zinc-900 dark:border-zinc-700 dark:bg-zinc-900 dark:text-white"
+            : "border-zinc-200 bg-white text-zinc-500 hover:-translate-y-px hover:border-zinc-300 hover:bg-zinc-50 hover:text-zinc-900 hover:shadow-[0_8px_18px_rgba(24,24,27,0.08)] dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-400 dark:hover:border-zinc-700 dark:hover:bg-zinc-900 dark:hover:text-white",
         )}
         aria-label="Notifications"
       >
@@ -81,53 +81,54 @@ export default function Inbox() {
           <path strokeLinecap="round" strokeLinejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
         </svg>
         {unreadCount > 0 && (
-          <span className="absolute top-2 right-2 flex h-4 w-4 items-center justify-center rounded-full bg-blue-600 text-[10px] font-bold text-white ring-2 ring-white dark:ring-zinc-950">
+          <span className="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-zinc-900 px-1 text-[10px] font-semibold text-white ring-2 ring-white dark:bg-white dark:text-zinc-950 dark:ring-zinc-950">
             {unreadCount}
           </span>
         )}
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-80 sm:w-96 overflow-hidden rounded-[1.25rem] border border-zinc-200 bg-white shadow-2xl dark:border-zinc-800 dark:bg-zinc-950 z-[60]">
+        <div className="fixed inset-x-3 top-16 z-[60] max-h-[calc(100dvh-5rem)] overflow-hidden rounded-lg border border-zinc-200 bg-white shadow-[0_18px_44px_rgba(24,24,27,0.14)] dark:border-zinc-800 dark:bg-zinc-950 sm:absolute sm:inset-x-auto sm:right-0 sm:top-auto sm:mt-2 sm:w-96">
           <div className="border-b border-zinc-100 px-5 py-4 dark:border-zinc-800/50">
             <h3 className="text-sm font-bold text-zinc-900 dark:text-white">Inbox</h3>
           </div>
-          
-          <div className="max-h-[32rem] overflow-y-auto">
+
+          <div className="max-h-[calc(100dvh-11rem)] overflow-y-auto sm:max-h-[32rem]">
             {isLoading && !data ? (
               <div className="p-8 text-center text-sm text-zinc-500">Loading notifications...</div>
             ) : unreadCount === 0 ? (
               <div className="p-8 text-center">
-                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-zinc-50 dark:bg-zinc-900">
+                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-lg border border-zinc-200 bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900">
                   <svg className="h-6 w-6 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                   </svg>
                 </div>
-                <p className="mt-3 text-sm font-medium text-zinc-900 dark:text-white">All caught up!</p>
+                <p className="mt-3 text-sm font-medium text-zinc-900 dark:text-white">All caught up</p>
                 <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">No upcoming deadlines or risks detected.</p>
               </div>
             ) : (
               <div className="divide-y divide-zinc-100 dark:divide-zinc-800/50">
-                {/* Risk Alerts */}
                 {data?.riskAlerts.map((alert) => (
-                  <div key={alert.id} className="p-4 hover:bg-zinc-50 dark:hover:bg-zinc-900/50 transition-colors">
+                  <div key={alert.id} className="p-4 transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-900/50">
                     <div className="flex items-start gap-3">
-                      <div className={cn(
-                        "mt-0.5 h-2 w-2 shrink-0 rounded-full",
-                        alert.severity === "high" ? "bg-rose-500" : alert.severity === "medium" ? "bg-amber-500" : "bg-blue-500"
-                      )} />
+                      <div
+                        className={cn(
+                          "mt-0.5 h-2 w-2 shrink-0 rounded-full",
+                          alert.severity === "high" ? "bg-rose-500" : alert.severity === "medium" ? "bg-amber-500" : "bg-blue-500",
+                        )}
+                      />
                       <div className="flex-1">
                         <p className="text-xs font-bold text-zinc-900 dark:text-white">{alert.title}</p>
                         <p className="mt-1 text-xs leading-relaxed text-zinc-500 dark:text-zinc-400">{alert.description}</p>
                         {alert.planId && (
-                          <Link 
+                          <Link
                             href={`/plan/${alert.planId}?resolveRisk=${encodeURIComponent(alert.title)}`}
                             onClick={() => setIsOpen(false)}
                             className={cn(
-                              "mt-3 inline-flex items-center justify-center rounded-full px-3.5 py-1.5 text-[10px] font-bold transition-all duration-300 border shadow-[0_2px_10px_-3px_rgba(0,0,0,0.1)] hover:shadow-[0_4px_12px_-2px_rgba(0,0,0,0.15)] active:scale-95 group",
-                              alert.severity === "high" 
-                                ? "bg-linear-to-r from-rose-600 to-rose-500 text-white border-rose-400/30 dark:border-rose-400/20 shadow-rose-500/10"
-                                : "bg-linear-to-r from-blue-600 to-indigo-500 text-white border-blue-400/30 dark:border-blue-400/20 shadow-blue-500/10"
+                              "group mt-3 inline-flex h-8 items-center justify-center rounded-md border px-3 text-[11px] font-semibold transition-[background-color,border-color,color,box-shadow,transform] duration-200 hover:-translate-y-px active:translate-y-0",
+                              alert.severity === "high"
+                                ? "border-rose-200 bg-rose-50 text-rose-700 hover:border-rose-300 hover:bg-rose-100 hover:shadow-[0_8px_18px_rgba(190,18,60,0.10)] dark:border-rose-900/70 dark:bg-rose-950/30 dark:text-rose-300 dark:hover:bg-rose-950/50"
+                                : "border-zinc-200 bg-white text-zinc-800 hover:border-zinc-300 hover:bg-zinc-50 hover:shadow-[0_8px_18px_rgba(24,24,27,0.08)] dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-200 dark:hover:border-zinc-700 dark:hover:bg-zinc-900",
                             )}
                           >
                             <span>Resolve in plan</span>
@@ -141,24 +142,23 @@ export default function Inbox() {
                   </div>
                 ))}
 
-                {/* Deadlines */}
                 {data?.upcomingDeadlines.map((deadline) => (
-                  <div key={deadline.id} className="p-4 hover:bg-zinc-50 dark:hover:bg-zinc-900/50 transition-colors">
+                  <div key={deadline.id} className="p-4 transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-900/50">
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex-1">
                         <p className="text-xs font-bold text-zinc-900 dark:text-white">{deadline.title}</p>
                         <p className="mt-1 text-[11px] text-zinc-500 dark:text-zinc-400">
-                          {deadline.schoolName} · {formatLongDate(deadline.date)}
+                          {deadline.schoolName} / {formatLongDate(deadline.date)}
                         </p>
-                        <Link 
+                        <Link
                           href={`/plan/${deadline.planId}`}
                           onClick={() => setIsOpen(false)}
-                          className="mt-2 inline-block text-[11px] font-bold text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
+                          className="mt-2 inline-flex items-center text-[11px] font-semibold text-zinc-700 transition-colors hover:text-zinc-950 dark:text-zinc-300 dark:hover:text-white"
                         >
-                          Open plan →
+                          Open plan
                         </Link>
                       </div>
-                      <span className="shrink-0 rounded-full bg-blue-50 px-2 py-0.5 text-[10px] font-bold text-blue-700 dark:bg-blue-500/10 dark:text-blue-400">
+                      <span className="shrink-0 rounded-md border border-zinc-200 bg-zinc-50 px-2 py-0.5 text-[10px] font-semibold text-zinc-700 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300">
                         {deadline.daysRemaining}d
                       </span>
                     </div>
@@ -167,12 +167,12 @@ export default function Inbox() {
               </div>
             )}
           </div>
-          
+
           <div className="border-t border-zinc-100 bg-zinc-50/50 px-5 py-3 dark:border-zinc-800/50 dark:bg-zinc-900/50">
-            <Link 
+            <Link
               href="/dashboard"
               onClick={() => setIsOpen(false)}
-              className="text-[11px] font-bold text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white"
+              className="text-[11px] font-semibold text-zinc-500 transition-colors hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white"
             >
               View dashboard overview
             </Link>

@@ -659,14 +659,14 @@ export default function NewPlanPage() {
 
   if (step === "chat") {
     return (
-      <div className="flex flex-col h-[calc(100vh-4rem)]">
+      <div className="flex h-[calc(100dvh-4rem)] flex-col">
         <div className="px-4 sm:px-6 lg:px-8 py-4 border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-white">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="min-w-0">
+              <h1 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-white sm:text-2xl">
                 Create a New Plan
               </h1>
-              <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
+              <p className="mt-1 truncate text-sm text-zinc-600 dark:text-zinc-400">
                 {planConfig?.hasTargetSchool
                   ? `${planConfig.major} → ${planConfig.targetSchool} | Max ${planConfig.maxCreditsPerSemester} units/semester`
                   : `${planConfig?.major} → Best Fit | Max ${planConfig?.maxCreditsPerSemester} units/semester`}
@@ -726,18 +726,18 @@ export default function NewPlanPage() {
   }
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] bg-white dark:bg-zinc-950">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="min-h-[calc(100dvh-4rem)] bg-white dark:bg-zinc-950">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         {/* Step indicator */}
-        <div className="flex items-center gap-2 mb-8">
+        <div className="mb-8 flex items-center gap-2 overflow-x-auto pb-1">
           {steps.map((s, i) => (
-            <div key={s.key} className="flex items-center gap-2">
+            <div key={s.key} className="flex shrink-0 items-center gap-2">
               <div
-                className={`flex items-center justify-center w-7 h-7 rounded-full text-xs font-medium ${s.key === step
-                    ? "bg-blue-600 text-white"
+                className={`flex items-center justify-center w-7 h-7 rounded-md border text-xs font-medium ${s.key === step
+                    ? "border-zinc-900 bg-zinc-900 text-white dark:border-white dark:bg-white dark:text-zinc-950"
                     : steps.findIndex((x) => x.key === step) > i
-                      ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300"
-                      : "bg-zinc-100 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400"
+                      ? "border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-900 dark:bg-emerald-950/30 dark:text-emerald-300"
+                      : "border-zinc-200 bg-zinc-50 text-zinc-500 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-400"
                   }`}
               >
                 {steps.findIndex((x) => x.key === step) > i ? (
@@ -757,7 +757,7 @@ export default function NewPlanPage() {
                 {s.label}
               </span>
               {i < steps.length - 1 && (
-                <div className="w-8 h-px bg-zinc-200 dark:bg-zinc-700 mx-1" />
+                <div className="mx-1 h-px w-6 shrink-0 bg-zinc-200 dark:bg-zinc-700 sm:w-8" />
               )}
             </div>
           ))}
@@ -828,7 +828,7 @@ export default function NewPlanPage() {
               </p>
             </div>
 
-            <div className="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/70 dark:bg-zinc-900/40 p-4">
+            <div className="rounded-lg border border-zinc-200 bg-zinc-50/70 p-4 dark:border-zinc-800 dark:bg-zinc-900/40">
               <label htmlFor="comparison-search" className="block text-sm font-medium text-zinc-900 dark:text-white">
                 Search universities
               </label>
@@ -838,7 +838,7 @@ export default function NewPlanPage() {
                 value={institutionSearch}
                 onChange={(event) => setInstitutionSearch(event.target.value)}
                 placeholder="e.g., UCLA, UC Berkeley, San Jose State"
-                className="mt-2 w-full rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-3 py-2.5 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
+                className="mt-2 w-full rounded-lg border border-zinc-300 bg-white px-3 py-2.5 text-sm text-zinc-900 transition-colors hover:border-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-900/15 dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-100 dark:hover:border-zinc-600 dark:focus:ring-white/20"
               />
 
               <div className="mt-4 flex flex-wrap gap-2">
@@ -850,16 +850,17 @@ export default function NewPlanPage() {
                   </p>
                 ) : (
                   comparisonTargets.map((target, index) => (
-                    <div
-                      key={target.institution_id}
-                      className="inline-flex items-center gap-2 rounded-full bg-zinc-900 px-3 py-1.5 text-sm text-white dark:bg-white dark:text-zinc-900"
-                    >
-                      <span>{target.abbreviation ?? target.name}</span>
+                <div
+                  key={target.institution_id}
+                  className="inline-flex max-w-full items-center gap-2 rounded-md border border-zinc-900 bg-zinc-900 px-3 py-1.5 text-sm text-white dark:border-white dark:bg-white dark:text-zinc-900"
+                >
+                  <span className="truncate">{target.abbreviation ?? target.name}</span>
                       {index === 0 && <span className="text-[10px] uppercase tracking-wide opacity-70">Primary</span>}
                       <button
                         type="button"
+                        aria-label="Remove target"
                         onClick={() => removeComparisonTarget(target.institution_id)}
-                        className="text-white/70 hover:text-white dark:text-zinc-500 dark:hover:text-zinc-900 cursor-pointer"
+                        className="relative text-transparent transition-colors after:text-white/70 after:content-['x'] hover:after:text-white dark:after:text-zinc-500 dark:hover:after:text-zinc-900 cursor-pointer"
                       >
                         ×
                       </button>
@@ -878,9 +879,9 @@ export default function NewPlanPage() {
                     key={institution.id}
                     type="button"
                     onClick={() => (isSelected ? removeComparisonTarget(institution.id) : addComparisonTarget(institution))}
-                    className={`rounded-2xl border p-4 text-left transition-colors cursor-pointer ${isSelected
-                        ? "border-blue-500 bg-blue-50 dark:border-blue-400 dark:bg-blue-500/10"
-                        : "border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 hover:border-zinc-300 dark:hover:border-zinc-700"
+                    className={`rounded-lg border p-4 text-left transition-[background-color,border-color,box-shadow,transform] duration-200 cursor-pointer hover:-translate-y-px ${isSelected
+                        ? "border-zinc-900 bg-zinc-50 shadow-[0_1px_2px_rgba(24,24,27,0.06)] dark:border-white dark:bg-zinc-900"
+                        : "border-zinc-200 bg-white hover:border-zinc-300 hover:shadow-[0_8px_18px_rgba(24,24,27,0.07)] dark:border-zinc-800 dark:bg-zinc-950 dark:hover:border-zinc-700"
                       }`}
                   >
                     <div className="flex items-start justify-between gap-3">
@@ -903,14 +904,14 @@ export default function NewPlanPage() {
               <button
                 type="button"
                 onClick={handleContinueToChat}
-                className="rounded-lg bg-blue-600 text-white px-6 py-2.5 text-sm font-medium hover:bg-blue-700 transition-colors cursor-pointer"
+                className="inline-flex h-10 w-full items-center justify-center rounded-lg border border-zinc-900 bg-zinc-900 px-6 text-sm font-semibold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.16),0_1px_2px_rgba(24,24,27,0.14)] transition-[background-color,box-shadow,transform] duration-200 hover:-translate-y-px hover:bg-zinc-800 hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.18),0_8px_18px_rgba(24,24,27,0.12)] dark:border-white dark:bg-white dark:text-zinc-950 dark:hover:bg-zinc-200 sm:w-auto cursor-pointer"
               >
                 Continue to Plan
               </button>
               <button
                 type="button"
                 onClick={handleBackToConfig}
-                className="rounded-lg border border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 px-6 py-2.5 text-sm font-medium hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
+                className="inline-flex h-10 w-full items-center justify-center rounded-lg border border-zinc-300 bg-white px-6 text-sm font-semibold text-zinc-700 shadow-[0_1px_2px_rgba(24,24,27,0.05)] transition-[background-color,border-color,box-shadow,transform] duration-200 hover:-translate-y-px hover:border-zinc-400 hover:bg-zinc-50 hover:shadow-[0_8px_18px_rgba(24,24,27,0.08)] dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-300 dark:hover:border-zinc-600 dark:hover:bg-zinc-900 sm:w-auto cursor-pointer"
               >
                 Back
               </button>

@@ -176,9 +176,9 @@ export default async function PlaybookDetailPage({ params }: { params: Promise<{
         </Link>
 
         <div className="mb-8">
-          <div className="flex items-start justify-between gap-4">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
             <div>
-              <div className="mb-2 flex items-center gap-3 text-sm text-zinc-500 dark:text-zinc-400">
+              <div className="mb-2 flex flex-wrap items-center gap-3 text-sm text-zinc-500 dark:text-zinc-400">
                 <span className="font-medium text-zinc-700 dark:text-zinc-300" data-testid="detail-cc">{playbook.cc_abbreviation ?? playbook.cc_name}</span>
                 <svg className="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
@@ -258,16 +258,16 @@ export default async function PlaybookDetailPage({ params }: { params: Promise<{
           <div className="space-y-6" data-testid="semester-list">
             {semesters.map((semester) => (
               <div key={semester.number} className="overflow-hidden rounded-lg border border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-900" data-testid="semester">
-                <div className="flex items-center justify-between border-b border-zinc-200 bg-zinc-50 px-4 py-3 dark:border-zinc-700 dark:bg-zinc-800/50">
+                  <div className="flex items-center justify-between gap-3 border-b border-zinc-200 bg-zinc-50 px-4 py-3 dark:border-zinc-700 dark:bg-zinc-800/50">
                   <h3 className="font-medium text-zinc-900 dark:text-white" data-testid="semester-title">Semester {semester.number}</h3>
                   {semester.total_units && <span className="text-sm text-zinc-500 dark:text-zinc-400" data-testid="semester-units">{semester.total_units} units</span>}
                 </div>
                 <div className="divide-y divide-zinc-100 dark:divide-zinc-800">
                   {semester.courses?.map((course, courseIndex) => (
                     <div key={courseIndex} className="px-4 py-3" data-testid="course-entry">
-                      <div className="flex items-start justify-between gap-3">
+                       <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between sm:gap-3">
                         <div className="min-w-0 flex-1">
-                          <div className="flex items-center gap-2">
+                          <div className="flex flex-wrap items-center gap-2">
                             <span className="font-mono text-sm font-medium text-blue-600 dark:text-blue-400" data-testid="course-code">{course.course_code}</span>
                             {course.grade && (
                               <span className={`inline-flex items-center rounded-md px-1.5 py-0.5 text-xs font-medium ${course.grade.startsWith("A") ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400" : course.grade.startsWith("B") ? "bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400" : "bg-yellow-50 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400"}`} data-testid="course-grade">

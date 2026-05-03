@@ -331,7 +331,7 @@ export default function PreviousCoursesPanel({
 
   return (
     <>
-      <div className="shrink-0 w-80 border-r border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/50 flex flex-col overflow-hidden">
+      <div className="flex w-full shrink-0 flex-col overflow-hidden border-r border-zinc-200 bg-zinc-50/50 dark:border-zinc-800 dark:bg-zinc-900/50 sm:w-80">
         <div className="px-4 py-3 border-b border-zinc-200 dark:border-zinc-800 bg-white/80 dark:bg-zinc-900/80">
           <div className="flex items-center justify-between gap-2 mb-2">
             <div className="flex items-center gap-2">
@@ -410,7 +410,7 @@ export default function PreviousCoursesPanel({
                         </div>
                         <button
                           onClick={() => setRemoveTarget(course.code)}
-                          className="p-1 rounded-md text-zinc-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 opacity-0 group-hover:opacity-100 transition-all cursor-pointer"
+                          className="rounded-md p-1 text-zinc-400 opacity-100 transition-all hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-900/20 sm:opacity-0 sm:group-hover:opacity-100 cursor-pointer"
                           aria-label={`Remove ${course.code}`}
                           disabled={isSubmitting}
                         >

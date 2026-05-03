@@ -41,7 +41,7 @@ export default function ChatWidget({
         aria-controls="chat-widget-panel"
         onClick={() => setOpen((v) => !v)}
         className={cn(
-          "fixed bottom-6 right-6 z-40 h-14 w-14 rounded-full shadow-lg cursor-pointer",
+          "fixed bottom-[calc(1rem+env(safe-area-inset-bottom))] right-4 z-40 h-14 w-14 rounded-full shadow-lg cursor-pointer sm:bottom-6 sm:right-6",
           "bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white",
           "flex items-center justify-center transition-transform hover:scale-105",
           "focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2",
@@ -75,7 +75,7 @@ export default function ChatWidget({
           "fixed z-40 flex flex-col overflow-hidden rounded-2xl border shadow-2xl",
           "border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900",
           "transition-[opacity,transform] duration-200 ease-out origin-bottom-right",
-          "inset-x-3 bottom-3 top-16 sm:top-auto",
+          "inset-x-2 bottom-[calc(0.5rem+env(safe-area-inset-bottom))] top-16 rounded-xl sm:top-auto sm:rounded-2xl",
           "sm:inset-auto sm:bottom-6 sm:right-6 sm:w-[380px] sm:h-[600px]",
           "sm:max-h-[calc(100vh-3rem)] sm:max-w-[calc(100vw-3rem)]",
           open

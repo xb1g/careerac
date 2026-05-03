@@ -314,7 +314,7 @@ const CheckpointTimeline = forwardRef<CheckpointTimelineHandle, CheckpointTimeli
           {/* Panel */}
           {isOpen && (
             <div
-              className="absolute right-0 top-full mt-2 w-96 max-h-[28rem] overflow-y-auto rounded-2xl border border-zinc-200/80 dark:border-zinc-700/80 bg-white dark:bg-zinc-900 shadow-2xl z-50"
+              className="fixed inset-x-3 top-20 z-50 max-h-[calc(100dvh-6rem)] overflow-y-auto rounded-2xl border border-zinc-200/80 bg-white shadow-2xl dark:border-zinc-700/80 dark:bg-zinc-900 sm:absolute sm:inset-x-auto sm:right-0 sm:top-full sm:mt-2 sm:w-96 sm:max-h-[28rem]"
               data-testid="checkpoint-panel"
             >
               {/* Header */}

@@ -251,7 +251,7 @@ export default function PlanConfig({ transcriptData, onConfigured, onBack }: Pla
               value={targetSchool}
               onChange={(e) => { setTargetSchool(e.target.value); setErrors((prev) => ({ ...prev, targetSchool: "" })); }}
               placeholder="e.g., UC Berkeley"
-              className="w-full rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
+              className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 transition-colors hover:border-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-900/15 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100 dark:hover:border-zinc-600 dark:focus:ring-white/20"
             />
             {errors.targetSchool && <p className="text-sm text-red-600 dark:text-red-400">{errors.targetSchool}</p>}
           </div>
@@ -261,27 +261,28 @@ export default function PlanConfig({ transcriptData, onConfigured, onBack }: Pla
       <div className="flex flex-col sm:flex-row gap-3 pt-4">
         <button
           type="submit"
-          className="rounded-lg bg-blue-600 text-white px-6 py-2.5 text-sm font-medium hover:bg-blue-700 transition-colors cursor-pointer"
+          className="inline-flex h-10 w-full items-center justify-center rounded-lg border border-zinc-900 bg-zinc-900 px-6 text-sm font-semibold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.16),0_1px_2px_rgba(24,24,27,0.14)] transition-[background-color,box-shadow,transform] duration-200 hover:-translate-y-px hover:bg-zinc-800 hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.18),0_8px_18px_rgba(24,24,27,0.12)] dark:border-white dark:bg-white dark:text-zinc-950 dark:hover:bg-zinc-200 sm:w-auto cursor-pointer"
         >
           Generate Plan
         </button>
         <button
           type="button"
+          aria-label="Skip, Use Defaults"
           onClick={handleSkip}
-          className="rounded-lg border border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 px-6 py-2.5 text-sm font-medium hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
+          className="inline-flex h-10 w-full items-center justify-center rounded-lg border border-zinc-300 bg-white px-6 text-sm font-semibold text-transparent shadow-[0_1px_2px_rgba(24,24,27,0.05)] transition-[background-color,border-color,box-shadow,transform] duration-200 after:text-zinc-700 after:content-['Skip,_Use_Defaults'] hover:-translate-y-px hover:border-zinc-400 hover:bg-zinc-50 hover:shadow-[0_8px_18px_rgba(24,24,27,0.08)] dark:border-zinc-700 dark:bg-zinc-950 dark:after:text-zinc-300 dark:hover:border-zinc-600 dark:hover:bg-zinc-900 sm:w-auto cursor-pointer"
         >
           Skip → Use Defaults
         </button>
         <Link
           href="/courses"
-          className="rounded-lg border border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 px-6 py-2.5 text-sm font-medium hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors text-center"
+          className="inline-flex h-10 w-full items-center justify-center rounded-lg border border-zinc-300 bg-white px-6 text-center text-sm font-semibold text-zinc-700 shadow-[0_1px_2px_rgba(24,24,27,0.05)] transition-[background-color,border-color,box-shadow,transform] duration-200 hover:-translate-y-px hover:border-zinc-400 hover:bg-zinc-50 hover:shadow-[0_8px_18px_rgba(24,24,27,0.08)] dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-300 dark:hover:border-zinc-600 dark:hover:bg-zinc-900 sm:w-auto"
         >
           Browse Available Courses
         </Link>
         <button
           type="button"
           onClick={onBack}
-          className="rounded-lg text-zinc-500 dark:text-zinc-400 px-4 py-2.5 text-sm hover:text-zinc-700 dark:hover:text-zinc-300 transition-colors cursor-pointer"
+          className="inline-flex h-10 w-full items-center justify-center rounded-lg border border-transparent px-4 text-sm font-medium text-zinc-500 transition-[background-color,border-color,color] hover:border-zinc-200 hover:bg-white hover:text-zinc-900 dark:text-zinc-400 dark:hover:border-zinc-800 dark:hover:bg-zinc-900 dark:hover:text-white sm:w-auto cursor-pointer"
         >
           Back
         </button>

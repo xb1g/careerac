@@ -24,9 +24,9 @@ export function PlaybookCard({ playbook }: PlaybookCardProps) {
     <Link
       href={`/playbooks/${playbook.id}`}
       data-testid="playbook-card"
-      className={`group rounded-lg border p-5 hover:shadow-sm transition-all ${cardClasses}`}
+      className={`group rounded-lg border p-4 transition-all hover:shadow-sm sm:p-5 ${cardClasses}`}
     >
-      <div className="flex items-start justify-between gap-3">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div className="flex-1 min-w-0">
           {/* CC and target school */}
           <div className="flex items-center gap-2 text-sm text-zinc-500 dark:text-zinc-400">
@@ -56,7 +56,7 @@ export function PlaybookCard({ playbook }: PlaybookCardProps) {
         <div className="shrink-0">
           {isVerified ? (
             <span
-              className="inline-flex items-center gap-1 rounded-full bg-emerald-50 dark:bg-emerald-900/30 px-2.5 py-1 text-xs font-medium text-emerald-700 dark:text-emerald-400 ring-1 ring-inset ring-emerald-600/20"
+              className="inline-flex max-w-full items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-medium text-emerald-700 ring-1 ring-inset ring-emerald-600/20 dark:bg-emerald-900/30 dark:text-emerald-400"
               data-testid="verified-badge"
             >
               <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -66,7 +66,7 @@ export function PlaybookCard({ playbook }: PlaybookCardProps) {
             </span>
           ) : (
             <span
-              className="inline-flex items-center gap-1 rounded-full bg-amber-50 dark:bg-amber-900/30 px-2.5 py-1 text-xs font-medium text-amber-700 dark:text-amber-400 ring-1 ring-inset ring-amber-600/20"
+              className="inline-flex max-w-full items-center gap-1 rounded-full bg-amber-50 px-2.5 py-1 text-xs font-medium text-amber-700 ring-1 ring-inset ring-amber-600/20 dark:bg-amber-900/30 dark:text-amber-400"
               data-testid="community-badge"
             >
               <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>

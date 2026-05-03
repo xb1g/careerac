@@ -233,12 +233,12 @@ export default async function PlaybooksPage({ searchParams }: PlaybooksPageProps
           }),
         }}
       />
-      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-white">Community Playbooks</h1>
           <p className="mt-2 text-zinc-600 dark:text-zinc-400">Learn from verified transfer students and browse community-submitted stories.</p>
 
-          <div className="mt-6 inline-flex gap-1.5 bg-zinc-100 dark:bg-zinc-800/60 rounded-xl p-1">
+          <div className="mt-6 inline-flex max-w-full gap-1.5 overflow-x-auto rounded-xl bg-zinc-100 p-1 dark:bg-zinc-800/60">
             {([
               ["all", "All"],
               ["verified", "Verified"],
@@ -268,11 +268,11 @@ export default async function PlaybooksPage({ searchParams }: PlaybooksPageProps
           currentFilters={{ cc: params?.cc ?? "", target: params?.target ?? "", major: params?.major ?? "" }}
         />
 
-        <div className="mb-6 mt-6 flex justify-end">
+        <div className="mb-6 mt-6 flex justify-stretch sm:justify-end">
           <Link
             href="/playbooks/submit"
             data-testid="share-story-cta"
-            className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-blue-500"
+            className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-blue-500 sm:w-auto"
           >
             <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />

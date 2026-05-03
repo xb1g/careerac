@@ -10,7 +10,7 @@ export default async function SigninPage({
   const redirectTo = resolved.redirectTo;
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 dark:bg-zinc-950 px-4 py-12">
+    <div className="flex min-h-screen items-center justify-center bg-zinc-50 px-4 py-8 dark:bg-zinc-950 sm:py-12">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <Link href="/" className="text-2xl font-bold text-zinc-900 dark:text-white">
@@ -23,7 +23,7 @@ export default async function SigninPage({
             Sign in to continue to your dashboard
           </p>
         </div>
-        <div className="rounded-xl bg-white dark:bg-zinc-900 p-8 shadow-sm border border-zinc-200 dark:border-zinc-800">
+        <div className="rounded-xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 sm:p-8">
           <SigninForm redirectTo={redirectTo} />
         </div>
       </div>

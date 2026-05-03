@@ -577,7 +577,7 @@ export default function TranscriptUpload({
               className="w-full rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
             />
             {isCourseMenuOpen && filteredCourses.length > 0 && (
-              <ul className="absolute z-20 mt-1 w-[300px] max-h-64 overflow-auto rounded-lg border border-zinc-200 bg-white shadow-lg dark:border-zinc-700 dark:bg-zinc-900">
+              <ul className="absolute z-20 mt-1 max-h-64 w-full overflow-auto rounded-lg border border-zinc-200 bg-white shadow-lg dark:border-zinc-700 dark:bg-zinc-900 sm:w-[300px]">
                 {filteredCourses.map((c, idx) => (
                   <li
                     key={`${c.code}-${idx}`}
@@ -653,8 +653,8 @@ export default function TranscriptUpload({
         </div>
 
         {manualCourses.length > 0 && (
-          <div className="border border-zinc-200 dark:border-zinc-800 rounded-lg overflow-hidden">
-            <table className="w-full text-sm">
+          <div className="overflow-x-auto rounded-lg border border-zinc-200 dark:border-zinc-800">
+            <table className="w-full min-w-[640px] text-sm">
               <thead className="bg-zinc-50 dark:bg-zinc-800/50">
                 <tr>
                   <th className="px-3 py-2 text-left font-medium text-zinc-600 dark:text-zinc-400">
@@ -715,11 +715,11 @@ export default function TranscriptUpload({
           </div>
         )}
 
-        <div className="flex gap-3">
+        <div className="flex flex-col gap-3 sm:flex-row">
           <button
             onClick={handleConfirmManual}
             disabled={manualCourses.length === 0 || isSavingManual}
-            className="rounded-lg bg-blue-600 text-white px-6 py-2.5 text-sm font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="w-full rounded-lg bg-blue-600 px-6 py-2.5 text-sm font-medium text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
           >
             {isSavingManual
               ? "Saving..."
@@ -727,13 +727,13 @@ export default function TranscriptUpload({
           </button>
           <button
             onClick={onSkip}
-            className="rounded-lg border border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 px-6 py-2.5 text-sm font-medium hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
+            className="w-full rounded-lg border border-zinc-300 px-6 py-2.5 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800 sm:w-auto cursor-pointer"
           >
             Skip
           </button>
           <button
             onClick={() => setShowManualEntry(false)}
-            className="rounded-lg text-zinc-500 dark:text-zinc-400 px-4 py-2.5 text-sm hover:text-zinc-700 dark:hover:text-zinc-300 transition-colors cursor-pointer sm:ml-auto"
+            className="w-full rounded-lg px-4 py-2.5 text-sm text-zinc-500 transition-colors hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-300 sm:ml-auto sm:w-auto cursor-pointer"
           >
             Back
           </button>
@@ -755,7 +755,7 @@ export default function TranscriptUpload({
           </p>
         </div>
 
-        <div className="flex gap-4 text-sm">
+        <div className="flex flex-wrap gap-3 text-sm">
           <div className="rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 px-4 py-2">
             <span className="font-medium text-green-800 dark:text-green-200">
               {parsedData.totalUnitsCompleted}
@@ -786,8 +786,8 @@ export default function TranscriptUpload({
           )}
         </div>
 
-        <div className="border border-zinc-200 dark:border-zinc-800 rounded-lg overflow-hidden">
-          <table className="w-full text-sm">
+        <div className="overflow-x-auto rounded-lg border border-zinc-200 dark:border-zinc-800">
+          <table className="w-full min-w-[720px] text-sm">
             <thead className="bg-zinc-50 dark:bg-zinc-800/50">
               <tr>
                 <th className="px-3 py-2 text-left font-medium text-zinc-600 dark:text-zinc-400">
@@ -864,10 +864,10 @@ export default function TranscriptUpload({
           </table>
         </div>
 
-        <div className="flex gap-3">
+        <div className="flex flex-col gap-3 sm:flex-row">
           <button
             onClick={handleConfirm}
-            className="rounded-lg bg-blue-600 text-white px-6 py-2.5 text-sm font-medium hover:bg-blue-700 transition-colors cursor-pointer"
+            className="w-full rounded-lg bg-blue-600 px-6 py-2.5 text-sm font-medium text-white transition-colors hover:bg-blue-700 sm:w-auto cursor-pointer"
           >
             Looks Good, Continue
           </button>
@@ -878,7 +878,7 @@ export default function TranscriptUpload({
               setTranscriptId(null);
               setProcessingStage("idle");
             }}
-            className="rounded-lg border border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 px-6 py-2.5 text-sm font-medium hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
+            className="w-full rounded-lg border border-zinc-300 px-6 py-2.5 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800 sm:w-auto cursor-pointer"
           >
             Upload Different File
           </button>

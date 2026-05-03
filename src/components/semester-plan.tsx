@@ -26,6 +26,159 @@ function isTransferPlan(plan: ParsedPlan): plan is TransferPlan {
   return !(plan as NoDataResponse).isNoData;
 }
 
+function getRemainingUnits(courses: PlanCourse[]) {
+  return courses.reduce((total, course) => {
+    return course.status === "completed" ? total : total + course.units;
+  }, 0);
+}
+
+function useMobileTimeline() {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    if (typeof window.matchMedia !== "function") return;
+
+    const query = window.matchMedia("(max-width: 767px)");
+    const update = () => setIsMobile(query.matches);
+
+    update();
+    if (typeof query.addEventListener === "function") {
+      query.addEventListener("change", update);
+      return () => query.removeEventListener("change", update);
+    }
+
+    query.addListener(update);
+    return () => query.removeListener(update);
+  }, []);
+
+  return isMobile;
+}
+
+function CompletedCourseList({ courses }: { courses: TranscriptCourse[] }) {
+  return (
+    <>
+      {courses.map((course, idx) => (
+        <div
+          key={`${course.code}-${idx}`}
+          className="flex items-start justify-between gap-2 rounded-lg border border-emerald-100 bg-white px-3 py-2 dark:border-emerald-900/30 dark:bg-zinc-900/50"
+        >
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-1.5">
+              <span className="text-xs font-bold text-zinc-800 dark:text-zinc-200">
+                {course.code}
+              </span>
+              {course.grade && (
+                <span className="rounded-full bg-emerald-100 px-1.5 py-0 text-[10px] font-semibold text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400">
+                  {course.grade}
+                </span>
+              )}
+            </div>
+            <p className="mt-0.5 truncate text-xs text-zinc-500 dark:text-zinc-400">
+              {course.title}
+            </p>
+          </div>
+          <span className="shrink-0 text-[11px] text-zinc-400">
+            {course.units}u
+          </span>
+        </div>
+      ))}
+    </>
+  );
+}
+
+function SemesterTimeline({
+  plan,
+  onCourseClick,
+  previousCourses,
+}: {
+  plan: TransferPlan;
+  onCourseClick?: SemesterPlanProps["onCourseClick"];
+  previousCourses?: TranscriptCourse[];
+}) {
+  return (
+    <div className="min-h-0 flex-1 overflow-y-auto bg-[#FAFAFA] px-3 py-4 dark:bg-zinc-900/50" data-testid="semester-grid" role="list">
+      <div className="mx-auto flex max-w-2xl flex-col gap-4">
+        {previousCourses && previousCourses.length > 0 && (
+          <section
+            role="listitem"
+            aria-label="Completed Courses"
+            className="rounded-xl border border-emerald-200 bg-emerald-50/30 shadow-sm dark:border-emerald-900/50 dark:bg-emerald-950/20"
+          >
+            <header className="flex items-center justify-between gap-2 rounded-t-xl border-b border-emerald-200 bg-emerald-50/80 px-4 py-3 dark:border-emerald-900/50 dark:bg-emerald-950/40">
+              <h3 className="truncate text-sm font-bold tracking-tight text-emerald-800 dark:text-emerald-300">
+                Completed
+              </h3>
+              <span className="inline-flex items-center whitespace-nowrap rounded-md bg-emerald-100 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400">
+                {previousCourses.reduce((s, c) => s + c.units, 0)} units
+              </span>
+            </header>
+            <div className="flex min-h-0 flex-col gap-2 p-3" data-testid="semester-column-body">
+              <CompletedCourseList courses={previousCourses} />
+            </div>
+          </section>
+        )}
+
+        {plan.semesters.map((semester) => {
+          const semesterRemainingUnits = getRemainingUnits(semester.courses);
+
+          return (
+            <section
+              key={semester.number}
+              role="listitem"
+              aria-label={semester.label}
+              className="rounded-xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900/50"
+            >
+              <header
+                className="flex items-center justify-between gap-2 rounded-t-xl border-b border-zinc-200 bg-white/90 px-4 py-3 dark:border-zinc-800 dark:bg-zinc-900/80"
+                data-testid="semester-header"
+              >
+                <h3
+                  className="truncate text-sm font-bold tracking-tight text-zinc-900 dark:text-zinc-100"
+                  data-testid="semester-label"
+                >
+                  {semester.label}
+                </h3>
+                <span
+                  className="inline-flex items-center whitespace-nowrap rounded-md bg-zinc-100 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400"
+                  data-testid="semester-units"
+                >
+                  {semesterRemainingUnits}{" "}
+                  {semesterRemainingUnits === 1 ? "unit" : "units"} remaining
+                </span>
+              </header>
+
+              <div className="flex min-h-0 flex-col gap-3 p-3" data-testid="semester-column-body">
+                {semester.courses.map((course, idx) => (
+                  <div
+                    key={`${course.code}-${idx}`}
+                    onClick={(event) => {
+                      if (onCourseClick) {
+                        onCourseClick(
+                          { ...course, semesterNumber: semester.number },
+                          course.status || "planned",
+                          { x: event.clientX, y: event.clientY },
+                        );
+                      }
+                    }}
+                  >
+                    <CourseCard
+                      course={{
+                        ...course,
+                        semesterNumber: semester.number,
+                      }}
+                      coveredSchoolCount={plan.coveredSchools?.length ?? 0}
+                    />
+                  </div>
+                ))}
+              </div>
+            </section>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 function SemesterGrid({
   plan,
   onCourseClick,
@@ -35,6 +188,7 @@ function SemesterGrid({
   onCourseClick?: SemesterPlanProps["onCourseClick"];
   previousCourses?: TranscriptCourse[];
 }) {
+  const isMobile = useMobileTimeline();
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const gridRef = useRef<HTMLDivElement | null>(null);
   const [hasRightOverflow, setHasRightOverflow] = useState(false);
@@ -110,6 +264,16 @@ function SemesterGrid({
     };
   }, [plan.semesters.length]);
 
+  if (isMobile) {
+    return (
+      <SemesterTimeline
+        plan={plan}
+        onCourseClick={onCourseClick}
+        previousCourses={previousCourses}
+      />
+    );
+  }
+
   return (
     <div className="flex h-full w-full min-w-0 min-h-0 flex-1 flex-col bg-[#FAFAFA] dark:bg-zinc-900/50">
       <div className="relative min-w-0 min-h-0 flex-1">
@@ -138,43 +302,12 @@ function SemesterGrid({
                   </span>
                 </header>
                 <div className="flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto p-3">
-                  {previousCourses.map((c, idx) => (
-                    <div
-                      key={`${c.code}-${idx}`}
-                      className="flex items-start justify-between gap-2 rounded-lg border border-emerald-100 dark:border-emerald-900/30 bg-white dark:bg-zinc-900/50 px-3 py-2"
-                    >
-                      <div className="min-w-0 flex-1">
-                        <div className="flex items-center gap-1.5">
-                          <span className="text-xs font-bold text-zinc-800 dark:text-zinc-200">
-                            {c.code}
-                          </span>
-                          {c.grade && (
-                            <span className="rounded-full bg-emerald-100 dark:bg-emerald-900/30 px-1.5 py-0 text-[10px] font-semibold text-emerald-700 dark:text-emerald-400">
-                              {c.grade}
-                            </span>
-                          )}
-                        </div>
-                        <p className="text-xs text-zinc-500 dark:text-zinc-400 truncate mt-0.5">
-                          {c.title}
-                        </p>
-                      </div>
-                      <span className="text-[11px] text-zinc-400 shrink-0">
-                        {c.units}u
-                      </span>
-                    </div>
-                  ))}
+                  <CompletedCourseList courses={previousCourses} />
                 </div>
               </section>
             )}
             {plan.semesters.map((semester) => {
-              const semesterRemainingUnits = semester.courses.reduce(
-                (total, course) => {
-                  return course.status === "completed"
-                    ? total
-                    : total + course.units;
-                },
-                0,
-              );
+              const semesterRemainingUnits = getRemainingUnits(semester.courses);
 
               return (
                 <section

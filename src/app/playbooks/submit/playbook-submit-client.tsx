@@ -299,7 +299,7 @@ export default function PlaybookSubmitClient({ institutions: initialInstitutions
   }
 
   return (
-    <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="mx-auto max-w-3xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
       {/* Header */}
       <div className="mb-8">
         <Link
@@ -311,7 +311,7 @@ export default function PlaybookSubmitClient({ institutions: initialInstitutions
           </svg>
           Back to Playbooks
         </Link>
-        <h1 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-white">
+        <h1 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-white sm:text-3xl">
           Share Your Transfer Story
         </h1>
         <p className="mt-2 text-zinc-600 dark:text-zinc-400">
@@ -364,7 +364,7 @@ export default function PlaybookSubmitClient({ institutions: initialInstitutions
       </div>
 
       {/* Step Content */}
-      <div className="rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 p-6 sm:p-8">
+      <div className="rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-700 dark:bg-zinc-900 sm:p-8">
         {/* Step 1: Basic Info */}
         {currentStep === 0 && (
           <div data-testid="step-basic-info">
@@ -500,8 +500,8 @@ export default function PlaybookSubmitClient({ institutions: initialInstitutions
                   </div>
                   <div className="p-4 space-y-3">
                     {semester.courses.map((course, courseIdx) => (
-                      <div key={courseIdx} className="grid grid-cols-12 gap-2">
-                        <div className="col-span-3">
+                      <div key={courseIdx} className="grid grid-cols-1 gap-2 sm:grid-cols-12">
+                        <div className="sm:col-span-3">
                           <input
                             type="text"
                             placeholder="Course code"
@@ -510,7 +510,7 @@ export default function PlaybookSubmitClient({ institutions: initialInstitutions
                             className="w-full rounded-md border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 px-2 py-1.5 text-sm text-zinc-900 dark:text-white focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
                           />
                         </div>
-                        <div className="col-span-5">
+                        <div className="sm:col-span-5">
                           <input
                             type="text"
                             placeholder="Course title"
@@ -519,7 +519,7 @@ export default function PlaybookSubmitClient({ institutions: initialInstitutions
                             className="w-full rounded-md border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 px-2 py-1.5 text-sm text-zinc-900 dark:text-white focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
                           />
                         </div>
-                        <div className="col-span-2">
+                        <div className="sm:col-span-2">
                           <input
                             type="number"
                             placeholder="Units"
@@ -528,7 +528,7 @@ export default function PlaybookSubmitClient({ institutions: initialInstitutions
                             className="w-full rounded-md border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 px-2 py-1.5 text-sm text-zinc-900 dark:text-white focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
                           />
                         </div>
-                        <div className="col-span-2 flex items-center gap-1">
+                        <div className="flex items-center gap-1 sm:col-span-2">
                           <input
                             type="text"
                             placeholder="Grade"
@@ -605,7 +605,7 @@ export default function PlaybookSubmitClient({ institutions: initialInstitutions
               <div className="space-y-4">
                 {formData.failureEvents.map((event, idx) => (
                   <div key={idx} className="rounded-lg border border-zinc-200 dark:border-zinc-700 p-4 space-y-4">
-                    <div className="flex items-center justify-between">
+          <div className="flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
                       <h3 className="font-medium text-zinc-900 dark:text-white">Challenge #{idx + 1}</h3>
                       <button
                         type="button"
@@ -779,7 +779,7 @@ export default function PlaybookSubmitClient({ institutions: initialInstitutions
             type="button"
             onClick={handleBack}
             disabled={currentStep === 0 || isSubmitting}
-            className="inline-flex items-center gap-1 rounded-lg border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 px-4 py-2.5 text-sm font-semibold text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-700 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer transition-colors"
+            className="inline-flex w-full items-center justify-center gap-1 rounded-lg border border-zinc-300 bg-white px-4 py-2.5 text-sm font-semibold text-zinc-700 transition-colors hover:bg-zinc-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700 sm:w-auto cursor-pointer"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
@@ -791,7 +791,7 @@ export default function PlaybookSubmitClient({ institutions: initialInstitutions
             <button
               type="button"
               onClick={handleNext}
-              className="inline-flex items-center gap-1 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 transition-colors cursor-pointer"
+              className="inline-flex w-full items-center justify-center gap-1 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-blue-500 sm:w-auto cursor-pointer"
               data-testid="next-step-button"
             >
               Next
@@ -804,7 +804,7 @@ export default function PlaybookSubmitClient({ institutions: initialInstitutions
               type="button"
               onClick={handleSubmit}
               disabled={isSubmitting}
-              className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-6 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-blue-600 px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-blue-500 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
               data-testid="submit-button"
             >
               {isSubmitting ? (

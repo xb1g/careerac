@@ -93,7 +93,7 @@ export default function ComparisonDashboard({ planId, className = "" }: Comparis
 
   return (
     <section className={`border-b border-zinc-200/50 dark:border-zinc-800/50 bg-white/80 dark:bg-zinc-950/80 ${className}`}>
-      <div className="px-6 lg:px-8 py-4">
+      <div className="px-3 py-4 sm:px-6 lg:px-8">
         <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
           <div>
             <h2 className="text-base font-semibold text-zinc-900 dark:text-zinc-100">School comparison</h2>
@@ -105,7 +105,7 @@ export default function ComparisonDashboard({ planId, className = "" }: Comparis
           <button
             type="button"
             onClick={handleToggleExpanded}
-            className="inline-flex items-center justify-center rounded-xl border border-zinc-300 dark:border-zinc-700 px-4 py-2 text-sm font-medium text-zinc-700 dark:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-colors cursor-pointer"
+            className="inline-flex w-full items-center justify-center rounded-xl border border-zinc-300 px-4 py-2 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-900 sm:w-auto cursor-pointer"
           >
             {expanded ? "Hide comparison" : "Compare schools"}
           </button>
@@ -204,14 +204,14 @@ export default function ComparisonDashboard({ planId, className = "" }: Comparis
 
                 {selected && (
                   <div className="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-900/60 p-5">
-                    <div className="flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between">
+                    <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
                       <div>
                         <h3 className="text-sm font-semibold text-zinc-900 dark:text-white">{selected.schoolName} details</h3>
                         <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
                           {selected.matchedCourses.length} matched courses · {selected.missingCourses.length} still missing
                         </p>
                       </div>
-                      <div className="flex items-center gap-2">
+                      <div className="flex flex-wrap items-center gap-2">
                         {selected.tuition && (
                           // Tab switcher
                           <div className="flex rounded-xl border border-zinc-200 dark:border-zinc-700 p-0.5 bg-white dark:bg-zinc-950">
@@ -332,17 +332,17 @@ export default function ComparisonDashboard({ planId, className = "" }: Comparis
                                   const maxCost = Math.max(...results.filter((x) => x.tuition).map((x) => x.tuition!.totalCost));
                                   const barWidth = maxCost > 0 ? ((r.tuition?.totalCost ?? 0) / maxCost) * 100 : 0;
                                   return (
-                                    <div key={r.institutionId} className="flex items-center gap-3">
-                                      <div className="w-32 shrink-0 truncate text-xs text-zinc-600 dark:text-zinc-300">
+                                    <div key={r.institutionId} className="grid grid-cols-[minmax(5rem,8rem)_1fr_auto] items-center gap-2 sm:flex sm:gap-3">
+                                      <div className="truncate text-xs text-zinc-600 dark:text-zinc-300 sm:w-32 sm:shrink-0">
                                         {r.schoolName}
                                       </div>
-                                      <div className="flex-1 h-5 rounded-full bg-zinc-100 dark:bg-zinc-800 overflow-hidden">
+                                      <div className="h-5 overflow-hidden rounded-full bg-zinc-100 dark:bg-zinc-800 sm:flex-1">
                                         <div
                                           className={`h-5 rounded-full ${r.institutionId === selectedInstitutionId ? "bg-blue-500" : "bg-zinc-300 dark:bg-zinc-600"}`}
                                           style={{ width: `${barWidth}%` }}
                                         />
                                       </div>
-                                      <div className="w-20 shrink-0 text-right text-xs font-semibold text-zinc-700 dark:text-zinc-200">
+                                      <div className="shrink-0 text-right text-xs font-semibold text-zinc-700 dark:text-zinc-200 sm:w-20">
                                         {formatCurrencyCompact(r.tuition!.totalCost)}/yr
                                       </div>
                                     </div>

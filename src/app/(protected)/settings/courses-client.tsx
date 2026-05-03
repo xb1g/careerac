@@ -188,8 +188,8 @@ export default function CoursesClient({ initialCourses }: CoursesClientProps) {
       </div>
 
       {/* Filter + Add button */}
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="flex gap-1.5 bg-zinc-100 dark:bg-zinc-800/60 rounded-xl p-1">
+      <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
+        <div className="flex max-w-full gap-1.5 overflow-x-auto rounded-xl bg-zinc-100 p-1 dark:bg-zinc-800/60">
           {(["all", "completed", "in_progress", "planned"] as const).map((f) => (
             <button
               key={f}
@@ -205,7 +205,7 @@ export default function CoursesClient({ initialCourses }: CoursesClientProps) {
             </button>
           ))}
         </div>
-        <div className="flex gap-2">
+        <div className="grid grid-cols-1 gap-2 sm:flex">
           <input
             ref={fileInputRef}
             type="file"
@@ -216,7 +216,7 @@ export default function CoursesClient({ initialCourses }: CoursesClientProps) {
           <button
             onClick={handleUploadClick}
             disabled={uploading}
-            className="cursor-pointer px-4 py-2 text-sm font-medium text-zinc-700 dark:text-zinc-200 bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-800 rounded-xl transition-all duration-200 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-zinc-300 bg-white px-4 py-2 text-sm font-medium text-zinc-700 transition-all duration-200 hover:bg-zinc-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800"
           >
             {uploading ? (
               <>
@@ -232,7 +232,7 @@ export default function CoursesClient({ initialCourses }: CoursesClientProps) {
           </button>
           <button
             onClick={() => { setShowAdd(true); setEditingId(null); }}
-            className="cursor-pointer px-4 py-2 text-sm font-medium text-white bg-zinc-900 dark:bg-white dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-zinc-100 rounded-xl transition-all duration-200 flex items-center gap-2 shadow-sm"
+            className="flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-zinc-900 px-4 py-2 text-sm font-medium text-white shadow-sm transition-all duration-200 hover:bg-zinc-800 dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-100"
           >
             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" /></svg>
             Add Course
@@ -296,8 +296,8 @@ export default function CoursesClient({ initialCourses }: CoursesClientProps) {
                   />
                 </div>
               ) : (
-                <div className="px-5 py-4 flex items-center justify-between gap-4 group hover:bg-zinc-50/50 dark:hover:bg-zinc-800/30 transition-colors duration-150">
-                  <div className="flex-1 min-w-0 flex items-center gap-4">
+                <div className="group flex flex-col gap-3 px-4 py-4 transition-colors duration-150 hover:bg-zinc-50/50 dark:hover:bg-zinc-800/30 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:px-5">
+                  <div className="flex min-w-0 flex-1 items-center gap-3 sm:gap-4">
                     <div className="shrink-0 w-8 h-8 rounded-lg bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-xs font-medium text-zinc-500 dark:text-zinc-400">
                       {STATUS_ICONS[course.status]}
                     </div>
@@ -309,8 +309,8 @@ export default function CoursesClient({ initialCourses }: CoursesClientProps) {
                           <span className="text-[11px] font-semibold text-zinc-600 dark:text-zinc-300 bg-zinc-100 dark:bg-zinc-800 px-2 py-0.5 rounded-md">{course.grade}</span>
                         )}
                       </div>
-                      <p className="text-[13px] text-zinc-500 dark:text-zinc-400 mt-0.5 truncate">{course.course_title}</p>
-                      <div className="flex items-center gap-3 mt-1">
+                      <p className="mt-0.5 line-clamp-2 text-[13px] text-zinc-500 dark:text-zinc-400 sm:truncate">{course.course_title}</p>
+                      <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1">
                         <span className="text-[11px] text-zinc-400 dark:text-zinc-500">{course.units} units</span>
                         {course.term && (
                           <>
@@ -327,7 +327,7 @@ export default function CoursesClient({ initialCourses }: CoursesClientProps) {
                       </div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-1 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity duration-150">
+                    <div className="flex shrink-0 items-center justify-end gap-1 opacity-100 transition-opacity duration-150 sm:opacity-0 sm:group-hover:opacity-100">
                     <button
                       onClick={() => { setEditingId(course.id); setShowAdd(false); }}
                       className="cursor-pointer p-2 text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"

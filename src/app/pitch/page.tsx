@@ -16,19 +16,19 @@ export default function PitchPage() {
       <div className="absolute top-[20%] right-[10%] w-[30%] h-[30%] rounded-full bg-cyan-400/20 blur-[100px] pointer-events-none mix-blend-multiply dark:mix-blend-overlay dark:bg-cyan-900/20" />
 
       {/* Header */}
-      <header className="fixed top-0 w-full px-6 py-5 sm:px-8 z-50">
-        <div className="max-w-4xl mx-auto flex items-center justify-between bg-white/70 dark:bg-zinc-900/70 backdrop-blur-xl px-6 py-3.5 rounded-full border border-white/50 dark:border-zinc-800/50 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)]">
+      <header className="fixed top-0 z-50 w-full px-3 py-3 sm:px-8 sm:py-5">
+        <div className="mx-auto flex max-w-4xl items-center justify-between rounded-2xl border border-white/50 bg-white/70 px-4 py-3.5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-xl dark:border-zinc-800/50 dark:bg-zinc-900/70 dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] sm:rounded-full sm:px-6">
           <Link href="/" className="text-[18px] font-bold tracking-tight text-zinc-900 dark:text-white">
             CareerAC
           </Link>
-          <span className="text-[13px] font-semibold text-zinc-500 dark:text-zinc-400">
+          <span className="text-right text-[12px] font-semibold text-zinc-500 dark:text-zinc-400 sm:text-[13px]">
             Collider Cup 2026
           </span>
         </div>
       </header>
 
-      <main className="flex-1 pt-32 pb-24 px-6 sm:px-8">
-        <div className="max-w-3xl mx-auto space-y-20">
+      <main className="flex-1 px-4 pb-20 pt-28 sm:px-8 sm:pb-24 sm:pt-32">
+        <div className="mx-auto max-w-3xl space-y-14 sm:space-y-20">
 
           {/* Hook */}
           <section className="text-center space-y-6">
@@ -39,19 +39,19 @@ export default function PitchPage() {
               </span>
             </div>
 
-            <h1 className="text-[56px] sm:text-[72px] font-bold leading-[1.05] tracking-tight text-zinc-900 dark:text-white">
+            <h1 className="text-4xl font-bold leading-[1.05] tracking-tight text-zinc-900 dark:text-white sm:text-[72px]">
               1 counselor.<br />
               300 students.<br />
               <span className="text-blue-500">10 transferred.</span>
             </h1>
 
-            <p className="text-[20px] text-zinc-500 dark:text-zinc-400 max-w-xl mx-auto leading-relaxed">
+            <p className="mx-auto max-w-xl text-lg leading-relaxed text-zinc-500 dark:text-zinc-400 sm:text-[20px]">
               That's not a bad outcome. That's the system working as designed.
             </p>
           </section>
 
           {/* The Story */}
-          <section className="bg-white/60 dark:bg-zinc-900/60 backdrop-blur-xl rounded-3xl border border-white/80 dark:border-zinc-800/50 shadow-[0_8px_40px_rgb(0,0,0,0.06)] dark:shadow-[0_8px_40px_rgb(0,0,0,0.2)] p-8 sm:p-10 space-y-6">
+          <section className="space-y-6 rounded-3xl border border-white/80 bg-white/60 p-5 shadow-[0_8px_40px_rgb(0,0,0,0.06)] backdrop-blur-xl dark:border-zinc-800/50 dark:bg-zinc-900/60 dark:shadow-[0_8px_40px_rgb(0,0,0,0.2)] sm:p-10">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-indigo-500 flex items-center justify-center text-white font-bold text-[14px]">
                 AS
@@ -61,10 +61,10 @@ export default function PitchPage() {
                 <p className="text-[13px] text-zinc-500 dark:text-zinc-400">Co-founder, CareerAC</p>
               </div>
             </div>
-            <blockquote className="text-[22px] sm:text-[26px] font-medium text-zinc-800 dark:text-zinc-100 leading-[1.4] border-l-4 border-blue-500 pl-6">
+            <blockquote className="border-l-4 border-blue-500 pl-4 text-xl font-medium leading-[1.4] text-zinc-800 dark:text-zinc-100 sm:pl-6 sm:text-[26px]">
               "I lost a year of my life and $40,000 because nobody told me my credits wouldn't count at Berkeley."
             </blockquote>
-            <p className="text-[16px] text-zinc-500 dark:text-zinc-400 leading-relaxed pl-6">
+            <p className="pl-4 text-[16px] leading-relaxed text-zinc-500 dark:text-zinc-400 sm:pl-6">
               He took the right classes. He worked hard. He just didn't have the right plan. That's not a personal failure — it's a system failure. And it's happening to hundreds of thousands of students right now.
             </p>
           </section>
@@ -150,7 +150,7 @@ export default function PitchPage() {
               <p className="text-[16px] text-zinc-500 dark:text-zinc-400 leading-relaxed">
                 Transfer rate is a published performance metric for California CCs. It affects funding, rankings, and accreditation. CareerAC isn't a threat to counselors — it's how one counselor actually handles 300 students. The tool handles the plan. The counselor handles the cases that need human judgment.
               </p>
-              <div className="flex items-center gap-4 bg-blue-50 dark:bg-blue-950/30 rounded-2xl px-6 py-4">
+              <div className="flex flex-col gap-2 rounded-2xl bg-blue-50 px-4 py-4 dark:bg-blue-950/30 sm:flex-row sm:items-center sm:gap-4 sm:px-6">
                 <div className="text-[32px] font-bold text-blue-600 dark:text-blue-400">60%</div>
                 <div className="text-[14px] text-zinc-600 dark:text-zinc-400">
                   of students surveyed said they would use CareerAC <strong>daily</strong>. CCs buy because their students want it.
@@ -190,13 +190,13 @@ export default function PitchPage() {
               ].map(({ initials, name, role, story, gradient }) => (
                 <div
                   key={name}
-                  className="flex gap-5 bg-white/60 dark:bg-zinc-900/60 backdrop-blur-xl rounded-2xl border border-white/80 dark:border-zinc-800/50 p-6"
+                  className="flex flex-col gap-4 rounded-2xl border border-white/80 bg-white/60 p-5 backdrop-blur-xl dark:border-zinc-800/50 dark:bg-zinc-900/60 sm:flex-row sm:gap-5 sm:p-6"
                 >
                   <div className={`w-12 h-12 shrink-0 rounded-full bg-gradient-to-br ${gradient} flex items-center justify-center text-white font-bold text-[13px]`}>
                     {initials}
                   </div>
                   <div className="space-y-1">
-                    <div className="flex items-baseline gap-2">
+                    <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
                       <span className="text-[15px] font-semibold text-zinc-900 dark:text-white">{name}</span>
                       <span className="text-[12px] text-zinc-400 dark:text-zinc-500">{role}</span>
                     </div>
@@ -232,7 +232,7 @@ export default function PitchPage() {
       </main>
 
       {/* Footer */}
-      <footer className="py-8 px-6 border-t border-zinc-100 dark:border-zinc-900">
+      <footer className="border-t border-zinc-100 px-4 py-8 dark:border-zinc-900 sm:px-6">
         <div className="max-w-3xl mx-auto flex items-center justify-between">
           <span className="text-[13px] font-semibold text-zinc-900 dark:text-white">CareerAC</span>
           <span className="text-[12px] text-zinc-400 dark:text-zinc-600">SCET Berkeley — Collider Cup 2026</span>

@@ -166,12 +166,12 @@ function PendingPlaybookCard({
           </p>
         </div>
 
-        <div className="flex flex-wrap gap-3">
+        <div className="grid grid-cols-1 gap-3 sm:flex sm:flex-wrap">
           <button
             type="button"
             onClick={() => void onModerate(playbook.id, "verify")}
             disabled={isLoading}
-            className="inline-flex items-center justify-center rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-emerald-500 disabled:cursor-not-allowed disabled:opacity-60"
+            className="inline-flex w-full items-center justify-center rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-emerald-500 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
           >
             Verify
           </button>
@@ -179,7 +179,7 @@ function PendingPlaybookCard({
             type="button"
             onClick={() => void onModerate(playbook.id, "reject")}
             disabled={isLoading}
-            className="inline-flex items-center justify-center rounded-lg border border-rose-300 px-4 py-2 text-sm font-semibold text-rose-700 transition hover:bg-rose-50 disabled:cursor-not-allowed disabled:opacity-60 dark:border-rose-800 dark:text-rose-400 dark:hover:bg-rose-950/40"
+            className="inline-flex w-full items-center justify-center rounded-lg border border-rose-300 px-4 py-2 text-sm font-semibold text-rose-700 transition hover:bg-rose-50 disabled:cursor-not-allowed disabled:opacity-60 dark:border-rose-800 dark:text-rose-400 dark:hover:bg-rose-950/40 sm:w-auto"
           >
             Reject
           </button>
@@ -237,7 +237,7 @@ export default function AdminPlaybooksDashboard({
   return (
     <div className="space-y-10">
       <section>
-        <div className="mb-4 flex items-center justify-between gap-4">
+        <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
           <div>
             <h2 className="text-xl font-semibold text-zinc-900 dark:text-white">Pending review</h2>
             <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
@@ -298,7 +298,7 @@ export default function AdminPlaybooksDashboard({
                 <ul className="mt-4 space-y-3">
                   {playbooks.map((playbook) => (
                     <li key={playbook.id} className="rounded-xl border border-zinc-200 bg-zinc-50 p-4 dark:border-zinc-800 dark:bg-zinc-900/60">
-                      <div className="flex items-start justify-between gap-3">
+                      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                         <div>
                           <p className="font-medium text-zinc-900 dark:text-white">
                             {(playbook.cc_institution?.abbreviation ?? playbook.cc_institution?.name ?? "Unknown CC") +

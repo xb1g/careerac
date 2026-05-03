@@ -83,7 +83,7 @@ export default function CounselorDashboard() {
       </div>
 
       {/* Filters */}
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+      <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
         <input
           type="text"
           placeholder="Search students, majors, schools…"
@@ -91,7 +91,7 @@ export default function CounselorDashboard() {
           onChange={(e) => setSearch(e.target.value)}
           className="flex-1 rounded-lg border border-zinc-200 bg-white px-4 py-2 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-700 dark:bg-zinc-900 dark:text-white dark:placeholder:text-zinc-500"
         />
-        <div className="flex gap-2">
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
           <FilterSelect label="Risk" value={riskFilter} onChange={(v) => setRiskFilter(v as RiskFilter)} options={[["all", "All Risk"], ["on-track", "On Track"], ["at-risk", "At Risk"], ["behind", "Behind"]]} />
           <FilterSelect label="Status" value={statusFilter} onChange={(v) => setStatusFilter(v as StatusFilter)} options={[["all", "All Status"], ["draft", "Draft"], ["active", "Active"], ["completed", "Completed"]]} />
         </div>
@@ -224,7 +224,7 @@ function FilterSelect({ label, value, onChange, options }: { label: string; valu
       aria-label={`Filter by ${label}`}
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      className="rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-700 dark:bg-zinc-900 dark:text-white"
+      className="w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-700 dark:bg-zinc-900 dark:text-white"
     >
       {options.map(([val, lbl]) => (
         <option key={val} value={val}>{lbl}</option>
