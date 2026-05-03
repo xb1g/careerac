@@ -13,12 +13,15 @@ const course = {
 };
 
 describe("CoursesClient", () => {
-  it("renders a larger labeled delete control for mobile course cards", () => {
+  it("keeps compact course actions visible on mobile and hover-gated only on desktop", () => {
     render(<CoursesClient initialCourses={[course]} />);
 
     const deleteButton = screen.getByRole("button", { name: "Delete MATH 1A" });
+    const actionBar = deleteButton.parentElement;
 
-    expect(deleteButton).toHaveClass("h-11", "touch-manipulation", "cursor-pointer", "bg-red-50");
-    expect(deleteButton).toHaveTextContent("Delete");
+    expect(actionBar).toHaveClass("opacity-100", "lg:opacity-0", "lg:group-hover:opacity-100");
+    expect(actionBar).not.toHaveClass("sm:opacity-0");
+    expect(deleteButton).toHaveClass("h-10", "w-10", "touch-manipulation", "cursor-pointer");
+    expect(deleteButton).not.toHaveTextContent("Delete");
   });
 });
