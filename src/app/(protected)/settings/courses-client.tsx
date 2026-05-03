@@ -194,8 +194,8 @@ export default function CoursesClient({ initialCourses }: CoursesClientProps) {
             <button
               key={f}
               onClick={() => setFilter(f)}
-              style={{ fontSize: 9, lineHeight: "9px" }}
-              className={`cursor-pointer rounded-md px-2.5 py-1 text-[9px] font-medium leading-none transition-all duration-200 ${
+              style={{ fontSize: 11, lineHeight: "14px" }}
+              className={`cursor-pointer rounded-md px-2.5 py-1.5 text-[11px] font-medium transition-all duration-200 ${
                 filter === f
                   ? "bg-white dark:bg-zinc-700 text-zinc-900 dark:text-white shadow-sm"
                   : "text-zinc-500 dark:text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-300"
@@ -217,27 +217,27 @@ export default function CoursesClient({ initialCourses }: CoursesClientProps) {
           <button
             onClick={handleUploadClick}
             disabled={uploading}
-            style={{ fontSize: 10, lineHeight: "10px" }}
-            className="flex cursor-pointer items-center justify-center gap-1.5 rounded-lg border border-zinc-300 bg-white px-3 py-1.5 text-[10px] font-medium leading-none text-zinc-700 transition-all duration-200 hover:bg-zinc-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800"
+            style={{ fontSize: 12, lineHeight: "16px" }}
+            className="flex cursor-pointer items-center justify-center gap-1.5 rounded-lg border border-zinc-300 bg-white px-3.5 py-2 text-[12px] font-medium text-zinc-700 transition-all duration-200 hover:bg-zinc-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800"
           >
             {uploading ? (
               <>
-                <div className="w-3 h-3 border-2 border-zinc-400 border-t-transparent rounded-full animate-spin" />
+                <div className="w-3.5 h-3.5 border-2 border-zinc-400 border-t-transparent rounded-full animate-spin" />
                 Uploading...
               </>
             ) : (
               <>
-                <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" /></svg>
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" /></svg>
                 Upload Transcript
               </>
             )}
           </button>
           <button
             onClick={() => { setShowAdd(true); setEditingId(null); }}
-            style={{ fontSize: 10, lineHeight: "10px" }}
-            className="flex cursor-pointer items-center justify-center gap-1.5 rounded-lg bg-zinc-900 px-3 py-1.5 text-[10px] font-medium leading-none text-white shadow-sm transition-all duration-200 hover:bg-zinc-800 dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-100"
+            style={{ fontSize: 12, lineHeight: "16px" }}
+            className="flex cursor-pointer items-center justify-center gap-1.5 rounded-lg bg-zinc-900 px-3.5 py-2 text-[12px] font-medium text-white shadow-sm transition-all duration-200 hover:bg-zinc-800 dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-100"
           >
-            <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" /></svg>
+            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" /></svg>
             Add Course
           </button>
         </div>
