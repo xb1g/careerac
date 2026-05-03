@@ -1,8 +1,11 @@
 import { createClient } from "@/utils/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
 import type { TranscriptCourse } from "@/types/transcript";
-
-const VALID_GRADES = ["A", "A-", "B+", "B", "B-", "C+", "C", "C-", "D+", "D", "D-", "F", "P", "NP", "W", "I"];
+import {
+  NORMAL_GRADE_OPTIONS,
+  normalizeNormalGrade,
+  normalizeSemesterLabel,
+} from "@/utils/course-input-rules";
 
 interface UpdateCoursesPayload {
   add?: TranscriptCourse[];
@@ -28,15 +31,18 @@ function validateCourse(course: TranscriptCourse): string | null {
     return "Units must be a number greater than 0 and up to 20";
   }
 
-  // grade: required, one of valid grades
-  if (!course.grade || !VALID_GRADES.includes(course.grade)) {
-    return `Grade must be one of: ${VALID_GRADES.join(", ")}`;
+  // grade: required, normal letter grade only. A+ is intentionally excluded.
+  const grade = normalizeNormalGrade(course.grade);
+  if (!grade) {
+    return `Grade must be one of: ${NORMAL_GRADE_OPTIONS.join(", ")}`;
   }
+  course.grade = grade;
 
-  // semester: optional, string
-  if (course.semester !== undefined && typeof course.semester !== "string") {
-    return "Semester must be a string";
+  const semester = normalizeSemesterLabel(course.semester);
+  if (!semester) {
+    return "Semester must use the format Fall YYYY or Spring YYYY";
   }
+  course.semester = semester;
 
   return null;
 }

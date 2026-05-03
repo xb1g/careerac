@@ -1,5 +1,10 @@
 import { createClient } from "@/utils/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
+import {
+  NORMAL_GRADE_OPTIONS,
+  normalizeNormalGrade,
+  normalizeSemesterLabel,
+} from "@/utils/course-input-rules";
 
 export async function GET() {
   const supabase = await createClient();
@@ -44,6 +49,22 @@ export async function POST(request: NextRequest) {
     );
   }
 
+  const normalizedGrade = grade ? normalizeNormalGrade(grade) : null;
+  if (grade && !normalizedGrade) {
+    return NextResponse.json(
+      { error: `Grade must be one of: ${NORMAL_GRADE_OPTIONS.join(", ")}` },
+      { status: 400 },
+    );
+  }
+
+  const normalizedTerm = term ? normalizeSemesterLabel(term) : null;
+  if (term && !normalizedTerm) {
+    return NextResponse.json(
+      { error: "Term must use the format Fall YYYY or Spring YYYY" },
+      { status: 400 },
+    );
+  }
+
   const { data, error } = await supabase
     .from("user_courses")
     .insert({
@@ -51,8 +72,8 @@ export async function POST(request: NextRequest) {
       course_code,
       course_title,
       units: units ?? 3,
-      grade: grade || null,
-      term: term || null,
+      grade: normalizedGrade,
+      term: normalizedTerm,
       status: status || "completed",
       notes: notes || null,
     } as never)

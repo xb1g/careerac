@@ -1,6 +1,11 @@
 import { createClient } from "@/utils/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
 import type { Database } from "@/types/database";
+import {
+  NORMAL_GRADE_OPTIONS,
+  normalizeNormalGrade,
+  normalizeSemesterLabel,
+} from "@/utils/course-input-rules";
 
 type UserCourseUpdate = Database["public"]["Tables"]["user_courses"]["Update"];
 
@@ -25,8 +30,26 @@ export async function PUT(
   if (course_code !== undefined) updateData.course_code = course_code;
   if (course_title !== undefined) updateData.course_title = course_title;
   if (units !== undefined) updateData.units = units;
-  if (grade !== undefined) updateData.grade = grade || null;
-  if (term !== undefined) updateData.term = term || null;
+  if (grade !== undefined) {
+    const normalizedGrade = grade ? normalizeNormalGrade(grade) : null;
+    if (grade && !normalizedGrade) {
+      return NextResponse.json(
+        { error: `Grade must be one of: ${NORMAL_GRADE_OPTIONS.join(", ")}` },
+        { status: 400 },
+      );
+    }
+    updateData.grade = normalizedGrade;
+  }
+  if (term !== undefined) {
+    const normalizedTerm = term ? normalizeSemesterLabel(term) : null;
+    if (term && !normalizedTerm) {
+      return NextResponse.json(
+        { error: "Term must use the format Fall YYYY or Spring YYYY" },
+        { status: 400 },
+      );
+    }
+    updateData.term = normalizedTerm;
+  }
   if (status !== undefined) updateData.status = status;
   if (notes !== undefined) updateData.notes = notes || null;
 

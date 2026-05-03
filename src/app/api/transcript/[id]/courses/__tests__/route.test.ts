@@ -53,7 +53,7 @@ describe("PATCH /api/transcript/[id]/courses", () => {
           parsed_data: {
             courses: [
               ...existingCourses,
-              { code: "CS 1", title: "Intro to CS", units: 4, grade: "B+", status: "completed" as const, semester: "Winter 2025" },
+              { code: "CS 1", title: "Intro to CS", units: 4, grade: "B+", status: "completed" as const, semester: "Spring 2025" },
             ],
           },
         },
@@ -75,7 +75,7 @@ describe("PATCH /api/transcript/[id]/courses", () => {
 
       const { PATCH } = await import("../route");
       const response = await PATCH(buildRequest({
-        add: [{ code: "CS 1", title: "Intro to CS", units: 4, grade: "B+", status: "completed", semester: "Winter 2025" }],
+        add: [{ code: "CS 1", title: "Intro to CS", units: 4, grade: "B+", status: "completed", semester: "Spring 2025" }],
       }), { params: Promise.resolve({ id: "transcript-1" }) });
 
       expect(response.status).toBe(200);
@@ -88,7 +88,7 @@ describe("PATCH /api/transcript/[id]/courses", () => {
     it("removes a single course", async () => {
       const existingCourses = [
         { code: "MATH 1A", title: "Calculus I", units: 5, grade: "A", status: "completed" as const, semester: "Fall 2024" },
-        { code: "CS 1", title: "Intro to CS", units: 4, grade: "B+", status: "completed" as const, semester: "Winter 2025" },
+        { code: "CS 1", title: "Intro to CS", units: 4, grade: "B+", status: "completed" as const, semester: "Spring 2025" },
       ];
 
       const fetchSingle = vi.fn().mockResolvedValue({
@@ -127,7 +127,7 @@ describe("PATCH /api/transcript/[id]/courses", () => {
     it("adds and removes courses in same request", async () => {
       const existingCourses = [
         { code: "MATH 1A", title: "Calculus I", units: 5, grade: "A", status: "completed" as const, semester: "Fall 2024" },
-        { code: "CS 1", title: "Intro to CS", units: 4, grade: "B+", status: "completed" as const, semester: "Winter 2025" },
+        { code: "CS 1", title: "Intro to CS", units: 4, grade: "B+", status: "completed" as const, semester: "Spring 2025" },
       ];
 
       const fetchSingle = vi.fn().mockResolvedValue({

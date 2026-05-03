@@ -1,12 +1,19 @@
 "use client";
 
-import { useState, useEffect, useCallback, useMemo, useRef } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef, useId } from "react";
 import { TranscriptCourse } from "@/types/transcript";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-
-const VALID_GRADES = ["A", "A-", "B+", "B", "B-", "C+", "C", "C-", "D+", "D", "D-", "F", "P", "NP", "W", "I"];
+import {
+  formatSemesterLabel,
+  getDefaultSemesterYear,
+  isValidSemesterYear,
+  NORMAL_GRADE_OPTIONS,
+  normalizeNormalGrade,
+  SEMESTER_SEASONS,
+  type SemesterSeason,
+} from "@/utils/course-input-rules";
 
 const GRADE_POINTS: Record<string, number> = {
   "A": 4.0, "A-": 3.7,
@@ -35,16 +42,27 @@ function AddCourseModal({ isOpen, onClose, onAdd, existingCodes }: AddCourseModa
   const [title, setTitle] = useState("");
   const [units, setUnits] = useState("");
   const [grade, setGrade] = useState("A");
-  const [semester, setSemester] = useState("");
+  const [semesterSeason, setSemesterSeason] = useState<SemesterSeason>("Fall");
+  const [semesterYear, setSemesterYear] = useState(getDefaultSemesterYear);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const formId = useId();
 
-  useEffect(() => {
-    if (!isOpen) {
-      setCode(""); setTitle(""); setUnits(""); setGrade("A"); setSemester(""); setErrors({});
-      setIsSubmitting(false);
-    }
-  }, [isOpen]);
+  const resetForm = useCallback(() => {
+    setCode("");
+    setTitle("");
+    setUnits("");
+    setGrade("A");
+    setSemesterSeason("Fall");
+    setSemesterYear(getDefaultSemesterYear());
+    setErrors({});
+    setIsSubmitting(false);
+  }, []);
+
+  const handleClose = useCallback(() => {
+    resetForm();
+    onClose();
+  }, [onClose, resetForm]);
 
   const validate = useCallback(() => {
     const errs: Record<string, string> = {};
@@ -62,11 +80,14 @@ function AddCourseModal({ isOpen, onClose, onAdd, existingCodes }: AddCourseModa
     if (!units || isNaN(unitsNum) || unitsNum <= 0 || unitsNum > 20) {
       errs.units = "Units must be a number > 0 and ≤ 20";
     }
-    if (!VALID_GRADES.includes(grade)) {
-      errs.grade = "Invalid grade";
+    if (!normalizeNormalGrade(grade)) {
+      errs.grade = `Grade must be one of: ${NORMAL_GRADE_OPTIONS.join(", ")}`;
+    }
+    if (!isValidSemesterYear(semesterYear)) {
+      errs.semester = "Semester year must be four digits";
     }
     return errs;
-  }, [code, title, units, grade, existingCodes]);
+  }, [code, title, units, grade, semesterYear, existingCodes]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -77,24 +98,26 @@ function AddCourseModal({ isOpen, onClose, onAdd, existingCodes }: AddCourseModa
       code: code.trim(),
       title: title.trim(),
       units: parseFloat(units),
-      grade,
-      semester: semester.trim() || "Unknown Semester",
+      grade: normalizeNormalGrade(grade) ?? "A",
+      semester: formatSemesterLabel(semesterSeason, semesterYear),
     });
+    resetForm();
   };
 
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center" role="dialog" aria-modal="true" aria-label="Add course">
-      <button type="button" className="absolute inset-0 bg-black/20 border-0 cursor-default" onClick={onClose} aria-label="Close modal" />
+      <button type="button" className="absolute inset-0 bg-black/20 border-0 cursor-default" onClick={handleClose} aria-label="Close modal" />
       <div className="relative z-10 w-full max-w-md mx-4 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 shadow-xl overflow-hidden">
         <div className="px-4 py-3 border-b border-zinc-200 dark:border-zinc-700">
           <h3 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">Add Course</h3>
         </div>
         <form onSubmit={handleSubmit} className="p-4 space-y-4">
           <div>
-            <label className="block text-xs font-medium text-zinc-600 dark:text-zinc-400 mb-1">Course Code</label>
+            <label htmlFor={`${formId}-code`} className="block text-xs font-medium text-zinc-600 dark:text-zinc-400 mb-1">Course Code</label>
             <input
+              id={`${formId}-code`}
               type="text"
               value={code}
               onChange={e => setCode(e.target.value.toUpperCase())}
@@ -108,8 +131,9 @@ function AddCourseModal({ isOpen, onClose, onAdd, existingCodes }: AddCourseModa
             {errors.code && <p className="mt-1 text-xs text-red-500">{errors.code}</p>}
           </div>
           <div>
-            <label className="block text-xs font-medium text-zinc-600 dark:text-zinc-400 mb-1">Title</label>
+            <label htmlFor={`${formId}-title`} className="block text-xs font-medium text-zinc-600 dark:text-zinc-400 mb-1">Title</label>
             <input
+              id={`${formId}-title`}
               type="text"
               value={title}
               onChange={e => setTitle(e.target.value)}
@@ -124,8 +148,9 @@ function AddCourseModal({ isOpen, onClose, onAdd, existingCodes }: AddCourseModa
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-medium text-zinc-600 dark:text-zinc-400 mb-1">Units</label>
+              <label htmlFor={`${formId}-units`} className="block text-xs font-medium text-zinc-600 dark:text-zinc-400 mb-1">Units</label>
               <input
+                id={`${formId}-units`}
                 type="number"
                 value={units}
                 onChange={e => setUnits(e.target.value)}
@@ -140,29 +165,52 @@ function AddCourseModal({ isOpen, onClose, onAdd, existingCodes }: AddCourseModa
               {errors.units && <p className="mt-1 text-xs text-red-500">{errors.units}</p>}
             </div>
             <div>
-              <label className="block text-xs font-medium text-zinc-600 dark:text-zinc-400 mb-1">Grade</label>
+              <label htmlFor={`${formId}-grade`} className="block text-xs font-medium text-zinc-600 dark:text-zinc-400 mb-1">Grade</label>
               <select
+                id={`${formId}-grade`}
                 value={grade}
                 onChange={e => setGrade(e.target.value)}
                 className="w-full rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 px-3 py-2 text-sm"
               >
-                {VALID_GRADES.map(g => <option key={g} value={g}>{g}</option>)}
+                {NORMAL_GRADE_OPTIONS.map(g => <option key={g} value={g}>{g}</option>)}
               </select>
               {errors.grade && <p className="mt-1 text-xs text-red-500">{errors.grade}</p>}
             </div>
           </div>
-          <div>
-            <label className="block text-xs font-medium text-zinc-600 dark:text-zinc-400 mb-1">Semester (optional)</label>
-            <input
-              type="text"
-              value={semester}
-              onChange={e => setSemester(e.target.value)}
-              placeholder="e.g., Fall 2024"
-              className="w-full rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 px-3 py-2 text-sm"
-            />
-          </div>
+          <fieldset>
+            <legend className="block text-xs font-medium text-zinc-600 dark:text-zinc-400 mb-1">Semester</legend>
+            <div className="grid grid-cols-2 gap-3">
+              <label htmlFor={`${formId}-semester-season`} className="sr-only">Semester season</label>
+              <select
+                id={`${formId}-semester-season`}
+                value={semesterSeason}
+                onChange={e => setSemesterSeason(e.target.value as SemesterSeason)}
+                className="w-full rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 px-3 py-2 text-sm"
+                aria-label="Semester season"
+              >
+                {SEMESTER_SEASONS.map(season => <option key={season} value={season}>{season}</option>)}
+              </select>
+              <label htmlFor={`${formId}-semester-year`} className="sr-only">Semester year</label>
+              <input
+                id={`${formId}-semester-year`}
+                type="text"
+                inputMode="numeric"
+                maxLength={4}
+                value={semesterYear}
+                onChange={e => setSemesterYear(e.target.value.replace(/\D/g, "").slice(0, 4))}
+                placeholder="Year"
+                className={cn(
+                  "w-full rounded-lg border bg-white dark:bg-zinc-800 px-3 py-2 text-sm",
+                  errors.semester ? "border-red-500 dark:border-red-500" : "border-zinc-300 dark:border-zinc-700"
+                )}
+                aria-label="Semester year"
+                aria-invalid={!!errors.semester}
+              />
+            </div>
+            {errors.semester && <p className="mt-1 text-xs text-red-500">{errors.semester}</p>}
+          </fieldset>
           <div className="flex items-center justify-end gap-2 pt-2">
-            <Button type="button" variant="ghost" size="sm" onClick={onClose} disabled={isSubmitting}>Cancel</Button>
+            <Button type="button" variant="ghost" size="sm" onClick={handleClose} disabled={isSubmitting}>Cancel</Button>
             <Button type="submit" size="sm" loading={isSubmitting}>Add Course</Button>
           </div>
         </form>
@@ -228,7 +276,7 @@ export default function PreviousCoursesPanel({
       const stored = localStorage.getItem(storageKey);
       if (stored === "true" && !isCollapsed) onToggleCollapse();
     } catch {}
-  }, [storageKey]);
+  }, [storageKey, isCollapsed, onToggleCollapse]);
 
   useEffect(() => {
     if (!storageKey) return;

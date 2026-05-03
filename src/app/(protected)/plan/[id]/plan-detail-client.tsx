@@ -560,7 +560,7 @@ export default function PlanDetailClient({
                             prev === school.name ? null : school.name,
                           )
                         }
-                        className={`inline-flex max-w-full items-center gap-2 rounded-md border px-2.5 py-1 text-[13px] font-semibold transition-[background-color,border-color,color,box-shadow,transform] duration-200 hover:-translate-y-px ${
+                        className={`inline-flex max-w-full items-center gap-1.5 rounded-md border px-2 py-1 text-[12px] font-semibold transition-[background-color,border-color,color,box-shadow,transform] duration-200 hover:-translate-y-px ${
                           selectedSchool === school.name
                             ? "border-zinc-900 bg-zinc-50 text-zinc-900 shadow-[0_1px_2px_rgba(24,24,27,0.06)] dark:border-white dark:bg-zinc-900 dark:text-white"
                             : "border-zinc-200 bg-white text-zinc-700 hover:border-zinc-300 hover:bg-zinc-50 hover:shadow-[0_8px_18px_rgba(24,24,27,0.07)] dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-200 dark:hover:border-zinc-700 dark:hover:bg-zinc-900"
@@ -568,7 +568,7 @@ export default function PlanDetailClient({
                         data-testid={`plan-header-school-${school.name}`}
                       >
                         <span className="truncate">{school.name}</span>
-                        <span className="rounded-md bg-zinc-100 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-zinc-500 dark:bg-zinc-800 dark:text-zinc-300">
+                        <span className="rounded-md bg-zinc-100 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-zinc-500 dark:bg-zinc-800 dark:text-zinc-300">
                           {school.fitLabel}
                         </span>
                       </button>
@@ -578,7 +578,7 @@ export default function PlanDetailClient({
               )}
               <button
                 onClick={() => setIsEditingTargets((p) => !p)}
-                className="inline-flex items-center gap-1 rounded-md border border-dashed border-zinc-300 px-2.5 py-1 text-[13px] font-medium text-zinc-500 transition-colors hover:border-zinc-400 hover:bg-white hover:text-zinc-900 dark:border-zinc-700 dark:text-zinc-400 dark:hover:border-zinc-600 dark:hover:bg-zinc-900 dark:hover:text-white cursor-pointer"
+                className="inline-flex items-center gap-1 rounded-md border border-dashed border-zinc-300 px-2 py-1 text-[12px] font-medium text-zinc-500 transition-colors hover:border-zinc-400 hover:bg-white hover:text-zinc-900 dark:border-zinc-700 dark:text-zinc-400 dark:hover:border-zinc-600 dark:hover:bg-zinc-900 dark:hover:text-white cursor-pointer"
                 data-testid="edit-targets-button"
               >
                 <svg
@@ -601,7 +601,7 @@ export default function PlanDetailClient({
             {/* Target editing panel */}
             {isEditingTargets && (
               <div className="mt-3 p-3 rounded-lg border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-900">
-                <p className="text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-2">
+                <p className="text-[11px] font-medium text-zinc-500 dark:text-zinc-400 mb-2">
                   Select target universities (first = primary):
                 </p>
                 <div className="flex flex-wrap gap-1.5 max-h-40 overflow-y-auto">
@@ -611,7 +611,7 @@ export default function PlanDetailClient({
                       <button
                         key={uni.id}
                         onClick={() => handleToggleTarget(uni.id)}
-                        className={`inline-flex items-center gap-1 rounded-md border px-2.5 py-1 text-xs font-medium transition-colors cursor-pointer ${
+                        className={`inline-flex items-center gap-1 rounded-md border px-2 py-1 text-[11px] font-medium transition-colors cursor-pointer ${
                           isSelected
                             ? "border-zinc-900 bg-zinc-50 text-zinc-900 dark:border-white dark:bg-zinc-900 dark:text-white"
                             : "border-zinc-200 bg-white text-zinc-600 hover:border-zinc-300 hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:border-zinc-600 dark:hover:bg-zinc-700"
@@ -641,13 +641,13 @@ export default function PlanDetailClient({
                   <button
                     onClick={handleSaveTargets}
                     disabled={isSavingTargets}
-                    className="inline-flex h-8 items-center rounded-md border border-zinc-900 bg-zinc-900 px-3 text-xs font-semibold text-white transition-[background-color,box-shadow,transform] hover:-translate-y-px hover:bg-zinc-800 disabled:translate-y-0 disabled:opacity-50 dark:border-white dark:bg-white dark:text-zinc-950 dark:hover:bg-zinc-200 cursor-pointer"
+                    className="inline-flex h-8 items-center rounded-md border border-zinc-900 bg-zinc-900 px-3 text-[11px] font-semibold text-white transition-[background-color,box-shadow,transform] hover:-translate-y-px hover:bg-zinc-800 disabled:translate-y-0 disabled:opacity-50 dark:border-white dark:bg-white dark:text-zinc-950 dark:hover:bg-zinc-200 cursor-pointer"
                   >
                     {isSavingTargets ? "Saving..." : "Save targets"}
                   </button>
                   <button
                     onClick={() => setIsEditingTargets(false)}
-                    className="inline-flex h-8 items-center rounded-md border border-transparent px-3 text-xs font-semibold text-zinc-600 transition-colors hover:border-zinc-200 hover:bg-white hover:text-zinc-900 dark:text-zinc-300 dark:hover:border-zinc-800 dark:hover:bg-zinc-900 dark:hover:text-white cursor-pointer"
+                    className="inline-flex h-8 items-center rounded-md border border-transparent px-3 text-[11px] font-semibold text-zinc-600 transition-colors hover:border-zinc-200 hover:bg-white hover:text-zinc-900 dark:text-zinc-300 dark:hover:border-zinc-800 dark:hover:bg-zinc-900 dark:hover:text-white cursor-pointer"
                   >
                     Cancel
                   </button>

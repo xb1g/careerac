@@ -3,6 +3,15 @@
 import { useCallback, useEffect, useRef, useState, useMemo } from "react";
 import type { TranscriptData, TranscriptCourse } from "@/types/transcript";
 import { createClient } from "@/utils/supabase/client";
+import {
+  formatSemesterLabel,
+  getDefaultSemesterYear,
+  isValidSemesterYear,
+  NORMAL_GRADE_OPTIONS,
+  normalizeNormalGrade,
+  SEMESTER_SEASONS,
+  type SemesterSeason,
+} from "@/utils/course-input-rules";
 
 interface TranscriptUploadProps {
   onTranscriptParsed: (data: TranscriptData, transcriptId: string) => void;
@@ -245,9 +254,13 @@ export default function TranscriptUpload({
     code: "",
     title: "",
     units: "",
-    grade: "",
-    semester: "",
+    grade: "A",
   });
+  const [manualSemesterSeason, setManualSemesterSeason] =
+    useState<SemesterSeason>("Fall");
+  const [manualSemesterYear, setManualSemesterYear] = useState(
+    getDefaultSemesterYear,
+  );
   const [communityColleges, setCommunityColleges] = useState<
     { id: string; name: string; abbreviation: string | null }[]
   >([]);
@@ -347,6 +360,7 @@ export default function TranscriptUpload({
     isCourseListOpen && courseHighlight >= 0
       ? `course-code-option-${courseHighlight}`
       : undefined;
+  const isManualSemesterValid = isValidSemesterYear(manualSemesterYear);
 
   const handleAddManualCourse = () => {
     if (
@@ -357,13 +371,8 @@ export default function TranscriptUpload({
     )
       return;
 
-    const grade = manualCourse.grade.toUpperCase();
-    const status: TranscriptCourse["status"] =
-      grade === "IP" || grade === "I"
-        ? "in_progress"
-        : grade === "W" || grade === "EW"
-          ? "withdrawn"
-          : "completed";
+    const grade = normalizeNormalGrade(manualCourse.grade);
+    if (!grade || !isManualSemesterValid) return;
 
     setManualCourses((prev) => [
       ...prev,
@@ -372,16 +381,15 @@ export default function TranscriptUpload({
         title: manualCourse.title,
         units: parseFloat(manualCourse.units),
         grade,
-        status,
-        semester: manualCourse.semester || "Unknown",
+        status: "completed",
+        semester: formatSemesterLabel(manualSemesterSeason, manualSemesterYear),
       },
     ]);
     setManualCourse({
       code: "",
       title: "",
       units: "",
-      grade: "",
-      semester: "",
+      grade: "A",
     });
   };
 
@@ -656,23 +664,49 @@ export default function TranscriptUpload({
             placeholder="Units"
             className="w-full sm:w-24 shrink-0 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
           />
-          <input
-            type="text"
+          <select
             value={manualCourse.grade}
             onChange={(e) =>
               setManualCourse((p) => ({ ...p, grade: e.target.value }))
             }
-            placeholder="Grade"
+            aria-label="Grade"
             className="w-full sm:w-24 shrink-0 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
-          />
+          >
+            {NORMAL_GRADE_OPTIONS.map((grade) => (
+              <option key={grade} value={grade}>
+                {grade}
+              </option>
+            ))}
+          </select>
+          <select
+            value={manualSemesterSeason}
+            onChange={(e) =>
+              setManualSemesterSeason(e.target.value as SemesterSeason)
+            }
+            aria-label="Semester season"
+            className="w-full sm:w-28 shrink-0 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
+          >
+            {SEMESTER_SEASONS.map((season) => (
+              <option key={season} value={season}>
+                {season}
+              </option>
+            ))}
+          </select>
           <input
             type="text"
-            value={manualCourse.semester}
+            inputMode="numeric"
+            maxLength={4}
+            value={manualSemesterYear}
             onChange={(e) =>
-              setManualCourse((p) => ({ ...p, semester: e.target.value }))
+              setManualSemesterYear(e.target.value.replace(/\D/g, "").slice(0, 4))
             }
-            placeholder="Semester"
-            className="w-full sm:w-32 shrink-0 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
+            aria-label="Semester year"
+            placeholder="Year"
+            className={`w-full sm:w-24 shrink-0 rounded-lg border bg-white dark:bg-zinc-900 px-3 py-2 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/30 ${
+              isManualSemesterValid
+                ? "border-zinc-300 dark:border-zinc-700"
+                : "border-red-300 dark:border-red-700"
+            }`}
           />
           <button
             onClick={handleAddManualCourse}
@@ -680,7 +714,8 @@ export default function TranscriptUpload({
               !manualCourse.code ||
               !manualCourse.title ||
               !manualCourse.units ||
-              !manualCourse.grade
+              !manualCourse.grade ||
+              !isManualSemesterValid
             }
             className="w-full sm:w-auto shrink-0 whitespace-nowrap rounded-lg bg-blue-600 text-white text-sm font-medium px-4 py-2 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >

@@ -1,6 +1,16 @@
 "use client";
 
 import { useId, useState } from "react";
+import {
+  formatSemesterLabel,
+  getDefaultSemesterYear,
+  isValidSemesterYear,
+  NORMAL_GRADE_OPTIONS,
+  normalizeNormalGrade,
+  normalizeSemesterLabel,
+  SEMESTER_SEASONS,
+  type SemesterSeason,
+} from "@/utils/course-input-rules";
 
 export interface CourseFormData {
   course_code: string;
@@ -19,27 +29,55 @@ interface CourseFormProps {
   submitLabel: string;
 }
 
-const GRADE_OPTIONS = ["A+", "A", "A-", "B+", "B", "B-", "C+", "C", "C-", "D+", "D", "D-", "F", "P", "NP", "W", "CR", "NC", ""];
-
 function createDefaultFormData(): CourseFormData {
   return {
     course_code: "",
     course_title: "",
     units: 3,
-    grade: "",
+    grade: "A",
     term: "",
     status: "completed",
     notes: "",
   };
 }
 
+function normalizeInitialFormData(initialData?: CourseFormData): CourseFormData {
+  const data = initialData ?? createDefaultFormData();
+  return {
+    ...data,
+    grade: normalizeNormalGrade(data.grade) ?? "A",
+  };
+}
+
+function getInitialTermParts(term: string): {
+  season: SemesterSeason;
+  year: string;
+} {
+  const normalized = normalizeSemesterLabel(term);
+  if (!normalized) {
+    return { season: "Fall", year: getDefaultSemesterYear() };
+  }
+
+  const [season, year] = normalized.split(" ") as [SemesterSeason, string];
+  return { season, year };
+}
+
 export default function CourseForm({ initialData, onSubmit, onCancel, submitLabel }: CourseFormProps) {
-  const [form, setForm] = useState<CourseFormData>(initialData ?? createDefaultFormData());
+  const [form, setForm] = useState<CourseFormData>(() => normalizeInitialFormData(initialData));
+  const initialTerm = getInitialTermParts(initialData?.term ?? "");
+  const [termSeason, setTermSeason] = useState<SemesterSeason>(initialTerm.season);
+  const [termYear, setTermYear] = useState(initialTerm.year);
   const formId = useId();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(form);
+    if (!isValidSemesterYear(termYear)) return;
+
+    onSubmit({
+      ...form,
+      grade: normalizeNormalGrade(form.grade) ?? "A",
+      term: formatSemesterLabel(termSeason, termYear),
+    });
   };
 
   const inputClass =
@@ -99,8 +137,7 @@ export default function CourseForm({ initialData, onSubmit, onCancel, submitLabe
             value={form.grade}
             onChange={(e) => setForm({ ...form, grade: e.target.value })}
           >
-            <option value="">-- No grade --</option>
-            {GRADE_OPTIONS.filter(Boolean).map((g) => (
+            {NORMAL_GRADE_OPTIONS.map((g) => (
               <option key={g} value={g}>
                 {g}
               </option>
@@ -108,16 +145,37 @@ export default function CourseForm({ initialData, onSubmit, onCancel, submitLabe
           </select>
         </div>
         <div>
-          <label htmlFor={`${formId}-term`} className="mb-1 block text-xs font-medium text-zinc-500 dark:text-zinc-400">
+          <span className="mb-1 block text-xs font-medium text-zinc-500 dark:text-zinc-400">
             Term
-          </label>
-          <input
-            id={`${formId}-term`}
-            className={inputClass}
-            value={form.term}
-            onChange={(e) => setForm({ ...form, term: e.target.value })}
-            placeholder="e.g. Fall 2024"
-          />
+          </span>
+          <div className="grid grid-cols-2 gap-3">
+            <select
+              id={`${formId}-term-season`}
+              className={inputClass}
+              value={termSeason}
+              onChange={(e) => setTermSeason(e.target.value as SemesterSeason)}
+              aria-label="Term season"
+            >
+              {SEMESTER_SEASONS.map((season) => (
+                <option key={season} value={season}>
+                  {season}
+                </option>
+              ))}
+            </select>
+            <input
+              id={`${formId}-term-year`}
+              className={inputClass}
+              type="text"
+              inputMode="numeric"
+              maxLength={4}
+              required
+              value={termYear}
+              onChange={(e) => setTermYear(e.target.value.replace(/\D/g, "").slice(0, 4))}
+              placeholder="Year"
+              aria-label="Term year"
+              aria-invalid={!isValidSemesterYear(termYear)}
+            />
+          </div>
         </div>
         <div>
           <label htmlFor={`${formId}-status`} className="mb-1 block text-xs font-medium text-zinc-500 dark:text-zinc-400">

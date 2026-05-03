@@ -81,30 +81,30 @@ export default function CourseCard({ course, onClick, coveredSchoolCount = 0 }: 
       {/* Top row: dot + code + units */}
       <div className="flex min-w-0 items-center gap-2">
         <span className={`w-2 h-2 rounded-full shrink-0 ${statusDot[status]}`} aria-hidden="true" />
-        <span className="truncate text-[13px] font-bold text-zinc-900 dark:text-zinc-100 tracking-wide" data-testid="course-code">
+        <span className="truncate text-[12px] font-bold text-zinc-900 dark:text-zinc-100 tracking-wide" data-testid="course-code">
           {course.code}
         </span>
         {status !== "planned" && (
           <span
-            className={`shrink-0 rounded-full px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${statusBadge[status]}`}
+            className={`shrink-0 rounded-full px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide ${statusBadge[status]}`}
             data-testid="course-status-badge"
           >
             {statusLabel[status]}
           </span>
         )}
-        <span className="ml-auto text-[11px] font-semibold text-zinc-400 dark:text-zinc-500 tabular-nums" data-testid="course-units">
+        <span className="ml-auto text-[10px] font-semibold text-zinc-400 dark:text-zinc-500 tabular-nums" data-testid="course-units">
           {course.units}u
         </span>
       </div>
 
       {/* Title */}
-      <p className="text-[13px] leading-snug text-zinc-600 dark:text-zinc-400 mt-1 line-clamp-2" data-testid="course-title">
+      <p className="text-[12px] leading-snug text-zinc-600 dark:text-zinc-400 mt-1 line-clamp-2" data-testid="course-title">
         {course.title}
       </p>
 
       {/* Transfer equivalency — compact */}
       {course.transferEquivalency && (
-        <p className="text-[11px] text-blue-600 dark:text-blue-400 mt-1.5 truncate" data-testid="course-equivalency">
+        <p className="text-[10px] text-blue-600 dark:text-blue-400 mt-1.5 truncate" data-testid="course-equivalency">
           → {course.transferEquivalency}
         </p>
       )}
@@ -115,7 +115,7 @@ export default function CourseCard({ course, onClick, coveredSchoolCount = 0 }: 
           {course.requiredBy!.map((school) => (
             <span
               key={school}
-              className="rounded-full bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 text-[10px] font-medium text-zinc-500 dark:text-zinc-400"
+              className="rounded-full bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 text-[9px] font-medium text-zinc-500 dark:text-zinc-400"
             >
               {school}
             </span>
@@ -125,7 +125,7 @@ export default function CourseCard({ course, onClick, coveredSchoolCount = 0 }: 
 
       {/* Prerequisites — inline, subtle */}
       {course.prerequisites && course.prerequisites.length > 0 && (
-        <p className="text-[11px] text-amber-600 dark:text-amber-400 mt-1.5 truncate" data-testid="course-prerequisites">
+        <p className="text-[10px] text-amber-600 dark:text-amber-400 mt-1.5 truncate" data-testid="course-prerequisites">
           Prereq: {course.prerequisites.join(", ")}
         </p>
       )}

@@ -1,6 +1,12 @@
 import { createClient } from "@/utils/supabase/server";
 import { syncTranscriptToUserCourses } from "@/utils/sync-transcript-courses";
 import type { Database } from "@/types/database";
+import type { TranscriptCourse } from "@/types/transcript";
+import {
+  NORMAL_GRADE_OPTIONS,
+  normalizeNormalGrade,
+  normalizeSemesterLabel,
+} from "@/utils/course-input-rules";
 
 export async function POST(req: Request) {
   try {
@@ -19,6 +25,31 @@ export async function POST(req: Request) {
 
     if (!parsed_data || !file_name) {
       return Response.json({ error: "Missing required fields" }, { status: 400 });
+    }
+
+    const courses = Array.isArray(parsed_data?.courses)
+      ? (parsed_data.courses as TranscriptCourse[])
+      : [];
+    for (const course of courses) {
+      const grade = normalizeNormalGrade(course.grade);
+      if (!grade) {
+        return Response.json(
+          { error: `Grade must be one of: ${NORMAL_GRADE_OPTIONS.join(", ")}` },
+          { status: 400 },
+        );
+      }
+
+      const semester = normalizeSemesterLabel(course.semester);
+      if (!semester) {
+        return Response.json(
+          { error: "Semester must use the format Fall YYYY or Spring YYYY" },
+          { status: 400 },
+        );
+      }
+
+      course.grade = grade;
+      course.semester = semester;
+      course.status = "completed";
     }
 
     const insertPayload: Database["public"]["Tables"]["transcripts"]["Insert"] = {
@@ -46,7 +77,6 @@ export async function POST(req: Request) {
     }
 
     // After transcript is saved, sync courses to user_courses (best-effort)
-    const courses = parsed_data?.courses ?? [];
     if (courses.length > 0) {
       try {
         const syncResult = await syncTranscriptToUserCourses(supabase, user.id, courses);

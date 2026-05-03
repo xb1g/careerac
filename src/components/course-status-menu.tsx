@@ -66,7 +66,7 @@ export default function CourseStatusMenu({
         <button
           key={opt.value}
           onClick={() => { onSelect(opt.value); onClose(); }}
-          className={`w-full flex items-center gap-2 px-3 py-1.5 text-left text-[13px] transition-colors cursor-pointer hover:bg-zinc-100 dark:hover:bg-zinc-800 ${
+          className={`w-full flex items-center gap-2 px-3 py-1.5 text-left text-[12px] transition-colors cursor-pointer hover:bg-zinc-100 dark:hover:bg-zinc-800 ${
             opt.value === currentStatus ? "font-semibold text-zinc-900 dark:text-zinc-100" : "text-zinc-600 dark:text-zinc-400"
           }`}
           role="option"
