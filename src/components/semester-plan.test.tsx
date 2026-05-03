@@ -130,6 +130,14 @@ describe("SemesterPlan", () => {
     expect(handleClick).toHaveBeenCalled();
   });
 
+  it("shows pointer cursor for clickable dashboard courses", () => {
+    const handleClick = vi.fn();
+    renderSemesterPlan(mockPlan, handleClick);
+
+    const courseButton = screen.getByTestId("course-card-CS 101").closest("button");
+    expect(courseButton).toHaveClass("cursor-pointer");
+  });
+
   it("renders courses with their status badges", () => {
     const planWithStatuses: TransferPlan = {
       ...mockPlan,

@@ -112,7 +112,7 @@ function SemesterCourseItem({
   return (
     <button
       type="button"
-      className="block w-full rounded-xl text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-zinc-950"
+      className="block w-full cursor-pointer rounded-xl text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-zinc-950"
       onClick={(event: MouseEvent<HTMLButtonElement>) => {
         onCourseClick(courseWithSemester, course.status || "planned", {
           x: event.clientX,
