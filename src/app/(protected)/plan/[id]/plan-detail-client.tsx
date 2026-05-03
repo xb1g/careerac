@@ -7,7 +7,7 @@ import { RecoveryContext } from "@/components/chat";
 import ChatWidget from "@/components/chat-widget";
 import ComparisonDashboard from "@/components/comparison-dashboard";
 import { DeletePlanButton } from "@/components/delete-plan-button";
-import CheckpointTimeline, { CheckpointTimelineHandle } from "@/components/checkpoint-timeline";
+import CheckpointTimeline from "@/components/checkpoint-timeline";
 import { RecoveryAlternative } from "@/components/recovery-message";
 import SemesterPlan from "@/components/semester-plan";
 import CourseStatusMenu from "@/components/course-status-menu";
@@ -181,7 +181,6 @@ export default function PlanDetailClient({
   const [selectedSchool, setSelectedSchool] = useState<string | null>(null);
   const [universities, setUniversities] = useState<Institution[]>([]);
   const [selectedTargetIds, setSelectedTargetIds] = useState<string[]>([]);
-  const [targetsChanged, setTargetsChanged] = useState(false);
   const [isSavingTargets, setIsSavingTargets] = useState(false);
   const [regeneratePrompt, setRegeneratePrompt] = useState<string | null>(null);
 
@@ -223,7 +222,6 @@ export default function PlanDetailClient({
         : [...prev, id];
       return next;
     });
-    setTargetsChanged(true);
   }, []);
 
   const handleSaveTargets = useCallback(async () => {
@@ -255,7 +253,6 @@ export default function PlanDetailClient({
         .map((u) => u!.abbreviation ?? u!.name);
 
       setIsEditingTargets(false);
-      setTargetsChanged(false);
       setRegeneratePrompt(
         `My target schools have changed to: ${selectedNames.join(", ")}. Please regenerate my transfer plan using the updated articulation data for these schools.`,
       );
@@ -264,11 +261,7 @@ export default function PlanDetailClient({
     } finally {
       setIsSavingTargets(false);
     }
-  }, [plan.id, selectedTargetIds]);
-
-  const handleDismissRegenBanner = useCallback(() => {
-    setTargetsChanged(false);
-  }, []);
+  }, [plan.id, selectedTargetIds, universities]);
 
   // Save plan to database - called via Chat's onSavePlan callback
   const handleSavePlan = useCallback(
@@ -558,34 +551,26 @@ export default function PlanDetailClient({
                   data-testid="plan-header-schools"
                 >
                   {headerSchools.map((school) => (
-                    <li
-                      key={school.name}
-                      role="button"
-                      tabIndex={0}
-                      onClick={() =>
-                        setSelectedSchool((prev) =>
-                          prev === school.name ? null : school.name,
-                        )
-                      }
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter" || e.key === " ") {
-                          e.preventDefault();
+                    <li key={school.name} className="max-w-full">
+                      <button
+                        type="button"
+                        onClick={() =>
                           setSelectedSchool((prev) =>
                             prev === school.name ? null : school.name,
-                          );
+                          )
                         }
-                      }}
-                      className={`inline-flex max-w-full items-center gap-2 rounded-md border px-2.5 py-1 text-[13px] font-semibold transition-[background-color,border-color,color,box-shadow,transform] duration-200 cursor-pointer hover:-translate-y-px ${
-                        selectedSchool === school.name
-                          ? "border-zinc-900 bg-zinc-50 text-zinc-900 shadow-[0_1px_2px_rgba(24,24,27,0.06)] dark:border-white dark:bg-zinc-900 dark:text-white"
-                          : "border-zinc-200 bg-white text-zinc-700 hover:border-zinc-300 hover:bg-zinc-50 hover:shadow-[0_8px_18px_rgba(24,24,27,0.07)] dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-200 dark:hover:border-zinc-700 dark:hover:bg-zinc-900"
-                      }`}
-                      data-testid={`plan-header-school-${school.name}`}
-                    >
-                      <span className="truncate">{school.name}</span>
-                      <span className="rounded-md bg-zinc-100 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-zinc-500 dark:bg-zinc-800 dark:text-zinc-300">
-                        {school.fitLabel}
-                      </span>
+                        className={`inline-flex max-w-full items-center gap-2 rounded-md border px-2.5 py-1 text-[13px] font-semibold transition-[background-color,border-color,color,box-shadow,transform] duration-200 hover:-translate-y-px ${
+                          selectedSchool === school.name
+                            ? "border-zinc-900 bg-zinc-50 text-zinc-900 shadow-[0_1px_2px_rgba(24,24,27,0.06)] dark:border-white dark:bg-zinc-900 dark:text-white"
+                            : "border-zinc-200 bg-white text-zinc-700 hover:border-zinc-300 hover:bg-zinc-50 hover:shadow-[0_8px_18px_rgba(24,24,27,0.07)] dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-200 dark:hover:border-zinc-700 dark:hover:bg-zinc-900"
+                        }`}
+                        data-testid={`plan-header-school-${school.name}`}
+                      >
+                        <span className="truncate">{school.name}</span>
+                        <span className="rounded-md bg-zinc-100 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-zinc-500 dark:bg-zinc-800 dark:text-zinc-300">
+                          {school.fitLabel}
+                        </span>
+                      </button>
                     </li>
                   ))}
                 </ul>

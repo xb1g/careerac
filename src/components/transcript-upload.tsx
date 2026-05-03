@@ -239,6 +239,7 @@ export default function TranscriptUpload({
     }
   };
 
+  const [manualInstitution, setManualInstitution] = useState("");
   const [manualCourse, setManualCourse] = useState({
     code: "",
     title: "",

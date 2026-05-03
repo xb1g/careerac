@@ -24,10 +24,36 @@ const cardBg: Record<CourseStatus, string> = {
   failed: "bg-rose-50/40 dark:bg-rose-500/5 border-rose-200/50 dark:border-rose-800/30",
 };
 
+const statusAccent: Record<CourseStatus, string> = {
+  planned: "",
+  completed: "border-l-4 border-l-emerald-500",
+  in_progress: "border-l-4 border-l-blue-500",
+  cancelled: "border-l-4 border-l-zinc-400 text-zinc-500 dark:text-zinc-400 opacity-80",
+  waitlisted: "border-l-4 border-l-amber-500",
+  failed: "border-l-4 border-l-rose-500 text-rose-900 dark:text-rose-100 opacity-80",
+};
+
+const statusLabel: Record<CourseStatus, string> = {
+  planned: "planned",
+  completed: "completed",
+  in_progress: "in progress",
+  cancelled: "cancelled",
+  waitlisted: "waitlisted",
+  failed: "failed",
+};
+
+const statusBadge: Record<CourseStatus, string> = {
+  planned: "",
+  completed: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300",
+  in_progress: "bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300",
+  cancelled: "bg-zinc-100 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400",
+  waitlisted: "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300",
+  failed: "bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-300",
+};
+
 export default function CourseCard({ course, onClick, coveredSchoolCount = 0 }: CourseCardProps) {
   const status = course.status || "planned";
   const isInteractive = !!onClick;
-  const isDimmed = status === "cancelled" || status === "failed";
 
   const isSchoolSpecific =
     coveredSchoolCount > 1 &&
@@ -37,9 +63,9 @@ export default function CourseCard({ course, onClick, coveredSchoolCount = 0 }: 
 
   return (
     <div
-      className={`group rounded-xl border ${cardBg[status]} px-2.5 py-2 transition-all duration-150 ${
+      className={`group rounded-xl border ${cardBg[status]} ${statusAccent[status]} px-2.5 py-2 transition-all duration-150 ${
         isInteractive ? "cursor-pointer hover:-translate-y-0.5 hover:shadow-md" : ""
-      } ${isDimmed ? "opacity-50" : ""}`}
+      }`}
       role={isInteractive ? "button" : "article"}
       tabIndex={isInteractive ? 0 : undefined}
       aria-label={`${course.code}: ${course.title}${status !== "planned" ? ` - ${status.replace("_", " ")}` : ""}`}
@@ -53,11 +79,19 @@ export default function CourseCard({ course, onClick, coveredSchoolCount = 0 }: 
       data-testid={`course-card-${course.code}`}
     >
       {/* Top row: dot + code + units */}
-      <div className="flex items-center gap-2">
+      <div className="flex min-w-0 items-center gap-2">
         <span className={`w-2 h-2 rounded-full shrink-0 ${statusDot[status]}`} aria-hidden="true" />
-        <span className="text-[13px] font-bold text-zinc-900 dark:text-zinc-100 tracking-wide" data-testid="course-code">
+        <span className="truncate text-[13px] font-bold text-zinc-900 dark:text-zinc-100 tracking-wide" data-testid="course-code">
           {course.code}
         </span>
+        {status !== "planned" && (
+          <span
+            className={`shrink-0 rounded-full px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${statusBadge[status]}`}
+            data-testid="course-status-badge"
+          >
+            {statusLabel[status]}
+          </span>
+        )}
         <span className="ml-auto text-[11px] font-semibold text-zinc-400 dark:text-zinc-500 tabular-nums" data-testid="course-units">
           {course.units}u
         </span>

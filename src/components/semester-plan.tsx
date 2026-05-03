@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { type MouseEvent, useEffect, useRef, useState } from "react";
 import {
   TransferPlan,
   NoDataResponse,
@@ -86,6 +86,45 @@ function CompletedCourseList({ courses }: { courses: TranscriptCourse[] }) {
   );
 }
 
+function SemesterCourseItem({
+  course,
+  semesterNumber,
+  coveredSchoolCount,
+  onCourseClick,
+}: {
+  course: PlanCourse;
+  semesterNumber: number;
+  coveredSchoolCount: number;
+  onCourseClick?: SemesterPlanProps["onCourseClick"];
+}) {
+  const courseWithSemester = { ...course, semesterNumber };
+  const card = (
+    <CourseCard
+      course={courseWithSemester}
+      coveredSchoolCount={coveredSchoolCount}
+    />
+  );
+
+  if (!onCourseClick) {
+    return card;
+  }
+
+  return (
+    <button
+      type="button"
+      className="block w-full rounded-xl text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-zinc-950"
+      onClick={(event: MouseEvent<HTMLButtonElement>) => {
+        onCourseClick(courseWithSemester, course.status || "planned", {
+          x: event.clientX,
+          y: event.clientY,
+        });
+      }}
+    >
+      {card}
+    </button>
+  );
+}
+
 function SemesterTimeline({
   plan,
   onCourseClick,
@@ -149,26 +188,13 @@ function SemesterTimeline({
 
               <div className="flex min-h-0 flex-col gap-3 p-3" data-testid="semester-column-body">
                 {semester.courses.map((course, idx) => (
-                  <div
+                  <SemesterCourseItem
                     key={`${course.code}-${idx}`}
-                    onClick={(event) => {
-                      if (onCourseClick) {
-                        onCourseClick(
-                          { ...course, semesterNumber: semester.number },
-                          course.status || "planned",
-                          { x: event.clientX, y: event.clientY },
-                        );
-                      }
-                    }}
-                  >
-                    <CourseCard
-                      course={{
-                        ...course,
-                        semesterNumber: semester.number,
-                      }}
-                      coveredSchoolCount={plan.coveredSchools?.length ?? 0}
-                    />
-                  </div>
+                    course={course}
+                    semesterNumber={semester.number}
+                    coveredSchoolCount={plan.coveredSchools?.length ?? 0}
+                    onCourseClick={onCourseClick}
+                  />
                 ))}
               </div>
             </section>
@@ -341,26 +367,13 @@ function SemesterGrid({
                     data-testid="semester-column-body"
                   >
                     {semester.courses.map((course, idx) => (
-                      <div
+                      <SemesterCourseItem
                         key={`${course.code}-${idx}`}
-                        onClick={(e) => {
-                          if (onCourseClick) {
-                            onCourseClick(
-                              { ...course, semesterNumber: semester.number },
-                              course.status || "planned",
-                              { x: e.clientX, y: e.clientY },
-                            );
-                          }
-                        }}
-                      >
-                        <CourseCard
-                          course={{
-                            ...course,
-                            semesterNumber: semester.number,
-                          }}
-                          coveredSchoolCount={plan.coveredSchools?.length ?? 0}
-                        />
-                      </div>
+                        course={course}
+                        semesterNumber={semester.number}
+                        coveredSchoolCount={plan.coveredSchools?.length ?? 0}
+                        onCourseClick={onCourseClick}
+                      />
                     ))}
                   </div>
                 </section>
