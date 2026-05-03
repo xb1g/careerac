@@ -23,7 +23,7 @@ const navLinks = [
 
 function navLinkClass(active: boolean) {
   return cn(
-    "group relative inline-flex h-9 items-center justify-center rounded-lg border px-3 text-[12px] font-medium transition-[background-color,border-color,color,box-shadow,transform] duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900/15 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-white/20 dark:focus-visible:ring-offset-zinc-950",
+    "group relative inline-flex h-9 items-center justify-center rounded-lg border px-3 text-[13px] font-medium transition-[background-color,border-color,color,box-shadow,transform] duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900/15 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-white/20 dark:focus-visible:ring-offset-zinc-950",
     active
       ? "border-zinc-200 bg-white text-zinc-900 shadow-[0_1px_2px_rgba(24,24,27,0.06)] dark:border-zinc-700 dark:bg-zinc-900 dark:text-white"
       : "border-transparent text-zinc-500 hover:-translate-y-px hover:border-zinc-200/80 hover:bg-white/90 hover:text-zinc-900 hover:shadow-[0_8px_18px_rgba(24,24,27,0.07)] dark:text-zinc-400 dark:hover:border-zinc-800 dark:hover:bg-zinc-900/90 dark:hover:text-white",
@@ -32,7 +32,7 @@ function navLinkClass(active: boolean) {
 
 function mobileNavLinkClass(active: boolean) {
   return cn(
-    "flex h-10 items-center rounded-lg border px-3 text-[13px] font-medium transition-[background-color,border-color,color] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900/15 dark:focus-visible:ring-white/20",
+    "flex h-10 items-center rounded-lg border px-3 text-sm font-medium transition-[background-color,border-color,color] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900/15 dark:focus-visible:ring-white/20",
     active
       ? "border-zinc-200 bg-white text-zinc-900 shadow-[0_1px_2px_rgba(24,24,27,0.06)] dark:border-zinc-700 dark:bg-zinc-900 dark:text-white"
       : "border-transparent text-zinc-500 hover:border-zinc-200 hover:bg-white hover:text-zinc-900 dark:text-zinc-400 dark:hover:border-zinc-800 dark:hover:bg-zinc-900 dark:hover:text-white",
@@ -94,7 +94,7 @@ export default function Header({ userEmail }: HeaderProps) {
           {/* Right side: user info, sign out, mobile menu button */}
           <div className="flex shrink-0 items-center gap-2">
             {userEmail && (
-              <span className="mr-1 hidden max-w-48 truncate rounded-lg border border-transparent px-2 text-[12px] font-medium text-zinc-500 dark:text-zinc-400 xl:inline">
+              <span className="mr-1 hidden max-w-48 truncate rounded-lg border border-transparent px-2 text-[13px] font-medium text-zinc-500 dark:text-zinc-400 xl:inline">
                 {userEmail}
               </span>
             )}
@@ -103,7 +103,7 @@ export default function Header({ userEmail }: HeaderProps) {
             <form action={signout} className="hidden lg:block">
               <button
                 type="submit"
-                className="inline-flex h-9 items-center rounded-lg border border-transparent px-3 text-[12px] font-medium text-zinc-500 transition-[background-color,border-color,color,box-shadow,transform] duration-200 ease-out hover:-translate-y-px hover:border-zinc-200 hover:bg-white hover:text-zinc-900 hover:shadow-[0_6px_14px_rgba(24,24,27,0.06)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900/15 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:text-zinc-400 dark:hover:border-zinc-800 dark:hover:bg-zinc-900 dark:hover:text-white dark:focus-visible:ring-white/20 dark:focus-visible:ring-offset-zinc-950 cursor-pointer"
+                className="inline-flex h-9 items-center rounded-lg border border-transparent px-3 text-[13px] font-medium text-zinc-500 transition-[background-color,border-color,color,box-shadow,transform] duration-200 ease-out hover:-translate-y-px hover:border-zinc-200 hover:bg-white hover:text-zinc-900 hover:shadow-[0_6px_14px_rgba(24,24,27,0.06)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900/15 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:text-zinc-400 dark:hover:border-zinc-800 dark:hover:bg-zinc-900 dark:hover:text-white dark:focus-visible:ring-white/20 dark:focus-visible:ring-offset-zinc-950 cursor-pointer"
               >
                 Sign Out
               </button>
@@ -146,14 +146,14 @@ export default function Header({ userEmail }: HeaderProps) {
                 </Link>
               ))}
               {userEmail && (
-                <span className="px-3 py-2 text-[13px] text-zinc-500 dark:text-zinc-400 lg:hidden break-all">
+                <span className="px-3 py-2 text-sm text-zinc-500 dark:text-zinc-400 lg:hidden break-all">
                   {userEmail}
                 </span>
               )}
               <form action={signout} className="mt-1 border-t border-zinc-100 pt-2 dark:border-zinc-800">
                 <button
                   type="submit"
-                  className="flex h-10 w-full items-center rounded-lg border border-transparent px-3 text-left text-[13px] font-medium text-zinc-500 transition-[background-color,border-color,color] hover:border-zinc-200 hover:bg-white hover:text-zinc-900 dark:text-zinc-400 dark:hover:border-zinc-800 dark:hover:bg-zinc-900 dark:hover:text-white"
+                  className="flex h-10 w-full items-center rounded-lg border border-transparent px-3 text-left text-sm font-medium text-zinc-500 transition-[background-color,border-color,color] hover:border-zinc-200 hover:bg-white hover:text-zinc-900 dark:text-zinc-400 dark:hover:border-zinc-800 dark:hover:bg-zinc-900 dark:hover:text-white"
                 >
                   Sign Out
                 </button>

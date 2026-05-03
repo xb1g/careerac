@@ -90,24 +90,24 @@ export default function TranscriptEditor({
     <div className="p-4 border border-zinc-200 dark:border-zinc-700 rounded-xl bg-white dark:bg-zinc-900">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h3 className="text-sm font-semibold text-zinc-900 dark:text-white">
+          <h3 className="text-base font-semibold text-zinc-900 dark:text-white">
             Edit Transcript Courses
           </h3>
-          <p className="text-[13px] text-zinc-500 dark:text-zinc-400">
+          <p className="text-sm text-zinc-500 dark:text-zinc-400">
             {courses.length} courses · {totalUnits} total units
           </p>
         </div>
         <div className="flex gap-2">
           <button
             onClick={onCancel}
-            className="px-3 py-1.5 text-[13px] font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors cursor-pointer"
+            className="px-3 py-1.5 text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors cursor-pointer"
           >
             Cancel
           </button>
           <button
             onClick={handleSave}
             disabled={saving}
-            className="px-4 py-1.5 text-[13px] font-medium bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer transition-colors"
+            className="px-4 py-1.5 text-sm font-medium bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer transition-colors"
           >
             {saving ? "Saving..." : "Save"}
           </button>
@@ -115,13 +115,13 @@ export default function TranscriptEditor({
       </div>
 
       {error && (
-        <div className="mb-3 p-3 text-[13px] text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 rounded-lg">
+        <div className="mb-3 p-3 text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 rounded-lg">
           {error}
         </div>
       )}
 
       <div className="overflow-x-auto">
-        <table className="w-full min-w-[860px] text-[13px]">
+        <table className="w-full min-w-[860px] text-sm">
           <thead>
             <tr className="border-b border-zinc-200 dark:border-zinc-700">
               <th className="text-left py-2 pr-3 font-medium text-zinc-500 dark:text-zinc-400">Code</th>
@@ -139,21 +139,21 @@ export default function TranscriptEditor({
                 key={index}
                 className="border-b border-zinc-100 dark:border-zinc-800"
               >
-                <td className="py-1.5 pr-3">
+                <td className="min-w-[280px] py-1.5 pr-3">
                   <input
                     type="text"
                     value={course.code}
                     onChange={(e) => handleCourseChange(index, "code", e.target.value)}
-                    className="w-full px-2 py-1 text-zinc-900 dark:text-white bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-md text-[13px] focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    className="w-full px-2 py-1 text-zinc-900 dark:text-white bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
                     placeholder="CS 101"
                   />
                 </td>
-                <td className="min-w-[280px] py-1.5 pr-3">
+                <td className="py-1.5 pr-3">
                   <input
                     type="text"
                     value={course.title}
                     onChange={(e) => handleCourseChange(index, "title", e.target.value)}
-                    className="w-full px-2 py-1 text-zinc-900 dark:text-white bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-md text-[13px] focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    className="w-full px-2 py-1 text-zinc-900 dark:text-white bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
                     placeholder="Course title"
                   />
                 </td>
@@ -165,7 +165,7 @@ export default function TranscriptEditor({
                     step="0.5"
                     value={course.units}
                     onChange={(e) => handleCourseChange(index, "units", parseFloat(e.target.value) || 0)}
-                    className="w-16 px-2 py-1 text-zinc-900 dark:text-white bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-md text-[13px] focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    className="w-16 px-2 py-1 text-zinc-900 dark:text-white bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
                   />
                 </td>
                 <td className="py-1.5 pr-3">
@@ -173,7 +173,7 @@ export default function TranscriptEditor({
                     type="text"
                     value={course.grade}
                     onChange={(e) => handleCourseChange(index, "grade", e.target.value)}
-                    className="w-16 px-2 py-1 text-zinc-900 dark:text-white bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-md text-[13px] focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    className="w-16 px-2 py-1 text-zinc-900 dark:text-white bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
                     placeholder="A"
                   />
                 </td>
@@ -181,7 +181,7 @@ export default function TranscriptEditor({
                   <select
                     value={course.status}
                     onChange={(e) => handleCourseChange(index, "status", e.target.value)}
-                    className="w-28 px-2 py-1 text-zinc-900 dark:text-white bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-md text-[13px] focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    className="w-28 px-2 py-1 text-zinc-900 dark:text-white bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
                   >
                     {STATUS_OPTIONS.map((s) => (
                       <option key={s} value={s}>
@@ -195,7 +195,7 @@ export default function TranscriptEditor({
                     type="text"
                     value={course.semester}
                     onChange={(e) => handleCourseChange(index, "semester", e.target.value)}
-                    className="w-28 px-2 py-1 text-zinc-900 dark:text-white bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-md text-[13px] focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    className="w-28 px-2 py-1 text-zinc-900 dark:text-white bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
                     placeholder="Fall 2023"
                   />
                 </td>
@@ -218,7 +218,7 @@ export default function TranscriptEditor({
 
       <button
         onClick={handleAddCourse}
-        className="mt-3 flex items-center gap-1.5 px-3 py-1.5 text-[13px] font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors cursor-pointer"
+        className="mt-3 flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors cursor-pointer"
       >
         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />

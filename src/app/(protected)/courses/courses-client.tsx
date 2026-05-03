@@ -125,7 +125,7 @@ function Combobox({
           }
         }}
         placeholder={placeholder}
-        className="w-full rounded-lg border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 pl-3 pr-9 py-2.5 text-[13px] focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 disabled:cursor-not-allowed disabled:opacity-50"
+        className="w-full rounded-lg border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 pl-3 pr-9 py-2.5 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 disabled:cursor-not-allowed disabled:opacity-50"
       />
       {value ? (
         <button
@@ -170,7 +170,7 @@ function Combobox({
           className="absolute z-20 mt-1 max-h-64 w-full overflow-auto rounded-lg border border-gray-200 bg-white shadow-lg dark:border-zinc-700 dark:bg-zinc-900"
         >
           {filtered.length === 0 ? (
-            <li className="px-3 py-2 text-[13px] text-gray-500 dark:text-gray-400">
+            <li className="px-3 py-2 text-sm text-gray-500 dark:text-gray-400">
               {emptyText ?? "No matches"}
             </li>
           ) : (
@@ -185,7 +185,7 @@ function Combobox({
                   select(opt);
                 }}
                 onMouseEnter={() => setHighlight(index)}
-                className={`cursor-pointer px-3 py-2 text-[13px] text-gray-900 dark:text-gray-100 ${
+                className={`cursor-pointer px-3 py-2 text-sm text-gray-900 dark:text-gray-100 ${
                   highlight === index
                     ? "bg-blue-50 dark:bg-blue-900/30"
                     : "hover:bg-gray-50 dark:hover:bg-zinc-800"
@@ -313,10 +313,10 @@ export default function CoursesClient({
     <div className="min-h-screen bg-white pb-20 dark:bg-zinc-950">
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
         <div className="mb-8 sm:mb-10">
-          <h1 className="text-2xl font-extrabold tracking-tight text-gray-900 dark:text-white sm:text-3xl">
+          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-gray-900 dark:text-white">
             Course Browser
           </h1>
-          <p className="mt-2 text-[13px] text-gray-600 dark:text-gray-400 font-medium">
+          <p className="mt-2 text-[15px] text-gray-600 dark:text-gray-400 font-medium">
             Browse California Community College courses by college and subject
             area
           </p>
@@ -327,7 +327,7 @@ export default function CoursesClient({
           {/* College + Subject dropdowns */}
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
-              <span className="mb-2 block text-[13px] font-medium text-gray-700 dark:text-gray-300">
+              <span className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
                 College
               </span>
               <Combobox
@@ -341,7 +341,7 @@ export default function CoursesClient({
               />
             </div>
             <div>
-              <span className="mb-2 block text-[13px] font-medium text-gray-700 dark:text-gray-300">
+              <span className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
                 Subject
               </span>
               <Combobox
@@ -362,7 +362,7 @@ export default function CoursesClient({
           {/* Large search bar */}
           {selectedCollege && (
             <div>
-              <span className="mb-2 block text-[13px] font-medium text-gray-700 dark:text-gray-300">
+              <span className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
                 Search
               </span>
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
@@ -385,7 +385,7 @@ export default function CoursesClient({
                     value={liveQuery}
                     onChange={(e) => handleSearchChange(e.target.value)}
                     placeholder="Search by course code or title..."
-                    className="w-full rounded-xl border border-gray-300 bg-white py-3.5 pl-12 pr-10 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-zinc-700 dark:bg-zinc-900"
+                    className="w-full rounded-xl border border-gray-300 bg-white py-3.5 pl-12 pr-10 text-base focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-zinc-700 dark:bg-zinc-900"
                   />
                   {liveQuery && (
                     <button
@@ -411,7 +411,7 @@ export default function CoursesClient({
                 <div className="flex shrink-0 flex-wrap items-center gap-3">
                   <Badge
                     variant="default"
-                    className="px-3 py-2 text-[13px] font-medium"
+                    className="px-3 py-2 text-sm font-medium"
                   >
                     {totalCount.toLocaleString()}
                   </Badge>
@@ -420,7 +420,7 @@ export default function CoursesClient({
                       onClick={() =>
                         navigate({ college: "", subject: "", q: "", page: "1" })
                       }
-                      className="cursor-pointer text-[13px] font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                      className="cursor-pointer text-sm font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
                     >
                       Clear all
                     </button>
@@ -458,7 +458,7 @@ export default function CoursesClient({
             <section>
               {collegeName && (
                 <div className="mb-6 flex flex-wrap items-center gap-3 sm:gap-4">
-                  <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
                     {collegeName.name}
                   </h2>
                   {collegeName.abbreviation && (
@@ -474,18 +474,18 @@ export default function CoursesClient({
                     className="p-5 hover:shadow-md transition-shadow"
                   >
                     <div className="flex items-start justify-between gap-3 mb-2">
-                      <span className="font-mono text-[13px] font-semibold text-blue-600 dark:text-blue-400">
+                      <span className="font-mono text-sm font-semibold text-blue-600 dark:text-blue-400">
                         {course.code}
                       </span>
-                      <Badge variant="default" className="text-[11px]">
+                      <Badge variant="default" className="text-xs">
                         {course.units} {course.units === 1 ? "unit" : "units"}
                       </Badge>
                     </div>
-                    <h3 className="mb-1 text-sm font-medium text-gray-900 dark:text-white">
+                    <h3 className="font-medium text-gray-900 dark:text-white mb-1">
                       {course.title}
                     </h3>
                     {course.description && (
-                      <p className="line-clamp-2 text-[13px] text-gray-500 dark:text-gray-400">
+                      <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2">
                         {course.description}
                       </p>
                     )}
@@ -500,17 +500,17 @@ export default function CoursesClient({
                 <button
                   disabled={page <= 1}
                   onClick={() => navigate({ page: String(page - 1) })}
-                  className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-[13px] font-medium transition-colors hover:bg-gray-50 disabled:opacity-40 dark:border-zinc-700 dark:bg-zinc-900 dark:hover:bg-zinc-800"
+                  className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium transition-colors hover:bg-gray-50 disabled:opacity-40 dark:border-zinc-700 dark:bg-zinc-900 dark:hover:bg-zinc-800"
                 >
                   Previous
                 </button>
-                <span className="order-first w-full text-center text-[13px] text-gray-600 dark:text-gray-400 sm:order-none sm:w-auto">
+                <span className="order-first w-full text-center text-sm text-gray-600 dark:text-gray-400 sm:order-none sm:w-auto">
                   Page {page} of {totalPages}
                 </span>
                 <button
                   disabled={page >= totalPages}
                   onClick={() => navigate({ page: String(page + 1) })}
-                  className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-[13px] font-medium transition-colors hover:bg-gray-50 disabled:opacity-40 dark:border-zinc-700 dark:bg-zinc-900 dark:hover:bg-zinc-800"
+                  className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium transition-colors hover:bg-gray-50 disabled:opacity-40 dark:border-zinc-700 dark:bg-zinc-900 dark:hover:bg-zinc-800"
                 >
                   Next
                 </button>

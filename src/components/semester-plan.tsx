@@ -144,7 +144,7 @@ function SemesterTimeline({
             className="rounded-xl border border-emerald-200 bg-emerald-50/30 shadow-sm dark:border-emerald-900/50 dark:bg-emerald-950/20"
           >
             <header className="flex items-center justify-between gap-2 rounded-t-xl border-b border-emerald-200 bg-emerald-50/80 px-4 py-3 dark:border-emerald-900/50 dark:bg-emerald-950/40">
-              <h3 className="truncate text-[13px] font-bold tracking-tight text-emerald-800 dark:text-emerald-300">
+              <h3 className="truncate text-sm font-bold tracking-tight text-emerald-800 dark:text-emerald-300">
                 Completed
               </h3>
               <span className="inline-flex items-center whitespace-nowrap rounded-md bg-emerald-100 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400">
@@ -172,7 +172,7 @@ function SemesterTimeline({
                 data-testid="semester-header"
               >
                 <h3
-                  className="truncate text-[13px] font-bold tracking-tight text-zinc-900 dark:text-zinc-100"
+                  className="truncate text-sm font-bold tracking-tight text-zinc-900 dark:text-zinc-100"
                   data-testid="semester-label"
                 >
                   {semester.label}
@@ -320,7 +320,7 @@ function SemesterGrid({
                 className="flex h-full min-h-0 w-[70vw] shrink-0 snap-start flex-col rounded-xl border border-emerald-200 bg-emerald-50/30 shadow-sm dark:border-emerald-900/50 dark:bg-emerald-950/20 sm:w-[280px]"
               >
                 <header className="sticky top-0 z-1 px-4 py-3 border-b border-emerald-200 dark:border-emerald-900/50 bg-emerald-50/80 dark:bg-emerald-950/40 backdrop-blur-sm rounded-t-xl flex items-center justify-between gap-2">
-                  <h3 className="text-[13px] font-bold tracking-tight text-emerald-800 dark:text-emerald-300 truncate">
+                  <h3 className="text-sm font-bold tracking-tight text-emerald-800 dark:text-emerald-300 truncate">
                     ✓ Completed
                   </h3>
                   <span className="inline-flex items-center rounded-md bg-emerald-100 dark:bg-emerald-900/40 px-2 py-0.5 text-[11px] font-semibold text-emerald-700 dark:text-emerald-400 uppercase tracking-wide whitespace-nowrap">
@@ -347,7 +347,7 @@ function SemesterGrid({
                     data-testid="semester-header"
                   >
                     <h3
-                      className="text-[13px] font-bold tracking-tight text-zinc-900 dark:text-zinc-100 truncate"
+                      className="text-sm font-bold tracking-tight text-zinc-900 dark:text-zinc-100 truncate"
                       data-testid="semester-label"
                     >
                       {semester.label}
@@ -413,10 +413,10 @@ function NoDataMessage({ message }: { message: string }) {
           />
         </svg>
       </div>
-      <h3 className="text-lg font-bold tracking-tight text-zinc-900 dark:text-zinc-100 mb-3">
+      <h3 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 mb-3">
         No Data Found
       </h3>
-      <p className="text-sm text-zinc-500 dark:text-zinc-400 max-w-md">
+      <p className="text-base text-zinc-500 dark:text-zinc-400 max-w-md">
         {message}
       </p>
     </div>

@@ -530,7 +530,7 @@ export default function PlanDetailClient({
         <div className="flex flex-col items-stretch gap-4 sm:flex-row sm:items-start sm:justify-between sm:gap-6">
           <div className="flex-1 min-w-0">
             <div className="flex items-start gap-2 sm:items-center sm:gap-3">
-              <h1 className="flex min-w-0 flex-1 items-center gap-2 text-lg font-bold tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-xl">
+              <h1 className="flex min-w-0 flex-1 items-center gap-2 text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-2xl">
                 <span className="truncate">{headerTitle}</span>
                 {isChatLoading && (
                   <div className="inline-flex w-4 h-4 ml-2 border-[2.5px] border-blue-500/30 border-t-blue-600 rounded-full animate-spin flex-shrink-0" />
@@ -601,7 +601,7 @@ export default function PlanDetailClient({
             {/* Target editing panel */}
             {isEditingTargets && (
               <div className="mt-3 p-3 rounded-lg border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-900">
-                <p className="text-[10px] font-medium text-zinc-500 dark:text-zinc-400 mb-2">
+                <p className="text-[11px] font-medium text-zinc-500 dark:text-zinc-400 mb-2">
                   Select target universities (first = primary):
                 </p>
                 <div className="flex flex-wrap gap-1.5 max-h-40 overflow-y-auto">
@@ -611,7 +611,7 @@ export default function PlanDetailClient({
                       <button
                         key={uni.id}
                         onClick={() => handleToggleTarget(uni.id)}
-                        className={`inline-flex items-center gap-1 rounded-md border px-2 py-1 text-[10px] font-medium transition-colors cursor-pointer ${
+                        className={`inline-flex items-center gap-1 rounded-md border px-2 py-1 text-[11px] font-medium transition-colors cursor-pointer ${
                           isSelected
                             ? "border-zinc-900 bg-zinc-50 text-zinc-900 dark:border-white dark:bg-zinc-900 dark:text-white"
                             : "border-zinc-200 bg-white text-zinc-600 hover:border-zinc-300 hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:border-zinc-600 dark:hover:bg-zinc-700"
@@ -691,7 +691,7 @@ export default function PlanDetailClient({
                 return (
                   <div className="mt-3 rounded-lg border border-zinc-200 bg-white p-4 shadow-[0_1px_2px_rgba(24,24,27,0.04)] dark:border-zinc-800 dark:bg-zinc-950">
                     <div className="mb-3 flex items-start justify-between gap-3">
-                      <h3 className="text-[13px] font-bold text-zinc-900 dark:text-zinc-100">
+                      <h3 className="text-sm font-bold text-zinc-900 dark:text-zinc-100">
                         {selectedSchool} — Transfer Delta
                       </h3>
                       <button
@@ -810,7 +810,7 @@ export default function PlanDetailClient({
                 );
               })()}
 
-            <p className="mt-1 text-[13px] font-medium text-zinc-500 dark:text-zinc-400 truncate">
+            <p className="mt-1 text-[15px] font-medium text-zinc-500 dark:text-zinc-400 truncate">
               {plan.target_major}
             </p>
           </div>
@@ -819,10 +819,10 @@ export default function PlanDetailClient({
               className="flex w-full shrink-0 flex-row items-center justify-between rounded-lg border border-zinc-200/70 bg-zinc-50/80 px-4 py-3 text-left dark:border-zinc-800/80 dark:bg-zinc-900/80 sm:w-auto sm:flex-col sm:items-end sm:text-right"
               data-testid="plan-header-remaining-units"
             >
-              <span className="text-2xl font-bold tracking-tighter text-zinc-900 dark:text-white">
+              <span className="text-3xl font-bold tracking-tighter text-zinc-900 dark:text-white">
                 {remainingUnits}
               </span>
-              <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-zinc-500 dark:text-zinc-400">
+              <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-zinc-500 dark:text-zinc-400">
                 Units Left
               </span>
             </div>
@@ -849,25 +849,25 @@ export default function PlanDetailClient({
                     d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
                   />
                 </svg>
-                <span className="max-w-full truncate text-[13px] font-medium text-zinc-700 dark:text-zinc-300 sm:max-w-xs">
+                <span className="max-w-full truncate text-sm font-medium text-zinc-700 dark:text-zinc-300 sm:max-w-xs">
                   {transcriptData.institution || transcript.file_name}
                 </span>
               </div>
-              <span className="text-[13px] text-zinc-500 dark:text-zinc-400">
+              <span className="text-sm text-zinc-500 dark:text-zinc-400">
                 {transcriptData.courses.length} courses
               </span>
-              <span className="text-[13px] text-zinc-500 dark:text-zinc-400">
+              <span className="text-sm text-zinc-500 dark:text-zinc-400">
                 {transcriptData.totalUnitsCompleted} units
               </span>
               {transcriptData.gpa && (
-                <span className="text-[13px] text-zinc-500 dark:text-zinc-400">
+                <span className="text-sm text-zinc-500 dark:text-zinc-400">
                   GPA: {transcriptData.gpa.toFixed(2)}
                 </span>
               )}
             </div>
             <button
               onClick={() => setTranscriptExpanded((prev) => !prev)}
-              className="flex w-full items-center justify-center gap-1.5 rounded-lg border border-zinc-200 bg-white px-3 py-2 text-[12px] font-medium text-zinc-600 transition-[background-color,border-color,color,box-shadow,transform] duration-200 hover:-translate-y-px hover:border-zinc-300 hover:bg-zinc-50 hover:text-zinc-900 hover:shadow-[0_8px_18px_rgba(24,24,27,0.08)] dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-300 dark:hover:border-zinc-700 dark:hover:bg-zinc-900 dark:hover:text-white sm:w-auto sm:py-1.5"
+              className="flex w-full items-center justify-center gap-1.5 rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm font-medium text-zinc-600 transition-[background-color,border-color,color,box-shadow,transform] duration-200 hover:-translate-y-px hover:border-zinc-300 hover:bg-zinc-50 hover:text-zinc-900 hover:shadow-[0_8px_18px_rgba(24,24,27,0.08)] dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-300 dark:hover:border-zinc-700 dark:hover:bg-zinc-900 dark:hover:text-white sm:w-auto sm:py-1.5"
             >
               <svg
                 className="w-4 h-4"
@@ -957,10 +957,10 @@ export default function PlanDetailClient({
                   />
                 </svg>
               </div>
-              <h3 className="mt-4 text-[13px] font-medium text-zinc-900 dark:text-white">
+              <h3 className="mt-4 text-sm font-medium text-zinc-900 dark:text-white">
                 No plan data loaded
               </h3>
-              <p className="mt-2 text-[13px] text-zinc-500 dark:text-zinc-400 max-w-sm mx-auto">
+              <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400 max-w-sm mx-auto">
                 Chat with the AI to generate or modify your transfer plan.
               </p>
             </div>
