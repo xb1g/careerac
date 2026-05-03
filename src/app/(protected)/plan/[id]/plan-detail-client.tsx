@@ -875,6 +875,7 @@ export default function PlanDetailClient({
             </div>
             <button
               onClick={() => setTranscriptExpanded((prev) => !prev)}
+              style={{ fontSize: 14, lineHeight: "20px" }}
               className="flex w-full items-center justify-center gap-1.5 rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm font-medium text-zinc-600 transition-[background-color,border-color,color,box-shadow,transform] duration-200 hover:-translate-y-px hover:border-zinc-300 hover:bg-zinc-50 hover:text-zinc-900 hover:shadow-[0_8px_18px_rgba(24,24,27,0.08)] dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-300 dark:hover:border-zinc-700 dark:hover:bg-zinc-900 dark:hover:text-white sm:w-auto sm:py-1.5"
             >
               <svg
