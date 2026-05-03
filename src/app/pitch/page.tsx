@@ -46,7 +46,7 @@ export default function PitchPage() {
             </h1>
 
             <p className="mx-auto max-w-xl text-lg leading-relaxed text-zinc-500 dark:text-zinc-400 sm:text-[20px]">
-              That's not a bad outcome. That's the system working as designed.
+              That&apos;s not a bad outcome. That&apos;s the system working as designed.
             </p>
           </section>
 
@@ -62,10 +62,10 @@ export default function PitchPage() {
               </div>
             </div>
             <blockquote className="border-l-4 border-blue-500 pl-4 text-xl font-medium leading-[1.4] text-zinc-800 dark:text-zinc-100 sm:pl-6 sm:text-[26px]">
-              "I lost a year of my life and $40,000 because nobody told me my credits wouldn't count at Berkeley."
+              &quot;I lost a year of my life and $40,000 because nobody told me my credits wouldn&apos;t count at Berkeley.&quot;
             </blockquote>
             <p className="pl-4 text-[16px] leading-relaxed text-zinc-500 dark:text-zinc-400 sm:pl-6">
-              He took the right classes. He worked hard. He just didn't have the right plan. That's not a personal failure — it's a system failure. And it's happening to hundreds of thousands of students right now.
+              He took the right classes. He worked hard. He just didn&apos;t have the right plan. That&apos;s not a personal failure — it&apos;s a system failure. And it&apos;s happening to hundreds of thousands of students right now.
             </p>
           </section>
 
@@ -148,7 +148,7 @@ export default function PitchPage() {
                 We license to community colleges — not to students.
               </p>
               <p className="text-[16px] text-zinc-500 dark:text-zinc-400 leading-relaxed">
-                Transfer rate is a published performance metric for California CCs. It affects funding, rankings, and accreditation. CareerAC isn't a threat to counselors — it's how one counselor actually handles 300 students. The tool handles the plan. The counselor handles the cases that need human judgment.
+                Transfer rate is a published performance metric for California CCs. It affects funding, rankings, and accreditation. CareerAC isn&apos;t a threat to counselors — it&apos;s how one counselor actually handles 300 students. The tool handles the plan. The counselor handles the cases that need human judgment.
               </p>
               <div className="flex flex-col gap-2 rounded-2xl bg-blue-50 px-4 py-4 dark:bg-blue-950/30 sm:flex-row sm:items-center sm:gap-4 sm:px-6">
                 <div className="text-[32px] font-bold text-blue-600 dark:text-blue-400">60%</div>

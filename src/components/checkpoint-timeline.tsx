@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef, useImperativeHandle, forwardRef } from "react";
+import { useState, useEffect, useCallback, useRef, useImperativeHandle, forwardRef, type ReactNode } from "react";
 
 /* ── Types ── */
 interface PlanData {
@@ -149,7 +149,7 @@ function ActionIcon({ label }: { label: string }) {
 
 /* ── Diff badge ── */
 function DiffBadge({ diff }: { diff: DiffSummary }) {
-  const parts: JSX.Element[] = [];
+  const parts: ReactNode[] = [];
   if (diff.added.length > 0) {
     parts.push(
       <span key="add" className="text-emerald-600 dark:text-emerald-400">+{diff.added.length} course{diff.added.length > 1 ? "s" : ""}</span>

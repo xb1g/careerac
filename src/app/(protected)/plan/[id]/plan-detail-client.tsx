@@ -540,6 +540,7 @@ export default function PlanDetailClient({
               <div className="relative">
                 <CheckpointTimeline
                   planId={plan.id}
+                  currentPlanData={currentPlan}
                   onRestore={handleCheckpointRestore}
                 />
               </div>

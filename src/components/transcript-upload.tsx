@@ -240,6 +240,7 @@ export default function TranscriptUpload({
   };
 
   const [manualInstitution, setManualInstitution] = useState("");
+  const [manualCourses, setManualCourses] = useState<TranscriptCourse[]>([]);
   const [manualCourse, setManualCourse] = useState({
     code: "",
     title: "",
@@ -335,6 +336,17 @@ export default function TranscriptUpload({
     setIsCourseMenuOpen(false);
     setCourseHighlight(-1);
   };
+
+  const isCollegeListOpen = isCollegeMenuOpen && filteredColleges.length > 0;
+  const isCourseListOpen = isCourseMenuOpen && filteredCourses.length > 0;
+  const activeCollegeOptionId =
+    isCollegeListOpen && collegeHighlight >= 0
+      ? `institution-option-${filteredColleges[collegeHighlight]?.id}`
+      : undefined;
+  const activeCourseOptionId =
+    isCourseListOpen && courseHighlight >= 0
+      ? `course-code-option-${courseHighlight}`
+      : undefined;
 
   const handleAddManualCourse = () => {
     if (
@@ -452,7 +464,11 @@ export default function TranscriptUpload({
             id="institution-name"
             type="text"
             role="combobox"
-            aria-expanded={isCollegeMenuOpen && filteredColleges.length > 0}
+            aria-autocomplete="list"
+            aria-controls="institution-name-options"
+            aria-expanded={isCollegeListOpen}
+            aria-haspopup="listbox"
+            aria-activedescendant={activeCollegeOptionId}
             value={manualInstitution}
             onChange={(e) => {
               setManualInstitution(e.target.value);
@@ -498,11 +514,18 @@ export default function TranscriptUpload({
             placeholder="e.g., De Anza College"
             className="w-full rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
           />
-          {isCollegeMenuOpen && filteredColleges.length > 0 && (
-            <ul className="absolute z-20 mt-1 w-full max-h-64 overflow-auto rounded-lg border border-zinc-200 bg-white shadow-lg dark:border-zinc-700 dark:bg-zinc-900">
+          {isCollegeListOpen && (
+            <ul
+              id="institution-name-options"
+              role="listbox"
+              className="absolute z-20 mt-1 w-full max-h-64 overflow-auto rounded-lg border border-zinc-200 bg-white shadow-lg dark:border-zinc-700 dark:bg-zinc-900"
+            >
               {filteredColleges.map((college, idx) => (
                 <li
+                  id={`institution-option-${college.id}`}
                   key={college.id}
+                  role="option"
+                  aria-selected={collegeHighlight === idx}
                   onMouseDown={(e) => {
                     e.preventDefault();
                     selectCollege(college.name);
@@ -531,7 +554,12 @@ export default function TranscriptUpload({
             <input
               type="text"
               role="combobox"
-              aria-expanded={isCourseMenuOpen && filteredCourses.length > 0}
+              aria-autocomplete="list"
+              aria-controls="course-code-options"
+              aria-expanded={isCourseListOpen}
+              aria-haspopup="listbox"
+              aria-activedescendant={activeCourseOptionId}
+              aria-label="Course code"
               value={manualCourse.code}
               onChange={(e) => {
                 setManualCourse((p) => ({ ...p, code: e.target.value }));
@@ -577,11 +605,18 @@ export default function TranscriptUpload({
               placeholder="Code (CS 1)"
               className="w-full rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
             />
-            {isCourseMenuOpen && filteredCourses.length > 0 && (
-              <ul className="absolute z-20 mt-1 max-h-64 w-full overflow-auto rounded-lg border border-zinc-200 bg-white shadow-lg dark:border-zinc-700 dark:bg-zinc-900 sm:w-[300px]">
+            {isCourseListOpen && (
+              <ul
+                id="course-code-options"
+                role="listbox"
+                className="absolute z-20 mt-1 max-h-64 w-full overflow-auto rounded-lg border border-zinc-200 bg-white shadow-lg dark:border-zinc-700 dark:bg-zinc-900 sm:w-[300px]"
+              >
                 {filteredCourses.map((c, idx) => (
                   <li
+                    id={`course-code-option-${idx}`}
                     key={`${c.code}-${idx}`}
+                    role="option"
+                    aria-selected={courseHighlight === idx}
                     onMouseDown={(e) => {
                       e.preventDefault();
                       selectCourse(c);
