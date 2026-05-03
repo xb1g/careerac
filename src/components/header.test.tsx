@@ -1,4 +1,4 @@
-import { render, screen, within } from "@testing-library/react";
+import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import Header from "./header";
 import { vi } from "vitest";
@@ -122,6 +122,24 @@ describe("Header", () => {
   it("renders the sign out button", () => {
     render(<Header userEmail={null} />);
     expect(screen.getByRole("button", { name: /sign out/i })).toBeInTheDocument();
+  });
+
+  it("renders a smaller desktop sign out button", () => {
+    render(<Header userEmail={null} />);
+    const signOutButton = screen.getByRole("button", { name: /sign out/i });
+
+    expect(signOutButton).toHaveClass("h-8", "px-2.5", "cursor-pointer");
+    expect(signOutButton).toHaveStyle({ fontSize: "12px", lineHeight: "16px" });
+  });
+
+  it("uses a pointer cursor for the light theme option", async () => {
+    const user = userEvent.setup();
+    render(<Header userEmail={null} />);
+
+    await user.click(screen.getByRole("button", { name: /theme/i }));
+
+    const lightThemeButton = await waitFor(() => screen.getByRole("menuitemradio", { name: /light/i }));
+    expect(lightThemeButton).toHaveClass("cursor-pointer");
   });
 
   it("renders mobile menu button", () => {
