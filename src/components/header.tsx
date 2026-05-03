@@ -103,8 +103,8 @@ export default function Header({ userEmail }: HeaderProps) {
             <form action={signout} className="hidden lg:block">
               <button
                 type="submit"
-                style={{ fontSize: 12, lineHeight: "16px" }}
-                className="inline-flex h-8 cursor-pointer items-center rounded-lg border border-transparent px-2.5 text-[12px] font-medium text-zinc-500 transition-[background-color,border-color,color,box-shadow,transform] duration-200 ease-out hover:-translate-y-px hover:border-zinc-200 hover:bg-white hover:text-zinc-900 hover:shadow-[0_6px_14px_rgba(24,24,27,0.06)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900/15 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:text-zinc-400 dark:hover:border-zinc-800 dark:hover:bg-zinc-900 dark:hover:text-white dark:focus-visible:ring-white/20 dark:focus-visible:ring-offset-zinc-950"
+                style={{ fontSize: 13, lineHeight: "20px" }}
+                className="inline-flex h-9 cursor-pointer items-center rounded-lg border border-transparent px-3 text-[13px] font-medium text-zinc-500 transition-[background-color,border-color,color,box-shadow,transform] duration-200 ease-out hover:-translate-y-px hover:border-zinc-200 hover:bg-white hover:text-zinc-900 hover:shadow-[0_6px_14px_rgba(24,24,27,0.06)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900/15 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:text-zinc-400 dark:hover:border-zinc-800 dark:hover:bg-zinc-900 dark:hover:text-white dark:focus-visible:ring-white/20 dark:focus-visible:ring-offset-zinc-950"
               >
                 Sign Out
               </button>
@@ -154,8 +154,8 @@ export default function Header({ userEmail }: HeaderProps) {
               <form action={signout} className="mt-1 border-t border-zinc-100 pt-2 dark:border-zinc-800">
                 <button
                   type="submit"
-                  style={{ fontSize: 12, lineHeight: "16px" }}
-                  className="flex h-9 w-full cursor-pointer items-center rounded-lg border border-transparent px-3 text-left text-[12px] font-medium text-zinc-500 transition-[background-color,border-color,color] hover:border-zinc-200 hover:bg-white hover:text-zinc-900 dark:text-zinc-400 dark:hover:border-zinc-800 dark:hover:bg-zinc-900 dark:hover:text-white"
+                  style={{ fontSize: 14, lineHeight: "20px" }}
+                  className="flex h-10 w-full cursor-pointer items-center rounded-lg border border-transparent px-3 text-left text-sm font-medium text-zinc-500 transition-[background-color,border-color,color] hover:border-zinc-200 hover:bg-white hover:text-zinc-900 dark:text-zinc-400 dark:hover:border-zinc-800 dark:hover:bg-zinc-900 dark:hover:text-white"
                 >
                   Sign Out
                 </button>

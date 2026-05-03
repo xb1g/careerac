@@ -124,12 +124,12 @@ describe("Header", () => {
     expect(screen.getByRole("button", { name: /sign out/i })).toBeInTheDocument();
   });
 
-  it("renders a smaller desktop sign out button", () => {
+  it("matches the desktop nav link size for sign out", () => {
     render(<Header userEmail={null} />);
     const signOutButton = screen.getByRole("button", { name: /sign out/i });
 
-    expect(signOutButton).toHaveClass("h-8", "px-2.5", "cursor-pointer");
-    expect(signOutButton).toHaveStyle({ fontSize: "12px", lineHeight: "16px" });
+    expect(signOutButton).toHaveClass("h-9", "px-3", "text-[13px]", "cursor-pointer");
+    expect(signOutButton).toHaveStyle({ fontSize: "13px", lineHeight: "20px" });
   });
 
   it("uses a pointer cursor for the light theme option", async () => {
@@ -180,6 +180,19 @@ describe("Header", () => {
     expect(within(mobileNav).getByRole("link", { name: /browse courses/i })).toBeInTheDocument();
     expect(within(mobileNav).getByRole("link", { name: /playbooks/i })).toBeInTheDocument();
     expect(within(mobileNav).getByRole("link", { name: /my courses/i })).toBeInTheDocument();
+  });
+
+  it("matches the mobile nav link size for mobile sign out", async () => {
+    const user = userEvent.setup();
+    render(<Header userEmail={null} />);
+
+    await user.click(screen.getByRole("button", { name: /open menu/i }));
+
+    const mobileNav = screen.getByRole("navigation", { name: /mobile navigation/i });
+    const mobileSignOutButton = within(mobileNav).getByRole("button", { name: /sign out/i });
+
+    expect(mobileSignOutButton).toHaveClass("h-10", "px-3", "text-sm", "cursor-pointer");
+    expect(mobileSignOutButton).toHaveStyle({ fontSize: "14px", lineHeight: "20px" });
   });
 
   it("displays user email in mobile menu when provided", async () => {
