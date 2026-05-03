@@ -55,6 +55,7 @@ interface PlanDetailClientProps {
     term: string | null;
     status: string;
   }>;
+  chatDefaultOpen?: boolean;
 }
 
 function getSchoolFitLabel(
@@ -74,6 +75,7 @@ export default function PlanDetailClient({
   plan,
   transcript,
   userCourses,
+  chatDefaultOpen = true,
 }: PlanDetailClientProps) {
   const searchParams = useSearchParams();
   const resolveRisk = searchParams?.get("resolveRisk") ?? undefined;
@@ -975,7 +977,7 @@ export default function PlanDetailClient({
       </div>
 
       <ChatWidget
-        defaultOpen={true}
+        defaultOpen={chatDefaultOpen}
         onPlanGenerated={handlePlanGenerated}
         onSavePlan={handleSavePlan}
         initialMessages={initialMessages}

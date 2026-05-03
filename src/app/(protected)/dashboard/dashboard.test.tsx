@@ -53,9 +53,16 @@ vi.mock("@/utils/fetch-plan-detail", () => ({
 }));
 
 vi.mock("../plan/[id]/plan-detail-client", () => ({
-  default: ({ plan }: { plan: any }) => (
+  default: ({
+    plan,
+    chatDefaultOpen,
+  }: {
+    plan: { title: string };
+    chatDefaultOpen?: boolean;
+  }) => (
     <div data-testid="plan-detail-client">
       <h1>{plan.title}</h1>
+      <span data-testid="chat-default-open">{String(chatDefaultOpen)}</span>
     </div>
   ),
 }));
@@ -91,5 +98,6 @@ describe("DashboardPage", () => {
     render(component);
     expect(screen.getByTestId("plan-detail-client")).toBeInTheDocument();
     expect(screen.getByText("Test Plan")).toBeInTheDocument();
+    expect(screen.getByTestId("chat-default-open")).toHaveTextContent("false");
   });
 });
