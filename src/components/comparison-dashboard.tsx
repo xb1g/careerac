@@ -96,8 +96,8 @@ export default function ComparisonDashboard({ planId, className = "" }: Comparis
       <div className="px-3 py-4 sm:px-6 lg:px-8">
         <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
           <div>
-            <h2 className="text-base font-semibold text-zinc-900 dark:text-zinc-100">School comparison</h2>
-            <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+            <h2 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">School comparison</h2>
+            <p className="mt-1 text-[13px] text-zinc-500 dark:text-zinc-400">
               Compare prep progress, transfer loss, timeline, admissions fit, and estimated cost.
             </p>
           </div>
@@ -141,12 +141,12 @@ export default function ComparisonDashboard({ planId, className = "" }: Comparis
                     >
                       <div className="flex items-start justify-between gap-3">
                         <div className="flex items-center gap-3 min-w-0">
-                          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-zinc-900 text-[13px] font-semibold text-white dark:bg-white dark:text-zinc-900">
+                          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-zinc-900 text-[12px] font-semibold text-white dark:bg-white dark:text-zinc-900">
                             {result.logoText}
                           </div>
                           <div className="min-w-0">
                             <div className="flex items-center gap-2 flex-wrap">
-                              <h3 className="truncate text-[13px] font-semibold text-zinc-900 dark:text-white">{result.schoolName}</h3>
+                              <h3 className="truncate text-[12px] font-semibold text-zinc-900 dark:text-white">{result.schoolName}</h3>
                               {result.isBestOption && (
                                 <span className="rounded-full bg-emerald-100 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300">
                                   Best option
@@ -173,7 +173,7 @@ export default function ComparisonDashboard({ planId, className = "" }: Comparis
                           </div>
                         </div>
 
-                        <div className="grid grid-cols-2 gap-3 text-[13px]">
+                        <div className="grid grid-cols-2 gap-3 text-[12px]">
                           <div className="rounded-xl bg-zinc-50 dark:bg-zinc-950/70 p-3">
                             <div className="text-[10px] uppercase tracking-wide text-zinc-400 dark:text-zinc-500">Lost credits</div>
                             <div className={`mt-1 font-semibold ${result.estimatedLostCredits > 12 ? "text-red-600 dark:text-red-400" : "text-zinc-900 dark:text-zinc-100"}`}>
@@ -206,8 +206,8 @@ export default function ComparisonDashboard({ planId, className = "" }: Comparis
                   <div className="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-900/60 p-5">
                     <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
                       <div>
-                        <h3 className="text-[13px] font-semibold text-zinc-900 dark:text-white">{selected.schoolName} details</h3>
-                        <p className="mt-1 text-[13px] text-zinc-500 dark:text-zinc-400">
+                        <h3 className="text-[12px] font-semibold text-zinc-900 dark:text-white">{selected.schoolName} details</h3>
+                        <p className="mt-1 text-[12px] text-zinc-500 dark:text-zinc-400">
                           {selected.matchedCourses.length} matched courses · {selected.missingCourses.length} still missing
                         </p>
                       </div>
@@ -240,7 +240,7 @@ export default function ComparisonDashboard({ planId, className = "" }: Comparis
                           </div>
                         )}
                         {selected.acceptanceChance.baselineGpa !== null && (
-                          <div className="text-[13px] text-zinc-500 dark:text-zinc-400">
+                          <div className="text-[12px] text-zinc-500 dark:text-zinc-400">
                             GPA: <span className="font-semibold text-zinc-900 dark:text-zinc-100">{selected.acceptanceChance.baselineGpa.toFixed(2)}</span>
                           </div>
                         )}
@@ -251,7 +251,7 @@ export default function ComparisonDashboard({ planId, className = "" }: Comparis
                       <div className="mt-4 grid gap-4 lg:grid-cols-2">
                         <div className="rounded-2xl bg-white dark:bg-zinc-950 p-4 border border-zinc-200 dark:border-zinc-800">
                           <h4 className="text-[11px] font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">Already satisfied</h4>
-                          <ul className="mt-3 space-y-2 text-[13px] text-zinc-700 dark:text-zinc-300">
+                          <ul className="mt-3 space-y-2 text-[12px] text-zinc-700 dark:text-zinc-300">
                             {selected.matchedCourses.length === 0 ? (
                               <li className="text-zinc-500 dark:text-zinc-400">No articulated prep completed yet.</li>
                             ) : (
@@ -267,7 +267,7 @@ export default function ComparisonDashboard({ planId, className = "" }: Comparis
 
                         <div className="rounded-2xl bg-white dark:bg-zinc-950 p-4 border border-zinc-200 dark:border-zinc-800">
                           <h4 className="text-[11px] font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">Still missing</h4>
-                          <ul className="mt-3 space-y-2 text-[13px] text-zinc-700 dark:text-zinc-300">
+                          <ul className="mt-3 space-y-2 text-[12px] text-zinc-700 dark:text-zinc-300">
                             {selected.missingCourses.length === 0 ? (
                               <li className="text-emerald-600 dark:text-emerald-400">All currently tracked major prep appears satisfied.</li>
                             ) : (
@@ -294,15 +294,15 @@ export default function ComparisonDashboard({ planId, className = "" }: Comparis
                           <div className="mt-3 grid gap-3 sm:grid-cols-3">
                             <div className="rounded-xl bg-zinc-50 dark:bg-zinc-900 p-3">
                               <div className="text-[11px] uppercase tracking-wide text-zinc-400 dark:text-zinc-500">Tuition &amp; Fees</div>
-                              <div className="mt-1 text-lg font-semibold text-zinc-900 dark:text-white">{formatCurrency(selected.tuition.tuitionAndFees)}</div>
+                              <div className="mt-1 text-base font-semibold text-zinc-900 dark:text-white">{formatCurrency(selected.tuition.tuitionAndFees)}</div>
                             </div>
                             <div className="rounded-xl bg-zinc-50 dark:bg-zinc-900 p-3">
                               <div className="text-[11px] uppercase tracking-wide text-zinc-400 dark:text-zinc-500">Living Expenses</div>
-                              <div className="mt-1 text-lg font-semibold text-zinc-900 dark:text-white">{formatCurrency(selected.tuition.livingExpenses)}</div>
+                              <div className="mt-1 text-base font-semibold text-zinc-900 dark:text-white">{formatCurrency(selected.tuition.livingExpenses)}</div>
                             </div>
                             <div className="rounded-xl bg-blue-50 dark:bg-blue-950/30 p-3">
                               <div className="text-[11px] uppercase tracking-wide text-blue-600 dark:text-blue-400">Total / Year</div>
-                              <div className="mt-1 text-lg font-semibold text-blue-700 dark:text-blue-300">{formatCurrency(selected.tuition.totalCost)}</div>
+                              <div className="mt-1 text-base font-semibold text-blue-700 dark:text-blue-300">{formatCurrency(selected.tuition.totalCost)}</div>
                             </div>
                           </div>
                           <div className="mt-3 flex flex-wrap gap-4 text-xs text-zinc-500 dark:text-zinc-400">
@@ -360,7 +360,7 @@ export default function ComparisonDashboard({ planId, className = "" }: Comparis
                     )}
 
                     {detailTab === "cost" && !selected.tuition && (
-                      <div className="mt-4 flex items-center justify-center rounded-2xl border border-dashed border-zinc-300 dark:border-zinc-700 p-8 text-sm text-zinc-500 dark:text-zinc-400">
+                      <div className="mt-4 flex items-center justify-center rounded-2xl border border-dashed border-zinc-300 dark:border-zinc-700 p-8 text-[13px] text-zinc-500 dark:text-zinc-400">
                         No tuition data available for this school.
                       </div>
                     )}

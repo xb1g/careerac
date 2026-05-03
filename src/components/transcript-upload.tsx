@@ -447,10 +447,10 @@ export default function TranscriptUpload({
     return (
       <div className="space-y-6">
         <div>
-          <h2 className="text-xl font-semibold text-zinc-900 dark:text-white">
+          <h2 className="text-lg font-semibold text-zinc-900 dark:text-white">
             Enter Your Courses
           </h2>
-          <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+          <p className="mt-1 text-[13px] text-zinc-500 dark:text-zinc-400">
             Add your completed and in-progress courses manually.
           </p>
         </div>
@@ -464,7 +464,7 @@ export default function TranscriptUpload({
         <div className="relative">
           <label
             htmlFor="institution-name"
-            className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1"
+            className="block text-[13px] font-medium text-zinc-700 dark:text-zinc-300 mb-1"
           >
             Institution Name
           </label>
@@ -520,7 +520,7 @@ export default function TranscriptUpload({
               }
             }}
             placeholder="e.g., De Anza College"
-            className="w-full rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
+            className="w-full rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2 text-[13px] text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
           />
           {isCollegeListOpen && (
             <ul
@@ -539,7 +539,7 @@ export default function TranscriptUpload({
                     selectCollege(college.name);
                   }}
                   onMouseEnter={() => setCollegeHighlight(idx)}
-                  className={`cursor-pointer px-3 py-2 text-sm text-zinc-900 dark:text-zinc-100 ${
+                  className={`cursor-pointer px-3 py-2 text-[13px] text-zinc-900 dark:text-zinc-100 ${
                     collegeHighlight === idx
                       ? "bg-blue-50 dark:bg-blue-900/30"
                       : "hover:bg-zinc-50 dark:hover:bg-zinc-800"
@@ -557,7 +557,7 @@ export default function TranscriptUpload({
           )}
         </div>
 
-        <div className="flex flex-col sm:flex-row gap-2">
+        <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap xl:flex-nowrap">
           <div className="relative w-full sm:w-32 xl:w-40 shrink-0">
             <input
               type="text"
@@ -611,7 +611,7 @@ export default function TranscriptUpload({
                 }
               }}
               placeholder="Code (CS 1)"
-              className="w-full rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
+              className="w-full rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2 text-[13px] text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
             />
             {isCourseListOpen && (
               <ul
@@ -630,7 +630,7 @@ export default function TranscriptUpload({
                       selectCourse(c);
                     }}
                     onMouseEnter={() => setCourseHighlight(idx)}
-                    className={`cursor-pointer px-3 py-2 text-sm text-zinc-900 dark:text-zinc-100 ${
+                    className={`cursor-pointer px-3 py-2 text-[13px] text-zinc-900 dark:text-zinc-100 ${
                       courseHighlight === idx
                         ? "bg-blue-50 dark:bg-blue-900/30"
                         : "hover:bg-zinc-50 dark:hover:bg-zinc-800"
@@ -653,7 +653,7 @@ export default function TranscriptUpload({
               setManualCourse((p) => ({ ...p, title: e.target.value }))
             }
             placeholder="Course Title"
-            className="w-full sm:flex-1 min-w-0 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
+            className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-[13px] text-zinc-900 focus:outline-none focus:ring-2 focus:ring-blue-500/30 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100 sm:min-w-[18rem] sm:flex-1 xl:min-w-[22rem]"
           />
           <input
             type="number"
@@ -662,7 +662,7 @@ export default function TranscriptUpload({
               setManualCourse((p) => ({ ...p, units: e.target.value }))
             }
             placeholder="Units"
-            className="w-full sm:w-24 shrink-0 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
+            className="w-full sm:w-24 shrink-0 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2 text-[13px] text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
           />
           <select
             value={manualCourse.grade}
@@ -670,7 +670,7 @@ export default function TranscriptUpload({
               setManualCourse((p) => ({ ...p, grade: e.target.value }))
             }
             aria-label="Grade"
-            className="w-full sm:w-24 shrink-0 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
+            className="w-full sm:w-24 shrink-0 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2 text-[13px] text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
           >
             {NORMAL_GRADE_OPTIONS.map((grade) => (
               <option key={grade} value={grade}>
@@ -684,7 +684,7 @@ export default function TranscriptUpload({
               setManualSemesterSeason(e.target.value as SemesterSeason)
             }
             aria-label="Semester season"
-            className="w-full sm:w-28 shrink-0 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
+            className="w-full sm:w-28 shrink-0 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-3 py-2 text-[13px] text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
           >
             {SEMESTER_SEASONS.map((season) => (
               <option key={season} value={season}>
@@ -702,7 +702,7 @@ export default function TranscriptUpload({
             }
             aria-label="Semester year"
             placeholder="Year"
-            className={`w-full sm:w-24 shrink-0 rounded-lg border bg-white dark:bg-zinc-900 px-3 py-2 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/30 ${
+            className={`w-full sm:w-24 shrink-0 rounded-lg border bg-white dark:bg-zinc-900 px-3 py-2 text-[13px] text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-500/30 ${
               isManualSemesterValid
                 ? "border-zinc-300 dark:border-zinc-700"
                 : "border-red-300 dark:border-red-700"
@@ -717,7 +717,7 @@ export default function TranscriptUpload({
               !manualCourse.grade ||
               !isManualSemesterValid
             }
-            className="w-full sm:w-auto shrink-0 whitespace-nowrap rounded-lg bg-blue-600 text-white text-sm font-medium px-4 py-2 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="w-full sm:w-auto shrink-0 whitespace-nowrap rounded-lg bg-blue-600 text-white text-[13px] font-medium px-4 py-2 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             Add Course
           </button>
@@ -725,7 +725,7 @@ export default function TranscriptUpload({
 
         {manualCourses.length > 0 && (
           <div className="overflow-x-auto rounded-lg border border-zinc-200 dark:border-zinc-800">
-            <table className="w-full min-w-[640px] text-sm">
+            <table className="w-full min-w-[640px] text-[13px]">
               <thead className="bg-zinc-50 dark:bg-zinc-800/50">
                 <tr>
                   <th className="px-3 py-2 text-left font-medium text-zinc-600 dark:text-zinc-400">
@@ -790,7 +790,7 @@ export default function TranscriptUpload({
           <button
             onClick={handleConfirmManual}
             disabled={manualCourses.length === 0 || isSavingManual}
-            className="w-full rounded-lg bg-blue-600 px-6 py-2.5 text-sm font-medium text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
+            className="w-full rounded-lg bg-blue-600 px-6 py-2.5 text-[13px] font-medium text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
           >
             {isSavingManual
               ? "Saving..."
@@ -798,13 +798,13 @@ export default function TranscriptUpload({
           </button>
           <button
             onClick={onSkip}
-            className="w-full rounded-lg border border-zinc-300 px-6 py-2.5 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800 sm:w-auto cursor-pointer"
+            className="w-full rounded-lg border border-zinc-300 px-6 py-2.5 text-[13px] font-medium text-zinc-700 transition-colors hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800 sm:w-auto cursor-pointer"
           >
             Skip
           </button>
           <button
             onClick={() => setShowManualEntry(false)}
-            className="w-full rounded-lg px-4 py-2.5 text-sm text-zinc-500 transition-colors hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-300 sm:ml-auto sm:w-auto cursor-pointer"
+            className="w-full rounded-lg px-4 py-2.5 text-[13px] text-zinc-500 transition-colors hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-300 sm:ml-auto sm:w-auto cursor-pointer"
           >
             Back
           </button>
@@ -817,16 +817,16 @@ export default function TranscriptUpload({
     return (
       <div className="space-y-6">
         <div>
-          <h2 className="text-xl font-semibold text-zinc-900 dark:text-white">
+          <h2 className="text-lg font-semibold text-zinc-900 dark:text-white">
             Review Your Transcript
           </h2>
-          <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+          <p className="mt-1 text-[13px] text-zinc-500 dark:text-zinc-400">
             We found {parsedData.courses.length} courses from{" "}
             {parsedData.institution}. Remove any that were parsed incorrectly.
           </p>
         </div>
 
-        <div className="flex flex-wrap gap-3 text-sm">
+        <div className="flex flex-wrap gap-3 text-[13px]">
           <div className="rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 px-4 py-2">
             <span className="font-medium text-green-800 dark:text-green-200">
               {parsedData.totalUnitsCompleted}
@@ -858,7 +858,7 @@ export default function TranscriptUpload({
         </div>
 
         <div className="overflow-x-auto rounded-lg border border-zinc-200 dark:border-zinc-800">
-          <table className="w-full min-w-[720px] text-sm">
+          <table className="w-full min-w-[720px] text-[13px]">
             <thead className="bg-zinc-50 dark:bg-zinc-800/50">
               <tr>
                 <th className="px-3 py-2 text-left font-medium text-zinc-600 dark:text-zinc-400">
@@ -938,7 +938,7 @@ export default function TranscriptUpload({
         <div className="flex flex-col gap-3 sm:flex-row">
           <button
             onClick={handleConfirm}
-            className="w-full rounded-lg bg-blue-600 px-6 py-2.5 text-sm font-medium text-white transition-colors hover:bg-blue-700 sm:w-auto cursor-pointer"
+            className="w-full rounded-lg bg-blue-600 px-6 py-2.5 text-[13px] font-medium text-white transition-colors hover:bg-blue-700 sm:w-auto cursor-pointer"
           >
             Looks Good, Continue
           </button>
@@ -949,7 +949,7 @@ export default function TranscriptUpload({
               setTranscriptId(null);
               setProcessingStage("idle");
             }}
-            className="w-full rounded-lg border border-zinc-300 px-6 py-2.5 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800 sm:w-auto cursor-pointer"
+            className="w-full rounded-lg border border-zinc-300 px-6 py-2.5 text-[13px] font-medium text-zinc-700 transition-colors hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800 sm:w-auto cursor-pointer"
           >
             Upload Different File
           </button>
@@ -963,10 +963,10 @@ export default function TranscriptUpload({
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-xl font-semibold text-zinc-900 dark:text-white">
+        <h2 className="text-lg font-semibold text-zinc-900 dark:text-white">
           Upload Your Transcript
         </h2>
-        <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+        <p className="mt-1 text-[13px] text-zinc-500 dark:text-zinc-400">
           Upload your unofficial transcript as a PDF so we can see what courses
           you&apos;ve already taken.
         </p>
@@ -1011,7 +1011,7 @@ export default function TranscriptUpload({
         {isBusy ? (
           <div className="flex flex-col items-center gap-3">
             <div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
-            <p className="text-sm text-zinc-600 dark:text-zinc-400">
+            <p className="text-[13px] text-zinc-600 dark:text-zinc-400">
               {getProcessingMessage(processingStage)}
             </p>
           </div>
@@ -1031,7 +1031,7 @@ export default function TranscriptUpload({
               />
             </svg>
             <div>
-              <p className="text-sm font-medium text-zinc-900 dark:text-white">
+              <p className="text-[13px] font-medium text-zinc-900 dark:text-white">
                 Drop your transcript PDF here or click to browse
               </p>
               <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
@@ -1045,13 +1045,13 @@ export default function TranscriptUpload({
       <div className="flex gap-3">
         <button
           onClick={() => setShowManualEntry(true)}
-          className="rounded-lg border border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 px-6 py-2.5 text-sm font-medium hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
+          className="rounded-lg border border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 px-6 py-2.5 text-[13px] font-medium hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
         >
           Enter Courses Manually
         </button>
         <button
           onClick={onSkip}
-          className="rounded-lg text-zinc-500 dark:text-zinc-400 px-6 py-2.5 text-sm font-medium hover:text-zinc-700 dark:hover:text-zinc-200 transition-colors cursor-pointer"
+          className="rounded-lg text-zinc-500 dark:text-zinc-400 px-6 py-2.5 text-[13px] font-medium hover:text-zinc-700 dark:hover:text-zinc-200 transition-colors cursor-pointer"
         >
           Skip This Step
         </button>

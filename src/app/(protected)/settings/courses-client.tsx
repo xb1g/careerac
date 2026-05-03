@@ -181,7 +181,7 @@ export default function CoursesClient({ initialCourses }: CoursesClientProps) {
           { label: "Total Units", value: totalUnits },
         ].map((s) => (
           <div key={s.label} className="rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 bg-zinc-50/50 dark:bg-zinc-900/50 p-4">
-            <div className="text-xl font-semibold tracking-tight text-zinc-900 dark:text-white">{s.value}</div>
+            <div className="text-lg font-semibold tracking-tight text-zinc-900 dark:text-white">{s.value}</div>
             <div className="text-[10px] font-medium uppercase tracking-wider text-zinc-400 dark:text-zinc-500 mt-1">{s.label}</div>
           </div>
         ))}
@@ -216,7 +216,7 @@ export default function CoursesClient({ initialCourses }: CoursesClientProps) {
           <button
             onClick={handleUploadClick}
             disabled={uploading}
-            className="flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-zinc-300 bg-white px-4 py-2 text-[13px] font-medium text-zinc-700 transition-all duration-200 hover:bg-zinc-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800"
+            className="flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-zinc-300 bg-white px-4 py-2 text-[12px] font-medium text-zinc-700 transition-all duration-200 hover:bg-zinc-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800"
           >
             {uploading ? (
               <>
@@ -232,7 +232,7 @@ export default function CoursesClient({ initialCourses }: CoursesClientProps) {
           </button>
           <button
             onClick={() => { setShowAdd(true); setEditingId(null); }}
-            className="flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-zinc-900 px-4 py-2 text-[13px] font-medium text-white shadow-sm transition-all duration-200 hover:bg-zinc-800 dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-100"
+            className="flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-zinc-900 px-4 py-2 text-[12px] font-medium text-white shadow-sm transition-all duration-200 hover:bg-zinc-800 dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-100"
           >
             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" /></svg>
             Add Course
@@ -267,7 +267,7 @@ export default function CoursesClient({ initialCourses }: CoursesClientProps) {
       {/* Add form */}
       {showAdd && (
         <div className="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-6 shadow-sm">
-          <h3 className="text-sm font-semibold text-zinc-900 dark:text-white mb-5">Add a Course</h3>
+          <h3 className="text-[13px] font-semibold text-zinc-900 dark:text-white mb-5">Add a Course</h3>
           <CourseForm onSubmit={handleAdd} onCancel={() => setShowAdd(false)} submitLabel={loading ? "Adding..." : "Add Course"} />
         </div>
       )}
@@ -278,7 +278,7 @@ export default function CoursesClient({ initialCourses }: CoursesClientProps) {
           <div className="w-12 h-12 rounded-2xl bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center mx-auto mb-4">
             <svg className="w-6 h-6 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" /></svg>
           </div>
-          <p className="text-sm font-medium text-zinc-900 dark:text-white">No courses yet</p>
+          <p className="text-[13px] font-medium text-zinc-900 dark:text-white">No courses yet</p>
           <p className="text-xs text-zinc-400 dark:text-zinc-500 mt-1">Add your first course to start tracking your progress.</p>
         </div>
       ) : (
@@ -287,7 +287,7 @@ export default function CoursesClient({ initialCourses }: CoursesClientProps) {
             <div key={course.id} className="bg-white dark:bg-zinc-900/80">
               {editingId === course.id ? (
                 <div className="p-6">
-                  <h3 className="text-sm font-semibold text-zinc-900 dark:text-white mb-5">Edit Course</h3>
+                  <h3 className="text-[13px] font-semibold text-zinc-900 dark:text-white mb-5">Edit Course</h3>
                   <CourseForm
                     initialData={{ course_code: course.course_code, course_title: course.course_title, units: course.units, grade: course.grade ?? "", term: course.term ?? "", status: course.status, notes: course.notes ?? "" }}
                     onSubmit={(data) => handleUpdate(course.id, data)}
@@ -303,7 +303,7 @@ export default function CoursesClient({ initialCourses }: CoursesClientProps) {
                     </div>
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2.5 flex-wrap">
-                        <span className="text-[13px] font-semibold text-zinc-900 dark:text-white tracking-tight">{course.course_code}</span>
+                        <span className="text-[12px] font-semibold text-zinc-900 dark:text-white tracking-tight">{course.course_code}</span>
                         <span className="text-[10px] font-medium uppercase tracking-wider text-zinc-400 dark:text-zinc-500">{STATUS_LABELS[course.status]}</span>
                         {course.grade && (
                           <span className="text-[10px] font-semibold text-zinc-600 dark:text-zinc-300 bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded-md">{course.grade}</span>
