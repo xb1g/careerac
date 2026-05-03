@@ -73,8 +73,13 @@ export default function CourseForm({ initialData, onSubmit, onCancel, submitLabe
     e.preventDefault();
     if (!isValidSemesterYear(termYear)) return;
 
+    const courseCode = form.course_code.trim();
+    if (!courseCode) return;
+
     onSubmit({
       ...form,
+      course_code: courseCode,
+      course_title: form.course_title.trim() || courseCode,
       grade: normalizeNormalGrade(form.grade) ?? "A",
       term: formatSemesterLabel(termSeason, termYear),
     });
@@ -95,21 +100,17 @@ export default function CourseForm({ initialData, onSubmit, onCancel, submitLabe
             className={inputClass}
             required
             value={form.course_code}
-            onChange={(e) => setForm({ ...form, course_code: e.target.value })}
+            onChange={(e) =>
+              setForm({
+                ...form,
+                course_code: e.target.value,
+                course_title:
+                  initialData?.course_code === e.target.value
+                    ? initialData.course_title
+                    : "",
+              })
+            }
             placeholder="e.g. CS 101"
-          />
-        </div>
-        <div>
-          <label htmlFor={`${formId}-course-title`} className="mb-1 block text-xs font-medium text-zinc-500 dark:text-zinc-400">
-            Course Title *
-          </label>
-          <input
-            id={`${formId}-course-title`}
-            className={inputClass}
-            required
-            value={form.course_title}
-            onChange={(e) => setForm({ ...form, course_title: e.target.value })}
-            placeholder="e.g. Intro to Computer Science"
           />
         </div>
         <div>
