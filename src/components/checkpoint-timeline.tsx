@@ -31,7 +31,7 @@ export interface CheckpointTimelineHandle {
 
 interface CheckpointTimelineProps {
   planId: string;
-  currentPlanData: unknown;
+  currentPlanData?: unknown;
   onRestore: (planData: unknown) => void;
 }
 
@@ -201,7 +201,7 @@ function Toast({ message, onDone }: { message: string; onDone: () => void }) {
 
 /* ── Main Component ── */
 const CheckpointTimeline = forwardRef<CheckpointTimelineHandle, CheckpointTimelineProps>(
-  function CheckpointTimeline({ planId, currentPlanData, onRestore }, ref) {
+  function CheckpointTimeline({ planId, currentPlanData = null, onRestore }, ref) {
     const [isOpen, setIsOpen] = useState(false);
     const [checkpoints, setCheckpoints] = useState<Checkpoint[]>([]);
     const [loading, setLoading] = useState(false);
@@ -241,25 +241,7 @@ const CheckpointTimeline = forwardRef<CheckpointTimelineHandle, CheckpointTimeli
       return () => document.removeEventListener("mousedown", handler);
     }, [isOpen]);
 
-    // Cmd+Z shortcut — undo to latest checkpoint
-    useEffect(() => {
-      const handler = (e: KeyboardEvent) => {
-        if ((e.metaKey || e.ctrlKey) && e.key === "z" && !e.shiftKey) {
-          // Don't intercept if user is typing in an input/textarea
-          const tag = (e.target as HTMLElement)?.tagName;
-          if (tag === "INPUT" || tag === "TEXTAREA" || (e.target as HTMLElement)?.isContentEditable) return;
-
-          e.preventDefault();
-          if (checkpoints.length > 0 && !restoringId) {
-            handleRestore(checkpoints[0]);
-          }
-        }
-      };
-      document.addEventListener("keydown", handler);
-      return () => document.removeEventListener("keydown", handler);
-    }, [checkpoints, restoringId]);
-
-    const handleRestore = async (checkpoint: Checkpoint) => {
+    const handleRestore = useCallback(async (checkpoint: Checkpoint) => {
       setRestoringId(checkpoint.id);
       try {
         const res = await fetch(`/api/plan/${planId}/checkpoints/${checkpoint.id}/restore`, {
@@ -276,7 +258,25 @@ const CheckpointTimeline = forwardRef<CheckpointTimelineHandle, CheckpointTimeli
       } finally {
         setRestoringId(null);
       }
-    };
+    }, [fetchCheckpoints, onRestore, planId]);
+
+    // Cmd+Z shortcut — undo to latest checkpoint
+    useEffect(() => {
+      const handler = (e: KeyboardEvent) => {
+        if ((e.metaKey || e.ctrlKey) && e.key === "z" && !e.shiftKey) {
+          // Don't intercept if user is typing in an input/textarea
+          const tag = (e.target as HTMLElement)?.tagName;
+          if (tag === "INPUT" || tag === "TEXTAREA" || (e.target as HTMLElement)?.isContentEditable) return;
+
+          e.preventDefault();
+          if (checkpoints.length > 0 && !restoringId) {
+            handleRestore(checkpoints[0]);
+          }
+        }
+      };
+      document.addEventListener("keydown", handler);
+      return () => document.removeEventListener("keydown", handler);
+    }, [checkpoints, restoringId, handleRestore]);
 
     // Group checkpoints by day
     const grouped = checkpoints.reduce<Record<string, Checkpoint[]>>((acc, cp) => {
@@ -347,9 +347,8 @@ const CheckpointTimeline = forwardRef<CheckpointTimelineHandle, CheckpointTimeli
                       <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                   </div>
-                  <p className="text-sm font-medium text-zinc-500 dark:text-zinc-400">No history yet</p>
-                  <p className="text-xs text-zinc-400 dark:text-zinc-500 mt-1">
-                    Changes to your plan will be tracked here
+                  <p className="text-sm font-medium text-zinc-500 dark:text-zinc-400">
+                    No history yet. Changes will appear here.
                   </p>
                 </div>
               ) : (
