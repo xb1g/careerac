@@ -194,7 +194,7 @@ export default function CoursesClient({ initialCourses }: CoursesClientProps) {
             <button
               key={f}
               onClick={() => setFilter(f)}
-              className={`cursor-pointer px-3 py-1.5 text-[11px] font-medium rounded-lg transition-all duration-200 ${
+              className={`cursor-pointer px-3 py-1.5 text-[10px] font-medium rounded-lg transition-all duration-200 ${
                 filter === f
                   ? "bg-white dark:bg-zinc-700 text-zinc-900 dark:text-white shadow-sm"
                   : "text-zinc-500 dark:text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-300"
@@ -216,7 +216,7 @@ export default function CoursesClient({ initialCourses }: CoursesClientProps) {
           <button
             onClick={handleUploadClick}
             disabled={uploading}
-            className="flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-zinc-300 bg-white px-4 py-2 text-[12px] font-medium text-zinc-700 transition-all duration-200 hover:bg-zinc-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800"
+            className="flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-zinc-300 bg-white px-4 py-2 text-[11px] font-medium text-zinc-700 transition-all duration-200 hover:bg-zinc-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800"
           >
             {uploading ? (
               <>
@@ -232,7 +232,7 @@ export default function CoursesClient({ initialCourses }: CoursesClientProps) {
           </button>
           <button
             onClick={() => { setShowAdd(true); setEditingId(null); }}
-            className="flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-zinc-900 px-4 py-2 text-[12px] font-medium text-white shadow-sm transition-all duration-200 hover:bg-zinc-800 dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-100"
+            className="flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-zinc-900 px-4 py-2 text-[11px] font-medium text-white shadow-sm transition-all duration-200 hover:bg-zinc-800 dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-100"
           >
             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" /></svg>
             Add Course
