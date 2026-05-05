@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import PrivateGuideCard from "@/components/private-guide-card";
 
 export const metadata: Metadata = {
   title: "CareerAC — Collider Cup Pitch",
@@ -107,6 +108,14 @@ export default function PitchPage() {
                 </div>
               ))}
             </div>
+          </section>
+
+          {/* Private Transfer Guide */}
+          <section className="space-y-6">
+            <h2 className="text-[13px] font-semibold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest">
+              As a personal touch
+            </h2>
+            <PrivateGuideCard />
           </section>
 
           {/* Solution */}

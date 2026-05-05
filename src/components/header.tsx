@@ -11,6 +11,7 @@ import CareerAcLogo from "@/components/careerac-logo";
 
 interface HeaderProps {
   userEmail: string | null;
+  isAdmin?: boolean;
 }
 
 const navLinks = [
@@ -19,6 +20,11 @@ const navLinks = [
   { href: "/playbooks", label: "Playbooks" },
   { href: "/courses", label: "Browse Courses" },
   { href: "/settings", label: "My Courses" },
+];
+
+const adminLinks = [
+  { href: "/admin", label: "Admin" },
+  { href: "/admin/playbooks", label: "Playbooks" },
 ];
 
 function navLinkClass(active: boolean) {
@@ -45,7 +51,6 @@ function isActive(href: string, pathname: string | null): boolean {
   if (href === "/dashboard") {
     return pathname === "/dashboard";
   }
-  // For /plan/new, match /plan/new exactly and /plan/[id]
   if (href === "/plan/new") {
     return pathname === "/plan/new";
   }
@@ -58,12 +63,20 @@ function isActive(href: string, pathname: string | null): boolean {
   if (href === "/settings") {
     return pathname === "/settings";
   }
+  if (href === "/admin") {
+    return pathname === "/admin" || pathname.startsWith("/admin/");
+  }
+  if (href === "/admin/playbooks") {
+    return pathname === "/admin/playbooks";
+  }
   return pathname === href;
 }
 
-export default function Header({ userEmail }: HeaderProps) {
+export default function Header({ userEmail, isAdmin }: HeaderProps) {
   const pathname = usePathname() ?? "";
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const allLinks = isAdmin ? [...navLinks, ...adminLinks] : navLinks;
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-zinc-200/70 bg-white/85 backdrop-blur-xl transition-all duration-300 dark:border-zinc-800/70 dark:bg-zinc-950/85">
@@ -74,11 +87,8 @@ export default function Header({ userEmail }: HeaderProps) {
             <Link href="/dashboard" className="flex shrink-0 items-center">
               <CareerAcLogo width={168} height={34} className="h-7 max-w-[8.5rem] sm:h-8 sm:max-w-none" priority />
             </Link>
-            <nav
-              className="hidden items-center gap-1 rounded-xl border border-zinc-200/70 bg-zinc-50/70 p-1 dark:border-zinc-800/70 dark:bg-zinc-900/40 lg:flex"
-              aria-label="Main navigation"
-            >
-              {navLinks.map((link) => (
+            <nav className="hidden sm:flex items-center gap-6" aria-label="Main navigation">
+              {allLinks.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
@@ -135,7 +145,7 @@ export default function Header({ userEmail }: HeaderProps) {
         {mobileMenuOpen && (
           <div className="border-t border-zinc-200 py-3 dark:border-zinc-800 lg:hidden">
             <nav className="flex flex-col gap-1" aria-label="Mobile navigation">
-              {navLinks.map((link) => (
+              {allLinks.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
