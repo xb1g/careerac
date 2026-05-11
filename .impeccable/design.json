@@ -1,0 +1,421 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-05-07T00:00:00Z",
+  "title": "Design System: CareerAC",
+  "extensions": {
+    "colorMeta": {
+      "primary": {
+        "role": "primary",
+        "displayName": "Path Blue",
+        "canonical": "oklch(55% 0.22 255)",
+        "tonalRamp": [
+          "oklch(15% 0.05 255)",
+          "oklch(25% 0.12 255)",
+          "oklch(35% 0.18 255)",
+          "oklch(45% 0.21 255)",
+          "oklch(55% 0.22 255)",
+          "oklch(65% 0.20 255)",
+          "oklch(80% 0.12 255)",
+          "oklch(93% 0.04 255)"
+        ]
+      },
+      "primary-deep": {
+        "role": "primary",
+        "displayName": "Path Blue Deep",
+        "canonical": "oklch(48% 0.21 255)",
+        "tonalRamp": []
+      },
+      "primary-soft": {
+        "role": "primary",
+        "displayName": "Path Blue Soft",
+        "canonical": "oklch(93% 0.04 255)",
+        "tonalRamp": []
+      },
+      "indigo": {
+        "role": "secondary",
+        "displayName": "Horizon Indigo",
+        "canonical": "oklch(50% 0.22 270)",
+        "tonalRamp": [
+          "oklch(15% 0.05 270)",
+          "oklch(25% 0.12 270)",
+          "oklch(35% 0.18 270)",
+          "oklch(45% 0.21 270)",
+          "oklch(50% 0.22 270)",
+          "oklch(65% 0.20 270)",
+          "oklch(80% 0.12 270)",
+          "oklch(93% 0.04 270)"
+        ]
+      },
+      "neutral-950": {
+        "role": "neutral",
+        "displayName": "Night Sky Deep",
+        "canonical": "oklch(15% 0.005 75)",
+        "tonalRamp": []
+      },
+      "neutral-900": {
+        "role": "neutral",
+        "displayName": "Road Asphalt",
+        "canonical": "oklch(22% 0.008 75)",
+        "tonalRamp": []
+      },
+      "neutral-800": {
+        "role": "neutral",
+        "displayName": "Road Surface",
+        "canonical": "oklch(30% 0.01 75)",
+        "tonalRamp": []
+      },
+      "neutral-700": {
+        "role": "neutral",
+        "displayName": "Road Marking Dark",
+        "canonical": "oklch(40% 0.012 75)",
+        "tonalRamp": []
+      },
+      "neutral-600": {
+        "role": "neutral",
+        "displayName": "Road Marking",
+        "canonical": "oklch(50% 0.012 75)",
+        "tonalRamp": []
+      },
+      "neutral-500": {
+        "role": "neutral",
+        "displayName": "Road Shoulder",
+        "canonical": "oklch(60% 0.01 75)",
+        "tonalRamp": []
+      },
+      "neutral-400": {
+        "role": "neutral",
+        "displayName": "Road Shoulder Light",
+        "canonical": "oklch(70% 0.008 75)",
+        "tonalRamp": []
+      },
+      "neutral-300": {
+        "role": "neutral",
+        "displayName": "Road Bed",
+        "canonical": "oklch(80% 0.006 75)",
+        "tonalRamp": []
+      },
+      "neutral-200": {
+        "role": "neutral",
+        "displayName": "Road Bed Light",
+        "canonical": "oklch(87% 0.005 75)",
+        "tonalRamp": []
+      },
+      "neutral-100": {
+        "role": "neutral",
+        "displayName": "Sky Tint",
+        "canonical": "oklch(93% 0.004 75)",
+        "tonalRamp": []
+      },
+      "neutral-50": {
+        "role": "neutral",
+        "displayName": "Sky Light",
+        "canonical": "oklch(97% 0.003 75)",
+        "tonalRamp": []
+      },
+      "background": {
+        "role": "neutral",
+        "displayName": "Day Sky",
+        "canonical": "oklch(100% 0 0)",
+        "tonalRamp": []
+      },
+      "background-dark": {
+        "role": "neutral",
+        "displayName": "Night Sky",
+        "canonical": "oklch(10% 0.005 75)",
+        "tonalRamp": []
+      },
+      "foreground": {
+        "role": "neutral",
+        "displayName": "Day Text",
+        "canonical": "oklch(22% 0.008 75)",
+        "tonalRamp": []
+      },
+      "foreground-dark": {
+        "role": "neutral",
+        "displayName": "Night Text",
+        "canonical": "oklch(93% 0.004 75)",
+        "tonalRamp": []
+      },
+      "success": {
+        "role": "status",
+        "displayName": "Milestone Green",
+        "canonical": "oklch(65% 0.22 155)",
+        "tonalRamp": [
+          "oklch(20% 0.05 155)",
+          "oklch(35% 0.15 155)",
+          "oklch(50% 0.20 155)",
+          "oklch(65% 0.22 155)",
+          "oklch(75% 0.18 155)",
+          "oklch(85% 0.10 155)",
+          "oklch(93% 0.04 155)",
+          "oklch(97% 0.02 155)"
+        ]
+      },
+      "warning": {
+        "role": "status",
+        "displayName": "Caution Amber",
+        "canonical": "oklch(75% 0.18 85)",
+        "tonalRamp": [
+          "oklch(25% 0.06 85)",
+          "oklch(40% 0.12 85)",
+          "oklch(55% 0.16 85)",
+          "oklch(75% 0.18 85)",
+          "oklch(82% 0.14 85)",
+          "oklch(88% 0.08 85)",
+          "oklch(94% 0.04 85)",
+          "oklch(97% 0.02 85)"
+        ]
+      },
+      "danger": {
+        "role": "status",
+        "displayName": "Detour Red",
+        "canonical": "oklch(60% 0.22 25)",
+        "tonalRamp": [
+          "oklch(15% 0.06 25)",
+          "oklch(30% 0.15 25)",
+          "oklch(45% 0.20 25)",
+          "oklch(60% 0.22 25)",
+          "oklch(70% 0.18 25)",
+          "oklch(82% 0.10 25)",
+          "oklch(92% 0.04 25)",
+          "oklch(97% 0.02 25)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Hero headlines and major section headers. Maximum impact."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Section titles and page headers."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Card titles, dialog headers, semester labels. The UI workhorse."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Descriptions, chat messages, plan details. Max 65ch line length."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Navigation, badges, metadata, status. All caps, wide tracking."
+      }
+    },
+    "shadows": [
+      {
+        "name": "ambient-low",
+        "value": "0 1px 2px rgba(24,24,27,0.05)",
+        "purpose": "Default card shadow. Barely perceptible."
+      },
+      {
+        "name": "ambient-medium",
+        "value": "0 8px 18px rgba(24,24,27,0.08)",
+        "purpose": "Hover state for cards and secondary buttons. Gentle bloom."
+      },
+      {
+        "name": "ambient-high",
+        "value": "0 32px 64px -12px rgba(0,0,0,0.1)",
+        "purpose": "Hero demo sections, feature showcases. Dramatic but soft."
+      },
+      {
+        "name": "inset-highlight",
+        "value": "inset 0 1px 0 rgba(255,255,255,0.16)",
+        "purpose": "Primary buttons. Subtle top-edge sheen."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-standard",
+        "value": "cubic-bezier(0.4, 0, 0.2, 1)",
+        "purpose": "Default easing for color and opacity transitions."
+      },
+      {
+        "name": "ease-out-expo",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Hover and state transitions. Exponential deceleration."
+      },
+      {
+        "name": "duration-fast",
+        "value": "150ms",
+        "purpose": "Micro-interactions: status dots, badge changes."
+      },
+      {
+        "name": "duration-normal",
+        "value": "200ms",
+        "purpose": "Standard transitions: buttons, cards, links."
+      },
+      {
+        "name": "duration-slow",
+        "value": "300ms",
+        "purpose": "Hero elements, page transitions, modal entrances."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "sm",
+        "value": "640px"
+      },
+      {
+        "name": "md",
+        "value": "768px"
+      },
+      {
+        "name": "lg",
+        "value": "1024px"
+      },
+      {
+        "name": "xl",
+        "value": "1280px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Main action button. Dark surface with white text, subtle inset highlight.",
+      "html": "<button class=\"ds-btn-primary\">Get Started</button>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; justify-content: center; gap: 8px; white-space: nowrap; border-radius: 12px; border: 1px solid #27272a; background: #27272a; color: #ffffff; font-family: var(--font-funnel-sans), system-ui, sans-serif; font-size: 0.875rem; font-weight: 600; padding: 10px 16px; cursor: pointer; box-shadow: inset 0 1px 0 rgba(255,255,255,0.16), 0 1px 2px rgba(24,24,27,0.14); transition: background-color 200ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 200ms cubic-bezier(0.16, 1, 0.3, 1); } .ds-btn-primary:hover { background: #3f3f46; box-shadow: inset 0 1px 0 rgba(255,255,255,0.18), 0 8px 18px rgba(24,24,27,0.12); } .ds-btn-primary:focus-visible { outline: none; box-shadow: 0 0 0 2px rgba(24,24,27,0.15), 0 0 0 4px #ffffff; } .ds-btn-primary:active { transform: translateY(0); } .ds-btn-primary:disabled { opacity: 0.5; pointer-events: none; }"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Secondary action. White background with subtle border.",
+      "html": "<button class=\"ds-btn-secondary\">Cancel</button>",
+      "css": ".ds-btn-secondary { display: inline-flex; align-items: center; justify-content: center; gap: 8px; white-space: nowrap; border-radius: 12px; border: 1px solid #e4e4e7; background: #ffffff; color: #27272a; font-family: var(--font-funnel-sans), system-ui, sans-serif; font-size: 0.875rem; font-weight: 600; padding: 10px 16px; cursor: pointer; box-shadow: 0 1px 2px rgba(24,24,27,0.05); transition: border-color 200ms cubic-bezier(0.16, 1, 0.3, 1), background-color 200ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 200ms cubic-bezier(0.16, 1, 0.3, 1); } .ds-btn-secondary:hover { border-color: #d4d4d8; background: #fafafa; box-shadow: 0 8px 18px rgba(24,24,27,0.08); } .ds-btn-secondary:focus-visible { outline: none; box-shadow: 0 0 0 2px rgba(24,24,27,0.15), 0 0 0 4px #ffffff; }"
+    },
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Low-emphasis action. Transparent with text-only appearance.",
+      "html": "<button class=\"ds-btn-ghost\">Learn more</button>",
+      "css": ".ds-btn-ghost { display: inline-flex; align-items: center; justify-content: center; gap: 8px; white-space: nowrap; border-radius: 12px; border: 1px solid transparent; background: transparent; color: #52525b; font-family: var(--font-funnel-sans), system-ui, sans-serif; font-size: 0.875rem; font-weight: 600; padding: 10px 16px; cursor: pointer; transition: border-color 200ms cubic-bezier(0.16, 1, 0.3, 1), background-color 200ms cubic-bezier(0.16, 1, 0.3, 1), color 200ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 200ms cubic-bezier(0.16, 1, 0.3, 1); } .ds-btn-ghost:hover { border-color: #e4e4e7; background: #ffffff; color: #18181b; box-shadow: 0 6px 14px rgba(24,24,27,0.06); } .ds-btn-ghost:focus-visible { outline: none; box-shadow: 0 0 0 2px rgba(24,24,27,0.15), 0 0 0 4px #ffffff; }"
+    },
+    {
+      "name": "Default Card",
+      "kind": "card",
+      "refersTo": "card-default",
+      "description": "Standard content container. White background with subtle border and shadow.",
+      "html": "<div class=\"ds-card\"><h3 class=\"ds-card-title\">Semester 1</h3><p class=\"ds-card-body\">14.0 units planned</p></div>",
+      "css": ".ds-card { background: #ffffff; border: 1px solid #e4e4e7; border-radius: 16px; padding: 24px; box-shadow: 0 1px 2px rgba(24,24,27,0.05); font-family: var(--font-funnel-sans), system-ui, sans-serif; color: #18181b; } .ds-card-title { font-family: var(--font-funnel-sans), system-ui, sans-serif; font-size: 1.125rem; font-weight: 600; line-height: 1.3; margin: 0 0 8px 0; } .ds-card-body { font-family: var(--font-funnel-sans), system-ui, sans-serif; font-size: 0.875rem; font-weight: 400; line-height: 1.6; color: #52525b; margin: 0; }"
+    },
+    {
+      "name": "Glass Card",
+      "kind": "card",
+      "refersTo": "card-glass",
+      "description": "Floating atmospheric card with backdrop blur. For overlays and hero sections only.",
+      "html": "<div class=\"ds-card-glass\"><h3 class=\"ds-card-title\">Transfer Readiness</h3><p class=\"ds-card-body\">84% complete</p></div>",
+      "css": ".ds-card-glass { background: rgba(255,255,255,0.7); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border: 1px solid rgba(255,255,255,0.5); border-radius: 24px; padding: 24px; box-shadow: 0 1px 2px rgba(24,24,27,0.05); font-family: var(--font-funnel-sans), system-ui, sans-serif; color: #18181b; } .ds-card-glass .ds-card-title { font-family: var(--font-funnel-sans), system-ui, sans-serif; font-size: 1.125rem; font-weight: 600; line-height: 1.3; margin: 0 0 8px 0; } .ds-card-glass .ds-card-body { font-family: var(--font-funnel-sans), system-ui, sans-serif; font-size: 0.875rem; font-weight: 400; line-height: 1.6; color: #52525b; margin: 0; }"
+    },
+    {
+      "name": "Primary Badge",
+      "kind": "chip",
+      "refersTo": "badge-primary",
+      "description": "Status indicator for active/verified states. Pill shape with soft tint.",
+      "html": "<span class=\"ds-badge-primary\">Verified Path</span>",
+      "css": ".ds-badge-primary { display: inline-flex; align-items: center; border-radius: 9999px; padding: 2px 10px; background: #dbeafe; color: #1d4ed8; font-family: var(--font-funnel-sans), system-ui, sans-serif; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; line-height: 1.4; }"
+    },
+    {
+      "name": "Success Badge",
+      "kind": "chip",
+      "refersTo": "badge-success",
+      "description": "Status indicator for completed/success states.",
+      "html": "<span class=\"ds-badge-success\">Completed</span>",
+      "css": ".ds-badge-success { display: inline-flex; align-items: center; border-radius: 9999px; padding: 2px 10px; background: #d1fae5; color: #10b981; font-family: var(--font-funnel-sans), system-ui, sans-serif; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; line-height: 1.4; }"
+    },
+    {
+      "name": "Text Input",
+      "kind": "input",
+      "refersTo": "input-default",
+      "description": "Standard form input. Clean border, minimal focus treatment.",
+      "html": "<input type=\"text\" class=\"ds-input\" placeholder=\"Enter course code...\" />",
+      "css": ".ds-input { width: 100%; border-radius: 12px; border: 1px solid #e4e4e7; background: #ffffff; padding: 10px 16px; font-family: var(--font-funnel-sans), system-ui, sans-serif; font-size: 0.875rem; font-weight: 400; line-height: 1.6; color: #18181b; outline: none; transition: border-color 200ms cubic-bezier(0.16, 1, 0.3, 1); } .ds-input::placeholder { color: #a1a1aa; } .ds-input:focus { border-color: #27272a; } .ds-input:disabled { opacity: 0.5; pointer-events: none; }"
+    },
+    {
+      "name": "Course Card",
+      "kind": "custom",
+      "refersTo": "course-card",
+      "description": "Signature component showing a single course. Status-driven colors, compact density.",
+      "html": "<div class=\"ds-course-card\"><div class=\"ds-course-header\"><span class=\"ds-course-dot\"></span><span class=\"ds-course-code\">CS A150</span><span class=\"ds-course-units\">4.0u</span></div><p class=\"ds-course-title\">C++ Programming</p></div>",
+      "css": ".ds-course-card { border-radius: 12px; border: 1px solid #e4e4e7; background: #ffffff; padding: 10px 16px; font-family: var(--font-funnel-sans), system-ui, sans-serif; transition: box-shadow 200ms cubic-bezier(0.16, 1, 0.3, 1); cursor: pointer; } .ds-course-card:hover { box-shadow: 0 8px 18px rgba(24,24,27,0.08); } .ds-course-header { display: flex; align-items: center; gap: 8px; min-width: 0; } .ds-course-dot { width: 8px; height: 8px; border-radius: 50%; background: #d4d4d8; flex-shrink: 0; } .ds-course-code { font-size: 0.625rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: #2563eb; } .ds-course-units { margin-left: auto; font-size: 0.625rem; font-weight: 600; color: #a1a1aa; font-variant-numeric: tabular-nums; } .ds-course-title { font-size: 0.75rem; line-height: 1.4; color: #52525b; margin: 4px 0 0 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }"
+    },
+    {
+      "name": "Floating Header",
+      "kind": "nav",
+      "refersTo": "nav-header",
+      "description": "Fixed top navigation with glassmorphism. Pill shape on desktop, rounded on mobile.",
+      "html": "<nav class=\"ds-header\"><div class=\"ds-header-inner\"><a href=\"/\" class=\"ds-header-logo\">CareerAC</a><div class=\"ds-header-links\"><a href=\"#\" class=\"ds-header-link\">How it Works</a><a href=\"#\" class=\"ds-header-link\">Features</a></div></div></nav>",
+      "css": ".ds-header { position: fixed; top: 0; left: 0; right: 0; z-index: 50; padding: 12px 24px; } .ds-header-inner { max-width: 1280px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; border-radius: 9999px; border: 1px solid rgba(255,255,255,0.5); background: rgba(255,255,255,0.7); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); padding: 12px 24px; box-shadow: 0 8px 30px rgba(0,0,0,0.04); font-family: var(--font-funnel-sans), system-ui, sans-serif; } .ds-header-logo { font-family: var(--font-funnel-display), system-ui, sans-serif; font-size: 1.125rem; font-weight: 700; color: #18181b; text-decoration: none; } .ds-header-links { display: flex; align-items: center; gap: 24px; } .ds-header-link { font-size: 0.8125rem; font-weight: 600; color: #71717a; text-decoration: none; transition: color 200ms cubic-bezier(0.16, 1, 0.3, 1); } .ds-header-link:hover { color: #18181b; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Open Road",
+    "overview": "CareerAC's visual system is built around the metaphor of an open road: directional, uncluttered, and always moving forward. Every surface guides the eye along a clear path. There are no dead ends, no visual noise, no decorative detours. The interface feels like a well-designed map: information is layered by importance, the primary route is unmistakable, and recovery from a wrong turn is frictionless. This is a product-first system. The landing page may borrow atmospheric depth from brand registers, but the core experience is pure tool. Density is high where students need to see their full semester at a glance, but never overwhelming. Breathing room is earned through hierarchy, not empty space.",
+    "keyCharacteristics": [
+      "Flat-by-default surfaces with tonal layering for depth",
+      "Directional blue accent used sparingly as the 'path forward' signal",
+      "High information density in plan views, generous rhythm in marketing surfaces",
+      "No physical movement on interaction — color and shadow shifts only",
+      "Glassmorphism reserved for floating chrome (header, modals), never content cards"
+    ],
+    "rules": [
+      {
+        "name": "The One Path Rule",
+        "body": "The primary blue accent appears on no more than 10% of any given screen. Its scarcity is the point. If everything is highlighted, nothing is.",
+        "section": "colors"
+      },
+      {
+        "name": "The No Pure Black Rule",
+        "body": "Never use #000000 or #ffffff. Every neutral is tinted slightly warm. The dark mode background is #0a0a0a, not #000000.",
+        "section": "colors"
+      },
+      {
+        "name": "The Size-13 Rule",
+        "body": "Navigation links and secondary actions use 13px (0.8125rem) with semibold weight. This is the system's smallest interactive text size. Nothing interactive goes below 13px.",
+        "section": "typography"
+      },
+      {
+        "name": "The Mono Codes Rule",
+        "body": "Course codes (CS A150, MATH A180) use the body font in bold with a slightly reduced size (0.625rem / 10px) and uppercase tracking. They read as labels, not body text.",
+        "section": "typography"
+      },
+      {
+        "name": "The Flat-By-Default Rule",
+        "body": "Surfaces are flat at rest. Shadows appear only as a response to state (hover, focus, elevation). If a card doesn't need to feel interactive, it gets no shadow.",
+        "section": "elevation"
+      },
+      {
+        "name": "The No Nested Cards Rule",
+        "body": "Cards inside cards are always wrong. Use tonal layering (background tints, borders) to create hierarchy within a single container.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do use Path Blue sparingly. It should feel like a highlight, not a wash.",
+      "Do maintain the flat-by-default rule. Shadows are for state, not decoration.",
+      "Do use tonal layering (background tints, borders) to create hierarchy within containers.",
+      "Do keep body text at 14px (0.875rem) minimum and interactive text at 13px (0.8125rem) minimum.",
+      "Do use the full radius (pill shape) for hero CTAs and floating header bars.",
+      "Do use glassmorphism exclusively for floating chrome (header, modals).",
+      "Do celebrate milestones with Milestone Green, but keep the celebration subtle — a tint, not a banner."
+    ],
+    "donts": [
+      "Don't create cluttered, overwhelming dashboards with dense data tables and excessive chrome.",
+      "Don't use generic SaaS template aesthetics: identical card grids with icon + heading + text, gradient text, big-number hero metrics.",
+      "Don't use academic/university portal designs that feel bureaucratic and dated.",
+      "Don't use overly playful or gamified interfaces that undermine the seriousness of academic planning.",
+      "Don't use side-stripe borders (border-left greater than 1px as a colored accent). The course card status accents are the only exception, and they use exactly 4px.",
+      "Don't use gradient text (background-clip: text). The landing page hero uses it currently but this is deprecated — use a single solid color instead.",
+      "Don't use glassmorphism on content cards or data surfaces. It reduces readability and feels decorative.",
+      "Don't animate CSS layout properties (width, height, top, left). Use transform and opacity only.",
+      "Don't use bounce, elastic, or spring easing. Use ease-out with exponential curves (ease-out-quart / quint).",
+      "Don't wrap everything in a container. Most things don't need one."
+    ]
+  }
+}
